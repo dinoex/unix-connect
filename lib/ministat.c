@@ -79,7 +79,7 @@
  * - Sommerzeit:
  *
  */
- 
+
 bs_st boxstat;
 
 /*
@@ -173,7 +173,7 @@ void minireadstat(void)
   /* Oeffnen der Konfigurationsdatei */
   logdir = ".";
   f = fopen(CONFIG_FILE, "r");
-  if (!f) 
+  if (!f)
     uufatal("Konfiguration",
 	    "Kann CONFIG Datei \""CONFIG_FILE"\" nicht lesen");
 
@@ -244,25 +244,25 @@ void minireadstat(void)
   /* Fileserver-Dir: */
   fileserverdir = NULL;
   p = find(HD_FILESERVER_DIR, config);
-  if (p) 
+  if (p)
     fileserverdir = dstrdup(p->text);
 
   /* Backout-Dir: */
   backoutdir = NULL;
   p = find(HD_BACKOUT_DIR, config);
-  if (p) 
+  if (p)
     backoutdir = dstrdup(p->text);
 
   /* Backin-Dir: */
   backindir = NULL;
   p = find(HD_BACKIN_DIR, config);
-  if (p) 
+  if (p)
     backindir = dstrdup(p->text);
 
   /* Fileserver-Upload-Dir: */
   fileserveruploads = NULL;
   p = find(HD_FILESERVER_UPLOAD_DIR, config);
-  if (p) 
+  if (p)
     fileserveruploads = dstrdup(p->text);
 
   /* Arc-Kommando: */
@@ -300,7 +300,7 @@ void minireadstat(void)
   /* Autoeintrag-Defaults: */
   autoeintrag = NULL;
   p = find(HD_AUTOEINTRAG_DEFAULTS, config);
-  if (p) 
+  if (p)
     autoeintrag = dstrdup(p->text);
 
   /* Debuglevel: */
@@ -363,17 +363,17 @@ void minireadstat(void)
   /* Gate-Domain: */
   p = find(HD_GATE_DOMAIN, config);
   if (!p || strlen(p->text)==0)
-    uufatal("Konfiguration", 
+    uufatal("Konfiguration",
 	    "kein "HN_GATE_DOMAIN" Eintrag in der CONFIG-Datei\n");
   boxstat.boxdomain = dstrdup(p->text);
 
   /* Zeitzone: */
   p = find(HD_ZEITZONE, config);
   if (!p || strlen(p->text)==0)
-    uufatal("Konfiguration", 
+    uufatal("Konfiguration",
 	    "kein "HN_ZEITZONE" Eintrag in der CONFIG-Datei\n");
   if(sscanf(p->text, "%d", &(boxstat.timezone))<1)
-    uufatal("Konfiguration", 
+    uufatal("Konfiguration",
 	    HN_ZEITZONE" Eintrag in der CONFIG-Datei nicht numerisch: %s\n", p->text);
 
   /* Sommerzeit: */
@@ -381,7 +381,7 @@ void minireadstat(void)
   if (!p) {
     struct tm *zeit;
     time_t now;
-		
+
     boxstat.sommerzeit = 0;
 
     now = time(NULL);

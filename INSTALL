@@ -64,7 +64,7 @@ die von --with-dir.
 
 --with-spooldir=dir      Spooldir.
 
-Wo die Spoolfiles hinkommen. 
+Wo die Spoolfiles hinkommen.
 
 Default: /var/spool/zconnect, falls /var/spool existiert,
 sonst /usr/spool/zconnect
@@ -81,7 +81,7 @@ Diese beiden Parameter _müssen_ angegeben werden.
 UNIX-Connect kann sehr vielseitig einsetzen werden. Die häufigsten
 Konfigurationen sind:
 
-   1) Point:    Als persönliches System. Unix-Connect wird als Point 
+   1) Point:    Als persönliches System. Unix-Connect wird als Point
                 an einer Z-NETZ MailBox eingesetzt. Achtung, in diesem
                 Fall dürfen keine Daten auf der RFC-Seite weitergegeben
                 werden.
@@ -120,7 +120,7 @@ Es gibt folgende Newssysteme:
 cnews, inn
 
 Wird nichts angegeben, dann wird "no" gewählt. Damit wird nur
-ein Minimal-System installiert. Bitte die READMEs in 
+ein Minimal-System installiert. Bitte die READMEs in
 mail-and-news/<...> beachten.
 
 
@@ -185,7 +185,7 @@ muß von Root ausgeführt werden.
 5. Points/Systeme anlegen
 -------------------------
 
-Für jedes bekannte System (auch Points) muß eine Datei in 
+Für jedes bekannte System (auch Points) muß eine Datei in
 zcondir/systems vorhanden sein. Das nähere dazu steht
 in README.systeme.
 

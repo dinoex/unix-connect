@@ -36,7 +36,7 @@ Zeitzone:                          1
 Sommerzeit:                        0
 
 # Im Verlauf der Installation kann es hilfreich sein, wenn die Online-
-# Routinen einen Mittschnitt der uebertragenen Steuerinformationen 
+# Routinen einen Mittschnitt der uebertragenen Steuerinformationen
 # erzeugen, im Nutzbetrieb waechst dadurch das Logfile aber recht schnell.
 # Debuglevel 0 --> normale Logfiles, keine spezielle Debuginfo
 # Debuglevel 1 --> zusaetzliche Ablaufinformationen der Online-Phase
@@ -143,7 +143,7 @@ Gate-Approved-Liste:               @ETCDIR@/approved
 
 # Da Mails mit Absender ".sub.org" (u.a.) nicht ueber WIN-Leitungen
 # transportiert werden sollen, dies aber mit herkoemmlichen Routing-
-# Mechanismen nicht/schwer realisierbar ist (Matthias Urlichs nach ZMailer 
+# Mechanismen nicht/schwer realisierbar ist (Matthias Urlichs nach ZMailer
 # Patch fragen), wird im Gateway fuer solche Adressen gleich ein anderer
 # Ziel-Pfad erzeugt.
 # Der Gateway schreibt Adressen immer als (domain)!(user). Dieser Teil ist

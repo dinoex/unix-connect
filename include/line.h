@@ -46,7 +46,7 @@
 
 /*
  * setzt file-desc. auf raw-mode
- */ 
+ */
 void set_rawmode(int);
 
 /*

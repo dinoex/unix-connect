@@ -2,7 +2,7 @@
 /*
  * Aus der C-News Distribution, (C)opyright Henry Spencer et al.
  */
- 
+
 #ifndef DATETOK_H__
 #define DATETOK_H__
 

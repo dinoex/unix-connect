@@ -123,7 +123,7 @@ void datei_dialog(void)
 		remove_queue(done);
 		done = clear_queue(done);
 	}
-	
+
 	p = find(HD_PUT, req);
 	if (p) {
 		if (*(p->text))
@@ -173,7 +173,7 @@ void datei_dialog(void)
 			*s = '\0';
 		} /* else */
 			eda = 0;
-		
+
 		s = strrchr(dir, '/');
 		if (s) {
 			strcpy(file, s+1);

@@ -56,7 +56,7 @@ while ($#files>=0) {
   File: while ($f=shift(@files)) {
       if (open(F, "new/$f")) {
 	  my $has_body=0;
-	  $_=<F>; 
+	  $_=<F>;
 	  if (!/^Return-Path:\s*\<([^>]*)\>/i) {
 	      &badmsg($f, "no/bad Return-Path line"); next;
 	  }
@@ -69,7 +69,7 @@ while ($#files>=0) {
 	  print "MAIL FROM:<$fr>\nRCPT TO:<$_>\nDATA\n";
 	  while (<F>) {
 	      s/^\./../;
-	      $has_body = 1 if (/^$/); 
+	      $has_body = 1 if (/^$/);
 	      print;
 	  };
 	  print "\n" unless $has_body;

@@ -48,8 +48,8 @@
  *
  *
  *  Sat Jul  1 20:45:39 MET DST 1995 (P.Much)
- *  - Erweitert zur Nutzung der syslog-facility mit -DHAVE_SYSLOG. 
- *  - Fehlende Datumsausgabe ergaenzt.                     
+ *  - Erweitert zur Nutzung der syslog-facility mit -DHAVE_SYSLOG.
+ *  - Fehlende Datumsausgabe ergaenzt.
  */
 
 # include "config.h"

@@ -84,7 +84,7 @@ int main (int argc, char **argv)
 {
 	FILE *inp, *prv, *brt;
 	char name[FILENAME_MAX];
-	
+
 	if (argc != 2) usage();
 	inp = fopen(argv[1], "rb");
 	if (!inp) {
@@ -108,7 +108,7 @@ int main (int argc, char **argv)
 	set_rd_para_reaction(0);
 	buffer = NULL;
 	buf_alloc = 0;
-	while (!feof(inp)) 
+	while (!feof(inp))
 		convert(inp, prv, brt);
 	fclose(inp);
 	fclose(prv);

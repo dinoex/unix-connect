@@ -100,14 +100,14 @@
 
 
 Herausgeber:     ZERBERUS Gesellschaft  für Kommunikation mbH,
-                 Marktstraße 18, D-4800 Bielefeld,    
+                 Marktstraße 18, D-4800 Bielefeld,
                  Tel.: +49-521-65566, Fax: +49-521-61172
 
 ISBN 3-9802182-2-8
 
-ZERBERUS(R)  ist   ein  eingetragenes   Warenzeichen  von Wolfgang Mexner.   
+ZERBERUS(R)  ist   ein  eingetragenes   Warenzeichen  von Wolfgang Mexner.
 ZCONNECT(R)  ist   ein  eingetragenes   Warenzeichen  der ZERBERUS GmbH.
-MS-DOS ist  ein eingetragenes  Warenzeichen der MicroSoft GmbH,    
+MS-DOS ist  ein eingetragenes  Warenzeichen der MicroSoft GmbH,
 UNIX ein eingetragenes Warenzeichen der AT&T Inc. und USL Inc.
 RSA ist  ein  eingetragenes  Warenzeichen  der  RSA  Data Security Inc.
 
@@ -909,23 +909,23 @@ Leerzeichen, am  Anfang der  Nutzinformation angegeben.  Sind  die
 Informationen auf  alle Ports  anwendbar, wird  0  als  Portnummer
 angegeben.
 
-    ARC  +Portnummer, Pflicht 
+    ARC  +Portnummer, Pflicht
              Mögliche Datenkompressionen. Definiert sind bisher:
-             
+
              "ARC"           = ARC/PAK (Endung ".arc")
-             "ARJ"           = ARJ (Endung ".arj")    
-             "LHARC"         = LH1/2 (Endung ".lzh")  
-             "LHA"           = LH1-5 (Endung ".lha")  
-             "ZOO"           = ZOO (Endung ".zoo")    
-             "ZIP"           = ZIP (Endung ".zip")    
-             "ZIP2"          = ZIP V2.0 (Endung ".zi2")    
-             "COMPRESS"      = COMPRESS (Endung ".Z") 
-             "TAR-COMPRESS"  = TAR und COMPRESS  
-                               (Endung ".tar.Z" oder  
+             "ARJ"           = ARJ (Endung ".arj")
+             "LHARC"         = LH1/2 (Endung ".lzh")
+             "LHA"           = LH1-5 (Endung ".lha")
+             "ZOO"           = ZOO (Endung ".zoo")
+             "ZIP"           = ZIP (Endung ".zip")
+             "ZIP2"          = ZIP V2.0 (Endung ".zi2")
+             "COMPRESS"      = COMPRESS (Endung ".Z")
+             "TAR-COMPRESS"  = TAR und COMPRESS
+                               (Endung ".tar.Z" oder
                                ".tz"(MSDOS))
-             "NONE"          = Keine Komprimierung    
+             "NONE"          = Keine Komprimierung
                                (Endung .non)
-             
+
              Auch  hier   werden  Alternativen  durch  Leerzeichen
              getrennt hintereinandergestellt.  Die Reihenfolge ist
              dabei relevant:  die bevorzugten Packer stehen vorne.
@@ -938,43 +938,43 @@ angegeben.
 
                            - Seite 15 -
 
-    CRYPT                +Portnummer, optional    
+    CRYPT                +Portnummer, optional
              Hiermit sind  alle Verschlüsselungsprogramme, die für
              die Mailkodierung verwendet werden können, gemeint.
-             
-             "DES"           = DES 56Bit DoD-Standard 
-                               (lowtech)    
-             "PGP"           = RSA Public-Key-Verschlüsselung   
-                               (hightech)   
-             
+
+             "DES"           = DES 56Bit DoD-Standard
+                               (lowtech)
+             "PGP"           = RSA Public-Key-Verschlüsselung
+                               (hightech)
+
              Sind  mehrere   Crypt-Möglichkeiten  vorhanden,  gilt
              sinngemäß das unter ARC Gesagte.
 
-    DOMAIN               optional  
+    DOMAIN               optional
              Internet-Domains des  Systems. Falls  mehrere gültige
              Domains   vorhanden    sind,   werden   diese   durch
-             Leerzeichen getrennt aufgeführt.    
+             Leerzeichen getrennt aufgeführt.
              Beispiel: "zer.de comlink.de zer.sub.org"
 
     ISO2 + Portnummer, Pflicht
              Mögliche Verbindungsarten:
-             
+
              "V.21"          = 300 Bps CCITT
-             "V.22"          = 1200 Bps CCITT    
-             "V.22bis"       = 2400 Bps CCITT    
-             "V.32"          = 9600 Bps CCITT    
-             "V.32bis"       = 14400 Bps CCITT   
-             "PEP"           = 15000 Bps PEP-Modus    
-             "HST"           = 14400 Bps HST-Modus    
-             "V110"          = ISDN-Protokoll    
-             "BUNDLE"        = ISDN-Protokoll    
-             "X.75SLP"       = ISDN-B-Kanal Protokoll 
-             "HDLC"          = ISDN-B-Kanal Protokoll 
-             "BITTRANSP"     = ISDN-B-Kanal Protokoll 
-             "SNA-SDLC"      = ISDN-B-Kanal Protokoll 
-             "X.75BTX"       = ISDN-B-Kanal Protokoll 
-             "X.25"          = Datex-P 
-             
+             "V.22"          = 1200 Bps CCITT
+             "V.22bis"       = 2400 Bps CCITT
+             "V.32"          = 9600 Bps CCITT
+             "V.32bis"       = 14400 Bps CCITT
+             "PEP"           = 15000 Bps PEP-Modus
+             "HST"           = 14400 Bps HST-Modus
+             "V110"          = ISDN-Protokoll
+             "BUNDLE"        = ISDN-Protokoll
+             "X.75SLP"       = ISDN-B-Kanal Protokoll
+             "HDLC"          = ISDN-B-Kanal Protokoll
+             "BITTRANSP"     = ISDN-B-Kanal Protokoll
+             "SNA-SDLC"      = ISDN-B-Kanal Protokoll
+             "X.75BTX"       = ISDN-B-Kanal Protokoll
+             "X.25"          = Datex-P
+
              Sind mehrere  Verbindungsarten möglich,  werden diese
              durch      je      ein      Leerzeichen      getrennt
              hintereinandergestellt. Für  jeden TEL-Header muß ein
@@ -1002,49 +1002,49 @@ angegeben.
 
                            - Seite 16 -
 
-    ISO3 +Portnummer, optional, default: Transparent   
+    ISO3 +Portnummer, optional, default: Transparent
              Angabe der Fehlerkorrekturmöglichkeit und Möglichkeit
-             für Datenkorrektur auf dem Verbindungsweg.    
-             
+             für Datenkorrektur auf dem Verbindungsweg.
+
              "MNP"           = bis Level 4 (nur Fehlerkorrektur)
              "MNP5"          = Level 5 und größer
-                               (Mit Datenkomprimierung)    
-             "V.42"          = Fehlerkorrektur   
-             "V.42bis"       = Datenkompression  
-             "T70NL"         = ISDN-B-Kanal Protokoll 
-             "ISO8208"       = ISDN-B-Kanal Protokoll 
-             "T90"           = ISDN-B-Kanal Protokoll 
-             "TRANSPARENT"   = Kein Ebene 3 Protokoll 
-             
+                               (Mit Datenkomprimierung)
+             "V.42"          = Fehlerkorrektur
+             "V.42bis"       = Datenkompression
+             "T70NL"         = ISDN-B-Kanal Protokoll
+             "ISO8208"       = ISDN-B-Kanal Protokoll
+             "T90"           = ISDN-B-Kanal Protokoll
+             "TRANSPARENT"   = Kein Ebene 3 Protokoll
+
              Falls mehrere  Alternativen  bestehen,  werden  diese
              durch      je      ein      Leerzeichen      getrennt
              hintereinandergestellt.  Wurden   mehrere  TEL-Header
              gesendet  sind   auch  entsprechende  ISO3-Header  zu
              senden (vergleiche auch ISO2).
 
-    KOORDINATEN          
-             optional,       
+    KOORDINATEN
+             optional,
              Standort in  geographischer Länge  und Breite. Format
              wie in folgendem Beispiel: "53 11 N / 10 44 E". Diese
              Daten erfahren Sie in jedem handelsüblichen Atlas (im
              Register  den  Stadt-Namen  suchen)  oder  bei  Ihrer
              Stadtverwaltung.
 
-    MAILFORMAT           
-             +Portnummer, optional, Default: nur ZCONNECT  
+    MAILFORMAT
+             +Portnummer, optional, Default: nur ZCONNECT
              Hier sind alle Mailformate aufgeführt, die das System
-             versteht. Folgende Einträge sind zur Zeit bekannt: 
-             
-             ZCONNECT        das im folgenden beschriebene 
-                             Datenformat    
-             ZNETZ       das alte ZERBERUS-Format 
-             RFC1036     oft nur "UUCP" genannt, das   
-                             News-Format wie es z.B. in    
-                             UUCP-Systemen verwendet wird. 
-             FTS0001     FidoNet   
-             MausTausch  Die Schnittstelle zum MausNet 
-             X400        ISO/OSI Standard    
-             
+             versteht. Folgende Einträge sind zur Zeit bekannt:
+
+             ZCONNECT        das im folgenden beschriebene
+                             Datenformat
+             ZNETZ       das alte ZERBERUS-Format
+             RFC1036     oft nur "UUCP" genannt, das
+                             News-Format wie es z.B. in
+                             UUCP-Systemen verwendet wird.
+             FTS0001     FidoNet
+             MausTausch  Die Schnittstelle zum MausNet
+             X400        ISO/OSI Standard
+
              Mehrere Möglichkeiten  werden wie unter ARC erläutert
              dargestellt.
 
@@ -1066,7 +1066,7 @@ angegeben.
 
                            - Seite 17 -
 
-    PASSWD               Pflicht   
+    PASSWD               Pflicht
              Passwort,  das   benötigt  wird,  um  die  Verbindung
              aufrechtzuerhalten. Wird zwischen den beiden Systemen
              zum ersten  Mal eine  Verbindung aufgebaut  und wurde
@@ -1075,10 +1075,10 @@ angegeben.
              angerufene   System    in   seinem    nächsten    In-
              formationsblock  ein   neues  Passwort,  das  ab  der
              nächsten Verbindung gültig ist.
-             
+
              Das Passwort ist maximal 10 Zeichen lang.
 
-    PORT Pflicht         
+    PORT Pflicht
              Portnummer,    auf     der    sich    die    aktuelle
              Anruferin/Angerufene befindet.  Falls ein  System nur
              einen Port  hat, gibt es "1" als Portnummer an. Falls
@@ -1088,7 +1088,7 @@ angegeben.
              den nächsten  freien weitergeschaltet werden) gibt es
              eine "0" an.
 
-    POST optional        
+    POST optional
              Vollständige Postadresse  des Systems,  falls  jemand
              einen Brief per Post schicken möchte.
 
@@ -1096,25 +1096,25 @@ angegeben.
              Alle Übertragungsprotokolle,  die für die Übertragung
              von Daten  benutzt werden  können (nicht  alle können
              bei jedem  Modem und/oder  Anschluß  genutzt  werden,
-             z.B. BiModem nicht im PEP-Modus).   
-             
-             "XMODEM"        = Xmodem  
-             "YMODEM"        = Ymodem  
-             "ZMODEM"        = Zmodem  
+             z.B. BiModem nicht im PEP-Modus).
+
+             "XMODEM"        = Xmodem
+             "YMODEM"        = Ymodem
+             "ZMODEM"        = Zmodem
              "SEALINK"       = Sealink (für lange
-                               Übertragungswege) 
-             "KERMIT-B"      = Kermit im Binärmodus   
+                               Übertragungswege)
+             "KERMIT-B"      = Kermit im Binärmodus
              "BIMODEM"       = BiModem (bidirektional,
-                               gefährlich)  
+                               gefährlich)
              "HSLINK"        = HighSpeedLink (bidirektional)
-             "HMODEM"        = Hmodem (bidirektional) 
+             "HMODEM"        = Hmodem (bidirektional)
              "ACOPY"         = Acopy (ISDN Protokoll)
-             
+
              Mehrere Möglichkeiten werden durch je ein Leerzeichen
              getrennt hintereinandergestellt. Hier gilt im übrigen
              sinngemäß das unter ARC Gesagte (s.o.).
 
-    SERNR                Default: "0", optional   
+    SERNR                Default: "0", optional
              Seriennummer der  verwendeten Software.  Jedes System
              kann bei  der Auslieferung eine ID erhalten, die kein
              anderes  System   hat.  Sollten  zwei  gleiche  Seri-
@@ -1130,7 +1130,7 @@ angegeben.
 
                            - Seite 18 -
 
-    SYS  Pflicht.        
+    SYS  Pflicht.
              Systemname des  Systems. Der  Systemname "GUEST"  ist
              reserviert für Points oder Systeme, die normalerweise
              keine  Verbindung   mit  dem  System  haben  und/oder
@@ -1143,7 +1143,7 @@ angegeben.
              wollte, sich  mit ebendiesem  Namen meldet. Geschieht
              das nicht, wird ebenfalls abgebrochen.
 
-    SYSOP                Pflicht.  
+    SYSOP                Pflicht.
              Name der  Userin in der Box, an die Fragen zum System
              u.s.w. geschrieben  werden können, z.B. "Postmaster",
              "Zentrale" oder "Sysop".
@@ -1154,11 +1154,11 @@ angegeben.
              ein Pluszeichen,  dann der  Ländercode (z.B.  49  für
              BRD), ein  Bindestrich,  die  Vorwahl  ohne  führende
              Null,   noch    ein   Bindestrich    und   dann   die
-             Anschlußnummer. Beispiel: 
-             
+             Anschlußnummer. Beispiel:
+
              TEL:1 +49-521-19304\n
              TEL:2 +49-521-19300\n
-             
+
              Für Datex-P  oder Telex  werden die  Nummern nach den
              dort allgemein  gültigen Formen  angegeben. Es müssen
              nicht alle  Telefonnummern angegeben werden (z.B. bei
@@ -1167,7 +1167,7 @@ angegeben.
              unterschiedlichen  Fähigkeiten  (z.B.  PEP  und  HST)
              erreicht werden können, angegeben werden.
 
-    TELEFON:             
+    TELEFON:
              optional
              Die  Voice-Telefonnumer,   Format  wie   unter   TEL:
              beschrieben.
@@ -1199,8 +1199,8 @@ Header zur Verbindungssteuerung
 Nachdem die Systeminformationen ausgetauscht und bestätigt wurden,
 beginnt der Datenaustausch. Hier werden folgende Header verwendet:
 
-    ARCERIN              
-             Optional        
+    ARCERIN
+             Optional
              Der Packer,  mit dem  die Daten  bei der  Übertragung
              gepackt  sein   sollen.  Dieser  wird  nur  dann  von
              ARCEROUT   abweichen,    falls   ARCEROUT   auf   dem
@@ -1211,32 +1211,32 @@ beginnt der Datenaustausch. Hier werden folgende Header verwendet:
              ermittelt, so  daß dieser  Packer auf  jeden Fall für
              beide verfügbar ist.
 
-    ARCEROUT             
-             Pflicht         
+    ARCEROUT
+             Pflicht
              Der Packer,  mit  dem  die  Daten  zur  Zeit  gepackt
              vorliegen. Kodierung wie bei ARC.
 
-    DELETE               optional  
-             Mails löschen (z.B. weil es zu viele sind)    
-             
-             P               Persönliche Mails   
-             B               Brettnachrichten (öffentliche Mails)   
-             
+    DELETE               optional
+             Mails löschen (z.B. weil es zu viele sind)
+
+             P               Persönliche Mails
+             B               Brettnachrichten (öffentliche Mails)
+
              sollen gelöscht  werden. Dies wird vom anderen System
              ignoriert, falls  es sich  um Mails handelt, die über
              dieses System  an ein anderes geroutet werden sollen;
              Routmails (PMs) dürfen niemals gelöscht werden.
 
-    EXECUTE              
-             Pflicht,        
+    EXECUTE
+             Pflicht,
              Soll  ein   Befehl  von   der   angerufenen   MailBox
              tatsächlich ausgeführt werden oder nicht.
-             
-             N               Nein 
-             J               Ja   
+
+             N               Nein
+             J               Ja
              L               Ja, nach dem Logoff
 
-    FILEREQ              optional  
+    FILEREQ              optional
              File  von   Empfängerin  laden.   Hier  werden  UNIX-
              Pfadnamen [also  / statt  \, genau  wie bei ZERBERUS-
              Brettern]  verwendet.  Der  Dateiname  "/INHALT"  ist
@@ -1246,8 +1246,8 @@ beginnt der Datenaustausch. Hier werden folgende Header verwendet:
              vorbereitet sein (z.B. Leerzeichen und Sonderzeichen)
              und entsprechend ihren lokalen Konventionen wandeln.
 
-    FILESEND             
-             optional        
+    FILESEND
+             optional
              File bei  der Empfängerin  speichern. Die Empfängerin
              entfernt   evtl.    den   Directory-Namen   aus   dem
              angegebenen Namen oder verbietet die Übertragung. Für
@@ -1258,21 +1258,21 @@ beginnt der Datenaustausch. Hier werden folgende Header verwendet:
 
                            - Seite 20 -
 
-    GET  optional,       
+    GET  optional,
              Die  anrufende   MailBox   möchte   Daten   von   der
-             angerufenen abholen. 
-             
-             P               Persönliche Mails sollen 
-                             abgeholt werden.    
+             angerufenen abholen.
+
+             P               Persönliche Mails sollen
+                             abgeholt werden.
              E               nur Eilmails abholen
-             B               Brettnachrichten sollen  
-                             abgeholt werden.    
-             F               Fehlermails abholen 
-             
+             B               Brettnachrichten sollen
+                             abgeholt werden.
+             F               Fehlermails abholen
+
              Diese Anforderung  kann von  der angerufenen  MailBox
              mit einem "WAIT:N" Header abgelehnt werden (s.u.).
 
-    LOGOFF               optional  
+    LOGOFF               optional
              Hiermit kann  bei Unverträglichkeiten  oder  falschem
              Passwort eine Verbindungstrennung angekündigt werden,
              die erfolgen  wird,  nachdem  der  letzte  Infoheader
@@ -1287,7 +1287,7 @@ beginnt der Datenaustausch. Hier werden folgende Header verwendet:
              von der angerufenen MailBox mit einem "WAIT:N" Header
              abgelehnt werden (s.u.).
 
-    WAIT Bereitstellungszeit, optional  
+    WAIT Bereitstellungszeit, optional
              Zeit  in   Sekunden,  die   wahrscheinlich  für   das
              Bereitstellen der  Daten  (z.B.  wegen  des  Packens)
              gebraucht wird.  Wenn dort  ein "N"  steht können die
@@ -1709,11 +1709,11 @@ eine bekannte Domain gefunden wird (hier: .edu).
 In den  einzelnen Teilen  einer  Adresse  gelten  unterschiedliche
 Beschränkungen des Zeichensatzes:
 
-    -    Systemname und Domain:   
+    -    Systemname und Domain:
          Hier sind nur die Buchstaben 'A' bis 'Z', die Ziffern '0'
          bis '9' sowie der Bindestrich '-' erlaubt.
 
-    -    lokaler Teil:  
+    -    lokaler Teil:
          Hier sind  alle Zeichen  mit Codes von 33 '!' bis 124 '|'
          erlaubt,  ausgenommen   die  Zeichen   '@<>/\()[]{}'`",'.
          Zeichen über  126, also auch die Umlaute, sind hier nicht
@@ -1721,7 +1721,7 @@ Beschränkungen des Zeichensatzes:
          reserviert und  dürfen daher  nicht im Namen einer Userin
          auftreten.
 
-    -    Realname:    
+    -    Realname:
          Hier sind alle ASCII-Zeichen von Leerzeichen (32) bis '~'
          (126)  erlaubt,   lediglich  die   runden  Klammern  sind
          natürlich ausgenommen.
@@ -2028,13 +2028,13 @@ Gruß, Martin
 
 Die möglichen HEADER-INFORMATIONEN
 
-    ABS           Absenderin, Pflicht, nur einmal 
+    ABS           Absenderin, Pflicht, nur einmal
          Die Adresse,  über die  die  Absenderin  erreichbar  ist,
          komplett  mit   Absendersystem,  Domainangabe  und  evtl.
          Realname.
 
-    ANTWORT-AN:   
-         optional,    
+    ANTWORT-AN:
+         optional,
          Eine private  Antwort an  die Absenderin ist nicht an die
          ABS-Adresse zu  schicken, sondern an die hier angegebene.
          Dies ermöglicht  Benutzerinnen mehrerer  MailBoxen,  alle
@@ -2045,7 +2045,7 @@ Die möglichen HEADER-INFORMATIONEN
 
     BET           Betreff, Pflicht, nur einmal
 
-    BEZ           Bezug, optional, mehrfach  
+    BEZ           Bezug, optional, mehrfach
          Wenn  diese   Nachricht  eine  Antwort  auf  eine  ältere
          Nachricht  ist,   gibt  der   Bezug  die  Message-ID  der
          Originalnachricht an.
@@ -2054,8 +2054,8 @@ Die möglichen HEADER-INFORMATIONEN
          Gibt das  Datum der  letzten Änderung einer Datei an. Das
          Format des Datums ist unter EDA beschrieben.
 
-    DISKUSSION-IN 
-         optional,    
+    DISKUSSION-IN
+         optional,
          Gibt die  Empfängerin an,  die bei öffentlichen Antworten
          benutzt werden  soll. Dies  ist immer dann sinnvoll, wenn
          eine Nachricht  in mehrere  Bretter geschickt  wird,  die
@@ -2065,7 +2065,7 @@ Die möglichen HEADER-INFORMATIONEN
          werden,   indem   die   Antworten   auf   ein   passendes
          Diskussions-Brett dirigiert werden.
 
-    EB            optional, auch mehrfach    
+    EB            optional, auch mehrfach
          Ist dieser  Header vorhanden,  verschickt das Zielsystem,
          sobald  die   Nachricht  von  ihm  empfangen  wird,  eine
          Empfangsbestätigung  an   die  Absenderin.   Benutzt  die
@@ -2075,14 +2075,14 @@ Die möglichen HEADER-INFORMATIONEN
          In  allen  anderen  Fällen  wird  beim  Einsortieren  der
          Nachricht  in   die  MailBox   sofort   die   Bestätigung
          verschickt. Bestätigt  wird der  Empfang, nicht das Lesen
-         der Nachricht (Datenschutz!). 
-         
+         der Nachricht (Datenschutz!).
+
          Der EB Header kann auch eine Adresse enthalten, in diesem
          Fall  geht   die   Empfangsbestätigung   nicht   an   die
          Absenderin,  sondern  an  die  angegebene  Adresse.  Sind
          mehrere EB Header vorhanden, erhält jede dort aufgeführte
          Adresse eine Bestätigung.
-         
+
          In der  Bestätigung ist  im BEZ Header die Message-ID der
          bestätigten Nachricht anzugeben. Weiterhin ist ein Header
          STAT:EB zu setzen.
@@ -2090,54 +2090,54 @@ Die möglichen HEADER-INFORMATIONEN
 
                            - Seite 33 -
 
-    EDA           Datum, Pflicht, nur einmal 
+    EDA           Datum, Pflicht, nur einmal
          Das    Erstellungsdatum     wird    dabei    im    Format
          JJJJMMTThhmmss[S/W](+/-offset) angegeben,  wobei S oder W
          für  Sommer  bzw.  Winterzeit  steht,  (offset)  ist  die
-         Zeitzone als Unterschied in Stunden zur GMT. 
+         Zeitzone als Unterschied in Stunden zur GMT.
          Dabei  wird   die  Zeit  immer  als  GMT  angegeben,  die
          Zeitzone/Sommerzeit ermöglicht  lediglich  das  Umrechnen
          dieser universellen  Zeit auf  die lokale  Zeit  der  Ab-
-         senderin.    
+         senderin.
          In Deutschland  gelten die  Zeitzonen MET  und im  Sommer
          MEST. Diese  würden durch  die Zusätze  "W+1" bzw.  "S+2"
          dargestellt  Durch  die  Darstellung  als  GMT  sind  die
          JJJJMMTThhmmss Angaben  auch während  der Umstellung  von
-         Sommer- auf Winterzeit und umgekehrt kontinuierlich.   
-         
+         Sommer- auf Winterzeit und umgekehrt kontinuierlich.
+
          Falls die  lokale Uhrzeit  nicht um  ganze Stundenbeträge
          von GMT  abweicht, wird  dem Offset  einen  Minutenangabe
          zugefügt.   Beispiel:    "W-9:30"   für    die   Zentral-
-         Australische-Zeitzone.   
-         
+         Australische-Zeitzone.
+
          Siehe auch Anhang "Zeitzonen".
 
-    EMP           Empfänger, Pflicht, mehrfach    
-         Die Netzadresse der Empfängerin(nen).   
+    EMP           Empfänger, Pflicht, mehrfach
+         Die Netzadresse der Empfängerin(nen).
          Tritt  diese   INFORMATION  mehrfach   auf,  muß   dieses
          Nachricht an  JEDE dieser  Empfängerinnen  weitergeleitet
          werden.  Geschieht   dies  nicht   über  ein  gemeinsames
-         Routesystem, sind Kopien der Nachricht anzufertigen.   
-         
+         Routesystem, sind Kopien der Nachricht anzufertigen.
+
          Bei diesem  Kopiervorgang bekommen  die einzelnen  Kopien
          nur noch  die EMP  Header, an die diese Kopie weitergehen
          soll, alle  übrigen (die über ein anderes System erreicht
          werden sollen)  werden als  Kopienempfänger (KOP  Header)
-         eingetragen. 
-         
+         eingetragen.
+
          Enthält eine  der EMP-Angaben keinen "@", handelt es sich
          um eine  öffentliche Nachricht.  Eine Nachricht  kann  in
          mehrere öffentliche  Bretter geschickt  werden, indem für
          jedes  Brett   eine  EMP-Information   eingesetzt   wird.
          Physikalisch wird  natürlich nur eine Kopie der Nachricht
          weitergereicht. Hier  wird also  - im  Gegensatz  zu  den
-         privaten Nachrichten - niemals kopiert. 
+         privaten Nachrichten - niemals kopiert.
          Hat ein  System nicht alle der in EMP Headern angegebenen
          Bretter  bestellt,   müssen  dennoch   alle  EMP   Header
          weitergegeben werden!  Das gleiche  gilt,  wenn  auf  dem
          lokalen System nicht jedes Brett, das in einem EMP Header
-         aufgeführt wird, existiert.   
-         
+         aufgeführt wird, existiert.
+
          Ein EMP Header darf auch einen Realnamen enthalten.
 
     ERR           Error, optional, nur einmal
@@ -2154,8 +2154,8 @@ Die möglichen HEADER-INFORMATIONEN
 
                            - Seite 34 -
 
-    ERSETZT       
-         optional,    
+    ERSETZT
+         optional,
          Gibt die  Message-ID der  Nachricht an,  die  von  dieser
          ersetzt wird.  Damit kann  dafür gesorgt  werden, das von
          einer regelmäßig  veröffentlichten Information  immer nur
@@ -2163,9 +2163,9 @@ Die möglichen HEADER-INFORMATIONEN
          Anwendungsbeispiele:   Serverstruktur,    MailBox-Listen,
          ZMAPs, FAQs etc.
 
-    FILE          Filename, optional, nur einmal  
+    FILE          Filename, optional, nur einmal
          Gibt den  Dateinamen (ohne Directory!) der Datei an - zum
-         Beispiel für Binärnachrichten oder Grafiken. 
+         Beispiel für Binärnachrichten oder Grafiken.
          ACHTUNG: je nach Betriebssystem des Absende-Systems, kann
          dieser   Dateiname   beliebig   lang   sein   und   evtl.
          Sonderzeichen, Leerzeichen sowie natürlich mehrere Punkte
@@ -2175,14 +2175,14 @@ Die möglichen HEADER-INFORMATIONEN
          ungültige Zeichen durch Ersatzdarstellungen ersetzen oder
          bei ungültigen Namen einen eigenen Namen generieren.
 
-    KOM           Kommentarlänge, optional, nur einmal 
+    KOM           Kommentarlänge, optional, nur einmal
          Länge   des   Kommentars   in   Byte.   Wird   z.B.   für
          Binärnachrichten, denen ein ASCII-Kommentar vorangestellt
          ist, gebraucht.  Nach dem  Header folgt  der Kommentar in
          der angegebenen  Länge, dann  erst  die  Binärdaten.  Die
          Binärdatenlänge ist  also LEN  minus KOM.  Ein  Kommentar
          kann  aber   auch  bei   allen  anderen  Nachrichtentypen
-         vorangestellt werden.    
+         vorangestellt werden.
          Für den Inhalt des Kommentars gelten IMMER die Regeln für
          Standard-Textnachrichten, auch  wenn er  einem  Text  mit
          alternativem   Zeichensatz   (und   entsprechender   TYP-
@@ -2194,7 +2194,7 @@ Die möglichen HEADER-INFORMATIONEN
          auflisten. Gibt  es mehrere  Kopienempfängerinnen,  tritt
          diese   Information    mehrfach   mit    jeweils    einer
          Empfängeradresse  auf   (je  eine   KOP-Information   pro
-         Empfängerin).  
+         Empfängerin).
          ACHTUNG: diese  Information dient  nur der  Dokumentation
          für die  Empfängerinnen, sie  wird NICHT  zum Steuern der
          Nachrichtenweiterleitung  verwendet.   Falls  eine   KOP:
@@ -2218,16 +2218,16 @@ Die möglichen HEADER-INFORMATIONEN
 
                            - Seite 35 -
 
-    LEN           Länge, Pflicht, nur einmal 
+    LEN           Länge, Pflicht, nur einmal
          Die Länge  des INHALTS (alles, was hinter dem Header noch
          zu dieser Nachricht gehört) in Byte. Auch die Länge 0 ist
          erlaubt.
 
-    MAILER        
-         Mailer, optional, nur einmal  
+    MAILER
+         Mailer, optional, nur einmal
          Gibt  den   Namen  des  (von  der  Absenderin,  bzw.  vom
          konvertierenden Gateway)  verwendeten  Mailers  an  (pure
-         Werbung, aber immerhin für Userinnen unsichtbar :-)    
+         Werbung, aber immerhin für Userinnen unsichtbar :-)
          Dient der  Fehlererkennung im  Netzwerk. Hier sollte eine
          eindeutige  Kennung   der  Software   incl.  Versions   /
          Releasenummer stehen.
@@ -2282,7 +2282,7 @@ Die möglichen HEADER-INFORMATIONEN
 
                            - Seite 36 -
 
-    MID           Message-ID, Pflicht, nur einmal 
+    MID           Message-ID, Pflicht, nur einmal
          Die  Message-ID   muß  wie  eine  gültige  Adresse  (ohne
          Realname) aussehen  (siehe oben)  und darf  innerhalb von
          zwei Jahren weltweit nicht wiederholt werden. Dazu MÜSSEN
@@ -2294,48 +2294,48 @@ Die möglichen HEADER-INFORMATIONEN
          und hängt  einen Klammeraffen  '@'  und  den  Pointnamen,
          gefolgt von  einem Punkt  und dem  MailBox-Namen, gefolgt
          von der  MailBox-Domain an.  So ist die Eindeutigkeit von
-         Point-Message-IDs weltweit garantiert.  
+         Point-Message-IDs weltweit garantiert.
          Beispiel: der  Point "BIONIC01" sendet eine Nachricht mit
-         der Message-ID 
-         
-         "aH24.8281@BIONIC01.zer.de".  
-         
-         Daraus wird auf der BIONIC die Message-ID    
-         
+         der Message-ID
+
+         "aH24.8281@BIONIC01.zer.de".
+
+         Daraus wird auf der BIONIC die Message-ID
+
          "aH24.8281@BIONIC01.BIONIC.zer.de".
-         
+
          Points dürfen  auch nur  den lokalen  Teil der ID liefern
          (also von sich aus den @, Systemname und Domain entfallen
          lassen). Points  können auf eine Message-ID notfalls auch
          völlig verzichten,  in diesem  Fall muß  die MailBox eine
-         eigene erzeugen.    
+         eigene erzeugen.
          Die  Message-ID   dient  zur  eindeutigen  Identifikation
          dieser Nachricht.  Sollte innerhalb  von zwei Jahren eine
          Nachricht  mit  einer  gleichen  Message-ID  noch  einmal
          auftreten, ist  dies eine "Rekursion", d.h. die Nachricht
          ist über  einen Umweg noch einmal zur MailBox gelangt und
          kann deshalb  gelöscht werden.  Sie darf  auf keinen Fall
-         weitergeleitet werden.   
+         weitergeleitet werden.
          Eine praktische  Implementationsmöglichkeit ist  es z.B.,
          alle Message-IDs  für  90  Tage  aufzubewahren  und  alle
          eingehenden Nachrichten  gegen diese Datenbank zu prüfen.
          Eingehende Nachrichten,  die  älter  als  90  Tage  sind,
          können bedenkenlos  entsorgt werden,  ohne die Message-ID
-         zu testen.   
+         zu testen.
          Der  Rekursionstest   anhand  der  Message-ID  (und  zwar
          AUSSCHLIESSLICH anhand  dieser) muß  von  jeder  Software
          durchgeführt werden!  Öffentliche  Nachrichten,  die  als
          Rekursion erkannt  wurden,  dürfen  nicht  weitergeroutet
-         werden.      
-         
+         werden.
+
          Persönliche  Nachrichten   werden  nicht   auf  Rekursion
          geprüft, lediglich  das  Zielsystem  der  Nachricht  darf
-         doppelte persönliche Nachrichten ausfiltern. 
-         
+         doppelte persönliche Nachrichten ausfiltern.
+
          In  Message-IDs   sind  die  Zeichen  '<',  '>'  und  '/'
          verboten.
 
-    OAB           Original-Absenderin, optional, nur einmal 
+    OAB           Original-Absenderin, optional, nur einmal
          Falls  eine   Nachricht  manuell   oder   per   Verteiler
          weitergeleitet  wurde,  steht  hier,  wer  die  Nachricht
          original verschickt hat.
@@ -2346,12 +2346,12 @@ Die möglichen HEADER-INFORMATIONEN
 
                            - Seite 37 -
 
-    OEM           Original-Empfängerin, optional, mehrfach  
+    OEM           Original-Empfängerin, optional, mehrfach
          Falls  eine   Nachricht  manuell   oder   per   Verteiler
          weitergeleitet  wurde,   steht  hier   die   ursprünglich
          angegebene Empfängerin.
 
-    ORG           Organisation, optional, nur einmal   
+    ORG           Organisation, optional, nur einmal
          Eine  kurze,   einzeilige  Beschreibung  der  hinter  der
          Absenderin   stehenden    Organisation,   z.B.   "Borland
          Deutschland GmbH,  Starnberg, F.R.G.".  Wird eine  solche
@@ -2362,41 +2362,41 @@ Die möglichen HEADER-INFORMATIONEN
          Meinung. Sie  wird von meiner Arbeitgeberin weder geteilt
          noch bezahlt."
 
-    POST          Post-Adresse, optional, nur einmal   
+    POST          Post-Adresse, optional, nur einmal
          Wenn die  Absenderin einer  Nachricht  auch  über  andere
          Medien, z.B.  per Post,  erreichbar sein möchte, kann sie
          in diesem Header ihre postalische Anschrift unterbringen.
          Die  einzelnen  Anschriftenzeilen  werden  hintereinander
          geschrieben und jeweils durch Semikola ";" getrennt.
 
-    PRIO          Priorität, optional, nur einmal 
-         (ohne diesen Header gilt Priorität 0)   
+    PRIO          Priorität, optional, nur einmal
+         (ohne diesen Header gilt Priorität 0)
          Gibt die  Dringlichkeit der  Zustellung an. Zur Zeit sind
          folgende Dringlichkeiten definiert:
          0            = normal (per Routing)
-         10           = direkt    
+         10           = direkt
          20           =    Eilmail    (direkt    mit    sofortiger
          Auslieferung)
 
-    ROT           Routeweg, Pflicht, nur einmal   
+    ROT           Routeweg, Pflicht, nur einmal
          Jedes System  trägt sich  hier ein, wenn es die Nachricht
          empfängt.  Z-Netz   Systeme  werden   hier   mit   Domain
          eingetragen (".zer.sub.org",  falls keine  andere bekannt
          ist). Eine  Nachricht (auch  eine PM) darf niemals an ein
          System weitergereicht  werden,  dessen  Name  bereits  im
          Routeweg steht.
-         
+
          Falls eine  PM über ein System zugestellt werden muß, das
          bereits im  Routeweg steht,  sollte diese  Nachricht  dem
          Sysop vorgelegt  werden (Achtung:  Datenschutz!  Nur  die
          Header, nicht der Nachrichteninhalt darf sichtbar sein!),
-         da offenbar ein Ping-Pong-Routing besteht.   
-         
+         da offenbar ein Ping-Pong-Routing besteht.
+
          Als erstes System trägt sich hier das Absender-System ein
          (damit  auch  dieses  die  Nachricht  nicht  noch  einmal
          bekommt). Erreicht  die  Nachricht  das  nächste  System,
          setzt dieses  seinen eigenen Namen (incl. Domain) gefolgt
-         von einem '!' vor den alten Inhalt dieser Information. 
+         von einem '!' vor den alten Inhalt dieser Information.
          Dazu  ein  Beispiel:  auf  der  BIONIC.zer.de  wird  eine
          Nachricht  erzeugt:  "ROT: BIONIC.zer.de".  Nun  erreicht
          diese        Nachricht         die        BI-LINK.owl.de:
@@ -2410,8 +2410,8 @@ Die möglichen HEADER-INFORMATIONEN
 
                            - Seite 38 -
 
-    SPERRFRIST    
-         Gültig ab, optional, nur einmal    
+    SPERRFRIST
+         Gültig ab, optional, nur einmal
          Ein Datum  im Format wie EDA. Vor diesem Datum wird diese
          Nachricht  NICHT   angezeigt.  Damit   kann   z.B.   eine
          Sperrfrist bei Pressemeldungen eingehalten werden.
@@ -2419,23 +2419,23 @@ Die möglichen HEADER-INFORMATIONEN
     STAT          Nachrichtenstatus, optional, mehrfach
          Beschreibt, was  die Nachricht  ist: Falls  dieser Header
          fehlt, handelt  es sich  um eine  normale Mail.  Wenn der
-         Header vorhanden ist, gibt es folgenden Einträge: 
-         
-         DES      Nachricht ist mit DES 
-                      (Data Encryption Standard) 
-                      verschlüsselt.   
-         PGP      Nachricht ist mit PGP 
-                      (Pretty Good Privacy, 
-                      einer RSA Implementation)  
-                      verschlüsselt.   
-         EB       Nachricht ist eine automatisch  
+         Header vorhanden ist, gibt es folgenden Einträge:
+
+         DES      Nachricht ist mit DES
+                      (Data Encryption Standard)
+                      verschlüsselt.
+         PGP      Nachricht ist mit PGP
+                      (Pretty Good Privacy,
+                      einer RSA Implementation)
+                      verschlüsselt.
+         EB       Nachricht ist eine automatisch
                       verschickte Empfangsbestätigung.
-         CTL      Nachricht ist eine    
-                      Kontrollnachricht, die - auch wenn   
+         CTL      Nachricht ist eine
+                      Kontrollnachricht, die - auch wenn
                       sie defekt ist - nicht
                       zurückgeschickt werden darf.
 
-    TELEFON       
+    TELEFON
          Telefonnummer, optional, nur einmal
          Hier   kann    die   Absenderin   ihre   Telefonnummer(n)
          unterbringen. Es  wird  die  internationale  Schreibweise
@@ -2447,22 +2447,22 @@ Die möglichen HEADER-INFORMATIONEN
          B+49-521-193004". Bei  kombinierten  Nummern  werden  die
          Kennbuchstaben hintereinandergestellt: VF+49-521-562342Q.
 
-    TYP              Typ, optional, nur einmal    
+    TYP              Typ, optional, nur einmal
          Nähere Beschreibung  des Dateityps.  Definiert, um welche
          Art von  Binärdatei es sich handelt (z.B. TIFF, GIF, PCX,
          ...). Alle unbekannten TYP Informationen werden als reine
-         Binärnachricht aufgefaßt. Definiert sind die Typkennungen  
-         
-         BIN         allgemeine Binärnachricht    
-         TRANSPARENT Textnachricht ohne Umlautwandlung 
-         
+         Binärnachricht aufgefaßt. Definiert sind die Typkennungen
+
+         BIN         allgemeine Binärnachricht
+         TRANSPARENT Textnachricht ohne Umlautwandlung
+
          Beim Inhalt des TYP Headers wird nicht zwischen Groß- und
          Kleinschreibung unterschieden.
-         
+
          Falls kein  TYP-Header vorhanden  ist, handelt es sich um
          eine Textnachricht.
 
-    ZNETZ-ABS     
+    ZNETZ-ABS
          optional, nur einmal
          Siehe unten,  Absenderangabe  bei  Konvertierung  in  das
          ZNETZ-Format.  Diese  Information  kann  nur  einmal  pro
@@ -2474,8 +2474,8 @@ Die möglichen HEADER-INFORMATIONEN
 
                            - Seite 39 -
 
-    ZNETZ-TEXT    
-         optional, mehrfach  
+    ZNETZ-TEXT
+         optional, mehrfach
          Textheader bei Konvertierung in das ZNETZ-Format (s.u.)
 
 
@@ -2585,7 +2585,7 @@ Die Regeln für die Konvertierung sind einfach:
          Ist  im   ZCONNECT-HEADER  die  INFORMATION  "ZNETZ-ABS:"
          vorhanden, wird  die Absenderangabe ignoriert und die als
          "ZNETZ-ABS" angebene  Adresse (z.B.  mit  Gateway-Macros)
-         benutzt.     
+         benutzt.
          Falls kein  "ZNETZ-ABS" vorhanden  ist und die Adresse zu
          lang für  das ZNETZ-Format  ist, wird  sie auf 40 Zeichen
          abgeschnitten. In  diesem Fall  ist die  Antwort-Funktion
@@ -2635,7 +2635,7 @@ Die Regeln für die Konvertierung sind einfach:
          (falls  ein   ZNETZ-ABS  vorhanden   ist,   wird   dieser
          benutzt!).  Bei   Text-Nachrichten  wird   die  Original-
          Message-ID in  spitzen Klammern  dem Text  vorangestellt:
-         "Message-ID:   <....>".  
+         "Message-ID:   <....>".
          Diese Konvertierung  sowie der Textheader entfallen aber,
          wenn die Message-ID die Domain ".zer.sub.org" enthält und
          nach deren Abschneiden 19 oder weniger Zeichen lang ist.
@@ -2972,7 +2972,7 @@ ULONG crc_32_tab[] = { /* CRC polynomial 0xedb88320 */
 
                            - Seite 47 -
 
-   
+
  *** Diese Seite wurde absichtlich freigelassen
 
 
@@ -3038,7 +3038,7 @@ Zeitzonen
 Im folgenden  haben wir  die gebräuchlichsten  Zeitzonen und  ihre
 Kodierung für ZCONNECT aufgeführt.
 
-Zone      W/S  Diff.    Name                          
+Zone      W/S  Diff.    Name
 NT        W   -11:00    Nome Time
 AHST      W   -10:00    Alaska-Hawaii Standard Time
 YST       W    -9:00    Yukon Standard Time

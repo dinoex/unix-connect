@@ -60,7 +60,7 @@
  *
  * VISIBILITY
  *   global
- * 
+ *
  * SYNOPSIS
  *   #include <utility.h>
  *   int stricmp(char *a, char *b);

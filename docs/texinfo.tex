@@ -1719,7 +1719,7 @@ July\or August\or September\or October\or November\or December\fi
 
 % To make preamble:
 %
-% Either define widths of columns in terms of percent of \hsize: 
+% Either define widths of columns in terms of percent of \hsize:
 %   @multitable @percentofhsize .2 .3 .5
 %   @item ...
 %
@@ -1733,7 +1733,7 @@ July\or August\or September\or October\or November\or December\fi
 %   using the widest term desired in each column.
 
 
-% Each new table line starts with @item, each subsequent new column 
+% Each new table line starts with @item, each subsequent new column
 % starts with @tab. Empty columns may be produced by supplying @tab's
 % with nothing between them for as many times as empty columns are needed,
 % ie, @tab@tab@tab will produce two empty columns.
@@ -1745,15 +1745,15 @@ July\or August\or September\or October\or November\or December\fi
 
 %   @multitable {Column 1 template} {Column 2 template} {Column 3 template}
 %   @item first col stuff @tab second col stuff @tab third col
-%   @item 
-%   first col stuff 
-%   @tab 
-%   second col stuff 
-%   @tab 
-%   third col 
-%   @item first col stuff @tab second col stuff 
+%   @item
+%   first col stuff
+%   @tab
+%   second col stuff
+%   @tab
+%   third col
+%   @item first col stuff @tab second col stuff
 %   @tab Many paragraphs of text may be used in any column.
-%     
+%
 %         They will wrap at the width determined by the template.
 %   @item@tab@tab This will be in third column.
 %   @endmultitable
@@ -1765,7 +1765,7 @@ July\or August\or September\or October\or November\or December\fi
 % @spacebetweenlines will set vertical space to be left between lines.
 
 %%%%
-% Dimensions 
+% Dimensions
 
 \newdimen\intableparskip
 \newdimen\intableparindent
@@ -1822,18 +1822,18 @@ July\or August\or September\or October\or November\or December\fi
  % To parse everything between @multitable and @item :
 \def\one{#1}\expandafter\setuptable\one\endsetuptable
  % Need to reset this to 0 after \setuptable.
-\global\colcount=0\relax% 
+\global\colcount=0\relax%
  %
  % This preamble sets up a generic column definition, which will
  % be used as many times as user calls for columns.
- % \vtop will set a single line and will also let text wrap and 
+ % \vtop will set a single line and will also let text wrap and
  % continue for many paragraphs if desired.
 \halign\bgroup&\global\advance\colcount by 1\relax%
 \vtop{\hsize=\expandafter\csname col\the\colcount\endcsname
  % In order to keep entries from bumping into each other
  % we will add a \leftskip of \spacebetweencols to all columns after
  % the first one.
- %  If a template has been used, we will add \spacebetweencols 
+ %  If a template has been used, we will add \spacebetweencols
  % to the width of each template entry.
  %  If user has set preamble in terms of percent of \hsize
  % we will use that dimension as the width of the column, and
@@ -1845,7 +1845,7 @@ July\or August\or September\or October\or November\or December\fi
   \ifsetpercent
   \else
    % If user has <not> set preamble in terms of percent of \hsize
-   % we will advance \hsize by \spacebetweencols 
+   % we will advance \hsize by \spacebetweencols
   \advance\hsize by \spacebetweencols
   \fi
  % In either case we will make \leftskip=\spacebetweencols:
@@ -1853,7 +1853,7 @@ July\or August\or September\or October\or November\or December\fi
 \fi
 \noindent##}\cr%
  % \everycr will reset column counter, \colcount, at the end of
- % each line. Every column  entry will cause \colcount to advance by one. 
+ % each line. Every column  entry will cause \colcount to advance by one.
  % The table preamble
  % looks at the current \colcount to find the correct column width.
 \global\everycr{\noalign{\nointerlineskip\vskip\spacebetweenlines
@@ -3474,7 +3474,7 @@ July\or August\or September\or October\or November\or December\fi
 
 % This is used for \def{tp,vr}parsebody.  It could probably be used for
 % some of the others, too, with some judicious conditionals.
-% 
+%
 \def\parsebodycommon#1#2#3{%
   \begingroup\inENV %
   \medbreak %
@@ -3509,13 +3509,13 @@ July\or August\or September\or October\or November\or December\fi
 
 % Fine, but then we have to eventually remove the \empty *and* the
 % braces (if any).  That's what this does, putting the result in \tptemp.
-% 
+%
 \def\removeemptybraces\empty#1\relax{\def\tptemp{#1}}%
 
 % After \spacesplit has done its work, this is called -- #1 is the final
 % thing to call, #2 the type name (which starts with \empty), and #3
 % (which might be empty) the arguments.
-% 
+%
 \def\parsetpheaderline#1#2#3{%
   \removeemptybraces#2\relax
   #1{\tptemp}{#3}%
@@ -4021,7 +4021,7 @@ July\or August\or September\or October\or November\or December\fi
 \catcode `\{=1 \catcode `\}=2
 \catcode `\%=\other
 \catcode `\'=0
-\catcode`\^=7 % to make ^^e4 etc usable in xref tags 
+\catcode`\^=7 % to make ^^e4 etc usable in xref tags
 \catcode `\\=\other
 \openin 1 \jobname.aux
 \ifeof 1 \else \closein 1 \input \jobname.aux \global\havexrefstrue

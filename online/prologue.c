@@ -94,10 +94,10 @@ void prologue(void)
 	alarm(60);
 	set_rawmode(fileno(stdin));
 	set_rawmode(fileno(stdout));
-	
+
 #ifdef ASK_PASSWD
 	zc = init_track("0zconnec\r");
-	
+
 	fputs("\nPasswort: ", stdout);	/* Passwort lesen, dieser Teil	*/
 	fflush(stdout);			/* entfaellt je nach Betr.Sys.	*/
 
@@ -122,7 +122,7 @@ void prologue(void)
 
 	auflegen = 0;	/* Noch kein Grund zum Verbindungsabbau gefunden  */
 
-	fputs("\r\n" PROGRAM ", v" OL_VERSION 
+	fputs("\r\n" PROGRAM ", v" OL_VERSION
 		", (C)opyright 1993 Martin Husemann\r\n"
 		"ZCONNECT 3.1 (C)opyright 1992/93 ZERBERUS GmbH, Friedland\r\n"
 		, stdout);

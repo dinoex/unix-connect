@@ -88,14 +88,14 @@
 
 int main_is_mail = 0;	/* Nein, wir erzeugen keine Mails */
 char eol[] = "\n";
-		
+
 void usage(void);
 void convert(FILE *, FILE *);
 header_p convheader(header_p, FILE *);
 
 header_p pointuser;	/* Wenn es ein Point ist: die Liste der erlaubten Absender */
 char *pointsys;		/* Name des Point-Systems (fuer die Message-Id) */
-	
+
 static char *bigbuffer	= NULL;
 static char *smallbuffer= NULL;
 static char datei[1024];
@@ -158,7 +158,7 @@ int main(int argc, char **argv)
 		}
 	} else {
 		int fh;
-		
+
 		fin = fopen(argv[1], "rb");
 		j = time(NULL);
 		sprintf(datei, "%s/%08lx", argv[2], j);
@@ -206,7 +206,7 @@ void usage(void)
 		, stderr);
 	exit(1);
 }
- 
+
 #define ENC(c)	(!((c) & 0x03f) ? '`' : (((c) & 0x03f) + ' '))
 
 void convert(FILE *zconnect, FILE *news)
@@ -359,9 +359,9 @@ void convert(FILE *zconnect, FILE *news)
          * werden sie unten wieder hergestellt. Wir retten
          * vorher die relevanten Informationen daraus.
          */
- 
+
         wasmime = parse_mime_header(1, hd, &mime_info);
- 
+
 	p = find(HD_WAB, hd);
 	if (p) {
 		fputs(HN_UU_SENDER": ", tmphd);
@@ -384,7 +384,7 @@ void convert(FILE *zconnect, FILE *news)
          * Kein uuencoden, wenn Content-Transfer-Encoding schon
          * da ist
          */
- 
+
         multipart = 0;
         if (wasmime) {
                 /* Alte MIME-Headerzeilen da */
@@ -432,7 +432,7 @@ void convert(FILE *zconnect, FILE *news)
 			if (*c=='\0') { *c=' '; }
 		}
 	/* Hier gingen Nachrichtenteile verloren. ccr
-		if (really_read < read_req) break; 
+		if (really_read < read_req) break;
 	 */
 		if (0 == really_read) break;
 		smallbuffer[really_read] = '\0';
@@ -460,7 +460,7 @@ void convert(FILE *zconnect, FILE *news)
 					*bufende++ = ' ';
 					buffree--;
 				}
-			} else 
+			} else
 #endif
 			if (*c != '\r') {
 				*bufende++ = *c;
@@ -536,7 +536,7 @@ void convert(FILE *zconnect, FILE *news)
 					continue;
 				}
 				bytecount += znr;
-				len -= znr; 
+				len -= znr;
 				sp = zbuf;
 #ifdef UUENCODE_CHKSUM
 				sum += sp[0] + sp[1] + sp[2];
@@ -551,7 +551,7 @@ void convert(FILE *zconnect, FILE *news)
 				*zp++ = ENC(sp[2] & 077);
 			}
 		}
-		if (multipart) 
+		if (multipart)
 			sprintf(smallbuffer, "``\nend\n\n--"SP_MULTIPART_BOUNDARY"\n");
 		else
 			sprintf(smallbuffer, "``\nend\n\n");
@@ -569,7 +569,7 @@ void convert(FILE *zconnect, FILE *news)
 				lines++;
 		}
 	}
-	
+
 	*bufende = '\0';
 
         eightbit = eightbit & 0x80;
@@ -587,7 +587,7 @@ void convert(FILE *zconnect, FILE *news)
 	                fputs(HN_UU_MIME_VERSION": 1.0\n", tmphd);
 			if (typ) {
 				if (multipart) {
-					fputs(HN_UU_CONTENT_TYPE": multipart/mixed; boundary=\""SP_MULTIPART_BOUNDARY"\"\n", tmphd); 
+					fputs(HN_UU_CONTENT_TYPE": multipart/mixed; boundary=\""SP_MULTIPART_BOUNDARY"\"\n", tmphd);
 				} else {
 					fprintf(tmphd, HN_UU_CONTENT_TYPE": application/octet-stream; name=\"%s\"\n", file);
 				}
@@ -596,7 +596,7 @@ void convert(FILE *zconnect, FILE *news)
 			}
 		}
 	}
- 
+
         /* Content-Transfer-Encoding */
         if (!multipart && (!wasmime || (wasmime && mime_info.encoding == cty_none))) {
                 if (typ && !multipart)

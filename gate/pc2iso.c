@@ -48,14 +48,14 @@
  */
 
 #include <sys/types.h>
- 
+
 #define BAD 160		/* 160 = 'alternatives' Space im ISO */
 
 /*
  * Table converting IBM Code Page 437 (CP437) to ISO 8859-1
  *
  * Tabelle von Kosta Koastis, Aenderungen von Tetisoft@apg.zer.sub.org
- * 
+ *
  * 0-31 changed to BAD except Tab,LF,FF,CR
  * 201  changed from '-' to '+'
  * 203  changed from '|' to '-'
@@ -65,7 +65,7 @@
  * (I do not see the point in listing more than a dozen changes separately...)
  *
  */
- 
+
 static  unsigned char pc437xiso [] =                    /* 000-255 */
 {
 	BAD, BAD, BAD, BAD, BAD, BAD, BAD, BAD,         /* 000-007 */

@@ -43,7 +43,7 @@
  *  Logfile-Routinen für den ZCONNECT/RFC GateWay
  *
  *  Sat Jul  1 20:45:39 MET DST 1995 (P.Much)
- *  - Erweitert zur Nutzung der syslog-facility mit -DHAVE_SYSLOG. 
+ *  - Erweitert zur Nutzung der syslog-facility mit -DHAVE_SYSLOG.
  */
 
 

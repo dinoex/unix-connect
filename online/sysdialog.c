@@ -75,7 +75,7 @@
 #include "lib.h"
 
 int ist_testaccount;
- 
+
 /*
  *   system_dialog tauscht die Informationen ueber die beteiligten Systeme
  *   aus.
@@ -93,7 +93,7 @@ void system_dialog(void)
 	alarm(60);
 	anrufer = get_blk(1);
 	alarm(0);
-	if (auflegen_empfangen) 
+	if (auflegen_empfangen)
 		return;
 	if (!anrufer) {
 		fputs("Keine Daten des anrufenden Systems ermittelt\n", deblogfile);
@@ -170,7 +170,7 @@ void system_dialog(void)
 		fputs("X-Call: ZCONNECT\n", f);
 		p = find(HD_ARCERIN, anrufer);
 		if (!p) p = find(HD_ARCEROUT, anrufer);
-		if (p) 
+		if (p)
 			anrufer = add_header(p->text, HD_ARCERIN, anrufer);
 		anrufer = del_header(HD_STATUS, anrufer);
 		anrufer = del_header(HD_CRC, anrufer);
@@ -184,7 +184,7 @@ void system_dialog(void)
 		if (p) pw_ist = p->text;
 		p = find(HD_PASSWD, soll);
 		if (p) pw_soll = p->text;
-		if (!pw_ist) 
+		if (!pw_ist)
 			fprintf(deblogfile, "Anrufer sendet kein Passwort!\n");
 		if (!pw_soll)
 			fprintf(deblogfile, "Systemeintrag ohne Passwd: %s\n", sysname);
@@ -198,7 +198,7 @@ void system_dialog(void)
 		}
 		ist_testaccount = ( find(HD_X_TESTACCOUNT, soll) != NULL);
 	}
-	
+
 	ich = get_myself();
 
 	my_arc = my_proto = NULL;
@@ -208,7 +208,7 @@ void system_dialog(void)
 	if (p) my_arc = dstrdup(p->text);
 	p = find(HD_SYS, ich);
 	if (p) strupr(p->text);
-	
+
 	ich = del_header(HD_ARCERIN, ich);
 	ich = del_header(HD_ARCEROUT, ich);
 

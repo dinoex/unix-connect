@@ -1,7 +1,7 @@
 #
 #       Konfiguration fuer smail:
 #
-#	In der Datei "/usr/lib/smail/transports" ist dieser Abschnitt 
+#	In der Datei "/usr/lib/smail/transports" ist dieser Abschnitt
 #	unterzubringen...
 #
 #	ZCONNECT : der Relay (Format-Converter) nach ZCONNECT

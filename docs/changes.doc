@@ -37,7 +37,7 @@ martin@euterpe.owl.de, Sun Feb 20 21:49:55 1994
 
 	Alte Changes gelöscht, sie sind nicht mehr aussagekräfig.
 	Backin (Backup eingehender Netcalls) implementiert.
-	Linux <stdin> und <stdout> Problem für Hintergrundprozesse 
+	Linux <stdin> und <stdout> Problem für Hintergrundprozesse
 	behoben.
 
 ------------------------------------------------------------------------

@@ -25,20 +25,20 @@ Content-Length: 7116
 Status: RO
 
 } Hallo,
-} 
+}
 } Danke fuer die Korrekturen. In einigen Tagen kommt 0.54 raus. Ich gebe es
 } sofort an dich weiter.
 
 Das waere nett. Leider musste ich eben grade feststellen, dass ich eben die
-falsche Datei gepasted habe...hier also der richtige Auszug aus uurnews.c. 
+falsche Datei gepasted habe...hier also der richtige Auszug aus uurnews.c.
 (Achso - nochwas: eine Funktion strip_white habe eich ebenfalls eingefuegt.]
 
-Anbei auch meine sendbatch-Version fuer bnews2.11. 
+Anbei auch meine sendbatch-Version fuer bnews2.11.
 
-Soweit ich es bisher ueberpruefen konnte, werden die News richtig das 
+Soweit ich es bisher ueberpruefen konnte, werden die News richtig das
 z-Format gewandelt und in den entsprechenden spool gestellt.
 
-Gruss....Ulrich 
+Gruss....Ulrich
 
 
 *FILE: uurnews.c *Skalpell *----* SCRRRGGG *----* Fronz *----* Schnippel *----*
@@ -86,13 +86,13 @@ char * strip_white(char *s)
 *FILE: sendbatch *Skalpell *----* SCRRRGGG *----* Fronz *----* Schnippel *----*
 : '@(#)sendbatch.sh	1.10	9/23/86'
 # batches News
-# additional features by ut'92, Ulrich.Tiemann@olis.North.DE 
-# 
+# additional features by ut'92, Ulrich.Tiemann@olis.North.DE
+#
 # USAGE:
 #
 # sendbatch [optional features] [compression features] systemname
 # optional features:
-#			-m<less Blocks in Spool or no batch> 
+#			-m<less Blocks in Spool or no batch>
 #			-s<provided batch-Size>
 #
 # compression features:
@@ -117,18 +117,18 @@ char * strip_white(char *s)
 #ROOTMINFREE: 	2000	# 1MB
 #SPOOLMINFREE:	4000	# 2MB
 #
-# without leading #'s, sure. 
+# without leading #'s, sure.
 #
 # sendbatch may run only once to avoid possible overlapping with itself
 # and delivering same batch twice or more when machine is heavy under load
-# therefor the locking-code beyond, should work elsewhere. 
+# therefor the locking-code beyond, should work elsewhere.
 #
 LOCKFILE=/tmp/sndbtchlck
 
 while [ -f $LOCKFILE ]
 do
 	if kill -0 `cat $LOCKFILE` >/dev/null 2>&1 ; then
-		sleep 30 
+		sleep 30
         else rm $LOCKFILE
 	     break
         fi
@@ -170,13 +170,13 @@ SPOOLMIN=`fgrep "SPOOLMINFREE:" /etc/.admin | awk '{print $2}'`
 #
 # Check Space on Device (root)
 SPACE=`df /dev/root | awk '{print $4}'`
-if [ $SPACE -lt ROOTMIN ] ; then 
+if [ $SPACE -lt ROOTMIN ] ; then
 	echo "ROOT-SPACE low! ($SPACE blocks)[ $* ]" | mail -s SENDBATCH $OP
 	rm $LOCKFILE
 	exit
 fi
 SPACE=`df /dev/spoolfs | awk '{print $4}'`
-if [ $SPACE -lt $SPOOLMIN ] ; then 
+if [ $SPACE -lt $SPOOLMIN ] ; then
 	echo "SPOOL-SPACE low! ($SPACE blocks)[ $* ]" | mail -s SENDBATCH $OP
 	rm $LOCKFILE
 	exit
@@ -234,11 +234,11 @@ do
 	else
 		BLIM=$LIM
 	fi
-# 
+#
 # check Spool-dir, cancel if >10MB
 SPOOLSP=`du /usr/spool/uucp/$rmt | awk '{print $1}'`
 if [ "$SPOOLSP" = "" ] ; then SPOOLSP=0 ; fi
-if [ $SPOOLSP -gt $SPOOLMAX ] ; then 
+if [ $SPOOLSP -gt $SPOOLMAX ] ; then
 echo "	SYSTEM $rmt has a SPOOL - Overflow!
 	====================================
 	Max. Spoolcapacity allowed: $SPOOLMAX Blocks
@@ -263,7 +263,7 @@ fi
 			/usr/local/lib/news/inews -t "cmsg ihave $DOIHAVE" -n to.$rmt.ctl < \
 				/usr/spool/batch/$rmt.$$
 			rm /usr/spool/batch/$rmt.$$
-					
+
 		else
 			(eval $ECHO; eval $CMD $COMP $C7) |
 			if test -s /usr/spool/batch/$rmt.cmd
@@ -284,7 +284,7 @@ done
 rm $LOCKFILE
 
 *----* CUT *----* Skalpell *----* SCRRRGGG *----* Fronz *----* Schnippel *----*
--- 
+--
 Ulrich Tiemann  * [lord | Ulrich.Tiemann]@olis.north.de    bio: 0441/8 43 26
 Ackerstrasse 6  * ----------------------------------------------------------
 26121 Oldenburg *  Oldenburger Informations System :  0441/8859796 / 8859797

@@ -64,7 +64,7 @@ zconsplit:	zconsplit.o $(LIBS)
 
 list-systems.o : list-systems.c ../include/config.h ../include/sysdep.h ../include/lib.h \
   ../include/header.h ../include/crc.h ../include/hd_def.h ../include/hd_nam.h \
-  ../include/ministat.h ../include/boxstat.h 
+  ../include/ministat.h ../include/boxstat.h
 zconsplit.o : zconsplit.c ../include/config.h ../include/sysdep.h ../include/header.h \
   ../include/crc.h ../include/hd_def.h ../include/hd_nam.h ../include/boxstat.h \
-  ../include/ministat.h ../include/version.h 
+  ../include/ministat.h ../include/version.h

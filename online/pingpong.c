@@ -91,7 +91,7 @@ void logoff(const char *msg)
 	auflegen_gesendet = 0;
 	auflegen_msg = dstrdup(msg);
 }
- 
+
 /*
  *   send_ack(phase) :	sendet ein Acknowledge fuer einen korrekt empfangenen
  *			Block aus der angegebenen Phase [1 .. 4]
@@ -106,7 +106,7 @@ void send_ack(int phase)
 	wr_packet(p, stdout);
 	free_para(p);
 }
- 
+
 /*
  *   send_tme(phase) :	sendet ein Transmission End fuer einen korrekt gesendeten
  *			Block aus der angegebenen Phase [1 .. 4]
@@ -159,12 +159,12 @@ header_p get_blk(int phase)
 	last = NULL; p = NULL;
 	while (1) {
 		if (p) free_para(p);
-	
+
 		/*
 		 *  Block einlesen
 		 */
 		p = rd_packet(stdin, &crc);
-		
+
 		c = find(HD_CRC, p);
 		if (!c) {
 			fputs("Paket ohne CRC empfangen...\n", deblogfile);
@@ -256,22 +256,22 @@ header_p put_blk(header_p block, int phase)
 		auflegen_msg = NULL;
 		signal(SIGHUP, SIG_IGN);
 	}
-	
+
 	/*
 	 *  Paket erstmalig verschicken
 	 */
 	wr_packet(block, stdout);
-	
+
 	p = NULL;
 	while (1) {
-			
+
 		if (p) free_para(p);
 
 		/*
 		 *  Bestaetigung fuer das Paket empfangen
 		 */
 		p = rd_packet(stdin, &crc);
-		
+
 		c = find(HD_CRC, p);
 		if (!c) {
 			fputs("Paket ohne CRC empfangen...\n", deblogfile);
@@ -298,8 +298,8 @@ header_p put_blk(header_p block, int phase)
 			 */
 			continue;
 		}
-		
-		if (stricmp(s->text, ack) == 0) 
+
+		if (stricmp(s->text, ack) == 0)
 			break;	/* Das Paket wurde positiv bestaetigt... */
 
 		/*
@@ -375,12 +375,12 @@ header_p get_beg(int phase)
 	last = NULL; p = NULL;
 	while (1) {
 		if (p) free_para(p);
-	
+
 		/*
 		 *  Block einlesen
 		 */
 		p = rd_packet(stdin, &crc);
-		
+
 		c = find(HD_CRC, p);
 		if (!c) {
 			fputs("Paket ohne CRC empfangen...\n", deblogfile);

@@ -31,7 +31,7 @@ ein paar Kleinigkeiten darumherum durchfuehren:
   6. Crontab bearbeiten
 
 Sollten beim "make" Probleme auftreten, werfen Sie einen Blick in das
-lib-Verzeichnis. Dort finden Sie einige ANSI-Routinen, die auf aelteren 
+lib-Verzeichnis. Dort finden Sie einige ANSI-Routinen, die auf aelteren
 Systemen fehlen (strftime). Pruefen Sie ansonsten, ob include/sysdep ein
 Link auf die richtige Konfigurationsdatei ist, und ob deren Inhalt stimmt.
 
@@ -44,7 +44,7 @@ brauchen Sie einen Login fuer das jeweilige Verfahren:
 
    Login         Verfahren        Bemerkung
  -----------------------------------------------------------------------
-   zerberus      Netcall-3.8      Funktioniert nicht sicher, 
+   zerberus      Netcall-3.8      Funktioniert nicht sicher,
    janus         JANUS            der Login-Prompt muss "Username:" sein.
                                   (janus und zerberus sind identisch,
                                   uebertragen aber andere Datenformate)
@@ -85,7 +85,7 @@ Hier wird eine uid mit drei Logins (zconnect, janus, zerberus) verwendet.
 
 Starten Sie als 'root' das Shell-Script 'configure'. In der Regel wird es
 genuegen, wenn Sie "./configure" eingeben. Sollte Ihr Betriebssystem daraufhin
-nicht /bin/sh zur Interpretation des Scriptes benutzen, starten Sie es 
+nicht /bin/sh zur Interpretation des Scriptes benutzen, starten Sie es
 stattdessen mit "sh configure".
 
 
@@ -93,8 +93,8 @@ stattdessen mit "sh configure".
 -------
 
 Nachdem 'configure' die noetigen Makefile's erstellt hat, koennen Sie die
-Sourcen uebersetzen. Dabei sollten keine Probleme auftreten. Wenn Sie gcc 
-einsetzen und als Option '-Wall' aktiviert haben, bekommen Sie zwei 
+Sourcen uebersetzen. Dabei sollten keine Probleme auftreten. Wenn Sie gcc
+einsetzen und als Option '-Wall' aktiviert haben, bekommen Sie zwei
 Warnungen "array index is of type char". Sie koennen diese Warnungen
 ignorieren, sie entstehen im von 'gperf' generierten Code und sind daher
 ohne Eingriff in 'gperf' nicht trivial beseitigt werden.
@@ -126,7 +126,7 @@ In der anderen Richtung ist es etwas komplizierter:
 
  - News
 
-   Im Unterverzeichnis ./mail-and-news/cnews bzw. INN liegen Beispiele fuer die 
+   Im Unterverzeichnis ./mail-and-news/cnews bzw. INN liegen Beispiele fuer die
    Integration in das News-System. Falls gewuenscht, kann nach einem
    News-Batcher-Lauf sofort ein Aufruf von /usr/local/lib/zconnect/prearc
    erfolgen, indem dieser in das Batcher-Script integriert wird. Aber Vorsicht:
@@ -137,7 +137,7 @@ In der anderen Richtung ist es etwas komplizierter:
    Neben den ueblichen Routing-Eintraegen (fuer Points: smart_path und
    smart_transport, fuer Systeme in der Regel forcepaths) und der Anbindung
    des passenden Transports "zconnect" muessen Sie SMail noch den Transport
-   "zconnect" erstmalig beibringen. Fuegen Sie dazu die Datei 
+   "zconnect" erstmalig beibringen. Fuegen Sie dazu die Datei
    mail-and-news/smail/transports in Ihre Datei /usr/lib/smail/transports
    ein. Der darin beschriebene Transport "zconnect" ermoeglicht smail
    die Zustellung ueber die Unix-Connect Gateway-Programme.
@@ -150,7 +150,7 @@ In der anderen Richtung ist es etwas komplizierter:
    Sie sind Point und benutzen die unten beschriebene "smart_path"
    Methode - in diesem Fall brauchen Sie an dieser Stelle gar nichts
    tun). Dazu dienen die Dateien im "/usr/lib/smail/methods" Verzeichnis.
-   Hier finden Sie meist eine einzige Datei ("table" oder "paths"), in der 
+   Hier finden Sie meist eine einzige Datei ("table" oder "paths"), in der
    Sie fuer ZCONNECT-Systeme einen Eintrag wie diesen vornehmen:
 
 	bionic.zerberus.de	zconnect
@@ -168,7 +168,7 @@ In der anderen Richtung ist es etwas komplizierter:
    ueber den Forcepaths-Router vornehmen. Welche Paths-Datei dazu benutzt
    wird, steht im "forcepaths" Eintrag der Datei /usr/lib/smail/routers.
 
-   Wichtig: da ZCONNECT-Adressen immer vollstaendig domainisiert sein 
+   Wichtig: da ZCONNECT-Adressen immer vollstaendig domainisiert sein
    muessen, ist die Path-Datei entsprechend einzurichten:
 
 	hsp.owl.de	bionic.zerberus.de!hsp.owl.de!%s
@@ -178,7 +178,7 @@ In der anderen Richtung ist es etwas komplizierter:
    Gateway-Programms, letzeres liefert Zieladressen ohne Domain, was in
    ZCONNECT verboten ist).
 
-   Sie koennen das Ergebnis Ihrer Bemuehungen mit dem "pathto"-Befehl 
+   Sie koennen das Ergebnis Ihrer Bemuehungen mit dem "pathto"-Befehl
    pruefen. "pathto -vdsnt padeluun@bionic.zerberus.de" liefert hier:
 
 	Verfahren   Route-System          Adresse
@@ -190,7 +190,7 @@ In der anderen Richtung ist es etwas komplizierter:
 6. Crontab bearbeiten
 ---------------------
 
-Etwa einmal pro Stunde (oder auch haeufiger) sollte 
+Etwa einmal pro Stunde (oder auch haeufiger) sollte
 /usr/local/lib/zconnect/prearc von der root-crontab ausgefuehrt werden.
 
 In Point-Konfigurationen koennen Sie sich dies sparen und stattdessen das
@@ -224,7 +224,7 @@ das.
 
   /usr/local/lib/zconnect/net            Netzlisten der diversen Gates
   /usr/local/lib/zconnect/org            ORG-Listen der diversen Gates
- 
+
   /var/spool/zconnect                    Spool-Dir fuer die Netcalls (schon
                                          komprimiert)
   /var/spool/zconnect/(sys)              Das individuelle Spool-Dir fuer
@@ -243,7 +243,7 @@ ZCONNECT traegt neue Systeme beim ersten Anruf automatisch ein.
 
 JANUS und ZNETZ Systeme koennen von Hand eingetragen werden, indem Sie
 
-  1) Ein Directory mit dem Systemnamen (kleingeschrieben) unter 
+  1) Ein Directory mit dem Systemnamen (kleingeschrieben) unter
      /var/spool/zconnect einrichten (Besistzer: der entsprechende
      Online-User, also janus oder zerberus). Benutzen Sie immer den
      vollstaendigen Namen des Systems (also incl. Domain).
@@ -260,7 +260,7 @@ JANUS und ZNETZ Systeme koennen von Hand eingetragen werden, indem Sie
         Tel:            1 +49-521-68000
         Proto:          ZMODEM
         X-Call:         JANUS
- 
+
     Der Wert fuer X-Call: muss eines der drei Netcall-Formate ZNETZ, JANUS
     oder ZCONNECT sein. Bitte dabei auf Grossschreibung und Tipfehler achten,
     ansonsten funkioniert "prearc" nicht.

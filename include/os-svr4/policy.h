@@ -10,7 +10,7 @@
 
 /* Eine Frage der Optik: man koennte hier auch /var/spool/locks benutzen,
    da das unter SVR4 ein link auf das gleiche Verzeichnis ist... */
-#define LOCKDIR "/usr/spool/locks" 
+#define LOCKDIR "/usr/spool/locks"
 
 #define HAVE_V2_LOCKFILES 0
 #define HAVE_HDB_LOCKFILES 0

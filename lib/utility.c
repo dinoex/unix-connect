@@ -70,7 +70,7 @@
  * SYNOPSIS
  *   #include <utility.h>
  *   void *dalloc(size_t s);
- * 
+ *
  * DESCRIPTION
  *   Dies ist ein Wrapper fuer malloc(), der NULL abfaengt.
  *

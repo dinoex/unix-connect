@@ -81,7 +81,7 @@ extern mime_cty_struct mime_ctys[];
 #define ATR_CONST
 #endif
 
-int decode_cte(char *msg, long *msglenp, int *eightbit, 
+int decode_cte(char *msg, long *msglenp, int *eightbit,
 	mime_header_info_struct *info);
 int decode_x_uuencode(char *, long *, int *, mime_header_info_struct *);
 char *mime_encode(const char *iso) ATR_CONST;

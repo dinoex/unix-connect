@@ -123,7 +123,7 @@ void datei_master(header_p myself, header_p remote)
 		remove_queue(done);
 		done = clear_queue(done);
 	}
-	
+
 	fputs("BLK2 empfangen:\n", deblogfile);
 	wr_para(blk2, deblogfile);
 	empfangen = NONE;
@@ -149,7 +149,7 @@ void datei_master(header_p myself, header_p remote)
 		fprintf(deblogfile, "Gegenseite hat Daten, Auftrag in der queue: Empfangen\n");
 		queue_action(connection.tmp_dir, NULL, MSG_RECV, empfangen, 0);
 	}
-	
+
 	waittime=0;
 	p = find(HD_WAIT, blk2);
 	wait_sec=0;
@@ -169,7 +169,7 @@ void datei_master(header_p myself, header_p remote)
 		return;
 	}
 	not_done = 0;
-	
+
 	if (!more_data && !senden) {
 		blk3 = new_header("Y", HD_LOGOFF);
 		blk3 = add_header("N", HD_EXECUTE, blk3);

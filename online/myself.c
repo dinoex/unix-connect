@@ -59,7 +59,7 @@
 #include "config.h"
 #include "zconnect.h"
 #include <errno.h>
- 
+
 /*
  *   get_myself() : liest die Daten der eigenen Box ein
  */

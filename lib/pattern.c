@@ -113,7 +113,7 @@ int init_search(const char *pattern)
 		if ((j<0) || (pattern[i] == pattern[j])) {
 			i++;
 			j++;
-			if (pat[i] != pat[j]) 
+			if (pat[i] != pat[j])
 				next[i] = j;
 			else
 				next[i] = next[j];
@@ -150,7 +150,7 @@ int init_search(const char *pattern)
  *
  *   Die Funktion arbeitet auf einem statischen Puffer. Es kann nur
  *   eine KMP-Suche zur Zeit aktiv sein.
- * 
+ *
  * PARAMETER
  *   const char input - das naechste Zeichen fuer KMP-Suche.
  *
@@ -175,6 +175,6 @@ int search_char(const char input)
 	/* Haben wir was gefunden ? */
 	if (gj >= m)
 		return 1;
-	else 
+	else
 		return 0;
 }

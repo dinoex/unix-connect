@@ -14,7 +14,7 @@ echo $$ > $LOCK.$$
 if (umask 222; ln $LOCK.$$ $LOCK) 2>/dev/null
 then
 	# OK -> Datei gab es noch nicht
-	trap "rm -f $LOCK $LOCK.$$; exit 0" 0 1 2 3 
+	trap "rm -f $LOCK $LOCK.$$; exit 0" 0 1 2 3
 	rm -f $LOCK.$$
 else
 	# Fehler -> Lock existierte

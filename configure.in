@@ -206,13 +206,13 @@ AC_SUBST(BANG)
 dnl AC_MSG_CHECKING(Filserver)
 dnl AC_ARG_WITH(fileserver,
 dnl [ --with-fileserver=dir      Fileserverdir.],
-dnl [ 
+dnl [
 dnl Wenn Sie einen anonymous-FTP Server betreiben oder nuucp-Accounts auf
 dnl Ihrem System haben, koennen Sie diese Verzeichnisse auch fuer ZCONNECT
 dnl File-Requests zur Verfuegung stellen.
-dnl 
+dnl
 dnl EOF
-dnl 
+dnl
 dnl         FILESERVER=nein
 dnl         QUERY="Moechten Sie den ZCONNECT File-Server installieren"; janein
 dnl         if [ $ERG = j ]; then

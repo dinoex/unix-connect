@@ -135,7 +135,7 @@ void entmaske(char *ziel, unsigned grade)
 unsigned maske(const char *p)
 {
 	unsigned erg = NONE;
-	
+
 	while (*p) {
 	  switch (*p++) {
 	    case 'P': erg |= PM; break;
@@ -167,7 +167,7 @@ void do_transfers(void)
 	  if (doit->work == MSG_RECV || doit->work == FILE_RECV) {
 	  	int erg;
 	  	char fname[FILENAME_MAX];
-	  	
+
 	  	chdir(doit->dir ? doit->dir : "/tmp");
 	  	if (doit->file)
 	  		strcpy(fname, doit->file);
@@ -177,7 +177,7 @@ void do_transfers(void)
 		if ( waittime > 0 )
 		{
 			header_p dummy;
-			
+
 			if(waittime > 10)
 			{ /* wir warten zehn Sekunden weniger, um das BEG5
 			     nicht zu verpassen. */
@@ -196,7 +196,7 @@ void do_transfers(void)
 	  }
 	  if (doit->work == MSG_SEND || doit->work == FILE_SEND) {
 	  	int erg;
-	  	
+
 	  	chdir(doit->dir ? doit->dir : "/tmp");
 		fprintf(stderr, "SENDEN %s\n", connection.proto); fflush(stderr);
 		erg = sendfile(connection.proto, doit->file ? doit->file : "");

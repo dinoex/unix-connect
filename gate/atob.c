@@ -66,7 +66,7 @@ static char *bp;
 
 #define DE(c) ((c) - '!')
 
-static int decode(c) 
+static int decode(c)
   reg c;
 {
   if (c == 'z') {
@@ -101,7 +101,7 @@ static int decode(c)
   return 0;
 }
 
-byteout(c) 
+byteout(c)
   reg c;
 {
   Ceor ^= c;
@@ -159,7 +159,7 @@ long atob(char *buf) {
 		free(buffer);
 		return 0;
 	}
-	
+
   	if (sscanf(cp,"xbtoa End N %ld %lx E %lx S %lx R %lx\n",
          &n1, &n2, &oeor, &osum, &orot) != 5) {
 		free(buffer);

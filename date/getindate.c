@@ -2,7 +2,7 @@
 /*
  * Aus der C-News Distribution, (C)opyright Henry Spencer et al.
  */
- 
+
 /*
  * getindate - parse the common Internet date case (rfc 822 & 1123) *fast*
  */

@@ -65,7 +65,7 @@ void wr_para_continue(header_p ptr, FILE *fp)
         while (ptr) {
                 fputs(ptr->header, fp);
 #ifdef DO_CRC
-                for (p=ptr->header; *p; p++) 
+                for (p=ptr->header; *p; p++)
                 	crc = CRC(*p, crc);
 		putc(':', fp);
 		crc = CRC(':', crc);
@@ -74,7 +74,7 @@ void wr_para_continue(header_p ptr, FILE *fp)
 #endif
                 fputs(ptr->text, fp);
 #ifdef DO_CRC
-                for (p=ptr->text; *p; p++) 
+                for (p=ptr->text; *p; p++)
                 	crc = CRC(*p, crc);
 		putc('\r', fp);
 #else

@@ -44,19 +44,19 @@
 
 # ifndef FILE
 # include <stdio.h>
-# endif 
+# endif
 
 #ifndef SYSDEP_H
 #include "sysdep.h"
 #endif
 
 
- 
+
 /*
  *  W„hlt mit dem angegeben Kommando bis eine Verbindung entsteht oder
  *  ein fataler Fehler auftritt.
  *
  *  Ergebnis:  0 - Verbindung steht
  *	       1 - Verbindung nicht m”glich
- */ 
-int redial(const char *anwahl, int modem, int maxtry); 
+ */
+int redial(const char *anwahl, int modem, int maxtry);

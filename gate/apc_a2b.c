@@ -54,7 +54,7 @@ static const char atob_kennung[] = "\007BINARY FILE FOLLOWS";
 		bei Wandlung: Laenge des Texts, der noch
 		vor dem Beginn der Binaerdaten vorhanden
 		ist
-*/ 
+*/
 
 long apc_a2b(char *message, long *msglen) {
 	char *cp;

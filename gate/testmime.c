@@ -46,7 +46,7 @@ int main() {
 
   for(input = readline("Input: ");input;
     input=readline("Input: ") ) {
-    
+
     output=decode_mime_string(input);
     printf("Output: %s\n", output);
   }

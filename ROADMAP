@@ -29,7 +29,7 @@ online/		Alle Programme zur Kommunikation: Login-Shells fuer die
 
 tools/		Generelle ZCONNECT Hilfsmittel.
 
-net38/		Konvertierungsprogramme von und zu Netcall-3.8  
+net38/		Konvertierungsprogramme von und zu Netcall-3.8
 
 shell/		Vorlagen fuer Shell-Scripte, die von "make install" nach
 		$(DESTDIR) kopiert werden (und entsprechend angepasst).

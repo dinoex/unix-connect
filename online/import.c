@@ -91,7 +91,7 @@ void import_all(char *arcer, char *sysname, int ist_net38)
 		char *name;
 		struct list_st *next;
 	} list_t, *list_p;
-	
+
 	DIR *dir;
 #ifdef HAS_BSD_DIRECT
 	struct direct *ent;
@@ -106,7 +106,7 @@ void import_all(char *arcer, char *sysname, int ist_net38)
 	l = NULL;
 	while ((ent = readdir(dir)) != NULL) {
 		list_p neu;
-		
+
 		if (*(ent->d_name) == '.') continue;
 		neu = dalloc(sizeof(list_t));
 		neu->name = dstrdup(ent->d_name);

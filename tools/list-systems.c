@@ -1,5 +1,5 @@
 /* $Id$ */
-/* 
+/*
  *
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1993-94  Martin Husemann

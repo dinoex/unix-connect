@@ -56,7 +56,7 @@ char *str2eda(char *text, int *tz_hour, int *tz_min)
 	char s_or_w;
 	char *answer;
 	char buffer[24];
-	
+
 	answer=dalloc(sizeof(char)*84);
 
 	*tz_hour = *tz_min = 0;
@@ -65,7 +65,7 @@ char *str2eda(char *text, int *tz_hour, int *tz_min)
 		&t.tm_year, &t.tm_mon, &t.tm_mday,
 		&t.tm_hour, &t.tm_min, &t.tm_sec,
 		&s_or_w, tz_hour, tz_min);
-		
+
 	t.tm_year -= 1900;
 	t.tm_mon -= 1;
 
@@ -110,7 +110,7 @@ char *str2eda(char *text, int *tz_hour, int *tz_min)
 	t = *localtime( &dt );
 	t.tm_isdst = 0;
 
-/* und den Wochentag berechnen... */		
+/* und den Wochentag berechnen... */
 	dt = mktime(&t);
 
 	strftime(answer, 60, "%a, %d %b %Y %H:%M:%S", &t);

@@ -8,17 +8,17 @@ Version einer Anleitung, die Mathias Zunterer <m.zunterer@link-m.de>
 im Februar 1998 auf die Mailingliste unix-connect@mailinglisten.im-netz.de
 geschickt hat.)
 
- 
+
 qmail und UnixConnect:
 Zur Erklaerung zwei Worte voraus zu unserer Kontruktion:
 "link-m.de" ist eigentlich die Mailbox mit Infimail, saturn.link-m.de
 ist der FQDN des Rechners, wo infimail drauf laeuft. Damit die ZConnect-
-Seiten zufrieden ist, spoolen wir fuer das ZConnectsystem link-m.de, 
+Seiten zufrieden ist, spoolen wir fuer das ZConnectsystem link-m.de,
 auf der RFC-Seite wird immer von saturn gesprochen. Daher holen wir
 mails fuer das System saturn ab und schicken es der link-m.de.
-Alle mails fuer alle unsere Domains werden bei mail.link-m.de per SMTP 
-eingeliefert und qmail schickt sie an UnixConnect weiter. Mails von der 
-Mailbox bzw. von UnixConnect wird sofort per SMTP dahin geliefert, wo der 
+Alle mails fuer alle unsere Domains werden bei mail.link-m.de per SMTP
+eingeliefert und qmail schickt sie an UnixConnect weiter. Mails von der
+Mailbox bzw. von UnixConnect wird sofort per SMTP dahin geliefert, wo der
 MX-Record zeigt.
 Wir nutzen den Online-Teil und alle Prepacking-Mechnismen von UnixConnect
 gar nicht, unser Zeil ist es, mails so schnell wie moeglich wieder von
@@ -38,7 +38,7 @@ Ansonsten gehts im Prinzip so:
 
 _Die Seite von qmail zu UnixConnect:_
 - Wir haben zuerst bsmtp von Olaf Titz <olaf@bigred.inka.de> installiert,
-  sind ein paar Perlscripte, gibts auf alle Faelle via www.qmail.org zu 
+  sind ein paar Perlscripte, gibts auf alle Faelle via www.qmail.org zu
   finden.
 
 [ Die Originalversion von Olaf Titz ignoriert leider alle auftretenden
@@ -48,7 +48,7 @@ im Verzeichnis mail-and-news/qmail bei. Auﬂerdem behebt diese
 Version ein Problem mit leeren Mails, da uursmtp nicht damit
 klarkommt, nach DATA direkt ohne Leerzeile einen . zu bekommen. ]
 
-- Wir nutzen den qmail-Mechanismus "virtualdomains", um zu selektieren, 
+- Wir nutzen den qmail-Mechanismus "virtualdomains", um zu selektieren,
   fuer welche Domains ein Transport via UUCP oder ZConnect vorgesehen ist.
   In virtualdomains steht dann drinnen:
 
@@ -118,7 +118,7 @@ RSMTP="/usr/local/bin/rsmtp"
   oben).
 
   Fuer UUCP mit qmail gibt es noch ein anderes Utility namens rmail,
-  welches selbst die Bangpaths wieder richtig dreht und dann dem 
+  welches selbst die Bangpaths wieder richtig dreht und dann dem
   qmail-inject in den Rachen schmeisst, aber ich habs nicht mit
   Unix-Connect ausprobiert.
 
@@ -126,7 +126,7 @@ RSMTP="/usr/local/bin/rsmtp"
 configure-Aufruf muﬂ angegeben werden, daﬂ keine Bang-Pfade im
 Envelope erzeugt werden sollen und alles l‰uft wie geschmiert. ]
 
-Das wars so, ich hoffe, die Idee, wie man qmail und UnixConnect unter 
+Das wars so, ich hoffe, die Idee, wie man qmail und UnixConnect unter
 einen Hut bekommt, ist klar geworden. Ansonsten uebernehme ich natuerlich
 fuer gar nichts eine Verantwortung.
 

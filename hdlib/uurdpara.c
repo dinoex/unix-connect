@@ -69,7 +69,7 @@
 
 static char *uugets(char *s, int n, FILE *stream);
 
-#ifndef SMTP 
+#ifndef SMTP
 
 extern long readlength;		/* Wird auf 0 heruntergez„hlt */
 #define	COUNTDOWN(count)	readlength -= (count)
@@ -96,7 +96,7 @@ header_p uu_rd_para(FILE *f)
  *   Funktion:  header_p smtp_rd_para(FILE *input)
  *              Liest einen UUCP-Header aus einem SMTP-Batch.
  */
- 
+
 header_p smtp_rd_para(FILE *f)
 
 #endif /* SMTP */
@@ -117,7 +117,7 @@ header_p smtp_rd_para(FILE *f)
 	      hname[MAX_HEADER_NAME_LEN] = '\0'; /* Sentinel */
 
               if ((hname[0] == '\r') || (hname[0] == '\n'))
-                  if (start) 
+                  if (start)
                      break;     /* Ende einer Header-Liste */
                   else
                      continue;  /* Leerzeile am Anfang einer Header-Liste */
@@ -177,7 +177,7 @@ header_p smtp_rd_para(FILE *f)
 		      if (str1) *str1 = '\0';
 		      str2 = strchr(inhalt, '\n');
                       if (str2) *str2 = '\0';
-                      
+
                       /* Wenn weder \n noch \r gefunden werden, dann ist der
                        * Header l„nger als MAX_HEADER_NAME_LEN Bytes. */
 		      if (!str1 && !str2) {

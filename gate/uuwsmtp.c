@@ -80,14 +80,14 @@
 
 int main_is_mail = 1;	/* Ja, wir sind fuer Mail's zustaendig */
 char eol[] = "\r\n";
-		
+
 void usage(void);
 void convert(FILE *, FILE *);
 header_p convheader(header_p, FILE *);
 
 header_p pointuser;	/* Wenn es ein Point ist: die Liste der erlaubten Absender */
 char *pointsys;		/* Name des Point-Systems */
-	
+
 static char *bigbuffer	= NULL;
 static char *smallbuffer= NULL;
 static char datei[1024];
@@ -108,7 +108,7 @@ int main(int argc, char **argv)
 /*	init_trap(argv[0]); */
 	pointsys = NULL;
 	filter = 0;
-	ulibinit();	
+	ulibinit();
 	minireadstat();
 	srand(time(NULL));
 	if (argc < 3 || argc > 4) usage();
@@ -159,7 +159,7 @@ int main(int argc, char **argv)
 		filter = 1;
 	} else {
 		int fh;
-		
+
 		fin = fopen(argv[1], "rb");
 		j = time(NULL);
 		sprintf(datei, "%s/%08lx", argv[2], j);
@@ -258,7 +258,7 @@ void convert(FILE *zconnect, FILE *smtp)
 
 	for (p = abs; p; p = p->other) {
 		char *s;
-	
+
 		strcpy(buffer, p->text);
 		strlwr(buffer);
 		for (s=buffer; *s; s++)
@@ -314,7 +314,7 @@ void convert(FILE *zconnect, FILE *smtp)
 
 				pbufferlow=dstrdup(pbuffer);
 				strlwr(pbufferlow);
-				if ((st = strstr(pbufferlow, l->text)) != NULL) 
+				if ((st = strstr(pbufferlow, l->text)) != NULL)
 					if (strcmp(st, l->text) == 0) {
 						local = 1;
 						dfree(pbufferlow);
@@ -426,7 +426,7 @@ void convert(FILE *zconnect, FILE *smtp)
 				dfree(typ);
 		if (comment && mime_info.unixconnect_multipart)
 			multipart=1;
-	}	
+	}
 	else {
 		if (comment && typ)
 			multipart = 1;
@@ -590,7 +590,7 @@ void convert(FILE *zconnect, FILE *smtp)
 					continue;
 				}
 				bytecount += znr;
-				len -= znr; 
+				len -= znr;
 				sp = zbuf;
 #ifdef UUENCODE_CHKSUM
 				sum += sp[0] + sp[1] + sp[2];
@@ -603,7 +603,7 @@ void convert(FILE *zconnect, FILE *smtp)
 				*zp++ = ENC(sp[2] & 077);
 			}
 		}
-		if (multipart) 
+		if (multipart)
 			sprintf(smallbuffer, "``\r\nend\r\n\r\n--"SP_MULTIPART_BOUNDARY"\r\n");
 		else
 			sprintf(smallbuffer, "``\r\nend\r\n\r\n");
@@ -626,11 +626,11 @@ void convert(FILE *zconnect, FILE *smtp)
 	eightbit = eightbit & 0x80;
 
 	/* In smallbuffer charset-Info hinlegen */
-	if (eightbit) 
+	if (eightbit)
 		sprintf(smallbuffer, "ISO-8859-%d", charset ? charset : 1);
 	else
 		strcpy(smallbuffer, "US-ASCII");
-	
+
 	/* MIME-Headerzeilen */
 	if (!wasmime) {
 		if(eightbit || typ ||multipart)

@@ -271,7 +271,7 @@ int main(int argc, char **argv)
 	files = 0;
 	online_start = 0;
 	fprintf(stderr, "Netcall bei %s [%s]\n", sysname, tty);
-	
+
 	close(fileno(stdin));
 	close(fileno(stdout));
 	dup(modem); dup(modem); DMLOG("dup modem 2x to stdin and stdout");
@@ -317,11 +317,11 @@ int main(int argc, char **argv)
 			logfile(ERRLOG, __FILE__, sysfile, "-", "Keine Telefonnummer fuer %s gefunden!\n", sysname);
 			return 2;
 		}
-	
+
 		while (p && maxtry) {
 			DMLOG("place call on modem");
 			if (anruf(p->text, sys, ich, modem)) {
-				maxtry = 0; break; 
+				maxtry = 0; break;
 			}
 			p = p->other;
 			maxtry--;
@@ -356,7 +356,7 @@ int login(int modem, int verfahren, const char *myname, const char *passwd)
 	else
 		sprintf(pw, "%s\r", passwd);
 
-	free_all_tracks();       
+	free_all_tracks();
         t_esc = init_track(EMSI_REQ);
 	t_ogin = init_track("OGIN");
 	if (verfahren == ZCONNECT)
@@ -378,7 +378,7 @@ int login(int modem, int verfahren, const char *myname, const char *passwd)
 		if (!isascii(z) || !iscntrl(z)) {
 			putc(z, stderr);
 			fflush(stderr);
-		} else if (z == '\r') 
+		} else if (z == '\r')
 			putc('\n', stderr);
 		if (found == -1) continue;
 		if (found == t_esc) {
@@ -387,7 +387,7 @@ int login(int modem, int verfahren, const char *myname, const char *passwd)
                 	sleep(2);	/* fflush auf der Gegenseite? */
                		set_local(modem, 0);
 			write(modem, logstr[verfahren], strlen(logstr[verfahren]));
-			if (verfahren < ZCONNECT && t_sysname == -1) 
+			if (verfahren < ZCONNECT && t_sysname == -1)
 				t_sysname = init_track("SYSTEMNAME:");
                 } else if (found == t_word || found == t_wort) {
 			write(modem, pw, strlen(pw));
@@ -413,7 +413,7 @@ int login(int modem, int verfahren, const char *myname, const char *passwd)
 	}
         free_all_tracks();
         alarm(0);
-        
+
 	return err;
 }
 
@@ -518,7 +518,7 @@ int anruf (char *intntl, header_p sys, header_p ich, int modem)
 	if (redial(dialstr, modem, 1)) return 0;
 
 	time(&online_start);
-	
+
 	if (i < ZCONNECT) {
 		if (name) dfree(name);
 		name = strdup(boxstat.boxname);
@@ -539,7 +539,7 @@ int anruf (char *intntl, header_p sys, header_p ich, int modem)
 		header_p p, d;
 		char c;
 		struct stat st;
-		
+
 		fprintf(stderr, "....\n");
 		alarm(10*60);
 		do {
@@ -575,7 +575,7 @@ int anruf (char *intntl, header_p sys, header_p ich, int modem)
 			if (access(tmpname, R_OK|X_OK) == 0)
 				break;
 		}
-		
+
 		p = find(HD_ARCEROUT, sys);
 		if (!p) {
 			fputs("Kein ARCer (ausgehend) definiert!\n", stderr);
@@ -613,7 +613,7 @@ int anruf (char *intntl, header_p sys, header_p ich, int modem)
 
 		if (access(filename, R_OK) != 0) {
 			FILE *f;
-			
+
 			f = fopen(outname, "wb");
 			if (!f) {
 				fprintf(stderr, "Kann Netcall %s nicht erzeugen\n", outname);
@@ -728,6 +728,6 @@ int anruf (char *intntl, header_p sys, header_p ich, int modem)
 		aufraeumen();
 		exit (0);
 	}
-	
+
 	return 1;
 }

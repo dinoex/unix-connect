@@ -3,7 +3,7 @@
 #
 #   auspack     generisches Ent-Archivierungs-Kommando fuer ZCONNECT
 #
-#   Aufruf:     auspack (Kennung) (Archiv) 
+#   Aufruf:     auspack (Kennung) (Archiv)
 #
 #   Funktion:   Extrahiert alle Dateien (ohne Directory) aus dem angegebenen
 #               Archiv in das aktuelle Verzeichnis.
@@ -16,7 +16,7 @@
 #   mit ausgepackt.
 #
 
-if [ "x$2" = "x" ] 
+if [ "x$2" = "x" ]
 then
 	echo "Aufruf:  $0 (Kennung) (Archiv)" >&2
 	exit 1
@@ -55,7 +55,7 @@ case "$KENNUNG" in
 		then
 			ARC="$name".lha
 		fi
-		if [ ! -r $ARC ] 
+		if [ ! -r $ARC ]
 		then
 			name=`dirname $ARC`/`basename $ARC .lha`
 			if [ -r $name.lzh ]

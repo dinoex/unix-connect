@@ -10,7 +10,7 @@
 #
 #   Privileges: laeuft bei mir derzeit als root (daher auch chown...)
 #
-#   Bugs:   Um Race-Conditions zu vermeiden werden die Rohdaten in ein 
+#   Bugs:   Um Race-Conditions zu vermeiden werden die Rohdaten in ein
 #	    temporaeres Directory verschoben, das nach dem Arcen radikal
 #	    geloescht wird. Falls zwischenzeitlich etwas schief ging,
 #	    fuehrt das zu Datenverlusten.
@@ -32,12 +32,12 @@ if [ -x /usr/lib/news/bin/shlock ]; then
 	trap 'rm -f ${LOCK} ; exit 0' 0
 else
 	trap "rm -f $LOCK.$$; exit 0" 0 1 2 3
-	
+
 	echo $$ > $LOCK.$$
 	if (umask 222; ln $LOCK.$$ $LOCK) 2>/dev/null
 	then
 		# OK -> Datei gab es noch nicht
-		trap "rm -f $LOCK $LOCK.$$; exit 0" 0 1 2 3 
+		trap "rm -f $LOCK $LOCK.$$; exit 0" 0 1 2 3
 		rm -f $LOCK.$$
 	else
 		# Fehler -> Lock existierte

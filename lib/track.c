@@ -78,14 +78,14 @@ static int   last_track = 0;
  *
  * VISIBILITY
  *   global
- * 
+ *
  * SYNOPSIS
  *   #include <track.h>
  *   int init_track(const char *pattern);
  *
  * DESCRIPTION
  *   Die Funktion registiert den Suchstring und vergibt fuer ihn eine
- *   interne Nummer. Fuer den Suchstring wird ein KMP-Backup 
+ *   interne Nummer. Fuer den Suchstring wird ein KMP-Backup
  *   eingerichtet. Vergleiche Sedgewick, "Algorithms", pp. 280-285
  *   und pattern.[ch].
  *
@@ -132,7 +132,7 @@ int init_track(const char *pattern)
 		if ((j<0) || (pattern[i] == pattern[j])) {
 			i++;
 			j++;
-			if (pattern[i] != pattern[j]) 
+			if (pattern[i] != pattern[j])
 				next[pat_nr][i] = j;
 			else
 				next[pat_nr][i] = next[pat_nr][j];
@@ -141,7 +141,7 @@ int init_track(const char *pattern)
 		}
 	} while (i <= m[pat_nr]);
 
-	for (i = 0; i <= m[pat_nr]; i++) 
+	for (i = 0; i <= m[pat_nr]; i++)
 		if (next[pat_nr][i] < 0)
 			next[pat_nr][i] = 0;
 
@@ -177,7 +177,7 @@ int init_track(const char *pattern)
  *   Die Funktion arbeitet auf statischen Feldern. Es koennen maximal
  *   MAXTRACKS (16) Tracks mit je MAXPATTERN (256) Zeichen langen Strings
  *   auf einem Suchkanal aktiv sein.
- *   
+ *
  */
 
 int track_char(const char input)
@@ -212,7 +212,7 @@ int track_char(const char input)
  *
  * VISIBILITY
  *   global
- * 
+ *
  * SYNOPSIS
  *   void free_track
  *
@@ -257,7 +257,7 @@ void free_track(const int patnr)
  *
  * PARAMETER
  *   keine.
- * 
+ *
  * RESULT
  *   keins.
  * BUGS

@@ -7,7 +7,7 @@
  *
  *  Dies ist ein Ausschnitt aus "policy.h", aus der Taylor-UUCP Distribution.
  */
- 
+
 /* policy.h
    Configuration file for policy decisions.  To be edited on site.
 

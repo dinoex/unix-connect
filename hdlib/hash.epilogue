@@ -43,7 +43,7 @@ unsigned identify(const char *name)
 
 	p = (struct predefd *)predefd_header(hname, strlen(hname));
 
-	if (p) 
+	if (p)
 		return p->code;
 
 	/* Der Header war nicht vordefiniert, also in der lokalen
@@ -86,7 +86,7 @@ header_p internal_add_header(char *inhalt, int code, header_p ptr, const char *h
 		/* Identischer Header, per other verketten */
 		/*
 		 *  MH: um die Reihenfolge beim Einlesen zu erhalten
-		 *      wird jetzt am Ende der other-> angehaengt. 
+		 *      wird jetzt am Ende der other-> angehaengt.
 		 */
 		for ( ; p->other; p = p->other)
 			;

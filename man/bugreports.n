@@ -26,7 +26,7 @@ consist of
 .PP 0.8i
 .I """xyz ain't working. Why?"""
 .PP
-.I """I can't compile 
+.I """I can't compile
 .RI foo """.
 .PP
 .I """When I start

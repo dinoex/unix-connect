@@ -49,7 +49,7 @@
  */
 
 #include <sys/types.h>
- 
+
 #define BAD 255		/* 255 = 'alternatives' Space im PC 437 Zeichensatz */
 
 /*

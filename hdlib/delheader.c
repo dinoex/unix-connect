@@ -86,6 +86,6 @@ header_p del_header(int code, header_p ptr)
                 dfree(p);
                 p = last;
         }
-        
+
         return ptr;
 }

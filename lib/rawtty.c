@@ -183,7 +183,7 @@ set_rawmode(int fileno)
 	cfmakeraw(&term);
 	term.c_cflag |= ISET_CFLAG;
 	term.c_cflag &= ~CLOCAL;
-	tcsetattr(fileno, TCSADRAIN, &term); 
+	tcsetattr(fileno, TCSADRAIN, &term);
 #endif
 #ifdef HAS_BSD_SGTTY
 	stty(fileno, &term);
@@ -229,7 +229,7 @@ hangup(int fileno)
 	ioctl(fileno, TCSETAW, &term);
 #endif
 #ifdef HAS_POSIX_TERMIOS
-	tcsetattr(fileno, TCSADRAIN, &term); 
+	tcsetattr(fileno, TCSADRAIN, &term);
 #endif
 #ifdef HAS_BSD_SGTTY
 	stty(fileno, &term);
@@ -274,7 +274,7 @@ set_local(int fileno, int local)
 	ioctl(fileno, TCSETAW, &term);
 #endif
 #ifdef HAS_POSIX_TERMIOS
-	tcsetattr(fileno, TCSADRAIN, &term); 
+	tcsetattr(fileno, TCSADRAIN, &term);
 #endif
 #ifdef HAS_BSD_SGTTY
 	stty(fileno, &term);
@@ -328,7 +328,7 @@ void set_speed(int fileno, char *speed)
 	struct sgttyb term;
 #endif
 
-	for (p=bd_table; p->name; p++) 
+	for (p=bd_table; p->name; p++)
 		if (strcmp(speed, p->name) == 0) break;
 	if (p->name) {
 	} else {
@@ -347,7 +347,7 @@ void set_speed(int fileno, char *speed)
 		return;
 	cfsetospeed(&term, p->val);
 	cfsetispeed(&term, p->val);
-	tcsetattr(fileno, TCSADRAIN, &term); 
+	tcsetattr(fileno, TCSADRAIN, &term);
 #endif
 #ifdef HAS_BSD_SGTTY
 	struct sgttyb term;
@@ -408,7 +408,7 @@ restore_linesettings(int fileno)
 #endif
 #ifdef HAS_POSIX_TERMIOS
 	save_term.c_cflag |= ISET_CFLAG;
-	tcsetattr(fileno, TCSADRAIN, &save_term); 
+	tcsetattr(fileno, TCSADRAIN, &save_term);
 #endif
 #ifdef HAS_BSD_SGTTY
 	stty(fileno, &save_term);

@@ -5,7 +5,7 @@
 #
 #  Dieses Shell-Script wird von den Online-Programmen nach Austausch der
 #  Daten aufgerufen. Im aktuellen Verzeichnis befinden sich die bereits
-#  ausgepackten Daten (und sonst nichts). Diese muessen nun noch 
+#  ausgepackten Daten (und sonst nichts). Diese muessen nun noch
 #  konvertiert und an das News/Mail-System weitergereicht werden.
 
 IAM=bi-neu.foebud.org

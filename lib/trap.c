@@ -12,7 +12,7 @@
  * trap_handler() ist der Handler, der eine Nachricht
  *	       ins Logfile und nach stderr sowie
  *	       den core in das logfile-Verzeichnis
- *	       schreibt 
+ *	       schreibt
  *
  * 9. Sep 1996 - Linux-fähige Version von Erich Oldendorf <olden@komtron.com>
  *

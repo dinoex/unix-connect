@@ -78,7 +78,7 @@
 /*
  *  Fehlende Prototypen in System-Headern:
  */
- 
+
 extern char *strdup(const char *);
 
 #define MAXINT 0x7fffffff

@@ -119,19 +119,19 @@ uuheader.a:	$(OBJS)
 .c.o:	../Makefile.global
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
 
-crc.o : crc.c ../include/crc.h ../include/sysdep.h 
-delheader.o : delheader.c ../include/header.h ../include/sysdep.h ../include/crc.h 
-find.o : find.c ../include/header.h ../include/sysdep.h ../include/crc.h 
-freepara.o : freepara.c ../include/header.h ../include/sysdep.h ../include/crc.h 
+crc.o : crc.c ../include/crc.h ../include/sysdep.h
+delheader.o : delheader.c ../include/header.h ../include/sysdep.h ../include/crc.h
+find.o : find.c ../include/header.h ../include/sysdep.h ../include/crc.h
+freepara.o : freepara.c ../include/header.h ../include/sysdep.h ../include/crc.h
 hash.o : hash.c hd_def.h ../include/header.h ../include/sysdep.h ../include/crc.h \
-  ../include/uulog.h hd_nam.h hd_nlist.h 
+  ../include/uulog.h hd_nam.h hd_nlist.h
 joinheader.o : joinheader.c ../include/header.h ../include/sysdep.h ../include/crc.h \
-  ../include/uulog.h 
+  ../include/uulog.h
 rdpara.o : rdpara.c ../include/header.h ../include/sysdep.h ../include/crc.h \
-  ../include/uulog.h 
+  ../include/uulog.h
 testheader.o : testheader.c ../include/uulog.h ../include/sysdep.h ../include/header.h \
-  ../include/crc.h hd_def.h hd_nam.h 
+  ../include/crc.h hd_def.h hd_nam.h
 uurdpara.o : uurdpara.c ../include/header.h ../include/sysdep.h ../include/crc.h \
-  ../include/uulog.h 
+  ../include/uulog.h
 wrpara.o : wrpara.c ../include/header.h ../include/sysdep.h ../include/crc.h \
-  hd_nam.h 
+  hd_nam.h

@@ -6,7 +6,7 @@
 # /usr/local/lib/zconnect/uurnews -f $1
 #
 #  Aber mein ESIX 4.0.4 hat da einen hartnaeckigen Bug in der clib: wenn
-#  grosse Datenbloecke aus einer Pipe gelesen werden, kommt fread 
+#  grosse Datenbloecke aus einer Pipe gelesen werden, kommt fread
 #  durcheinander.
 #
 cat >/tmp/via.$1.$$

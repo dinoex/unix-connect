@@ -1,7 +1,7 @@
 Points/Systeme anlegen
 ----------------------
 
-Für jedes bekannte System (auch Points) muß eine Datei in 
+Für jedes bekannte System (auch Points) muß eine Datei in
 zcondir/systems vorhanden sein, die den FQDN dieses Systems trägt.
 Die Datei enthält (jeweils die Zeilen mit den "|", jedoch ohne die
 "| ")

@@ -69,7 +69,7 @@ void init_approved(void)
 	FILE *f;
 	char buffer[500], *p;
 	list_p neu;
-	
+
 	if (!approvedliste) return;
 	f = fopen(approvedliste, "r");
 	if (!f) return;
@@ -97,7 +97,7 @@ void init_approved(void)
 int approved(const char *newsgroup)
 {
 	list_p p;
-	
+
 	if (!groups) return 0;
 
 	for (p=groups; p; p=p->next) {

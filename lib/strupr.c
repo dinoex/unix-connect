@@ -85,7 +85,7 @@ char *strupr(char *a)
 {
 	char *p, c;
 
-	for (p = a; *p; p++) 
+	for (p = a; *p; p++)
 		if (isascii(*p)) {
 			c = *p;
 			if (islower(c))

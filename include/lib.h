@@ -51,7 +51,7 @@ static inline void to_pc (unsigned char *) __attribute__ ((unused));
 static inline void to_iso(unsigned char *) __attribute__ ((unused));
 #endif
 
-static inline void to_pc(unsigned char *buf) { iso2pc(buf, strlen(buf)); } 
+static inline void to_pc(unsigned char *buf) { iso2pc(buf, strlen(buf)); }
 static inline void to_iso(unsigned char *buf) { pc2iso(buf, strlen(buf)); }
 
 void splitaddr(char *rfc_addr, char *name, char *host, char *domain,

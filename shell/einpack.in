@@ -16,7 +16,7 @@
 #   mit eingepackt.
 #
 
-if [ "x$3" = "x" ] 
+if [ "x$3" = "x" ]
 then
 	echo "Aufruf:  $0 (Kennung) (Archiv) (file)*" >&2
 	exit 1
@@ -35,9 +35,9 @@ case "$KENNUNG" in
  "ZOO" )	ARC=`dirname $ARC`/`basename $ARC .zoo`
 		zoo ah $ARC.zoo $*	> /dev/null 2>&1 ;;
  "LHA" )	ARC=`dirname $ARC`/`basename $ARC .lha`
-		mv $ARC.lha $ARC.lzh	> /dev/null 2>&1 
-		lha a $ARC.lzh $*	> /dev/null 2>&1 
-		mv $ARC.lzh $ARC.lha	> /dev/null 2>&1 
+		mv $ARC.lha $ARC.lzh	> /dev/null 2>&1
+		lha a $ARC.lzh $*	> /dev/null 2>&1
+		mv $ARC.lzh $ARC.lha	> /dev/null 2>&1
 		rm -f $ARC.bak				 ;;
  "NONE")	cat $* >> $ARC.nar			 ;;
  *)		mail postmaster << EOF

@@ -1,52 +1,52 @@
 # archiv-name: newsalias
 #
 # Datum der letzten Aenderung: 05.08.1999
-# 
-# Hinweise zu der Brett- bzw. Newsgroupnamen-Umsetzungsliste für ZConnect/ 
+#
+# Hinweise zu der Brett- bzw. Newsgroupnamen-Umsetzungsliste für ZConnect/
 # RFC-News-Gateways
 #
 # Begriffsklärung:
 #
-# "Liste" ist immer die "Brett- bzw. Newsgroupnamen-Umsetzungsliste für  
+# "Liste" ist immer die "Brett- bzw. Newsgroupnamen-Umsetzungsliste für
 # ZConnect/RFC-News-Gateways".
 #
 # "Brett" ist immer ein ZConnect-Brett bzw. eine RFC-(Usenet-) Newsgroup.
 #
 # Fragen:
 #
-# 1. Was ist die "Brett- bzw. Newsgroupnamen-Umsetzungsliste für ZConnect/ 
+# 1. Was ist die "Brett- bzw. Newsgroupnamen-Umsetzungsliste für ZConnect/
 # RFC-News-Gateways" ?
-# 2. Wie werden Brett/Newsgroup-Namen umgesetzt, die nicht in der Liste  
+# 2. Wie werden Brett/Newsgroup-Namen umgesetzt, die nicht in der Liste
 # stehen?
 # 3. Wo gibt es die Liste wie oft?
 # 4. Wozu ist die Liste da?
 # 5. Was passiert, wenn ich die Liste nicht benutze?
-# 6. Ich führe die Bretter/Gruppen aus der Liste eh nicht. Kann ich sie dann  
+# 6. Ich führe die Bretter/Gruppen aus der Liste eh nicht. Kann ich sie dann
 # weglassen?
 # 7. Was ist, wenn kein anderes System hinter meinem mehr kommt?
-# 8. Ich möchte etwas in die Liste eintragen/ändern/löschen lassen. An wen  
+# 8. Ich möchte etwas in die Liste eintragen/ändern/löschen lassen. An wen
 # wende ich mich?
 #
 #
 #
 # Antworten:
 #
-# 1. Was ist die "Brett- bzw. Newsgroupnamen-Umsetzungsliste für ZConnect/ 
+# 1. Was ist die "Brett- bzw. Newsgroupnamen-Umsetzungsliste für ZConnect/
 # RFC-News-Gateways"?
 #
-# Diese Liste enthält Namen von Brettern bzw. Newsgoups, die sowohl in  
-# ZConnect- als auch im RFC-1036-Format (Usenet News) transportiert werden.  
-# Genauer gesagt, sie enthält die Namen der Bretter, die in den beiden  
-# technischen Verfahren abweichende Namen haben, und führt beide Namen auf.  
-# Das Format ist so gehalten, daß man die Liste direkt in den Formatumsetzer  
+# Diese Liste enthält Namen von Brettern bzw. Newsgoups, die sowohl in
+# ZConnect- als auch im RFC-1036-Format (Usenet News) transportiert werden.
+# Genauer gesagt, sie enthält die Namen der Bretter, die in den beiden
+# technischen Verfahren abweichende Namen haben, und führt beide Namen auf.
+# Das Format ist so gehalten, daß man die Liste direkt in den Formatumsetzer
 # von Unix-Connect einbinden kann.
 #
-# 2. Wie werden Brett/Newsgroup-Namen umgesetzt, die nicht in der Liste  
+# 2. Wie werden Brett/Newsgroup-Namen umgesetzt, die nicht in der Liste
 # stehen?
 #
-# "1:1". Von ZConnect nach RFC: 1. Zeichen (Schrägstrich) entfernen; alle  
-# verbleibenden Schrägstriche in Punkte wandeln; alle Buchstaben nach klein  
-# wandeln. Von RFC nach ZConnect: Alle Buchstaben nach groß wandeln; alle  
+# "1:1". Von ZConnect nach RFC: 1. Zeichen (Schrägstrich) entfernen; alle
+# verbleibenden Schrägstriche in Punkte wandeln; alle Buchstaben nach klein
+# wandeln. Von RFC nach ZConnect: Alle Buchstaben nach groß wandeln; alle
 # Punkte in Schrägstriche tauschen; einen Schrägstrich voranstellen.
 #
 # 3. Wo gibt es die Liste wie oft?
@@ -58,53 +58,53 @@
 #
 # 4. Wozu ist die Liste da?
 #
-# Sie wird von allem Gateways, die eine Format-Wandlung von News zwischen  
-# RFC und ZConnect durchführen, gebraucht, um die Namen aller Bretter/ 
-# Newsgroups korrekt umzusetzen. Sie stellt sicher, daß alle Gateways diese  
+# Sie wird von allem Gateways, die eine Format-Wandlung von News zwischen
+# RFC und ZConnect durchführen, gebraucht, um die Namen aller Bretter/
+# Newsgroups korrekt umzusetzen. Sie stellt sicher, daß alle Gateways diese
 # Umsetzung gleich vornehmen.
 #
 # 5. Was passiert, wenn ich die Liste nicht benutze?
 #
-# Wenn ein Gateway diese Liste nicht einbindet, besteht die Gefahr, daß  
-# Nachrichten zumindest teilweise verloren gehen. Das betroffene Gateway  
-# würde einige Brett-/Newsgroup-Namen anders umsetzen als alle anderen.  
-# Dadurch existiert die Nachricht in verschiedenen Versionen. Je nachdem,  
-# welche Version des Namens ein System benutzt, wird die Nachricht unter  
-# Umständen nicht in alle Bretter/Newsgroups einsortiert, in die sie sollte.  
-# Schlimmer noch: Kommt eine Nachricht unter einem falschen Brett/Newsgroup- 
-# Namen bei einem System A an, und bezieht ein weiteres System B dieses  
+# Wenn ein Gateway diese Liste nicht einbindet, besteht die Gefahr, daß
+# Nachrichten zumindest teilweise verloren gehen. Das betroffene Gateway
+# würde einige Brett-/Newsgroup-Namen anders umsetzen als alle anderen.
+# Dadurch existiert die Nachricht in verschiedenen Versionen. Je nachdem,
+# welche Version des Namens ein System benutzt, wird die Nachricht unter
+# Umständen nicht in alle Bretter/Newsgroups einsortiert, in die sie sollte.
+# Schlimmer noch: Kommt eine Nachricht unter einem falschen Brett/Newsgroup-
+# Namen bei einem System A an, und bezieht ein weiteres System B dieses
 # Brett von A, so würde die Nachricht gar nicht an B weitergeleitet.
 #
-# Kommt die Nachricht zu einem späteren Zeitpunkt noch einmal bei A an -  
-# diesmal womöglich auf einem anderern Weg unter richtigen Namen -, wird sie  
+# Kommt die Nachricht zu einem späteren Zeitpunkt noch einmal bei A an -
+# diesmal womöglich auf einem anderern Weg unter richtigen Namen -, wird sie
 # durch den Rekursionscheck weggeworfen.
 #
-# 6. Ich führe die Bretter/Gruppen aus der Liste eh nicht. Kann ich sie dann  
+# 6. Ich führe die Bretter/Gruppen aus der Liste eh nicht. Kann ich sie dann
 # weglassen?
 #
-# Nein! Sie muß auf jeden Fall eingebunden werden. Auch, wenn die Bretter  
-# aus der Liste nicht geführt werden, können die entsprechenden Brettnamen  
-# in Cross-Postings auftauchen. Auch dann ist es nötig, sie richtig  
-# umzusetzen, damit dahinter liegende Systeme, die womöglich solche Gruppen  
+# Nein! Sie muß auf jeden Fall eingebunden werden. Auch, wenn die Bretter
+# aus der Liste nicht geführt werden, können die entsprechenden Brettnamen
+# in Cross-Postings auftauchen. Auch dann ist es nötig, sie richtig
+# umzusetzen, damit dahinter liegende Systeme, die womöglich solche Gruppen
 # führen, die korrekten Namen erhalten.
 #
 # 7. Was ist, wenn kein anderes System hinter meinem mehr kommt?
 #
-# Wenn es absolut sicher ist, daß die umgesetzten Daten an kein anderes  
-# System weitergegeben werden, und allen beteiligten die Konsequenzen klar  
-# sind, kann man auf die Liste eventuell doch verzichten. Trozdem: Selbst  
-# bei einer Antwort in einem Brett, die als Crossposting in mehrere Bretter  
-# geht, kann es dann Schwierigkeiten geben. So gibt es Zeichen, die in  
-# ZConnect-Brettnamen erlaubt, in RFC-Newsgroup-Namen aber verboten sind,  
-# wie "!" oder "&". Wenn es da keine eindeutigen Konvertierungsregeln gibt,  
+# Wenn es absolut sicher ist, daß die umgesetzten Daten an kein anderes
+# System weitergegeben werden, und allen beteiligten die Konsequenzen klar
+# sind, kann man auf die Liste eventuell doch verzichten. Trozdem: Selbst
+# bei einer Antwort in einem Brett, die als Crossposting in mehrere Bretter
+# geht, kann es dann Schwierigkeiten geben. So gibt es Zeichen, die in
+# ZConnect-Brettnamen erlaubt, in RFC-Newsgroup-Namen aber verboten sind,
+# wie "!" oder "&". Wenn es da keine eindeutigen Konvertierungsregeln gibt,
 # gibt es Probleme beim hin- und herwandeln.
 #
-# 8. Ich möchte etwas in die Liste eintragen/ändern/löschen lassen. An wen  
+# 8. Ich möchte etwas in die Liste eintragen/ändern/löschen lassen. An wen
 # wende ich mich?
 #
 # Solche Wünsche sind an <newsalias@dinoex.sub.org> zu richten.
 #
-# Dieser Text wurde geschrieben von Moritz Both  
+# Dieser Text wurde geschrieben von Moritz Both
 # <m.both@oln.comlink.apc.org>.
 #
 #--------------------------------------------------------------------
@@ -118,7 +118,7 @@
 # Alias:	/Z-NETZ/ALT/GATE-BAU		de.comm.gatebau
 
 #
-# Nameskonflikte bei: '.&!\' 
+# Nameskonflikte bei: '.&!\'
 #
 Alias:	/AFF/!INFO				aff._info
 Alias:	/AMNET/C&C++				amnet.c+c++

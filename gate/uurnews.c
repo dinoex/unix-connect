@@ -111,7 +111,7 @@ void usage(void);
 void convert(FILE *, FILE *);
 void convdata(FILE *news, FILE *zconnect);
 
-	
+
 static char *bigbuffer	= NULL;
 static char *readbuffer	= NULL;
 long buffsize = 0;	/* gegenwaertig allokierte Buffer-Groesse */
@@ -129,7 +129,7 @@ int main(int argc, char **argv)
 
 /*	init_trap(argv[0]); */
 	filter = 0;
-	ulibinit();	
+	ulibinit();
 	minireadstat();
 	srand(time(NULL));
 	if (argc != 3) usage();
@@ -145,11 +145,11 @@ int main(int argc, char **argv)
 #ifdef SPOOLDIR_SHORTNAME
 		char *p, *p1;
 #endif
-		
+
 		filter = 1;
 		fin = stdin;
 		fqdn = argv[2];
-		
+
 		j = time(NULL);
 		sprintf(tmp, "%08lx.brt", (long)j);
 		strcpy(datei, netcalldir);
@@ -245,9 +245,9 @@ void convdata(FILE *news, FILE *zconnect)
 	int binaer, eightbit;
 	mime_header_info_struct mime_info;
 	int ismime, decoded;
- 
+
 	msglen = 0;
-	
+
 	hd = uu_rd_para(news);
 
 	/* MIME-Headerzeilen lesen */
@@ -264,7 +264,7 @@ void convdata(FILE *news, FILE *zconnect)
 					     2
 #endif
 						);
- 
+
 		readbuffer = dalloc(buffsize);
 	}
 
@@ -282,7 +282,7 @@ void convdata(FILE *news, FILE *zconnect)
 	} else
 		wrlen = 0;
 	msglen=wrlen;
-		
+
 	/* Header konvertieren und ausgeben */
 	hd = convheader(hd, zconnect, NULL, NULL);
 
@@ -292,7 +292,7 @@ void convdata(FILE *news, FILE *zconnect)
 	/* Wenn decodiert wurde, diese Headerzeile loeschen */
 	if (decoded)
 		hd = del_header(HD_UU_CONTENT_TRANSFER_ENCODING, hd);
-	
+
 	/* eightbit != 0 heisst, wir haben auch tatsaechlich-Daten.
 	 * Eine Nachricht behandeln wir dann als binaer, wenn sie
 	 * a) eine Mime-Nachricht ist, sie b) gerade eben tatsaechlich deco-
@@ -307,7 +307,7 @@ void convdata(FILE *news, FILE *zconnect)
         /* MIME-Headerzeilen durchreichen? Eine schwere Frage.
          * Wir entscheiden uns so:
          */
-	 
+
         if (ismime && (                         /* MIME-Nachricht */
              mime_info.encoding == cte_none ||  /* deren kodierung */
              decoded                            /* aufgeloest wurde */
@@ -321,7 +321,7 @@ void convdata(FILE *news, FILE *zconnect)
                 hd = del_header(HD_UU_CONTENT_TYPE, hd);
                 hd = del_header(HD_UU_CONTENT_TRANSFER_ENCODING, hd);
         }
- 
+
 #ifdef UUCP_SERVER
 	hd = del_header(HD_UU_XREF, hd);
 	if (!dont_gate)
@@ -357,7 +357,7 @@ void convdata(FILE *news, FILE *zconnect)
 
         make_body(bigbuffer, msglen, &mime_info, binaer,
                 readbuffer, zconnect);
- 
+
         if (mime_info.filename)
                 free(mime_info.filename);
 

@@ -100,7 +100,7 @@ void ulputs(char *text, FILE *f)
 {
 #ifdef MIME_ENC_HEADER
 	char *encoded;
-	
+
 	encoded=mime_encode(text);
 	fputs(encoded, f);
 	fputs(eol, f);
@@ -119,7 +119,7 @@ void ulputs(char *text, FILE *f)
 			putc(' ', f);
 	fputs(eol, f);
 #endif
-}		
+}
 
 /* Druckt EINE newsgroup nach EINEM Brett.
  * Gibt !=0 zurueck im Ungluecksfall.
@@ -128,7 +128,7 @@ int printnewsgroup(char *brett, FILE *f) {
 	char *s;
 	static char buffer[MAXLINE];
 
-	if (strchr(brett, '@')) 
+	if (strchr(brett, '@'))
 		return 1;
 	s = z_alias(brett);
 	if (s) {
@@ -150,7 +150,7 @@ int printnewsgroup(char *brett, FILE *f) {
 	return 0;
 }
 
-/* Druckt in file f alle newsgroups, die als Bretter in 
+/* Druckt in file f alle newsgroups, die als Bretter in
  * den Headerzeilen p ... p->other usw. stehen.
  */
 static void printnewsgroups(header_p p, char *uuheader, FILE *f)
@@ -200,7 +200,7 @@ header_p convheader(header_p hd, FILE *f)
 	p = find(HD_EMP, hd);
 	if (p) {
 		int mail, news;
-		
+
 		for (mail=0, news=0, t=p; t && (!news || !mail); t=t->other) {
 			if (strchr(p->text, '@'))
 				mail = 1;
@@ -221,7 +221,7 @@ header_p convheader(header_p hd, FILE *f)
 	p = find(HD_OEM, hd);
 	if (p) {
 		int mail;
-		
+
 		for (mail=0, t=p; t && !mail; t=t->other)
 			if (strchr(p->text, '@'))
 				mail = 1;
@@ -238,7 +238,7 @@ header_p convheader(header_p hd, FILE *f)
 	    hd = del_header(HD_KOP, hd);
 	  else {
 		int mail, news;
-		
+
 		for (mail=0, news = 0, t=p; t && !mail; t=t->other)
 			if (strchr(p->text, '@'))
 				mail = 1;
@@ -281,7 +281,7 @@ header_p convheader(header_p hd, FILE *f)
 			else
 				fprintf(f, HN_UU_MESSAGE_ID": <%s@%s.%s.%s>%s", p->text, pointsys, boxstat.boxname, boxstat.boxdomain, eol);
 			if (s) *s = '@';
-		} else 
+		} else
 #endif /* CARE_FOR_POINT_MIDS */
 			fprintf(f, HN_UU_MESSAGE_ID": <%s>%s", p->text, eol);
 		hd = del_header(HD_MID, hd);
@@ -299,7 +299,7 @@ header_p convheader(header_p hd, FILE *f)
 		 */
 		t = find(HD_UU_U_CONTROL, hd);
 		if (t || p->other)
-			; 
+			;
 		else {
 			/* CONTROL ist nur einmal da */
 			/* Parameter ansteuern. */
@@ -354,7 +354,7 @@ header_p convheader(header_p hd, FILE *f)
 
 		for (p = pointuser; p; p=p->other)
 			if (adrmatch(abs, p->text)) {
-				/* 
+				/*
 				 * Ok, wegen Schreibweise aber durch unsere
 				 * Version ersetzen
 				 */
@@ -451,21 +451,21 @@ header_p convheader(header_p hd, FILE *f)
 		fprintf(f,HN_UU_PATH": %s%s", absname, eol);
 	      }
 	    dfree(absname);
-	  } 
+	  }
 	}
 	else
 	{
 	  p = find(HD_ROT, hd);
 	  if (p) {
 	    hd=del_header(HD_ROT, hd);
-	  } 
+	  }
 	}
 
 	p = find(HD_EB, hd);
 	if (p) {
 		header_p t;
 		for(t=p; t; t=t->other) {
-			if (*(t->text)) 
+			if (*(t->text))
 			{
 			  pc2iso(t->text,strlen(t->text));
 			  mime_name=mime_address(t->text);
@@ -643,7 +643,7 @@ void foldputs(FILE *f, char *hd, char *inhalt)
 		fputs("\t", f);
 		col = 10;
 	}
-	for (p=inhalt; *p; p++) 
+	for (p=inhalt; *p; p++)
 		if (isspace(*p) && col > 60) {
 			fputs(eol, f); fputs("\t", f);
 			col = 10;
@@ -655,7 +655,7 @@ void foldputs(FILE *f, char *hd, char *inhalt)
 }
 
 /*
- * Gibt einen Header aus, der aus mehreren gleichartigen 
+ * Gibt einen Header aus, der aus mehreren gleichartigen
  * ZC-Headern zusammengesetzt ist. hd wird wie in foldputs
  * verwendet.
  */
@@ -684,7 +684,7 @@ void foldputh(FILE *f, char *hd, header_p t)
 			fputs(", ", f);
 			col += 2;
 		}
-	}	
+	}
 	fputs(eol, f);
 }
 
@@ -708,7 +708,7 @@ void foldputaddrs(FILE *f, char *hd, header_p t)
 		fputs("\t", f);
 		col = 10;
 	}
-	for (p=t; p; p=p->other) 
+	for (p=t; p; p=p->other)
 	{
 		if(strchr(p->text, '@')) {
 			if (col > 40) {
@@ -724,7 +724,7 @@ void foldputaddrs(FILE *f, char *hd, header_p t)
 			col += strlen(mime_name) + (p->other ? 2:0);
 			dfree(mime_name);
 		}
-	}	
+	}
 	fputs(eol, f);
 }
 
@@ -734,7 +734,7 @@ void u_f_and_all(FILE *f, header_p hd) {
 
         /* U-, F- und ZConnect-eigene unbekannte
          * Headerzeilen richtig umwandeln:
-         */ 
+         */
 	for (p=hd; p; p=p->next)
 		for (p1=p; p1; p1=p1->other) {
 			if(strncasecmp(p1->header,"U-",2) == 0) {

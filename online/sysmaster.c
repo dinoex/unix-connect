@@ -77,7 +77,7 @@
 #include "lib.h"
 
 int ist_testaccount = 0;
- 
+
 /*
  *   system_master tauscht die Informationen ueber die beteiligten Systeme
  *   aus.
@@ -95,7 +95,7 @@ void system_master(header_p myself, header_p remote)
  	 *	     heisst es: der ARCer, den WIR ausgehend verwenden. Es
  	 *	     ist gegenueber den vom fremden System gesendeten Bloecken
  	 *	     genau vertauscht!
-	 */	
+	 */
 	p = find(HD_SYS, myself);
 	if (p) strupr(p->text);
 	p = find(HD_PASSWD, remote);
@@ -108,7 +108,7 @@ void system_master(header_p myself, header_p remote)
 	 */
 	myself = del_header(HD_X_CALL, myself);
 	myself = del_header(HD_POINT_USER, myself);
-	
+
 	myself = put_blk(myself, 1);
 
 	fprintf(deblogfile, "Sende BLK1: \n");
@@ -153,7 +153,7 @@ void system_master(header_p myself, header_p remote)
 	alarm(30);
 	blk4 = get_blk(4);
 	alarm(0);
-	
+
 	fputs("Blk4 empfangen:\n", deblogfile);
 	wr_para(blk4, deblogfile);
 
@@ -176,8 +176,8 @@ void system_master(header_p myself, header_p remote)
 
 	free_para(blk2);
 	free_para(blk3);
-	free_para(blk4);	
+	free_para(blk4);
 
 	fprintf(stderr, "Protokoll: %s   Packer hier: %s     Packer Gegenseite: %s\n",
-		connection.proto, connection.local_arc, connection.remote_arc); 
+		connection.proto, connection.local_arc, connection.remote_arc);
 }

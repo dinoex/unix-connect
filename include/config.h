@@ -65,7 +65,7 @@
 
 /*
  *   Die folgenden Flags legen fest, bei welchen Konvertierungen eine
- *   Umlautwandlung PC437 --> ISO-8859-1 stattfindet. 
+ *   Umlautwandlung PC437 --> ISO-8859-1 stattfindet.
  *   Wird das entsprechende Flag nicht definiert, wird ae, oe, ue benutzt...
  */
 #define	USE_ISO_IN_MAILS	/* Bei PMs */

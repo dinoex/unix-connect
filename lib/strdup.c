@@ -55,7 +55,7 @@
 #include <strings.h>
 #endif
 #include "uulog.h"
- 
+
 #if defined(NEXTSTEP)
 
 #include <stdlib.h>

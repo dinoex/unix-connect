@@ -24,7 +24,7 @@ Unix-Connect.
    --> uuwsmtp
        --> rsmtp(**)
            --> sendmail
-   --> RFC-Mail 
+   --> RFC-Mail
 
 (*)  liegen hier im Verzeichnis
 (**) bsmtp-0_94.tar.gz, kommt von

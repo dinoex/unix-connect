@@ -4,7 +4,7 @@ README zu UNIX-Connect v0.78
 Letzte Aenderung: dirk.meyer@dinoex.sub.org
 
 $Id$
- 
+
 ------------------------------------------------------------------------------
 ACHTUNG:
 
@@ -22,8 +22,8 @@ der UNIX-I/O Strukturen verfügen.
 
 UNIX-Connect kann auch als Point benutzt werden - also um am heimischen
 Linux-System die Nachrichten aus der Z-NETZ MailBox vor Ort im ELM oder NN
-zu lesen. Dieser Einsatzmöglichkeit widmet die Dokumentation ein eigenes 
-Kapitel, da hierbei sehr viele Konfigurationsprobleme von vornherein 
+zu lesen. Dieser Einsatzmöglichkeit widmet die Dokumentation ein eigenes
+Kapitel, da hierbei sehr viele Konfigurationsprobleme von vornherein
 vermieden werden können.
 
 UNIX-Connect ist nicht (wie der Name vielleicht sugerriert) auf ZCONNECT
@@ -45,7 +45,7 @@ Weiterhin existiert eine Mailingliste für den UNIX-connect-Support, auf der
 Hilfestellungen gegeben, Fehler gemeldet, Patches verschickt, neue Versionen
 angekündigt und die weitere Programmentwicklung besprochen werden. Die
 Adresse der Mailingliste ist unix-connect@mailinglisten.im-netz.de, für An-
-und Abmeldungen schreiben Sie bitte an 
+und Abmeldungen schreiben Sie bitte an
 nora.e@mailinglisten.im-netz.de.
 
 

@@ -4,7 +4,7 @@ Tips bei Problemen mit der Installation:
 
 Problem (1) :
 
-    Beim "make" erhalte ich undefinierte Symbole "add_header" an 
+    Beim "make" erhalte ich undefinierte Symbole "add_header" an
     mehreren Stellen...
 
 Tip:
@@ -48,11 +48,11 @@ Tip:
     Falls der serielle Treiber "FAS" von Uwe Döring installiert ist, finden
     Sie in der dortigen Dokumentation eine detailierte Beschreibung, wann
     welches Device zu nutzen ist.
-    
+
     Gegenbeispiel: bei Verwendung von System V R4 Lockfiles ist es zwingend
-    notwendig, das gleiche Device für aus- und eingehende Verbindungen 
+    notwendig, das gleiche Device für aus- und eingehende Verbindungen
     zu verwenden.
-    
+
     Einfachste Erklärung für Probleme: Ihre Datei include/policy.h stimmt
     nicht mit den tatsächlichen Systemgegebenheiten überein. Schalten Sie
     zum Testen alle Modem-getty's ab und probieren Sie es dann nocheinmal.
@@ -60,7 +60,7 @@ Tip:
 
 Problem (4) :
 
-    Die Gateway-Programme funktionieren nicht richtig, der News-Batcher 
+    Die Gateway-Programme funktionieren nicht richtig, der News-Batcher
     bricht mitten bei der Arbeit ab...
 
 Tip:
@@ -77,10 +77,10 @@ Problem (5) :
 Tip:
 
     Eventuell erzwingen Sie nicht die vollständige FQDN-Adressierung für
-    dieses System. Smail erzeugt für unterschiedliche Eingabeadresse 
+    dieses System. Smail erzeugt für unterschiedliche Eingabeadresse
     unterschiedliche Ausgabeadressen je nach Routerkonfiguration. Sie können
     sicher die FQDN-Adressierung erzwingen, indem Sie (auch für direkt bei
-    Ihnen pollende Systeme) den Server mit FQDN in die Path's Datei 
+    Ihnen pollende Systeme) den Server mit FQDN in die Path's Datei
     eintragen. Beispiel:
 
 	bionic.zer.de	bionic.zer.de!bionic.zer.de!%s
@@ -101,7 +101,7 @@ Problem (6) :
 
 Tip:
 
-    Verschiedene Betriebssysteme richten die Umgebungsvariablen (das 
+    Verschiedene Betriebssysteme richten die Umgebungsvariablen (das
     Environment) eines Prozesses unterschiedlich ein. Die meisten Cron-
     Varianten erlauben das explizite setzen in der Crontab. Beispiel:
 
@@ -125,7 +125,7 @@ Tip:
  "Tip":
 	Unter SunOS sind bisher nur die Formatumsetzungs-
 	Routinen getestet, nicht aber die Online-Teile.
- 
+
 
  Problem (8) :
 

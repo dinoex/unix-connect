@@ -35,7 +35,7 @@
 
 extern int fsdo_lock (const char *);
 extern int fsdo_unlock (const char *);
- 
+
 /* This routine is used for both locking and unlocking.  It is the
    only routine which knows how to translate a device name into the
    name of a lock file.  If it can't figure out a name, it does

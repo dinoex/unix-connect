@@ -38,12 +38,12 @@
 
 
 /*
- * uuconv.c - Funktionen fuer Konvwertierung von RFC nach 
+ * uuconv.c - Funktionen fuer Konvwertierung von RFC nach
  * ZConnect, die fuer Mail und News (fast) gleich sind
  *
 */
 
- 
+
 #include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -178,7 +178,7 @@ char *fqdn_at(char *s)
 {
 	char *erg;
 
-	for (erg=NULL; *s && !isspace(*s); s++) 
+	for (erg=NULL; *s && !isspace(*s); s++)
 		if (*s == '@')
 			erg = s;
 	return erg;
@@ -197,7 +197,7 @@ char *fqdn_at(char *s)
 char *next_komma(char *s)
 {
 	int level;
-	
+
 	while ( *s && *s != ',' ) {
 		if (*s == '"') {
 			s++;
@@ -252,12 +252,12 @@ void splitaddr(char *rfc_addr, char *name, char *host, char *domain,
 		strcpy(adr, rfc_addr);
 		/*
 		 * Das hier ist noch nicht ganz korrekt. Laut RFC822
-		 * ist 
+		 * ist
 		 *   Muhammed (I am the greatest!) .Ali @ somewhere.edu (Muhammed Ali)
 		 * eine korrekte Adresse, die auf das Postfach
 		 *   Muhammed.Ali@somewhere.edu
 		 * zeigt. Es ist aber schon besser als die Lösung mit isspace,
-		 * da Klammern, die nicht vom Adreßteil getrennt 
+		 * da Klammern, die nicht vom Adreßteil getrennt
 		 * sind, erkannt werden. Solche Adressen sind zwar
 		 * strenggenommen falsch, treten aber auf.
 		 */
@@ -282,13 +282,13 @@ void splitaddr(char *rfc_addr, char *name, char *host, char *domain,
 	/*
 	 *   : Notation in ! wandeln
 	 */
-	
+
 	for (q=adr; *q; q++)
 		if (*q == ':') *q = '!';
 	q = fqdn_at(adr);
 	if (q) {
 		int dots, pre_dots;
-		
+
 		*q = '\0'; pre_dots = dots = 0;
 		for (s=adr; *s; s++) {
 			if (*s == '.') {
@@ -298,7 +298,7 @@ void splitaddr(char *rfc_addr, char *name, char *host, char *domain,
 				dots = 0;
 			}
 		}
-		if (pre_dots && !dots) 
+		if (pre_dots && !dots)
 			q = NULL;
 		else
 			*q = '@';
@@ -382,7 +382,7 @@ int convaddr(char *zconnect_header, char *rfc_addr, int max, FILE *f)
 		if (komma) *komma = '\0';
 		splitaddr(start, sp_name, sp_host, sp_domain, rna);
 		if (sp_name[0] && sp_host[0]) {
-			/* 
+			/*
 			 * smail and inn akzeptieren Adressen, die auf einen
 			 * '.' enden. ZC-Software tut das nicht. smail beachtet
 			 * den Punkt nicht, also koennen wir ihn auch
@@ -405,7 +405,7 @@ int convaddr(char *zconnect_header, char *rfc_addr, int max, FILE *f)
 				for(q=rna+1; *q && *q!='"'; q++)
 				{
 					*(q-1)=*q;
-				} 
+				}
 				*(q-1)='\0';
 			}
 			if(rna[0]!='\0') {
@@ -462,7 +462,7 @@ int convaddr(char *zconnect_header, char *rfc_addr, int max, FILE *f)
 			counter++;
 		}
 		if (!komma) break;
-		if (max > 0 && counter >= max) break; 
+		if (max > 0 && counter >= max) break;
 		for (start = komma+1; *start && isspace(*start); start++)
 			;
 	}
@@ -592,11 +592,11 @@ header_p convheader(header_p hd, FILE *f, char *host, char *from)
 			 if (!sp_host[0]) strcpy(sp_host, "nowhere");
 			 if (!sp_domain[0]) strcpy(sp_domain, "universe");
 			 fprintf(f, HN_ABS": %s@%s.%s (Don't mail me!)\r\n", sp_name, sp_host,
-		   		sp_domain); 
+		   		sp_domain);
 		}
 		if (wab_name[0] && (stricmp(sp_name, wab_name) != 0 || stricmp(sp_host, wab_host) != 0
 		   || stricmp(sp_domain, wab_domain) != 0)) {
-		/* 
+		/*
 		 * WAB: der Form !User@system. darf nicht kommen.
 		 * Einfach wegwerfen ist zwar keine gute Loesung,
 		 * aber sonst kommen die Nachrichten gar nicht an.
@@ -609,7 +609,7 @@ header_p convheader(header_p hd, FILE *f, char *host, char *from)
 		 	{
 		   		fprintf(f, HN_WAB": %s@%s.%s\r\n", wab_name, wab_host,
 		   			wab_domain);
-		/* 
+		/*
 		 * Wir haben einen WAB: geschrieben, also sollte gleich kein
 		 * zweiter kommen...
 		 */
@@ -627,7 +627,7 @@ header_p convheader(header_p hd, FILE *f, char *host, char *from)
 			 if (!sp_host[0]) strcpy(sp_host, "nowhere");
 			 if (!sp_domain[0]) strcpy(sp_domain, "universe");
 			 fprintf(f, HN_ABS": %s@%s.%s (Don't mail me!)\r\n", sp_name, sp_host,
-		   		sp_domain); 
+		   		sp_domain);
 		}
 	}
 	p = find(HD_UU_SENDER, hd);
@@ -839,7 +839,7 @@ header_p convheader(header_p hd, FILE *f, char *host, char *from)
  * strenggenommen falsch, fuehrt aber zu den wenigsten Problemen.
 
  * Andererseits kann man damit den MAPS im Zerberus nicht verwenden.
- * Also gibt es die Möglichkeit, Nachrichten an MAPS mit einem 
+ * Also gibt es die Möglichkeit, Nachrichten an MAPS mit einem
  * ZC-konformen Routstring zu schreiben.
 
  * Nachdem wir dafür aber meistens Nachrichten ohne Routstring (da vom
@@ -884,7 +884,7 @@ header_p convheader(header_p hd, FILE *f, char *host, char *from)
 #ifdef CLIP_MAPS_ROT
 		/* Haben wir eine Mail vorliegen? Wenn ja, geht sie an maps? */
 		if (to)
-			if(strncasecmp(to, "maps@", sizeof("maps@")-1)==0) { 
+			if(strncasecmp(to, "maps@", sizeof("maps@")-1)==0) {
 	  			s = strrchr(rot, '!');
 	 			if (s) *s = '\0';
 			}
@@ -990,7 +990,7 @@ header_p convheader(header_p hd, FILE *f, char *host, char *from)
 		dfree(fto);
 			hd = del_header(HD_UU_X_COMMENT_TO, hd);
 		}
-		
+
 		/* eigentlich schöner wäre es, diese Header oben zuerst auszugeben
 		   und dann entsprechende Wandlungen zu unterbinden. */
 
@@ -1058,7 +1058,7 @@ header_p convheader(header_p hd, FILE *f, char *host, char *from)
  * Codierung
  */
 
-int make_body(char *bigbuffer, size_t msglen, 
+int make_body(char *bigbuffer, size_t msglen,
 		mime_header_info_struct *mime_info,
 		int binaer, char *smallbuffer, FILE *zconnect) {
 	int eightbit;
@@ -1120,14 +1120,14 @@ int make_body(char *bigbuffer, size_t msglen,
 		if (p1 && p2) {
 			int i;
 
-			/* boundary, maximal 2 Headerzeilen 
+			/* boundary, maximal 2 Headerzeilen
 			 * und Leerzeile ueberspringen
 			 */
 			for (i=4; i>0; i--) {
 				while (*p1 && *p1 != '\n')
 					p1++;
 				p1++;
-				if ((*p1 == '\r' || *p1 == '\n') 
+				if ((*p1 == '\r' || *p1 == '\n')
 					&& i>2)
 					i = 2; /* Leerzeile noch ueberspringen */
 			}
@@ -1156,8 +1156,8 @@ int make_body(char *bigbuffer, size_t msglen,
 			/* Na, dann versuchen wir mal zu decodieren */
 			if (decode_x_uuencode(p2, (long *)&wrlen, &eightbit, mime_info))
 				fprintf(zconnect, HN_TYPE": BIN\r\n");
-		} 
-		else 
+		}
+		else
 			wrlen = 0;
 		if (mime_info->filename)
 			fprintf(zconnect, HN_FIL": %s\r\n", mime_info->filename);
@@ -1175,7 +1175,7 @@ int make_body(char *bigbuffer, size_t msglen,
  * Leerzeilen am Anfang wegzuwerfen ist nicht nur schlechter Stil,
  * sondern auch noch unerlaubt und führt dazu, daß der Lines:-Header
  * nach einer RFC->ZC->RFC-Konvertierung evtl. nicht mehr stimmt.
- 
+
 		if (msglen && *start == '\r') {
 			start++;
 			msglen--;
@@ -1201,7 +1201,7 @@ int make_body(char *bigbuffer, size_t msglen,
 			/* Wir konvertieren nie nach IBM, setzen aber eine CHARSET:
 			 * Headerzeile (default: ISO1)
 			 */
-			fprintf(zconnect, HN_CHARSET": ISO%d\r\n", 
+			fprintf(zconnect, HN_CHARSET": ISO%d\r\n",
 				mime_info->charset >0 ? mime_info->charset : 1);
 #endif /* CONVERT_ISO */
 		}

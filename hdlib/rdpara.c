@@ -111,10 +111,10 @@ char *crc_gets(char *buffer, size_t max_len, FILE *f, int name)
 		*p++ = (unsigned char)z;
 		max_len--;
 	}
-	
+
 	if (p == (unsigned char *) buffer)
 		return NULL;
-	
+
 	*p = '\0';
 	if (!name || toupper(buffer[0]) != 'C' ||
 	   toupper(buffer[1]) != 'R' ||
@@ -242,7 +242,7 @@ header_p rd_para(FILE *f)
 		      if (str1) *str1 = '\0';
 		      str2 = strchr(inhalt, '\n');
                       if (str2) *str2 = '\0';
-                      
+
                       /* Wenn weder \n noch \r gefunden werden, dann ist der
                        * Header l„nger als MAX_HEADER_NAME_LEN Bytes. */
 		      if (!str1 && !str2) {

@@ -105,7 +105,7 @@
 	"Copyright " COPYRIGHT "\n" \
 	"\n" \
 	"Username: "
- 
+
 /* ---------------------------------------------------------------------------
  *
  *  Datenstrukturen
@@ -140,7 +140,7 @@ typedef struct {
 /*
  *  Kodierung fuer grade:
  */
- 
+
 #define NONE	0
 #define PM	1
 #define EIL	2
@@ -185,7 +185,7 @@ extern action_p todo,		/* Die globale Warteschlange */
 int modem;
 
 /*
- * auflegen = True -> Dies ist der letzte Paket-Austausch, wir haben uns mit 
+ * auflegen = True -> Dies ist der letzte Paket-Austausch, wir haben uns mit
  * der Gegenseite geeinigt, jetzt aufzuhoeren.
  */
 extern int auflegen;

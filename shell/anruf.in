@@ -1,8 +1,8 @@
 #!/bin/sh
 # $Id$
 #
-#	Kleines Script für Point-Systeme, die bei genau einem 
-#	ZCONNECT-Server anrufen müssen. 
+#	Kleines Script für Point-Systeme, die bei genau einem
+#	ZCONNECT-Server anrufen müssen.
 #
 #	Vor dem Anruf werden noch die Daten gepackt...
 #

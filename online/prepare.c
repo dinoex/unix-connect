@@ -90,7 +90,7 @@
  */
 
 extern int ist_testaccount;
- 
+
 void bereitstellen(void)
 {
 	char buffer[FILENAME_MAX], buffer2[FILENAME_MAX], arc[20];
@@ -240,7 +240,7 @@ void aufraeumen(void)
 	 */
 	if (fork() == 0) {
 		char logfname[FILENAME_MAX];
-		
+
 		/* Ich bin child */
 		sleep(5);	/* Gib dem 'parent' Zeit sich zu beenden */
 #ifdef HAVE_SYSLOG

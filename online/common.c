@@ -115,7 +115,7 @@ char *findport(int port, int hd_code, header_p hd)
 int ist_in(char *menge, char *elem)
 {
 	char *s;
-	
+
 	for (s = menge; (s = strtok(s, " \t;,")) != NULL; s = NULL)
 		if (stricmp(s, elem) == 0)
 			return 1;
@@ -168,8 +168,8 @@ header_p sysparam(header_p local, header_p remote, header_p sysfile)
 	erg = NULL;
 	p = find(HD_SYS, remote);
 	if (!p) {
-		fprintf(stderr, "Gegenseite identifiziert sich nicht!\n"); 
-		fprintf(deblogfile, "Gegenseite identifiziert sich nicht!\n"); 
+		fprintf(stderr, "Gegenseite identifiziert sich nicht!\n");
+		fprintf(deblogfile, "Gegenseite identifiziert sich nicht!\n");
 		logoff("Protokoll-Fehler: SYS: Header fehlt");
 		return NULL;
 	}
@@ -218,7 +218,7 @@ header_p sysparam(header_p local, header_p remote, header_p sysfile)
 	my_proto = p ? p->text : "ZMODEM";
 
 	if (!ist_in(r_arc, my_arcerout)) {
-		/* 
+		/*
 		 * Die Gegenseite kann unseren Packer nicht auspacken.
 		 * Wir waehlen einen neuen und packen um...
 		 */

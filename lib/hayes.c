@@ -57,7 +57,7 @@
 # include "hd_def.h"
 # include "hd_nam.h"
 # include "ministat.h"
-# include "hayes.h" 
+# include "hayes.h"
 # include "track.h"
 
 /* Sende ein einzelnes Kommando an das Modem (siehe unten) */
@@ -105,8 +105,8 @@ int
 redial (const char *anwahl, int modem, int maxtry)
 {
 	/* interne Tracking-Nummern      */
-	int ok, 
-	    connect, 
+	int ok,
+	    connect,
 	    busy,
 	    no_carrier,
 	    no_dialtone,
@@ -208,7 +208,7 @@ do_hayes(const char *command, int modem)
 
 	/* Dem Modem etwas Ruhe goennen */
 	sleep(1);
-	
+
 	/* Kommando senden */
 	write(modem, command, strlen(command));
 	write(modem, "\r", 1);

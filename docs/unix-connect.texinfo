@@ -1,5 +1,5 @@
 \input ger-texinfo                @c Hey Emacs, this is -*-texinfo-*- mode!
-@c %**start of header           
+@c %**start of header
 @setfilename unix-connect.info
 @settitle UNIX--Connect
 @setchapternewpage on
@@ -15,7 +15,7 @@ $Id$
 Dies ist der Quelltext der Dokumentation zu UNIX-Connect.
 
 Sie können darauf mit dem Programm "makeinfo" eine info-Datei erstellen,
-und diese z.B. mit Emacs oder xinfo anschauen. Oder Sie können mit 
+und diese z.B. mit Emacs oder xinfo anschauen. Oder Sie können mit
 Hilfe von TeX einen Ausdruck erstellen.
 
 Bitte eine TeX-Version mit deutscher Trenntabelle benutzen!!!
@@ -45,18 +45,18 @@ Vervielfältigungs-Erlaubnis unverändert mitkopiert werden.
 
 @ignore
 Sie sind berechtigt, diese Datei mit TeX zu verarbeiten und das Ergebnis
-auszudrucken, vorausgesetzt das entstehende Dokument enthält eine 
+auszudrucken, vorausgesetzt das entstehende Dokument enthält eine
 Kopiererlaunis wie diese, in der nur dieser Absatz entfernt ist (da er
 für die gedruckte Version irrelevant ist).
 @end ignore
 
 Sie sind berechtigt, veränderte Versionen dieser Dokumentation zu erstellen
 und zu verbreiten, unter der Bedingung, daß die Abschnitte ``Copying'' und
-``GNU General Public License'' exakt wie im Original enthalten sind und 
+``GNU General Public License'' exakt wie im Original enthalten sind und
 weiterhin vorausgesetzt, daß das gesamte entstehende Werk mit gleichen
 Nutzungs- und Vervielfältigungsrechten versehen ist, wie dieses.
 
-Sie sind berechtigt, diese Anleitung in andere Sprachen zu übersetzen 
+Sie sind berechtigt, diese Anleitung in andere Sprachen zu übersetzen
 und gemäß den oben genannten Bedingungen für modifizierte
 Versionen zu verbreiten. Darüber hinaus kann die Nutzungs- und
 Vervielfältigungsbedingung auch in einer von der Free Software
@@ -83,11 +83,11 @@ Vervielfältigungs-Erlaubnis unverändert mitkopiert werden.
 
 Sie sind berechtigt, veränderte Versionen dieser Dokumentation zu erstellen
 und zu verbreiten, unter der Bedingung, daß die Abschnitte ``Copying'' und
-``GNU General Public License'' exakt wie im Original enthalten sind und 
+``GNU General Public License'' exakt wie im Original enthalten sind und
 weiterhin vorausgesetzt, daß das gesamte entstehende Werk mit gleichen
 Nutzungs- und Vervielfältigungsrechten versehen ist, wie dieses.
 
-Sie sind berechtigt, diese Anleitung in andere Sprachen zu übersetzen 
+Sie sind berechtigt, diese Anleitung in andere Sprachen zu übersetzen
 und gemäß den oben genannten Bedingungen für modifizierte
 Versionen zu verbreiten. Darüberhinaus kann die Nutzungs- und
 Vervielfältigungsbedingung auch in einer von der Free Software Foundation
@@ -171,7 +171,7 @@ Sie möchten News und Mail bekommen und versenden; Ihr Server beherrscht aber
 leider kein UUCP. In Z--NETZ Notation ist Ihr System dann ein ``Point''.
 
 @item
-Sie bieten News und Mail an, und wollen auch Systeme versorgen können, 
+Sie bieten News und Mail an, und wollen auch Systeme versorgen können,
 die kein UUCP beherrschen. In Z--NETZ Notation ist Ihr System ein
 ``Gateway''.
 @end enumerate
@@ -229,7 +229,7 @@ mehr ausgewertet oder gar aus @file{/Z-NETZ/ALT/MACROS} ausgelesen.
 Das Paket besteht aus mehreren Teilen:
 
 @itemize @bullet
- @item 
+ @item
    @emph{Kommunikationsprogramme}
    zum Annehmen von JANUS-- oder ZCONNECT Netcalls sowie zum Anrufen
    anderer Systeme mit diesen Verfahren,
@@ -272,7 +272,7 @@ Benutzer @file{janus}.
 
 @subsubsection @file{zcall}
 ruft ein anderes System an. Es beherscht alle beiden oben genannten Verfahren
-und wählt (entsprechend den Systemdaten des anzurufenden Systems) das 
+und wählt (entsprechend den Systemdaten des anzurufenden Systems) das
 richtige Verfahren aus.
 
 
@@ -304,15 +304,15 @@ erzeugt einen rnews-Batch aus einer ZCONNECT-Datei.
 
 @subsubsection @file{zconsplit}
 
-ZCONNECT-Archive bestehen in der Regel aus Mail-Dateien mit der Endung 
+ZCONNECT-Archive bestehen in der Regel aus Mail-Dateien mit der Endung
 @file{.prv} und News-Dateien mit der Endung @file{.brt}. Dementsprechend
 werden sie auch vom Shell-Skript @file{import} behandelt.
 
-Unter bestimmten Umständen sind aber Mails-- und News vermischt in 
+Unter bestimmten Umständen sind aber Mails-- und News vermischt in
 einer Datei:
 
 @enumerate
-@item Die Gegenseite ist eine alte XPoint-Version oder eine alte ZERBERUS 
+@item Die Gegenseite ist eine alte XPoint-Version oder eine alte ZERBERUS
 Version. Diese beiden Programme haben das JANUS-Datenformat urspruenglich
 falsch implementiert.
 
@@ -348,7 +348,7 @@ Auspack wird von @file{import} und den Online--Programmen aufgerufen.
 
 Einpack ist das Gegenstück zu @file{auspack}. Es bekommt zusätzlich noch
 eine Liste von einzupackenden Dateien und erstellt daraus das Archiv.
-Einpack wird ausschliesslich von @file{prearc} aufgerufen, die 
+Einpack wird ausschliesslich von @file{prearc} aufgerufen, die
 Online--Programme packen niemals selbst.
 
 @subsubsection @file{import}
@@ -374,7 +374,7 @@ reicht es völlig aus, wenn @file{prearc} direkt vor dem Anruf gestartet
 wird. Für Points liegt ein Beispielskript @file{anruf} bei, was den
 täglichen Netcall durchführt.
 
-@file{Prearc} sammelt für alle ZCONNECT-- oder JANUS--Systeme alle 
+@file{Prearc} sammelt für alle ZCONNECT-- oder JANUS--Systeme alle
 bereitstehenden Daten ein (dazu ruft es zunächst @file{zbatchsmtp}
 auf) und ruft dann @file{einpack} auf, um daraus ein Archiv zu erstellen.
 
@@ -405,12 +405,12 @@ gefolgt von einem @file{:} und beliebig viel Zwischenraum.
 Es gibt keine Möglichkeit, die Zeilen am Ende fortzustzen.
 
 @menu
-* Beschreibung des lokalen Systems::  
-* Files und Directories::       
-* Konfiguration der ZCONNECT Online-Routinen::  
-* Konfiguration der Gateway-Routinen::  
-* Absenderabhaengiges Routing::  
-* Routlimits::                  
+* Beschreibung des lokalen Systems::
+* Files und Directories::
+* Konfiguration der ZCONNECT Online-Routinen::
+* Konfiguration der Gateway-Routinen::
+* Absenderabhaengiges Routing::
+* Routlimits::
 @end menu
 
 @subsection Beschreibung des lokalen Systems
@@ -445,14 +445,14 @@ In Deutschland ist dies der Eintrag während der Sommerzeit:
 
 @example
 Zeitzone:                          2
-Sommerzeit:                        1 
+Sommerzeit:                        1
 @end example
 
 und im Winter sähe es so aus:
 
 @example
 Zeitzone:                          1
-Sommerzeit:                        0 
+Sommerzeit:                        0
 @end example
 
 UNIX--Connect kann (eigentlich selbstverständlich) Logfiles anlegen, die das
@@ -535,7 +535,7 @@ Import-Kommando:                   /usr/local/lib/zconnect/import
 Inews-Kommando:                    /usr/lib/news/inews -h
 @end example
 
-Schließlich noch, falls abgehend telefoniert werden soll, die 
+Schließlich noch, falls abgehend telefoniert werden soll, die
 Befehle für das Modem:
 
 @example
@@ -579,7 +579,7 @@ Gate-Approved-Liste:               /usr/local/lib/zconnect/approved
 
 Da Mails mit Absender ``.sub.org'' (u.a.) nicht über WIN-Leitungen
 transportiert werden sollen, dies aber mit herkömmlichen Routing-Mechanismen
-nicht/schwer realisierbar ist (Matthias Urlichs nach ZMailer 
+nicht/schwer realisierbar ist (Matthias Urlichs nach ZMailer
 Patch fragen), wird im Gateway für solche Adressen gleich ein anderer
 Ziel-Pfad erzeugt.
 Der Gateway schreibt Adressen immer als (domain)!(user). Dieser Teil ist
@@ -612,7 +612,7 @@ Local-Domain:           .sub.org
 @section @file{myself.zconnect}
 
 Diese Datei beschreibt das eigene System. Sie entspricht auf der
-Gegenseite einer System-Datei (siehe unten). Auch das Format ist 
+Gegenseite einer System-Datei (siehe unten). Auch das Format ist
 identisch (und in @file{zconnect.doc} naeher beschrieben).
 
 Hier meine tatsaechlich eingesetzte Datei:
@@ -633,13 +633,13 @@ ISO2:		1 V.32bis V.32 V.22bis V.22 V.21
 ISO3:		1 V.42bis V.42 MNP5 MNP
 @end example
 
-Die meisten (rein technischen) Informationen sind selbsterklärend 
+Die meisten (rein technischen) Informationen sind selbsterklärend
 oder können vernachlässigt werden. Nur ein paar Bemerkungen:
 
 @table @samp
 @item Port
 UNIX--Connect benutzt als einzige Port-Nummer
-die 1 (Achtung: das ist hardcoded!). 
+die 1 (Achtung: das ist hardcoded!).
 Dies wird in künftigen Versionen aufgeschlüsselt
 werden, so daß dann konkrete Modems beschrieben
 werden können.
@@ -663,8 +663,8 @@ System erreichbar ist.
 
 @section Dateien in @file{systems}
 
-Jede Gegenstelle wird durch eine eigene Datei in 
-@file{/usr/local/lib/zconnect/systems} beschrieben. Die 
+Jede Gegenstelle wird durch eine eigene Datei in
+@file{/usr/local/lib/zconnect/systems} beschrieben. Die
 Kommunikationsprogramme entnehmen dieser Datei zum einen
 die zum Anrufen nötigen Daten, zum anderen sind hier Informationen
 ueber Komprimierungsmethoden und Point-User untergebracht.
@@ -712,7 +712,7 @@ Eintrag haben, können Sie eine Standard--System--Datei erstellen, die
 genau wie die gerade beschriebenen System--Dateien aussieht. In dieser
 Datei (bei mir zum Beispiel @file{/usr/local/lib/zconnect/autoeintrag})
 stehen die Defaults, die für neue Systeme gelten, bis diese ihre eigenen
-Daten geliefert haben. Fehlt diese Datei oder der zugehörige 
+Daten geliefert haben. Fehlt diese Datei oder der zugehörige
 @file{config}--Eintrag, wird der Anruf von fremden Systemen abgelehnt.
 
 
@@ -723,9 +723,9 @@ den exakten Weg beschreiben, den eine Nachricht geht, wenn sie mit
 UNIX--Connect in Berührung kommt.
 
 @menu
-* Von @code{smail} nach ZCONNECT::  
-* Von @code{inews} nach ZCONNECT::  
-* Von ZCONNECT nach @code{smail} oder @code{rnews}::  
+* Von @code{smail} nach ZCONNECT::
+* Von @code{inews} nach ZCONNECT::
+* Von ZCONNECT nach @code{smail} oder @code{rnews}::
 @end menu
 
 @section Von @code{smail} nach ZCONNECT
@@ -742,7 +742,7 @@ neue Datei mit der Nachricht anlegt).
 Dort lagert die Nachricht (noch im @file{hbsmtp}-Format) bis
 zum nächsten @file{prearc} oder @file{zbatchsmtp} (ersteres ruft letzteres
 auf). Nun wird sie, um die fehlenden SMTP-Kommandos ergänzt, zusammen mit
-allen anderen wartenden Nachrichten als grosser SMTP-Batch in 
+allen anderen wartenden Nachrichten als grosser SMTP-Batch in
 @file{uursmtp} geschickt. Dieses Programm wandelt das ganze in ZCONNECT-Format
 um und erzeugt eine neue Datei im Verzeichnis
 @file{/var/spool/zconnect/bionic.zerberus.de}. Als Name fuer diese Datei
@@ -773,12 +773,12 @@ in einer Verteilwarteschlange auf den Transport an alle Systeme, die diese
 Newsgroup bestellt haben. Der entsprechende Cronjob (bei C--News ist das
 @file{sendbatches}) findet zu jedem Zielsystem die Batch-Parameter
 (bei mir in @file{/usr/share/news/batchparams}) und ordnet der bionic
-den Transport @file{zconnect} zu. Dazu gehört das Shell-Skript 
+den Transport @file{zconnect} zu. Dazu gehört das Shell-Skript
 @file{viazconnect}, das den Newsbatch ueber die Standard-Eingabe erhält,
 in einer temporären Datei zwischenlagert und mittels @file{uurnews}
 konvertiert. Dabei entsteht eine neue Datei im ZCONNECT--Spool--Verzeichnis.
 
-Beim naechsten @file{prearc} wird diese Datei, wie oben beschrieben, 
+Beim naechsten @file{prearc} wird diese Datei, wie oben beschrieben,
 weiterverarbeitet.
 
 
@@ -814,7 +814,7 @@ Auf theoretischer Ebene ist dieser Fehler offensichtlich, ob er sich
 bei Ihnen in der Praxis zeigt, können Sie nur herausfinden, indem Sie
 es ausprobieren.
 
-Vorraussetzung fuer ein JANUS-Login ist die Umstellung Ihres 
+Vorraussetzung fuer ein JANUS-Login ist die Umstellung Ihres
 Login--Prompts auf ``Username:''. Dies ist für die meisten UUCP--Server
 bereits ein Knock-Out Kriterium.
 
@@ -829,21 +829,21 @@ Hinweise:
 	den Prompt ein. Das kann zum Beispiel so aussehen:
 
 @example
-Modem# B38400 HUPCL OPOST ONLCR TAB3 BRKINT IGNPAR 
-IXON IXANY ECHO ECHOE ECHOK ICANON ISIG CS8 CREAD # 
-B38400 HUPCL CS8 OPOST ONLCR CREAD BRKINT ICRNL IXON 
+Modem# B38400 HUPCL OPOST ONLCR TAB3 BRKINT IGNPAR
+IXON IXANY ECHO ECHOE ECHOK ICANON ISIG CS8 CREAD #
+B38400 HUPCL CS8 OPOST ONLCR CREAD BRKINT ICRNL IXON
 IXANY ISIG ICANON ECHO ECHOK ECHOE #\nUsername: #Modem
 @end example
 
 	(Alles in einer Zeile)
 
-@item	Wenn Sie einen Port--Monitor statt @file{getty} für die 
+@item	Wenn Sie einen Port--Monitor statt @file{getty} für die
 	Modem--Überwachung einsetzen (z.B. SVR4), können Sie mit
 	einem Service--Configuration--Skript (siehe @file{doconfig(3n)})
 	die Umgebungsvariable ``TTYPROMPT'' setzen.
 
 @item	Wenn Sie als Port--Monitor @file{ttymon} benutzen, können Sie
-	die @file{-p} Option einsetzen, allerdings werden Sie damit 
+	die @file{-p} Option einsetzen, allerdings werden Sie damit
 	wahrscheinlich keinen ``:'' im Prompt konfigurieren können.
 
 @end itemize
@@ -860,13 +860,13 @@ können.
 
 
 @menu
-* Ersteinrichtung::             
-* Das fertig installierte System::  
-* Crontab::                     
-* Mail::                        
-* News::                        
-* Systeme eintragen::           
-* POINTS::                      
+* Ersteinrichtung::
+* Das fertig installierte System::
+* Crontab::
+* Mail::
+* News::
+* Systeme eintragen::
+* POINTS::
 @end menu
 
 @section Ersteinrichtung
@@ -901,7 +901,7 @@ Hier wird eine uid mit zwei Logins verwendet.
 
 @item ./configure
 
-Fuehren Sie dies als root aus, da Directories unter /usr/local/lib 
+Fuehren Sie dies als root aus, da Directories unter /usr/local/lib
 erzeugt werden müssen. Falls Sie das erste mal installieren, wird
 configure Sie fragen, welchen Benutzernamen Sie für @file{mbox}
 benutzen möchten. Ansonsten laeuft die Konfiguration (theoretisch)
@@ -912,7 +912,7 @@ Unterverzeichnissen @file{Makefile}s erzeugt.
 
 Sie koennen das auch später machen---es ist jetzt nur besonders
 einfach, da zu diesem Zeitpunkt dort nur die wichtigen Dateien liegen,
-die alle bearbeitet werden müssen. Ansonsten richten Sie sich nach 
+die alle bearbeitet werden müssen. Ansonsten richten Sie sich nach
 dem Kapitel ``Die Konfigurationsdateien''.
 
 @item make
@@ -927,9 +927,9 @@ dann, wenn Sie UNIX--Connect neue Header beibringen möchten. Es sollte sich
 auch ohne kompilieren, installieren und benutzen lassen. Eleganter wäre es
 natürlich, wenn Sie gperf installieren würden...
 
-@item make install 
+@item make install
 
-Dieser Schritt muß wieder als root ausgeführt werden, da einige Dateien 
+Dieser Schritt muß wieder als root ausgeführt werden, da einige Dateien
 setuid @file{mbox} installiert werden.
 
 @item Spool-Directories für mindestens ein System anlegen.
@@ -948,9 +948,9 @@ z.B. @file{/var/spool/zconnect/hsp.owl.de},
 Das fertig installierte System sieht so aus:
 
 @itemize @bullet
-  @item @file{/usr/local/lib/zconnect}        
+  @item @file{/usr/local/lib/zconnect}
 	Binaer- und Konfigurationsverzeichnis
-  @item @file{/usr/local/lib/zconnect/systems} 
+  @item @file{/usr/local/lib/zconnect/systems}
 	Daten über erreichbare Systeme
   @item @file{/var/spool/zconnect}
 	Spool-Dir für die Netcalls (schon komprimiert)
@@ -966,7 +966,7 @@ Das fertig installierte System sieht so aus:
 
 @section Crontab
 
-Etwa einmal pro Stunde (oder auch häufiger) sollte 
+Etwa einmal pro Stunde (oder auch häufiger) sollte
 @file{prearc} von der root-crontab ausgeführt werden, wenn Sie von anderen
 Systemen angerufen werden.
 
@@ -1009,7 +1009,7 @@ ZCONNECT illegal ist.
 
 @section News
 
-Im Unterverzeichnis @file{./mail-and-news/cnews} liegen Beispiele für die 
+Im Unterverzeichnis @file{./mail-and-news/cnews} liegen Beispiele für die
 Integration in das News-System. Falls gewünscht, kann nach einem
 News-Batcher-Lauf sofort ein Aufruf von @file{prearc}
 erfolgen, indem dieser in das Batcher-Skript integriert wird. Aber Vorsicht:
@@ -1024,12 +1024,12 @@ die Autoeintrags-Datei vorhanden ist (siehe Konfigurationsdateien).
 JANUS--Systeme können von Hand eingetragen werden, indem
 
 @enumerate
-@item Ein Directory mit dem Systemnamen (kleingeschrieben) unter 
-      @file{/var/spool/zconnect} eingerichtet wird (Besitzer: der 
+@item Ein Directory mit dem Systemnamen (kleingeschrieben) unter
+      @file{/var/spool/zconnect} eingerichtet wird (Besitzer: der
       entsprechende Online-User, also @file{janus} oder @file{zerberus})
 
 @item Eine Header-Datei mit dem Namen des Systems im Verzeichnis, das
-      in der Konfigurationsdatei unter @samp{Systeme-Dir} steht, angelegt wird. 
+      in der Konfigurationsdatei unter @samp{Systeme-Dir} steht, angelegt wird.
       Die Beschreibung dieser Datei find Sie unter ``Konfigurationsdateien''.
       Der Wert fuer X-Call: muss eines der beiden Netcall-Formate JANUS
       oder ZCONNECT sein. Bitte dabei auf Großschreibung und Tippfehler
@@ -1039,7 +1039,7 @@ JANUS--Systeme können von Hand eingetragen werden, indem
       angelegt wird.
 @end enumerate
 
-Und natürlich das neue System auch in die Mail- und Newskonfiguration 
+Und natürlich das neue System auch in die Mail- und Newskonfiguration
 eingetragen wird...
 
 
@@ -1050,7 +1050,7 @@ den Namen des zugehörigen lokalen Benutzers gemapt werden. Ein Point ist
 durch mindestens einen @samp{Point-User: <adresse>} Eintrag in seiner
 Systems-Datei beschrieben. Es können mehrere @samp{Point-User:} vorhanden
 sein, jede dieser Adressen wird dann als Absender akzeptiert, alle anderen
-Absender werden durch den ersten @samp{Point-User:} ersetzt. 
+Absender werden durch den ersten @samp{Point-User:} ersetzt.
 Die Adresse sollte komplett mit Realname angegeben werden, also z.B.:
 @samp{Point-User: m.husemann@@bi-link.owl.de (Martin Husemann)}.
 
@@ -1067,7 +1067,7 @@ vornehmen.
 
 Fragen Sie beim Betreiber Ihres Servers nach: hat dieser Sie als ``Point''
 eingetragen, werden alle von Ihnen erzeugten Absenderangaben durch die
-Adresse Ihres Accounts auf dem Serversystem ersetzt --- in diesem Fall 
+Adresse Ihres Accounts auf dem Serversystem ersetzt --- in diesem Fall
 können Sie auf jeden Fall die Installationsvariante ``Point'' benutzen. Es
 gibt auch Systeme, die die eigentlich sinnvollere Variante anwenden, nur
 Nachrichten mit dem entsprechenden Absender zu akzeptieren. Wenn Sie damit
