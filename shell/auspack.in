@@ -22,19 +22,6 @@ then
 	exit 1
 fi
 
-function findarc() {
-# Argumente: (NAME) (SUFFIX)
-    local
-    name=`dirname $1`/`basename $1 $2`
-    ARC=name
-    if [ -r $name.$2 ]
-    then
-	ARC="$name.$2"
-    fi
-    return $ARC;
-}
-
-
 KENNUNG=$1
 ARC=$2
 
@@ -103,7 +90,7 @@ case "$KENNUNG" in
 				ARC="$name".lzh
 			fi
 		fi
-		lha xi $ARC ;;
+		lha xi $ARC
 		EC=$? ;;
  "non*" | \
  "NON*")	name=`dirname $ARC`/`basename $ARC .non`
