@@ -66,7 +66,7 @@
  *
  */
 
-static  unsigned char pc437xiso [] =                    /* 000-255 */
+static const unsigned char pc437xiso [] =               /* 000-255 */
 {
 	BAD, BAD, BAD, BAD, BAD, BAD, BAD, BAD,         /* 000-007 */
 	BAD,   9,  10, BAD,  12,  13, BAD, BAD,         /* 008-015 */
@@ -108,7 +108,8 @@ static  unsigned char pc437xiso [] =                    /* 000-255 */
 
 #include "lib.h"
 
-void pc2iso_size(char *buffer, size_t len)
+void
+pc2iso_size(char *buffer, size_t len)
 {
 	unsigned char *b;
 	unsigned char c;
@@ -120,7 +121,8 @@ void pc2iso_size(char *buffer, size_t len)
 	}
 }
 
-void pc2iso(char *buffer)
+void
+pc2iso(char *buffer)
 {
 	pc2iso_size(buffer, strlen( buffer ));
 }

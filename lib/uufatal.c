@@ -84,7 +84,8 @@ const char *nomem = "Nicht genug Hauptspeicher!";
  */
 
 
-void uufatal(const char *prog, const char *format, ...)
+void
+uufatal(const char *prog, const char *format, ...)
 {
 	char buf[ MAX_LOG_LINE ];
 	va_list ap;

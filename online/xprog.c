@@ -38,7 +38,6 @@
  */
 
 #include "config.h"
-#include "utility.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -59,13 +58,14 @@
 #endif
 #include <stdarg.h>
 
+#include "utility.h"
 #include "boxstat.h"
 #include "ministat.h"
 #include "xprog.h"
 
 
 /* eine Art system, aber auf execv-Basis und ohne shell
-   Warnung: Pfad muß mit angegeben werden! */
+   Warnung: Pfad muss mit angegeben werden! */
 static int runcommand(const char *file, ...)
 {
 	char *arg[20];
@@ -95,7 +95,7 @@ static int runcommand(const char *file, ...)
 			fprintf(stderr, "\n");
 		}
 		(void)execv(file, (char * const *)arg);
-		/* hier ist was schiefgelaufen, execv kehrt nicht zurück */
+		/* hier ist was schiefgelaufen, execv kehrt nicht zurueck */
 		perror(file);
 		return -1;
 	default: /* parent */

@@ -98,8 +98,8 @@ int Flag_verbose = OFF;
  *	copy data
  *---------------------------------------------------------------------------*/
 
-void file_cat( FILE *fsrc, FILE *fdest, size_t max_block );
-void file_cat( FILE *fsrc, FILE *fdest, size_t max_block )
+static void
+file_cat( FILE *fsrc, FILE *fdest, size_t max_block )
 {
 	char		*buffer;
 	size_t		block;
@@ -140,8 +140,8 @@ fprintf( stderr, "block = %ld\n", (long)block );
  *	sequence
  *---------------------------------------------------------------------------*/
 
-long get_sequence( const char *lockfile, long max_value );
-long get_sequence( const char *lockfile, long max_value )
+static long
+get_sequence( const char *lockfile, long max_value )
 {
 	int		handle;
 	int		st;
@@ -219,8 +219,8 @@ long get_sequence( const char *lockfile, long max_value )
  *	check for valid dir
  *---------------------------------------------------------------------------*/
 
-int test_is_dir( const char *dir );
-int test_is_dir( const char *dir )
+static int
+test_is_dir( const char *dir )
 {
 	int		rc;
 	struct stat	sb;
@@ -245,8 +245,8 @@ int test_is_dir( const char *dir )
  *	display help
  *---------------------------------------------------------------------------*/
 
-void usage( void );
-void usage( void )
+static void
+usage( void )
 {
 	fprintf( stderr, START_MESSAGE, "bsmtp" );
 	fprintf( stderr,
@@ -260,13 +260,8 @@ void usage( void )
  *	parse comand line and execute
  *---------------------------------------------------------------------------*/
 
-void main( int argc, const char *const *argv )
-#ifdef __GNUC__
-__attribute__ ((noreturn))
-#endif
-;
-
-void main( int argc, const char *const *argv )
+int
+main( int argc, const char *const *argv )
 {
 	FILE		*fdata;
 	const char	*cptr;
@@ -370,6 +365,7 @@ void main( int argc, const char *const *argv )
 		exit( EX_CANTCREAT );
 	};
 	exit( EX_OK );
+	return 0; /* gcc hat ein Problem */
 }
 
 /*---------------------------------------------------------------------------*

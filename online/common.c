@@ -44,24 +44,15 @@
  */
 
 #include "config.h"
-#include "utility.h"
+#include "zconnect.h"
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <ctype.h>
 #include <sys/stat.h>
-#ifdef HAVE_STRING_H
-# include <string.h>
-#else
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
-#endif
-#endif
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 
-#include "zconnect.h"
+#include "utility.h"
 
 connect_t connection;
 

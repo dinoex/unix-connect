@@ -25,7 +25,10 @@ dnl AC_HEADER_STDC
 dnl AC_HEADER_MAJOR
 dnl AC_HEADER_SYS_WAIT
 dnl AC_CHECK_HEADERS(fcntl.h limits.h paths.h sgtty.h strings.h sys/file.h sys/ioctl.h syslog.h termio.h unistd.h)
-AC_CHECK_HEADERS( string.h strings.h unistd.h sys/fcntl.h)
+AC_CHECK_HEADERS( string.h unistd.h sys/fcntl.h)
+if eval "test \"`echo '$ac_cv_header_'$ac_safe`\" = no"; then
+  AC_CHECK_HEADERS( strings.h )
+fi
 
 dnl      checks for typedefs, structures and compiler characteristics
 dnl AC_C_CONST
@@ -179,7 +182,7 @@ AC_SUBST(INSTTYPE)
 
 AC_MSG_CHECKING(Nachrichten zurückkonvertieren)
 AC_ARG_ENABLE(real-gate,
-[ --disable-real-gate      Nachrichten zurückkonvertieren erlauben.],
+[ --disable-real-gate      Nachrichten zurückkonvertieren verbieten.],
 [ case "$enableval" in
   yes)
         AC_MSG_RESULT(Ja)
@@ -255,7 +258,7 @@ AC_ARG_ENABLE(bang,
 [ case "$enableval" in
   yes)
 	AC_MSG_RESULT(Ja)
-	AC_DEFINE(RCPT_WITH_BANG)
+	AC_DEFINE(PLUS_RCPT_WITH_BANG)
         ;;
   *)
 	AC_MSG_RESULT(Nein)
@@ -263,10 +266,43 @@ AC_ARG_ENABLE(bang,
   esac ],[
   AC_MSG_RESULT(Nein)
 ])
-AC_SUBST(BANG)
+
+AC_MSG_CHECKING(Erzeuge-U-X-Header)
+AC_ARG_ENABLE(uxheader,
+[ --enable-uxheader        Erzeuge U-X-Header, veraltet.],
+[ case "$enableval" in
+  yes)
+	AC_MSG_RESULT(Ja)
+	AC_DEFINE(PLUS_KEEP_U_X_HEADER)
+        ;;
+  *)
+	AC_MSG_RESULT(Nein)
+        ;;
+  esac ],[
+  AC_MSG_RESULT(Nein)
+])
 
 
-dnl AC_MSG_CHECKING(Filserver)
+AC_MSG_CHECKING(Erzeuge-U-X-Header)
+AC_ARG_ENABLE(badheader,
+[ --enable-badheader       Ignoriere defekte Header.],
+[ case "$enableval" in
+  yes)
+	AC_MSG_RESULT(Ja)
+	AC_DEFINE(PLUS_IGNORE_BAD_HEADERS)
+        ;;
+  *)
+	AC_MSG_RESULT(Nein)
+        ;;
+  esac ],[
+  AC_MSG_RESULT(Nein)
+])
+
+
+dnl PLUS_NO_SLEEP_FOR_FLUSH
+dnl online/call.c
+
+dnl AC_MSG_CHECKING(Fileserver)
 dnl AC_ARG_WITH(fileserver,
 dnl [ --with-fileserver=dir      Fileserverdir.],
 dnl [

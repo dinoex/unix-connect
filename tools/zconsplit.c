@@ -60,6 +60,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#include "crc.h"
 #include "header.h"
 #include "hd_def.h"
 #include "hd_nam.h"
@@ -74,8 +75,8 @@ void convert(FILE *, FILE *, FILE *);
 
 const char *hd_crlf = "\r\n";
 
-void usage(void);
-void usage(void)
+static void
+usage(void)
 {
 	fputs("Aufruf:\tzconsplit (ZCONNECT-Datei)\n"
 	      "\t\tum die angegebene ZCONNECT-Datei in zwei\n"
@@ -83,7 +84,8 @@ void usage(void)
 	exit(1);
 }
 
-int main (int argc, char **argv)
+int
+main(int argc, char **argv)
 {
 	FILE *inp, *prv, *brt;
 	char name[FILENAME_MAX];
@@ -121,8 +123,8 @@ int main (int argc, char **argv)
 	return 0;
 }
 
-header_p dofind(int code, header_p h);
-header_p dofind(int code, header_p h)
+static header_p
+dofind(int code, header_p h)
 {
 	h = find(code, h);
 	if (!h) {
@@ -136,7 +138,8 @@ header_p dofind(int code, header_p h)
 /*
  *  Lese eine Message aus *zcon, schreibe sie nach *prv oder *brt.
  */
-void convert(FILE *zcon, FILE *prv, FILE *brt)
+void
+convert(FILE *zcon, FILE *prv, FILE *brt)
 {
 	header_p hd, h, private, news;
 	char *p;

@@ -3,6 +3,8 @@
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1993-94  Martin Husemann
  *  Copyright (C) 1995     Christopher Creutzig
+ *  Copyright (C) 1995     Morith Both
+ *  Copyright (C) 1999     Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,8 +27,8 @@
  *
  *  Bugreports, suggestions for improvement, patches, ports to other systems
  *  etc. are welcome. Contact the maintainer by e-mail:
- *  christopher@nescio.foebud.org or snail-mail:
- *  Christopher Creutzig, Im Samtfelde 19, 33098 Paderborn
+ *  dirk.meyer@dinoex.sub.org or snail-mail:
+ *  Dirk Meyer, Im Grund 4, 34317 Habichstwald
  *
  *  There is a mailing-list for user-support:
  *   unix-connect@mailinglisten.im-netz.de,
@@ -37,11 +39,6 @@
 
 /* apc_a2b: Fuer APC-Binaernachrichten-Hack
  */
-
-/* Copyright(C) 1995 M.Both */
-
-#ifndef __APC_A2B
-#define __APC_A2B
 
 /* apc_a2b versucht, in message den Binaer-Teil zu konvertieren.
    Es gibt -1 zurueck, wenn keine Konvertierung stattfand;
@@ -55,4 +52,3 @@ long apc_a2b(char *message, long *msglen);
 /* Hilfsprogramm dafuer */
 long atob(char *buffer);
 
-#endif

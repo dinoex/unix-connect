@@ -14,7 +14,7 @@
  *	       den core in das logfile-Verzeichnis
  *	       schreibt
  *
- * 9. Sep 1996 - Linux-fähige Version von Erich Oldendorf <olden@komtron.com>
+ * 9. Sep 1996 - Linux-faehige Version von Erich Oldendorf <olden@komtron.com>
  *
  * BUGS:
  *

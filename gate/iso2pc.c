@@ -64,7 +64,7 @@
  *
  */
 
-static unsigned char isoxpc437 [] =                     /* 000-255 */
+static const unsigned char isoxpc437 [] =               /* 000-255 */
 {
 	BAD, BAD, BAD, BAD, BAD, BAD, BAD, BAD,         /* 000-007 */
 	BAD,   9,  10, BAD,  12,  13, BAD, BAD,         /* 008-015 */
@@ -105,7 +105,8 @@ static unsigned char isoxpc437 [] =                     /* 000-255 */
 
 #include "lib.h"
 
-void iso2pc_size(char *buffer, size_t len)
+void
+iso2pc_size(char *buffer, size_t len)
 {
 	unsigned char *b;
 	unsigned char c;
@@ -117,7 +118,8 @@ void iso2pc_size(char *buffer, size_t len)
 	}
 }
 
-void iso2pc(char *buffer)
+void
+iso2pc(char *buffer)
 {
 	iso2pc_size(buffer, strlen( buffer ));
 }

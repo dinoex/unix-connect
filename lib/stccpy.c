@@ -30,6 +30,9 @@
  */
 
 #include "config.h"
+
+#include <time.h>
+
 #include "utility.h"
 
 #ifndef HAVE_STCCPY
@@ -37,7 +40,7 @@
 /*@@
  *
  * NAME
- *   stccpy -- String auf einen anderen kopieren, längenbeschränkt
+ *   stccpy -- String auf einen anderen kopieren, laengenbeschraenkt
  *
  * VISIBILITY
  *   global
@@ -53,7 +56,7 @@
  * PARAMETER
  *   char *to - String, auf den kopiert werden soll.
  *   const char *from - zu kopierender String.
- *   int len - max. in to zu schreibende Länge
+ *   int len - max. in to zu schreibende Laenge
  *
  * RESULT
  *  int - Anzahl der geschriebenen Bytes einschl. NUL-Byte
@@ -81,7 +84,7 @@ int stccpy(char *to, const char *from, int len)
 /*@@
  *
  * NAME
- *   qstccpy -- String auf einen anderen kopieren, längenbeschränkt
+ *   qstccpy -- String auf einen anderen kopieren, laengenbeschraenkt
  *
  * VISIBILITY
  *   global
@@ -97,7 +100,7 @@ int stccpy(char *to, const char *from, int len)
  * PARAMETER
  *   char *to - String, auf den kopiert werden soll.
  *   const char *from - zu kopierender String.
- *   int len - max. in to zu schreibende Länge
+ *   int len - max. in to zu schreibende Laenge
  *
  * RESULT
  *  void 

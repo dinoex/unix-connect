@@ -72,7 +72,8 @@
 char datei[2000];
 char baseid[20];
 
-void do_version( const char *name )
+void
+do_version( const char *name )
 {
 	fprintf( stderr,
 "%s (Unix-Connect) " VERSION "\n"
@@ -87,7 +88,8 @@ void do_version( const char *name )
 	exit( EX_OK );
 }
 
-FILE *open_new_file( const char *name, const char *dir, const char *ext )
+FILE *
+open_new_file( const char *name, const char *dir, const char *ext )
 {
 	time_t j;
 	struct stat st;

@@ -45,7 +45,6 @@
  */
 
 #include "config.h"
-#include "utility.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -79,7 +78,10 @@
 #include <errno.h>
 #include <sysexits.h>
 
+#include "boxstat.h"
 #include "ministat.h"
+#include "utility.h"
+#include "crc.h"
 #include "header.h"
 #include "hd_nam.h"
 #include "hd_def.h"
@@ -139,27 +141,29 @@ extern char wab_name[], wab_host[], wab_domain[];
 
 const char *fqdn = NULL;
 
-void usage(void)
+void
+usage(void)
 {
 	fputs(
 "UUrsmtp  -  RFC821/822 Batch nach ZCONNECT konvertieren\n"
 "Aufrufe:\n"
 "        uursmtp (BSMTP-Datei) (ZCONNECT-Datei)\n"
-"          alter Standard, Eingabedatei wird gelöscht\n"
+"          alter Standard, Eingabedatei wird geloescht\n"
 "        uursmtp -f (FQDN-ZCONNECT-Host)\n"
 "          alter Standard, Eingabe von stdin,\n"
 "          Ausgabedatei wird im Verzeichns des Systems erzeugt.\n"
 "        uursmtp -d (BSMTP-Datei) (ZCONNECT-Datei)\n"
-"          Modus mit höchster Sicherheit, oder zum Testen.\n"
+"          Modus mit hoechster Sicherheit, oder zum Testen.\n"
 "        uursmtp -p [ (FQDN-ZCONNECT-Host) ]\n"
 "          Echte Pipe\n"
-"        uursmtp -s (FQDN-ZCONNECT-host) (Absender) (Empfänger) [...]\n"
+"        uursmtp -s (FQDN-ZCONNECT-host) (Absender) (Empfaenger) [...]\n"
 "          Einzelne Nachricht in der Pipe mit Envelope Daten\n"
 , stderr);
 	exit( EX_USAGE );
 }
 
-void do_help(void)
+void
+do_help(void)
 {
 	fputs(
 "UUrsmtp  -  convert RFC821/822 BSMTP mail-batch to zconnect\n"
@@ -190,7 +194,8 @@ void do_help(void)
 	exit( EX_OK );
 }
 
-int main(int argc, const char *const *argv)
+int
+main(int argc, const char *const *argv)
 {
 	FILE *fin, *fout;
 	const char *cptr;
@@ -204,7 +209,6 @@ int main(int argc, const char *const *argv)
 	char ch;
 
 	initlog("uursmtp");
-	ulibinit();
 	minireadstat();
 	srand( (unsigned) time(NULL));
 
@@ -441,7 +445,8 @@ int main(int argc, const char *const *argv)
 	return 0;
 }
 
-static char *smtp_gets(char *line, size_t s, FILE *f)
+static char *
+smtp_gets(char *line, size_t s, FILE *f)
 {
 	char *p;
 
@@ -458,7 +463,8 @@ static char *smtp_gets(char *line, size_t s, FILE *f)
 	return line;
 }
 
-void convert(FILE *smtp, FILE *zconnect)
+void
+convert(FILE *smtp, FILE *zconnect)
 {
 	static char line[MAXLINE];
 	cmd_p p;
@@ -514,7 +520,8 @@ void convert(FILE *smtp, FILE *zconnect)
 	}
 }
 
-void clear(void)
+void
+clear(void)
 {
 	forward_p p, n;
 
@@ -529,7 +536,8 @@ void clear(void)
 	reverspath = NULL;
 }
 
-void enterfwd(const char *path)
+void
+enterfwd(const char *path)
 {
 	forward_p neu;
 
@@ -539,7 +547,8 @@ void enterfwd(const char *path)
 	neu->path = dstrdup(path);
 }
 
-void convdata(FILE *smtp, FILE *zconnect)
+void
+convdata(FILE *smtp, FILE *zconnect)
 {
 	char *n;
 	const char *habs, *mid;
@@ -614,7 +623,8 @@ void convdata(FILE *smtp, FILE *zconnect)
 	/* Envelope-Adresse konvertieren: */
 	for(cnt=0,emp=fwdpaths; emp; emp=emp->next) {
 		cnt += convaddr(HN_EMP, emp->path, 1, zconnect);
-		newlog(U2ZLOG, "mid=%s, from=%s, to=%s", mid, habs, emp->path);
+		newlog(U2ZLOG, "mid=%s, from=%s, to=%s size=%ld",
+			mid, habs, emp->path, (long)msglen );
 	}
 	if (!cnt) {
 		deliver = 0;
@@ -674,7 +684,7 @@ void convdata(FILE *smtp, FILE *zconnect)
 	    for(;p;t=p, p=p->other) {
 		char *x=decode_mime_string(p->text);
 		iso2pc(x);
-#ifndef NO_PLUS_KEEP_X_HEADER
+#ifndef PLUS_KEEP_U_X_HEADER
 		fprintf (zconnect, "U-%s: %s\r\n", p->header, x);
 #else
 		/* TetiSoft: X- bleibt X- (Gatebau '97) */

@@ -1,6 +1,33 @@
 $Id$
 
 Aenderungen an UnixConnect
+seit 0.83
+
+- Doukumentation in INSTALL für neue Optionen.
+
+- Includes in den Includefiles weitgehend entfernt.
+  Abhängigkeiten neu geordnet.
+  Umlautfehler in Kommentaren behoben
+
+- hdlib/uurdpara.c: (Moritz Both)
+  Option PLUS_IGNORE_BAD_HEADERS
+  um Sonderzeichen und Leerzeichne in RFC-Headern zu ignorieren.
+  (fuehrt normaerweise zum Abbruch der Konvertierung)
+
+- ulibinit() entfernt.
+
+- viele Funktionen static deklariert.
+
+- gate/uursmtp.c: gate/uuwsmtp.c (Moritz Both / Matthais Watermann)
+  Logfiles mit Byte-Angaben
+
+- gate/uuwsmtp.c: (Moritz Both)
+  Lines entfernt, und bugfix für start_of_line.
+
+- gate/zconv.c: (Moritz Both)
+  Optional STAT: NOKOP nicht löschen.
+  Optional KOP: Header unterdücken.
+
 seit 0.82
 
 - gate/zconv.c: gate/uuconv.c

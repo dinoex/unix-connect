@@ -45,7 +45,6 @@
  */
 
 #include "config.h"
-#include "utility.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -65,10 +64,11 @@
 #include <time.h>
 #include <ctype.h>
 
+#include "utility.h"
+#include "crc.h"
 #include "header.h"
 #include "hd_def.h"
 #include "hd_nam.h"
-
 #include "uulog.h"
 #include "alias.h"
 #include "version.h"
@@ -83,7 +83,8 @@ extern char eol[];
 
 extern header_p pointuser;
 
-char *eda2date(const char *text )
+char *
+eda2date(const char *text )
 {
 	struct tm t;
 	time_t dt;
@@ -119,7 +120,7 @@ char *eda2date(const char *text )
         Zeitwert aber golobal war ist das Ergebnis um unsere eigene
         Zeitzone verschoben. Das Resultat ist die Zeit des Absenders
 
-        ueber diese Formel werden die Stunden, Wochentage, Datumsübegänge,
+        ueber diese Formel werden die Stunden, Wochentage, Datumsuebegaenge,
         Schaltjahre und sonstige Probleme einfach geloest.
 
 	Dirk Meyer
@@ -140,8 +141,9 @@ char *eda2date(const char *text )
 	return answer;
 }
 
-/* Hier werden die ZConnect Brettnamen auf Gültigkeit geprüft. */
-int valid_newsgroups( const char *data )
+/* Hier werden die ZConnect Brettnamen auf Gueltigkeit geprueft. */
+int
+valid_newsgroups( const char *data )
 {
 	if(NULL==data)
 		return 0;
@@ -158,7 +160,8 @@ int valid_newsgroups( const char *data )
  *  Liefert 1, wenn die beiden Adressteile (ohne Realname) identisch
  *  sind
  */
-int adrmatch(const char *abs1, const char *abs2)
+int
+adrmatch(const char *abs1, const char *abs2)
 {
 	while (toupper(*abs1) == toupper(*abs2)) {
 		abs1++; abs2++;
@@ -173,7 +176,8 @@ int adrmatch(const char *abs1, const char *abs2)
 /* Druckt EINE newsgroup nach EINEM Brett.
  * Gibt !=0 zurueck im Ungluecksfall.
  */
-int printnewsgroup(const char *brett, FILE *f)
+int
+printnewsgroup(const char *brett, FILE *f)
 {
 	char *s;
 	static char buffer[MAXLINE];
@@ -203,7 +207,8 @@ int printnewsgroup(const char *brett, FILE *f)
 /* Druckt in file f alle newsgroups, die als Bretter in
  * den Headerzeilen p ... p->other usw. stehen.
  */
-void printnewsgroups(header_p p, const char *uuheader, FILE *f)
+void
+printnewsgroups(header_p p, const char *uuheader, FILE *f)
 {
 	header_p t;
 
@@ -221,7 +226,8 @@ void printnewsgroups(header_p p, const char *uuheader, FILE *f)
 extern int main_is_mail;
 extern char *pointsys;
 
-header_p convheader(header_p hd, FILE *f)
+header_p
+convheader(header_p hd, FILE *f)
 {
 	header_p p, t, to, cc, bcc;
 	char *s, *test, *habs, *oabs, *sender;
@@ -251,6 +257,12 @@ header_p convheader(header_p hd, FILE *f)
 			}
 		}
 	}
+#if 0
+	/* Nokop-Zeile sollte entfernt werden,
+	   daher wird hier nicht geschrieben. */
+	if (main_is_mail && nokop)
+		fprintf(f, "X-ZC-STAT: NOKOP%s", eol);
+#endif
 	p = find(HD_EMP, hd);
 	if (p) {
 		int mail, news;
@@ -309,7 +321,17 @@ header_p convheader(header_p hd, FILE *f)
 			printnewsgroups(p, HN_UU_NEWSGROUPS, f);
 			hd = del_header(HD_KOP, hd);
 		}
-/* Wenn wir den Header nicht bearbeitet haben, wird er als X-ZC-KOP: ausgegeben. */
+/* Wenn wir den Header nicht bearbeitet haben,
+ * wird er als X-ZC-KOP: ausgegeben. */
+#if 0
+		else {
+			/* Wenn wir die Headerzeile nicht bearbeitet haben,
+			 * wird sie als X-ZC-KOP: ausgegeben.
+			 * Das wollen wir aber NICHT mehr:
+			 */
+			 hd=del_header(HD_KOP, hd);
+		}
+#endif
 	  }
 	}
 	if (to) {
@@ -446,7 +468,7 @@ header_p convheader(header_p hd, FILE *f)
 	if (s) *s = '\0';
 	strlwr(habs);
 	test = strrchr(habs, '@');
-/* ist das hier echt noch nötig? -- ccr */
+/* ist das hier echt noch noetig? -- ccr */
 	if (test && strcmp(test, "@uucp")==0) {
 		*test = '\0';
 		test = strrchr(habs, '%');
@@ -550,7 +572,7 @@ header_p convheader(header_p hd, FILE *f)
 	p = find(HD_BET, hd);
 	if (p) {
 		/* Umlaute werden nicht mit ae... ausgegeben, um
-		 * ein transparentes Gating zu ermöglichen. */
+		 * ein transparentes Gating zu ermoeglichen. */
 		char *encoded;
 		pc2iso(p->text);
 		encoded = mime_encode(p->text);
@@ -631,7 +653,7 @@ header_p convheader(header_p hd, FILE *f)
 	p = find(HD_BEZ, hd);
 	if (p) {
 	  /* References enthalten keinen Whitespace
-	   * und dürfen daher nicht umbrochen werden.
+	   * und duerfen daher nicht umbrochen werden.
 	   */
 		fputs(HN_UU_REFERENCES":", f);
 		for (; p; p=p->other) {
@@ -688,7 +710,8 @@ header_p convheader(header_p hd, FILE *f)
  * (C) Moritz Both
  */
 
-void foldputs_no_eol(FILE *f, const char *inhalt, int *col)
+void
+foldputs_no_eol(FILE *f, const char *inhalt, int *col)
 {
 #if 0
 	int i; 
@@ -755,12 +778,13 @@ void foldputs_no_eol(FILE *f, const char *inhalt, int *col)
 /*
  * Gibt einen Header RFC822-umbrochen aus. Wenn hd != NULL, wird
  * der Name des Headers, gefolgt von einem ": ", vorangestellt.
- * ansonsten wird davon ausgegangen, daß eine neue Zeile begonnen
+ * ansonsten wird davon ausgegangen, dass eine neue Zeile begonnen
  * werden soll, das Zeilenende aber schon da ist, es wird also mit
  * einem '\t' begonnen. Gibt am Ende ein eol aus.
  */
 
-void foldputs(FILE *f, const char *hd, const char *inhalt)
+void
+foldputs(FILE *f, const char *hd, const char *inhalt)
 {
 	int col;
 
@@ -781,7 +805,8 @@ void foldputs(FILE *f, const char *hd, const char *inhalt)
  * ZC-Headern zusammengesetzt ist. hd wird wie in foldputs
  * verwendet.
  */
-void foldputh(FILE *f, const char *hd, header_p t)
+void
+foldputh(FILE *f, const char *hd, header_p t)
 {
 	int col;
 	header_p p;
@@ -812,10 +837,11 @@ void foldputh(FILE *f, const char *hd, header_p t)
 
 /*
  * Gibt einen Header aus, der aus Mailadressen besteht. Es werden
- * diejenigen ausgegeben, die ein '@' enthalten, sie werden dafür
+ * diejenigen ausgegeben, die ein '@' enthalten, sie werden dafuer
  * durch mime_encode "gejagt".
  */
-void foldputaddrs(FILE *f, const char *hd, header_p t)
+void
+foldputaddrs(FILE *f, const char *hd, header_p t)
 {
 	int col;
 	header_p p;
@@ -850,7 +876,8 @@ void foldputaddrs(FILE *f, const char *hd, header_p t)
 	fputs(eol, f);
 }
 
-void u_f_and_all(FILE *f, header_p hd)
+void
+u_f_and_all(FILE *f, header_p hd)
 {
 	header_p p, p1;
 	char *text;
@@ -875,7 +902,7 @@ void u_f_and_all(FILE *f, header_p hd)
 				dfree(text);
 				continue;
 			}
-#ifndef NO_PLUS_KEEP_X_HEADER
+#ifndef PLUS_KEEP_U_X_HEADER
 			/* TetiSoft: X- bleibt X- (Gatebau '97) */
 			if (strncasecmp(p1->header,"X-",2) != 0)
 				fputs("X-ZC-", f);

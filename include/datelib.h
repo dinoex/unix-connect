@@ -35,10 +35,5 @@
  *  for instructions on how to join this list.
  */
 
-#ifndef __DATELIB_H
-#define __DATELIB_H
-
 time_t parsedate(char *date_header, int *time_zone);
-
-#endif
 

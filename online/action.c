@@ -45,21 +45,14 @@
  */
 
 #include "config.h"
-#include "utility.h"
+#include "zconnect.h"
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#ifdef HAVE_STRING_H
-# include <string.h>
-#else
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
-#endif
-#endif
 #include <time.h>
 
-#include "zconnect.h"
+#include "utility.h"
 #include "xprog.h"
 
 unsigned waittime;

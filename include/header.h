@@ -45,16 +45,6 @@
  *              Mail-Header
  */
 
-#ifndef SYSDEP_H
-#include "sysdep.h"
-#endif
-
-
-# ifndef _HEADER
-# define _HEADER
-
-#include "crc.h"
-
 /*
  * Definition des Header-Records fuer Mail-Header
  */
@@ -66,12 +56,12 @@ typedef struct para_s {
 
         struct para_s
              *other,     /* Pointer auf weitere Header mit diesem code */
-             *next;      /* Pointer auf den n„chsten Header */
+             *next;      /* Pointer auf den naechsten Header */
 } header_t;
 
 typedef header_t *header_p;
 
-/* Fehlercodes fr rd_para */
+/* Fehlercodes fuer rd_para */
 #define HEAD_NO_ERROR 0
 #define HEAD_END_OF_FILE 1
 #define HEAD_ILLEGAL_HEADER 2
@@ -127,4 +117,4 @@ int identify(const char *);
 
 # define new_header(text, code) add_header(text, code, NULL)
 # define for_header(par, code, h) for(par=find(code, h); par; par=par->other)
-#endif
+

@@ -14,9 +14,8 @@
  */
 
 #include "config.h"
-#include "utility.h"
+#include "zconnect.h"
 
-#include <stdio.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -29,7 +28,7 @@
 #include <sys/sysmacros.h>
 #endif
 
-#include "zconnect.h"
+#include "utility.h"
 #include "policy.h"
 
 #define FALSE	0

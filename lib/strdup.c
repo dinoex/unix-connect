@@ -49,7 +49,6 @@
  */
 
 #include "config.h"
-#include "utility.h"
 
 #ifdef HAVE_STRING_H
 #include <string.h>
@@ -59,6 +58,7 @@
 #endif
 #endif
 
+#include "utility.h"
 #include "uulog.h"
 
 #if defined(NEXTSTEP)

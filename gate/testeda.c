@@ -84,8 +84,8 @@ const testeda_t Samples[] = {
 char answer[ 1024 ];
 char sdate[ 1024 ];
 
-char *eda2date(const char *text);
-char *eda2date(const char *text)
+static char *
+eda2date(const char *text)
 {
 	struct tm t;
 	time_t dt;
@@ -118,7 +118,7 @@ char *eda2date(const char *text)
         Zeitwert aber golobal war ist das Ergebnis um unsere eigene
         Zeitzone verschoben. Das Resultat ist die Zeit des Absenders
 
-        ueber diese Formel werden die Stunden, Wochentage, Datumsübegänge,
+        ueber diese Formel werden die Stunden, Wochentage, Datumsuebegaenge,
         Schaltjahre und sonstige Probleme einfach geloest.
 
 	Dirk Meyer
@@ -139,8 +139,8 @@ char *eda2date(const char *text)
 	return answer;
 }
 
-char *date2eda( const char *str );
-char *date2eda( const char *str )
+static char *
+date2eda( const char *str )
 {
 	int tz;
 	char *datum;
@@ -163,8 +163,8 @@ char *date2eda( const char *str )
 	return sdate;
 }
 
-int loop_samples( void );
-int loop_samples( void )
+static int
+loop_samples( void )
 {
 	const char *new_date;
 	const char *new_eda;
@@ -197,7 +197,8 @@ int loop_samples( void )
 	return err;
 }
 
-void main( void )
+int
+main( void )
 {
 	int err;
 
@@ -208,5 +209,6 @@ void main( void )
 
 	printf( "%d Errors found\n", err );
 	exit( 1 );
+	return 0; /* gcc hat ein Problem */
 }
 

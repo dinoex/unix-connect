@@ -52,9 +52,11 @@
 
 
 #include "config.h"
-#include "utility.h"
 
+#include <time.h>
 #include <ctype.h>
+
+#include "utility.h"
 
 /*@@
  *

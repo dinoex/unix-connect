@@ -35,9 +35,6 @@
  *  for instructions on how to join this list.
  */
 
-#ifndef __ZCONV_H
-#define __ZCONV_H
-
 char *eda2date(const char *text );
 int valid_newsgroups( const char *data );
 int adrmatch(const char *abs1, const char *abs2);
@@ -49,4 +46,3 @@ void foldputs(FILE *, const char *, const char *);
 void foldputh(FILE *f, const char *hd, header_p t);
 void foldputaddrs(FILE *f, const char *hd, header_p t);
 
-#endif

@@ -43,7 +43,6 @@
 
 
 #include "config.h"
-#include "utility.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -62,13 +61,16 @@
 #include <dirent.h>
 #endif
 
+#include "utility.h"
+#include "crc.h"
 #include "header.h"
 #include "hd_def.h"
 #include "hd_nam.h"
+#include "boxstat.h"
 #include "ministat.h"
 
-void usage(void);
-void usage(void)
+static void
+usage(void)
 {
 	fputs("list-systems: Listet alle ZCONNECT/JANUS Systeme,\n"
 	      "zu denen eine Direktverbindung aufgebaut werden kann.\n"
@@ -78,7 +80,8 @@ void usage(void)
 	exit(1);
 }
 
-int main(int argc, char **argv)
+int
+main(int argc, char **argv)
 {
 	DIR *dir;
 #ifdef HAS_BSD_DIRECT

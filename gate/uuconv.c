@@ -45,7 +45,6 @@
 
 
 #include "config.h"
-#include "utility.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -65,6 +64,8 @@
 #include <ctype.h>
 #include <unistd.h>
 
+#include "utility.h"
+#include "crc.h"
 #include "header.h"
 #include "hd_def.h"
 #include "hd_nam.h"
@@ -90,7 +91,8 @@ static char sp_domain[MAXLINE], rna[MAXLINE];
 int dont_gate = 0;	/* Flag fuer Pseudo Z3.8 Nachrichten */
 
 
-char *date2eda( const char *str, FILE *fout )
+char *
+date2eda( const char *str, FILE *fout )
 {
 	int tz;
 	char *datum;
@@ -118,8 +120,9 @@ char *date2eda( const char *str, FILE *fout )
 }
 
 /* Hier werden die nach ZConnect gewandelten Brettnamen
-   auf Gültigkeit geprüft. */
-int valid_newsgroups( const char *data )
+   auf Gueltigkeit geprueft. */
+int
+valid_newsgroups( const char *data )
 {
 	if(NULL==data)
 		return 0;
@@ -137,7 +140,8 @@ int valid_newsgroups( const char *data )
  * Wenn zc_header NULL ist, druckt es nur eine Zeile aus
  * der ersten angegebenen newsgroup und fertig.
  */
-void printbretter(const char *newsgroups, const char *zc_header, FILE *f)
+void
+printbretter(const char *newsgroups, const char *zc_header, FILE *f)
 {
 	static char adr[MAXLINE];
 	char *bak, *st, *q, *s;
@@ -209,7 +213,8 @@ void printbretter(const char *newsgroups, const char *zc_header, FILE *f)
  *   Hinter dem FQDN darf noch (Real Name) stehen, der seinerseits
  *   auch ein '@' enthalten kann. Dies wird nicht 'gefunden'.
  */
-char *fqdn_at(char *s)
+char *
+fqdn_at(char *s)
 {
 	char *erg;
 
@@ -229,7 +234,8 @@ char *fqdn_at(char *s)
  *     NULL  -> kein Komma, dies ist die letzte Adresse
  *     != 0  -> Zeiger auf das Komma
  */
-char *next_komma(char *s)
+char *
+next_komma(char *s)
 {
 	int level;
 
@@ -262,8 +268,8 @@ char *next_komma(char *s)
 }
 
 
-void splitaddr(char *rfc_addr, char *name, char *host, char *domain,
-	char *lrna)
+void
+splitaddr(char *rfc_addr, char *name, char *host, char *domain, char *lrna)
 {
 	static char adr[MAXLINE];
 	char *q, *q1, *s;
@@ -296,8 +302,8 @@ void splitaddr(char *rfc_addr, char *name, char *host, char *domain,
 		 *   Muhammed (I am the greatest!) .Ali @ somewhere.edu (Muhammed Ali)
 		 * eine korrekte Adresse, die auf das Postfach
 		 *   Muhammed.Ali@somewhere.edu
-		 * zeigt. Es ist aber schon besser als die Lösung mit isspace,
-		 * da Klammern, die nicht vom Adreßteil getrennt
+		 * zeigt. Es ist aber schon besser als die Loesung mit isspace,
+		 * da Klammern, die nicht vom Adressteil getrennt
 		 * sind, erkannt werden. Solche Adressen sind zwar
 		 * strenggenommen falsch, treten aber auf.
 		 */
@@ -385,7 +391,7 @@ void splitaddr(char *rfc_addr, char *name, char *host, char *domain,
 		}
 	}
 	 else if (!s && !q) {
-	 /* Die Adresse enthält nur den Usernamen.
+	 /* Die Adresse enthaelt nur den Usernamen.
 	  * Das ist zwar vollkommen illegal, mehrdeutig
 	  * und unsinnig, aber das Beste, was wir tun
 	  * koennen, ist wohl, den Namen einfach durchzureichen.
@@ -401,11 +407,11 @@ void splitaddr(char *rfc_addr, char *name, char *host, char *domain,
  *	max > 0  maximal max Adressen. (es werden die ersten max ausgegeben)
  *
  *   return:
- *		die Anzahl der ausgegebenen Adressen (alle ungültigen werden
+ *		die Anzahl der ausgegebenen Adressen (alle ungueltigen werden
  *		nicht erzeugt)
  */
-int convaddr(const char *zconnect_header, const char *rfc_addr,
-	int max, FILE *f)
+int
+convaddr(const char *zconnect_header, const char *rfc_addr, int max, FILE *f)
 {
 	char *komma, *start, *line;
 	static char zaddr[MAXLINE];
@@ -485,9 +491,9 @@ int convaddr(const char *zconnect_header, const char *rfc_addr,
 				}
 			} else {
 				/* Na prima. Eine illegale Adresse, die keinen
-				   oder mehrere @-Zeichen enthält.
+				   oder mehrere @-Zeichen enthaelt.
 				   Wie ist die eigentlich bis hierhin vorgedrungen?
-				   Wir können aber schlecht keinen entsprechenden
+				   Wir koennen aber schlecht keinen entsprechenden
 				   Header ausgeben...
 				   Den rna lassen wir unter den Tisch fallen,
 				   im Realnamenfeld darf keine weitere Klammer
@@ -521,7 +527,8 @@ int convaddr(const char *zconnect_header, const char *rfc_addr,
 	return counter;
 }
 
-char *printpath(char *reverse_path)
+char *
+printpath(char *reverse_path)
 {
 	char *p, *a, *rot;
 
@@ -531,14 +538,14 @@ char *printpath(char *reverse_path)
 	}
 	p = dstrdup(reverse_path);
 	/* Der Routweg ist ebensolang wie die Adresse vorher,
-	   schließlich entsteht er daraus durch Umsortieren.
+	   schliesslich entsteht er daraus durch Umsortieren.
 	 */
 	rot = dalloc(strlen(reverse_path)+1);
 	rot[0] = '\0';
 	a = fqdn_at(p);
 	if (a) {
 		*a = '\0';
-		sprintf(rot, "%s!", a+1); /* rot ist groß genug dafuer. */
+		sprintf(rot, "%s!", a+1); /* rot ist gross genug dafuer. */
 	}
 	a = strrchr(p, '!');
 	if (a) *a = '\0';
@@ -549,7 +556,8 @@ char *printpath(char *reverse_path)
 
 extern int main_is_mail;
 
-header_p convheader(header_p hd, FILE *f, char *from)
+header_p
+convheader(header_p hd, FILE *f, char *from)
 {
 	int has_wab=0;
 	header_p p, t;
@@ -614,10 +622,10 @@ header_p convheader(header_p hd, FILE *f, char *from)
 		hd = del_header(HD_UU_MESSAGE_ID, hd);
 	} else {
 		/* Hmm... eine Nachricht ohne Message-ID.
-		 * Das ist für Mail in RFC erlaubt, aber nicht
+		 * Das ist fuer Mail in RFC erlaubt, aber nicht
 		 * in ZConnect. Bouncen ist eine sehr schlechte
-		 * Lösung, eine neue MID erfinden ist eine
-		 * ziemlich schlechte Lösung. Ziemlich schlecht
+		 * Loesung, eine neue MID erfinden ist eine
+		 * ziemlich schlechte Loesung. Ziemlich schlecht
 		 * ist besser als sehr schlecht: */
 		if(main_is_mail) {
 			fprintf(f,HN_MID": gateway-generated.%d.%d@unknown.nil\r\n",
@@ -630,12 +638,12 @@ header_p convheader(header_p hd, FILE *f, char *from)
 			/*
 			 *  Illegale Nachricht - die sollte uns gar nicht
 			 *  erst erreicht haben, aber weder C-News noch INN
-			 *  testen sorgfältig.
+			 *  testen sorgfaeltig.
 			 *
 			 *  Jetzt stehen wir ohne Absender da!
 			 *
-			 *  Heiko Schlichting schlägt vor, so eine Nachricht
-			 *  einfach zu löschen, aber das ist (momentan) an
+			 *  Heiko Schlichting schlaegt vor, so eine Nachricht
+			 *  einfach zu loeschen, aber das ist (momentan) an
 			 *  dieser Stelle nicht so einfach, daher setzen
 			 *  wir erstmal einen Dummy-Absender ein.
 			 */
@@ -762,8 +770,8 @@ header_p convheader(header_p hd, FILE *f, char *from)
 					*s = '\0';
 				fprintf(f, HN_CONTROL": CANCEL %s\r\n",mid);
 				/* OK. Ist die MID auch bei den
-				 * References dabei, oder müssen wir
-				 * den BEZ noch zusätzlich erzeugen? */
+				 * References dabei, oder muessen wir
+				 * den BEZ noch zusaetzlich erzeugen? */
 				istda = 0;
 				p = find(HD_UU_REFERENCES, hd);
 				if(p)
@@ -877,10 +885,10 @@ header_p convheader(header_p hd, FILE *f, char *from)
  * strenggenommen falsch, fuehrt aber zu den wenigsten Problemen.
 
  * Andererseits kann man damit den MAPS im Zerberus nicht verwenden.
- * Also gibt es die Möglichkeit, Nachrichten an MAPS mit einem
+ * Also gibt es die Moeglichkeit, Nachrichten an MAPS mit einem
  * ZC-konformen Routstring zu schreiben.
 
- * Nachdem wir dafür aber meistens Nachrichten ohne Routstring (da vom
+ * Nachdem wir dafuer aber meistens Nachrichten ohne Routstring (da vom
  * lokalen Host kommend) vorgesetzt bekommen werden, kopieren wir
  * den Routstring zunaechst in einen eigenen Speicherbereich und
  * arbeiten damit weiter.
@@ -994,7 +1002,7 @@ header_p convheader(header_p hd, FILE *f, char *from)
 
 	p = find(HD_X_GATEWAY, hd);
 	if (p) {
-	  /* Sollte unnötig sein. Wer weiß... */
+	  /* Sollte unnoetig sein. Wer weiss... */
 	        char *gat=decode_mime_string(p->text);
 		iso2pc(gat);
 		fprintf(f, HN_GATE": RFC1036/822 %s.%s [" 
@@ -1018,7 +1026,7 @@ header_p convheader(header_p hd, FILE *f, char *from)
 			hd = del_header(HD_UU_X_COMMENT_TO, hd);
 		}
 
-		/* eigentlich schöner wäre es, diese Header oben zuerst auszugeben
+		/* eigentlich schoener waere es, diese Header oben zuerst auszugeben
 		   und dann entsprechende Wandlungen zu unterbinden. */
 
 		for (p = hd; p; p = t) {
@@ -1073,7 +1081,7 @@ header_p convheader(header_p hd, FILE *f, char *from)
 			hd=del_header(p->code, hd);
 			continue;
 		}
-#ifndef NO_PLUS_KEEP_X_HEADER
+#ifndef PLUS_KEEP_U_X_HEADER
 		if (strncasecmp(p->header, "X-", 2) == 0) {
 			for (t = p; t; t = t->other) {
 			  char *x=decode_mime_string(t->text);
@@ -1098,7 +1106,8 @@ header_p convheader(header_p hd, FILE *f, char *from)
  * Codierung
  */
 
-int make_body(char *bigbuffer, size_t msglen,
+int
+make_body(char *bigbuffer, size_t msglen,
 		mime_header_info_struct *mime_info,
 		int binaer, char *smallbuffer, FILE *zconnect)
 {
@@ -1213,7 +1222,7 @@ int make_body(char *bigbuffer, size_t msglen,
 
 /*
  * Leerzeilen am Anfang wegzuwerfen ist nicht nur schlechter Stil,
- * sondern auch noch unerlaubt und führt dazu, daß der Lines:-Header
+ * sondern auch noch unerlaubt und fuehrt dazu, dass der Lines:-Header
  * nach einer RFC->ZC->RFC-Konvertierung evtl. nicht mehr stimmt.
 
 		if (msglen && *start == '\r') {

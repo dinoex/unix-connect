@@ -40,10 +40,6 @@
 /*
  *   line.h
  */
-#ifndef SYSDEP_H
-#include "sysdep.h"
-#endif
-
 
 /*
  * setzt file-desc. auf raw-mode

@@ -44,7 +44,6 @@
  */
 
 #include "config.h"
-#include "utility.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -58,11 +57,13 @@
 #include <ctype.h>
 #include <errno.h>
 
-#include "alias.h"
+#include "utility.h"
+#include "crc.h"
 #include "header.h"
 #include "hd_def.h"
 #include "hd_nam.h"
 #include "uulog.h"
+#include "alias.h"
 
 extern void minireadstat(void);
 static int init_done = 0;
@@ -78,7 +79,8 @@ typedef struct alias_st {
 
 static alias_list data = NULL;
 
-static void insert(char *znetz, char *uucp, int v)
+static void
+insert(char *znetz, char *uucp, int v)
 {
 	alias_list p;
 
@@ -92,12 +94,8 @@ static void insert(char *znetz, char *uucp, int v)
 	data = p;
 }
 
-static void parse_alias(char *l, int v)
-/*
-	Die Variante von Matthias Andree
-	führte zu Fehlern im Regression-Test
-	=> Verlus von EMP: Zeilen bei Crosspostions.
-*/
+static void
+parse_alias(char *l, int v)
 {
 	char *s;
 	char *t;
@@ -114,7 +112,8 @@ static void parse_alias(char *l, int v)
 	insert(l, s, v);
 }
 
-static void init(void)
+static void
+init(void)
 {
 	if (init_done) return;
 	init_done = 1;
@@ -147,11 +146,12 @@ static void init(void)
 	}
 }
 
-char *z_search(const char *gesucht, int v)
+char *
+z_search(const char *gesucht, int v)
 {
 	alias_list p;
 /* Aus irgendeinem Grund (den ich noch nicht finde konnte)
- * vergißt die Routine manchmal (reproduzierbar) einen Eintrag
+ * vergisst die Routine manchmal (reproduzierbar) einen Eintrag
  * in der Alias-Liste, sie setzt p->z einfach auf ''.
  * Das gibt natuerlich unerwuenschte Effekte. Symptomkur:
  */
@@ -187,7 +187,8 @@ char *z_search(const char *gesucht, int v)
 	return NULL;
 }
 
-char *u_search(const char *gesucht, int v)
+char *
+u_search(const char *gesucht, int v)
 {
 	alias_list p;
 

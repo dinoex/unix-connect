@@ -3,6 +3,7 @@
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1993-94  Martin Husemann
  *  Copyright (C) 1995     Christopher Creutzig
+ *  Copyright (C) 1999     Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,8 +26,8 @@
  *
  *  Bugreports, suggestions for improvement, patches, ports to other systems
  *  etc. are welcome. Contact the maintainer by e-mail:
- *  christopher@nescio.foebud.org or snail-mail:
- *  Christopher Creutzig, Im Samtfelde 19, 33098 Paderborn
+ *  dirk.meyer@dinoex.sub.org or snail-mail:
+ *  Dirk Meyer, Im Grund 4, 34317 Habichstwald
  *
  *  There is a mailing-list for user-support:
  *   unix-connect@mailinglisten.im-netz.de,
@@ -39,26 +40,21 @@
 /*
  *   pattern.h
  *
- *   Header fÅr pattern.c
+ *   Header fuer pattern.c
  *
  *   Pattern.c implementiert einen Knuth-Morris-Pratt Algorithmus
  *   zur Patternsuche in einem String ohne Backup.
  */
 
-#ifndef SYSDEP_H
-#include "sysdep.h"
-#endif
+# define MAXPATTERN    256 /* Laenger darf der Suchbegriff nicht sein */
 
-
-# define MAXPATTERN    256 /* LÑnger darf der Suchbegriff nicht sein */
-
-/* init_search initialisiert den Such-Automaten und Åbergibt das     */
+/* init_search initialisiert den Such-Automaten und uebergibt das    */
 /* zu suchende Pattern.                                              */
 int init_search(const char *pattern);
 
-/* search_char Åbergibt das nÑchste Zeichen.                         */
-/* RÅckgabewert ist  0 - wenn das Pattern nocht nicht gefunden wurde */
-/*                   1 - wenn das letzte Zeichen das Pattern         */
-/*                                                  verfollstÑndigte */
+/* search_char uebergibt das naechste Zeichen.                        */
+/* Rueckgabewert ist  0 - wenn das Pattern nocht nicht gefunden wurde */
+/*                    1 - wenn das letzte Zeichen das Pattern         */
+/*                                                  vervollstaendigte */
 int search_char(const char input);
 

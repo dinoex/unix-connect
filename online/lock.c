@@ -32,17 +32,8 @@
 
 
 #include "config.h"
-#include "utility.h"
+#include "zconnect.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#ifdef HAVE_STRING_H
-# include <string.h>
-#else
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
-#endif
-#endif
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <errno.h>
@@ -55,7 +46,7 @@
 #include <unistd.h>
 #endif
 
-#include "zconnect.h"
+#include "utility.h"
 #include "policy.h"
 
 #ifndef O_RDONLY

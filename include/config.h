@@ -1,7 +1,8 @@
 /*
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1993-94  Martin Husemann
- *  Copyright (C) 1995     Christopher Creutzig
+ *  Copyright (C) 1995-98  Christopher Creutzig
+ *  Copyright (C) 1999     Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,13 +25,13 @@
  *
  *  Bugreports, suggestions for improvement, patches, ports to other systems
  *  etc. are welcome. Contact the maintainer by e-mail:
- *  christopher@nescio.foebud.org or snail-mail:
- *  Christopher Creutzig, Im Samtfelde 19, 33098 Paderborn
+ *  dirk.meyer@dinoex.sub.org or snail-mail:
+ *  Dirk Meyer, Im Grund 4, 34317 Habichstwald
  *
  *  There is a mailing-list for user-support:
  *   unix-connect@mailinglisten.im-netz.de,
  *  write a mail with subject "Help" to
- *   unix-connect-request@mailinglisten.im-netz.de
+ *   nora.e@mailinglisten.im-netz.de
  *  for instructions on how to join this list.
  */
 
@@ -74,11 +75,11 @@
 /*
  *   Das folgende Flag definiert, ob beim Uebergang von RFC -> ZCONNECT
  *   eine ISO-8859-1 --> PC437 Konvertierung stattfindet, wenn die RFC-
- *   Nachricht ISO-8859-1-Zeichen enthält.
+ *   Nachricht ISO-8859-1-Zeichen enthaelt.
  *
- *  Das Ganze führt dazu, daß Nachrichten nicht mehr unbedingt unverändert
+ *  Das Ganze fuehrt dazu, dass Nachrichten nicht mehr unbedingt unveraendert
  *  durch ZConnect hindurchgereicht werden und sollte mit Vorsicht genossen
- *  werden. Andererseits können viele Leute keine ISO-8859-1-Nachrichten
+ *  werden. Andererseits koennen viele Leute keine ISO-8859-1-Nachrichten
  *  lesen, weil ihre ZConnect-Programme den entsprechenden ZConnect-Header
  *  nicht auswerten.
  */
@@ -147,7 +148,7 @@
 /* #define CARE_FOR_POINT_MIDS */
 
 /* Es gibt in der Behandlung des Routstrings Unterschiede zwischen
- * ZConnect und RFC. Die allgemeine Einigung sieht so aus, daß die
+ * ZConnect und RFC. Die allgemeine Einigung sieht so aus, dass die
  * RFC-Notation einfach in den ZC-ROT:-Header kopiert wird. Das vermeidet
  * Probleme nach dem Zurueckgaten, auch wenn die Routstrings streng nach
  * ZC falsch sind (der letzte Eintrag muesste verworfen werden).
@@ -158,7 +159,7 @@
  */
 #define CLIP_MAPS_ROT
 
-/* Nachrichten, die aus dem Usenet stammen, dürfen nicht nach einer Wandlung
+/* Nachrichten, die aus dem Usenet stammen, duerfen nicht nach einer Wandlung
  * RFC->ZC->RFC wieder ins Usenet gelangen. Haben wir eine Verbindung zum
  * Usenet?
  */

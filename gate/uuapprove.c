@@ -43,7 +43,6 @@
 
 
 #include "config.h"
-#include "utility.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -56,6 +55,7 @@
 #endif
 #include <ctype.h>
 
+#include "utility.h"
 #include "uulog.h"
 #include "uuapprove.h"
 
@@ -68,7 +68,8 @@ typedef struct list_st {
 
 static list_p groups = NULL;
 
-void init_approved(void)
+void
+init_approved(void)
 {
 	FILE *f;
 	char buffer[500], *p;
@@ -98,7 +99,8 @@ void init_approved(void)
 	fclose(f);
 }
 
-int approved(const char *newsgroup)
+int
+approved(const char *newsgroup)
 {
 	list_p p;
 

@@ -43,19 +43,12 @@
  */
 
 #include "config.h"
+#include "zconnect.h"
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#ifdef HAVE_STRING_H
-# include <string.h>
-#else
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
-#endif
-#endif
 
-#include "zconnect.h"
 
 /*
  * Welches Zeilenende soll wr_para verwenden?
@@ -71,14 +64,14 @@ jmp_buf timeout, nocarrier;
 
 FILE *deblogfile;
 
-void handle_timeout(int code);
-void handle_timeout(int code)
+static void
+handle_timeout(int code)
 {
 	longjmp(timeout, 1);
 }
 
-void handle_nocarrier(int code);
-void handle_nocarrier(int code)
+static void
+handle_nocarrier(int code)
 {
 	longjmp(nocarrier, 1);
 }

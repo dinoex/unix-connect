@@ -44,7 +44,6 @@
  */
 
 #include "config.h"
-#include "utility.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -69,9 +68,11 @@
 #include <sysexits.h>
 #include <errno.h>
 
+#include "utility.h"
 #include "lib.h"
 #include "boxstat.h"
 #include "ministat.h"
+#include "crc.h"
 #include "header.h"
 #include "hd_def.h"
 #include "hd_nam.h"
@@ -96,25 +97,27 @@ static char *smallbuffer= NULL;
 extern char umlautstr[], convertstr[];
 #endif
 
-void usage(void)
+void
+usage(void)
 {
 	fputs(
 "UUwnews  -  RFC1036  Batch aus ZCONNECT erzeugen\n"
 "Aufrufe:\n"
 "        uuwnews (ZCONNECT-Datei) (NEWS-Directory) [Absende-System]\n"
-"          alter Standard, Eingabedatei wird gelöscht,\n"
+"          alter Standard, Eingabedatei wird geloescht,\n"
 "          Ausgabedatei wird im Verzeichns erzeugt.\n"
 "        uuwnews -f (ZCONNECT-Datei) [Absende-System]\n"
-"          Ergebnis geht nach stdout, Eingabedatei wird gelöscht,\n"
+"          Ergebnis geht nach stdout, Eingabedatei wird geloescht,\n"
 "        uuwnews -d (ZCONNECT-Datei) (RNEWS-Datei) [Absende-System]\n"
-"          Modus mit höchster Sicherheit, oder zum Testen.\n"
+"          Modus mit hoechster Sicherheit, oder zum Testen.\n"
 "        uuwnews -p [Absendesystem]\n"
 "          Echte Pipe\n"
 , stderr);
 	exit( EX_USAGE );
 }
 
-void do_help(void)
+void
+do_help(void)
 {
 	fputs(
 "UUwnews  -  convert from zconnect to RFC1036 news batch\n"
@@ -142,7 +145,8 @@ void do_help(void)
 	exit( EX_OK );
 }
 
-int main(int argc, const char *const *argv)
+int
+main(int argc, const char *const *argv)
 {
 	FILE *fin, *fout;
 	const char *cptr;
@@ -157,7 +161,6 @@ int main(int argc, const char *const *argv)
 	initlog("uuwnews");
 	pointuser = NULL;
 	pointsys = NULL;
-	ulibinit();
 	minireadstat();
 	srand( (unsigned) time(NULL));
 
@@ -361,7 +364,8 @@ int main(int argc, const char *const *argv)
 
 #define ENC(c)	(!((c) & 0x03f) ? '`' : (((c) & 0x03f) + ' '))
 
-void convert(FILE *zconnect, FILE *news)
+void
+convert(FILE *zconnect, FILE *news)
 {
 	header_p hd, p;
 #ifdef NO_Z38_CROSS_ROUTING
@@ -575,16 +579,12 @@ void convert(FILE *zconnect, FILE *news)
 
 		read_req = SMALLBUFFER > ascii_len ? ascii_len : SMALLBUFFER-1;
 		if (!read_req) break;
-	/* Es tauchen nachrichten auf, die (illegale) NULL-Bytes enthalten.
-	   Merkwürdigerweise werden sie von den meisten ZC-Programmen
-	   geroutet, also sollten wir sie auch nicht einfach kürzen. */
 		really_read=fread(smallbuffer, 1, read_req, zconnect);
+		/* Es tauchen nachrichten auf, die (illegale) NULL-Bytes
+		 * enthalten. Wir ersetzen sie hier durch Leerzeichen */
 		for(c=smallbuffer; c<(smallbuffer+really_read); c++) {
 			if (*c=='\0') { *c=' '; }
 		}
-	/* Hier gingen Nachrichtenteile verloren. ccr
-		if (really_read < read_req) break;
-	 */
 		if (0 == really_read) break;
 		smallbuffer[really_read] = '\0';
 		ascii_len -= really_read;
@@ -622,7 +622,7 @@ void convert(FILE *zconnect, FILE *news)
 			}
 		}
 	}
-	/* Evtl. Binärmail noch Konvertieren */
+	/* Evtl. Binaermail noch Konvertieren */
 	if (typ) {
 		/* uuencode */
 		if (!file) {

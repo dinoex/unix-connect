@@ -42,7 +42,7 @@
  *
  *   File    :  delheader.c
  *   Autoren :  Martin
- *   Funktion:  L”scht einen Header
+ *   Funktion:  Loescht einen Header
  */
 
 #include "config.h"
@@ -50,9 +50,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "crc.h"
 #include "header.h"
 
-header_p del_header(unsigned int code, header_p ptr)
+header_p
+del_header(unsigned int code, header_p ptr)
 {
         header_p p, last;
 
@@ -73,7 +75,7 @@ header_p del_header(unsigned int code, header_p ptr)
 		ptr = ptr->next;
 	} else {
 		/* Irgendwo mittendrin loeschen */
-                while (last)             /* Alle Other-Pointer richtig loeschen. */
+                while (last)       /* Alle Other-Pointer richtig loeschen. */
                 {                        /* Der Autor wird zu 20 Ave Maria */
                                          /* verurteilt. Gnarf. */
                    last->next = p->next;
@@ -92,3 +94,4 @@ header_p del_header(unsigned int code, header_p ptr)
 
         return ptr;
 }
+

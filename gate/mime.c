@@ -43,7 +43,6 @@
  */
 
 #include "config.h"
-#include "utility.h"
 
 #include <stddef.h>
 #include <stdlib.h>
@@ -71,6 +70,8 @@
 #endif
 #include <sysexits.h>
 
+#include "utility.h"
+#include "crc.h"
 #include "header.h"
 #include "mime.h"
 #include "hd_def.h"
@@ -107,7 +108,8 @@ static int decode_quoted_printable(char *, size_t *, int *);
 /*
  * zaehlt das Auftreten eines Zeichens in einem String
  */
-int count(const char *s, char c)
+int
+count(const char *s, char c)
 {
 	int i=0;
 
@@ -123,7 +125,8 @@ int count(const char *s, char c)
  * Diese Funktion ueberprueft, ob der uebergebene String MIME-QP-kodiert
  * ist, d.h. =?...?.?.........?= als Form hat.
  */
-int is_mime(char *string)
+int
+is_mime(char *string)
 {
 	/* Wenn der String mit "=?" beginnt, mit "?=" aufhoert
 	 * und zwei weitere '?' enthaelt, nehmen wir an, dass es
@@ -150,7 +153,8 @@ int is_mime(char *string)
  * Diese Funktion ueberprueft, ob ein uebergebener String das MSB gesetzt
  * hast, also Zeichen >127 enthaelt.
  */
-int is_8_bit(const char *string)
+int
+is_8_bit(const char *string)
 {
 	const unsigned char *s;
 
@@ -169,7 +173,8 @@ static const char specialchar[]="()<>@,;:\"/[]?.= ";
 /*
  * Diese Funktion zaehlt, wieviele Zeichen QP-kodiert werden muessen.
  */
-int count_8_bit(const char *string)
+int
+count_8_bit(const char *string)
 {
 	int i;
 	const unsigned char *s;
@@ -188,7 +193,8 @@ int count_8_bit(const char *string)
 /*
  * diese Funktion konvertiert einen ISO-String nach MIME, falls noetig.
  */
-char *mime_encode(const char *iso)
+char *
+mime_encode(const char *iso)
 {
 	char *encoded, *enc;
 	const unsigned char *p;
@@ -243,7 +249,8 @@ char *mime_encode(const char *iso)
  * Sonderzeichen im Realnamen. Diese werden am besten verlustfrei
  * MIME-kodiert uebertragen.
  */
-char *mime_address(const char *zcon_ad)
+char *
+mime_address(const char *zcon_ad)
 {
 	char *mime_ad, *rn, *mime_ad_start;
 	char *klammer_auf;
@@ -293,7 +300,7 @@ char *mime_address(const char *zcon_ad)
 			   eine gueltige Adresse. */
 			for(i=0; i<-klammern; i++)
 				*index(mime_ad, ')')=' ';
-				/* Wir wissen, daß ausreichend viele
+				/* Wir wissen, dass ausreichend viele
 				   davon im String sind, brauchen also
 				   den Rueckgabewert von index nicht zu pruefen. */
 		else
@@ -307,7 +314,8 @@ char *mime_address(const char *zcon_ad)
 }
 
 /* Gibt 1 zurueck, wenn decodiert wurde */
-int decode_cte(char *msg, size_t *msglenp, int *eightbit,
+int
+decode_cte(char *msg, size_t *msglenp, int *eightbit,
 	mime_header_info_struct *info)
 {
 	switch (info->encoding) {
@@ -414,7 +422,8 @@ static int get_base64_6(char ch) {
 
 #define HEXDIGIT(x) ((x)>'9' ? (x)-'A'+10 : (x)-'0')
 
-static int decode_quoted_printable(char *buf, size_t *msglen, int *eightbit)
+static int
+decode_quoted_printable(char *buf, size_t *msglen, int *eightbit)
 {
 	char *readp;
 	char *newbuf, *newbufp;
@@ -593,7 +602,8 @@ int parse_mime_header(int direction, header_p hd,
 		return 0; /* kein MIME-Version: */
 }
 
-int decode_x_uuencode(char *msg, size_t *msglenp,
+int
+decode_x_uuencode(char *msg, size_t *msglenp,
 	mime_header_info_struct *info)
 {
 		char tmpdir[FILENAME_MAX], sikdir[FILENAME_MAX], *src, *s;
@@ -672,8 +682,8 @@ int decode_x_uuencode(char *msg, size_t *msglenp,
 		return success;
 }
 
-/* Suche nach dem Teil, der gemäß RFC-2047 kodiert ist.
- * Fast eher eine Aufgabe für lex. :-) */
+/* Suche nach dem Teil, der gemaess RFC-2047 kodiert ist.
+ * Fast eher eine Aufgabe fuer lex. :-) */
 typedef struct encpart {
   const char* start;
   size_t len;
@@ -688,7 +698,7 @@ static encpart* find_encoded_part (const char *where) {
 
   start=where;
   while(start && *start && count(start,'?')>=4) {
-    /* Suche nach dem nächsten "=?". */
+    /* Suche nach dem naechsten "=?". */
     for(start=index(start,'=');
 	start && *start && *(start+1)!='?';
 	start=index(start+1,'=')) ;
@@ -720,7 +730,7 @@ static encpart* find_encoded_part (const char *where) {
 }
 
 /* dekodiert einen nach RFC2047 kodierten String.
- * Die dürfen nicht geschachtelt auftreten, also geht das so. */
+ * Die duerfen nicht geschachtelt auftreten, also geht das so. */
 
 char *decode_mime_string(const char *buf) {
   struct encpart *parts;

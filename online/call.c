@@ -48,7 +48,6 @@
  */
 
 #include "config.h"
-#include "utility.h"
 #include "zconnect.h"
 
 #include <errno.h>
@@ -56,31 +55,30 @@
 #include <time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-
 #ifdef HAVE_SYS_FCNTL_H
 #include <sys/fcntl.h>
 #endif
 #include <fcntl.h>
-#ifdef NO_UNISTD_H
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#else
 #ifndef R_OK
 #include <sys/file.h>
 #endif
-#else
-#include <unistd.h>
 #endif
-
-#include "hayes.h"
-#include "xprog.h"
-#include "locknames.h"
-
 #ifdef BSD
 #include <sys/ioctl.h>	/* setup our own controlling tty */
 #endif
 
+#include "utility.h"
+#include "hayes.h"
+#include "xprog.h"
+#include "locknames.h"
+
 /*
  * Falls das angerufene System einen FIDO-Mailer installiert hat,
- * brechen wir dessen EMSI-Sequenzen ab. Ansonsten würden wir bis
- * zum Timeout (10 - 20 s) warten müssen.
+ * brechen wir dessen EMSI-Sequenzen ab. Ansonsten wuerden wir bis
+ * zum Timeout (10 - 20 s) warten muessen.
  */
 #define EMSI_REQ		"**EMSI_REQA77E"	/* vom Fido-Mailer */
 #define EMSI_CLI		"**EMSI_CLIF8AC\r" 	/* Abbruchsequenz */
@@ -111,21 +109,20 @@ void setup_dial_info(const char *intnl,
 #define O_RDWR	2
 #endif
 
-void handle_timeout(int code);
-void handle_timeout(int code)
+static void
+handle_timeout(int code)
 {
 	longjmp(timeout, 1);
 }
 
-void handle_nocarrier(int code);
-void handle_nocarrier(int code)
+static void
+handle_nocarrier(int code)
 {
 	longjmp(nocarrier, 1);
 }
 
-
-void usage(void);
-void usage(void)
+static void
+usage(void)
 {
 	fputs (	"Aufruf: zcall (System) (Device) (Speed) [Anzahl der Versuche]\n"
 		"um ein ZCONNECT- oder JANUS-System anzurufen\n", stderr);
@@ -137,14 +134,15 @@ int anruf (char *intntl, header_p sys, header_p ich, int ttyf);
 char tty[FILENAME_MAX];
 int gmodem;
 
-void cleanup(void);
-void cleanup(void)
+static void
+cleanup(void)
 {
   if(gmodem>-1)
     restore_linesettings(gmodem);
 }
 
-static void anrufdauer( void )
+static void
+anrufdauer( void )
 {
 	time_t now;
 
@@ -160,7 +158,8 @@ static void anrufdauer( void )
 		(long)(now-online_start));
 }
 
-int main(int argc, char **argv)
+int
+main(int argc, char **argv)
 {
 	char *sysname, *speed;
 	char sysfile[FILENAME_MAX], deblogname[FILENAME_MAX];
@@ -191,17 +190,20 @@ int main(int argc, char **argv)
 	if(debuglevel>0) {
 		deblogfile = fopen(deblogname, "w");
 		if (!deblogfile) {
-			printf("Ich kann das Logfile nicht öffnen. Probiere /dev/null...\n");
+			printf("Ich kann das Logfile nicht oeffnen. "
+				"Probiere /dev/null...\n");
 			deblogfile = fopen("/dev/null", "w");
 			if (!deblogfile) {
-				printf("Hmm... - /dev/null nicht schreibbar??\n");
+				printf("Hmm... - /dev/null "
+					"nicht schreibbar??\n");
 				return 10;
 			}
 		}
 	} else {
 		deblogfile = fopen("/dev/null", "w");
 		if (!deblogfile) {
-			printf("Arghl! - kann /dev/null nicht zum Schreiben oeffnen!\n\n");
+			printf("Arghl! - kann /dev/null "
+				"nicht zum Schreiben oeffnen!\n\n");
 			return 10;
 		}
 	}
@@ -309,8 +311,10 @@ int main(int argc, char **argv)
 	}
 	if (setjmp(nocarrier)) {
 		if (!auflegen) {
-			fputs("\nABBRUCH: Gegenstelle hat aufgelegt!\n", stderr);
-			fputs("\nABBRUCH: Gegenstelle hat aufgelegt!\n", deblogfile);
+			fputs("\nABBRUCH: Gegenstelle hat aufgelegt!\n",
+				stderr);
+			fputs("\nABBRUCH: Gegenstelle hat aufgelegt!\n",
+				deblogfile);
 		}
 		lock_device(0, tty);
 		if (online_start)
@@ -326,8 +330,12 @@ int main(int argc, char **argv)
 	while(maxtry) {
 		p = find(HD_TEL, sys);
 		if (!p) {
-			fprintf(stderr, "Keine Telefonnummer fuer %s gefunden!\n", sysname);
-			newlog(ERRLOG, "Keine Telefonnummer fuer %s gefunden", sysname);
+			fprintf(stderr,
+				"Keine Telefonnummer fuer %s gefunden!\n",
+				sysname);
+			newlog(ERRLOG,
+				"Keine Telefonnummer fuer %s gefunden",
+				sysname);
 
 			return 2;
 		}
@@ -357,10 +365,10 @@ int main(int argc, char **argv)
 #define JANUS		0
 #define ZCONNECT	1
 
-static	const char *logstr[] = { "JANUS\r", "zconnect\r" };
+static const char *logstr[] = { "JANUS\r", "zconnect\r" };
 
-int login(int lmodem, int verfahren, const char *myname, const char *passwd);
-int login(int lmodem, int verfahren, const char *myname, const char *passwd)
+static int
+login(int lmodem, int verfahren, const char *myname, const char *passwd)
 {
         int     t_ogin, t_ame, t_wort, t_word, t_begin, found,
 		t_esc, t_sysname, t_arc, t_verweigert,
@@ -445,8 +453,8 @@ int login(int lmodem, int verfahren, const char *myname, const char *passwd)
  *	ovst		die Vorwahl ohne 0, z.B. 521
  *	telno		die eigentliche Rufnummer
  */
-void setup_dial_info(const char *intnl,
-	char *int_prefix, char *ovst, char *telno)
+void
+setup_dial_info(const char *intnl, char *int_prefix, char *ovst, char *telno)
 {
 	const char *q;
 	char *z;
@@ -481,7 +489,8 @@ void setup_dial_info(const char *intnl,
 
 static const char *verf[] = { "JANUS", "ZCONNECT", NULL };
 
-int anruf (char *intntl, header_p sys, header_p ich, int lmodem)
+int
+anruf(char *intntl, header_p sys, header_p ich, int lmodem)
 {
 	char dialstr[60], phone[60], telno[60], vorw[60], country[60];
 	char lockname[FILENAME_MAX];
@@ -505,7 +514,8 @@ int anruf (char *intntl, header_p sys, header_p ich, int lmodem)
 			strcat(phone, telno);
 		}
 	} else {
-		strcpy(phone, international ? international:"00");	/* internationaler Anruf */
+		/* internationaler Anruf */
+		strcpy(phone, international ? international:"00");
 		strcat(phone, country);
 		strcat(phone, vorw);
 		strcat(phone, telno);
@@ -598,7 +608,8 @@ int anruf (char *intntl, header_p sys, header_p ich, int lmodem)
 			return 1;
 		}
 
-		for (domain = strtok(d->text, " ;,:"); domain; domain = strtok(NULL, " ;,:")) {
+		for (domain = strtok(d->text, " ;,:");
+				domain; domain = strtok(NULL, " ;,:")) {
 			sprintf(sysname, "%s.%s", t->text, domain);
 			strlwr(sysname);
 			sprintf(tmpname, "%s/%s", netcalldir, sysname);
@@ -737,10 +748,12 @@ int anruf (char *intntl, header_p sys, header_p ich, int lmodem)
 		fclose(stdin);
 		fclose(stdout);
 		hangup(lmodem); DMLOG("hangup modem");
-		restore_linesettings(lmodem); DMLOG("restoring modem parameters");
+		restore_linesettings(lmodem);
+		DMLOG("restoring modem parameters");
 		close(lmodem); lmodem=-1; DMLOG("close modem");
 		fopen("/dev/null", "r");	/* neuer stdin */
-		dup2(fileno(stderr),fileno(stdout)); /* stderr wird in stdout kopiert */
+		/* stderr wird in stdout kopiert */
+		dup2(fileno(stderr),fileno(stdout));
 
 		/* Netcall war erfolgreich, also Daten loeschen */
 		if ( remove(outname) ) {

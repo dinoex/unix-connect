@@ -3,6 +3,7 @@
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1993-94  Martin Husemann
  *  Copyright (C) 1995     Christopher Creutzig
+ *  Copyright (C) 1999     Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,21 +26,21 @@
  *
  *  Bugreports, suggestions for improvement, patches, ports to other systems
  *  etc. are welcome. Contact the maintainer by e-mail:
- *  christopher@nescio.foebud.org or snail-mail:
- *  Christopher Creutzig, Im Samtfelde 19, 33098 Paderborn
+ *  dirk.meyer@dinoex.sub.org or snail-mail:
+ *  Dirk Meyer, Im Grund 4, 34317 Habichstwald
  *
  *  There is a mailing-list for user-support:
  *   unix-connect@mailinglisten.im-netz.de,
- *  to join, ask Nora Etukudo at
+ *  write a mail with subject "Help" to
  *   nora.e@mailinglisten.im-netz.de
- *
+ *  for instructions on how to join this list.
  */
 
 
 #include "crc.h"
 
 /* crctab calculated by Mark G. Mendel, Network Systems Corporation */
-crc_t crctab[256] = {
+const crc_t crctab[256] = {
     0x0000,  0x1021,  0x2042,  0x3063,  0x4084,  0x50a5,  0x60c6,  0x70e7,
     0x8108,  0x9129,  0xa14a,  0xb16b,  0xc18c,  0xd1ad,  0xe1ce,  0xf1ef,
     0x1231,  0x0210,  0x3273,  0x2252,  0x52b5,  0x4294,  0x72f7,  0x62d6,
@@ -73,3 +74,4 @@ crc_t crctab[256] = {
     0xef1f,  0xff3e,  0xcf5d,  0xdf7c,  0xaf9b,  0xbfba,  0x8fd9,  0x9ff8,
     0x6e17,  0x7e36,  0x4e55,  0x5e74,  0x2e93,  0x3eb2,  0x0ed1,  0x1ef0
 };
+

@@ -46,7 +46,6 @@
  */
 
 #include "config.h"
-#include "utility.h"
 #include "zconnect.h"
 
 #include <sys/types.h>
@@ -60,7 +59,7 @@
 #include <sys/stat.h>
 #include <dirent.h>
 
-#include "boxstat.h"
+#include "utility.h"
 #include "xprog.h"
 #include "locknames.h"
 
@@ -74,20 +73,20 @@ FILE *deblogfile;
 #define NAK	0x15
 #define ACK	0x06
 
-void handle_timeout(int code);
-void handle_timeout(int code)
+static void
+handle_timeout(int code)
 {
 	longjmp(timeout, 1);
 }
 
-void handle_nocarrier(int code);
-void handle_nocarrier(int code)
+static void
+handle_nocarrier(int code)
 {
 	longjmp(nocarrier, 1);
 }
 
-void getsln(char *p);
-void getsln(char *p)
+static void
+getsln(char *p)
 {
 	int z;
 
@@ -101,8 +100,8 @@ void getsln(char *p)
 	fputs("\r\n", stdout);
 }
 
-void getln(char *p);
-void getln(char *p)
+static void
+getln(char *p)
 {
 	int z;
 
@@ -142,8 +141,8 @@ findsysfile(const char *sysdir, char *sysname, char *filename)
 	sprintf(filename, "%s/%s", sysdir, sysname);
 }
 
-void reject(char *prog, char *sysname, char *passwd);
-void reject(char *prog, char *sysname, char *passwd)
+static void
+reject(char *prog, char *sysname, char *passwd)
 {
 	fputs("Netzzugriff verweigert.\r\n", stdout);
 	fprintf(deblogfile,
@@ -160,7 +159,8 @@ void reject(char *prog, char *sysname, char *passwd)
 /*
  *   Hauptprogramm, Gesamtstruktur
  */
-int main(int argc, char **argv)
+int
+main(int argc, char **argv)
 {
 	char sysname[FILENAME_MAX];
 	char passwd[80];
@@ -230,13 +230,15 @@ ask_sysname:
 	if (!sysname[0]) goto ask_sysname;	/* z.B. bei Ctrl-X */
 	strlwr(sysname);
 	if (strcmp(sysname, "zerberus") == 0) goto ask_sysname;
-	if (strcmp(sysname, "janus") == 0) goto ask_sysname; /* Wenn schon, denn schon */
+	if (strcmp(sysname, "janus") == 0) goto ask_sysname;
+		/* Wenn schon, denn schon */
 ask_passwort:
 	sleep(1); fflush(stdin);
 	fputs("Passwort: ", stdout); fflush(stdout);
 	getsln(passwd);
 	if (stricmp(passwd, "zerberus") == 0) goto ask_sysname;
-	if (stricmp(passwd, "janus") == 0) goto ask_sysname; /* Hier auch nochmal */
+	if (stricmp(passwd, "janus") == 0) goto ask_sysname;
+		/* Hier auch nochmal */
 	if (stricmp(sysname, passwd) == 0) goto ask_passwort;
 	alarm(0);
 
@@ -255,11 +257,14 @@ ask_passwort:
 		c = strchr(buf, '.');
 		if (c) *c = '\0';
 		if (stricmp(buf, p->text) != 0) {
-			fprintf(deblogfile, "Unbekanntes System: %s\n", sysname);
+			fprintf(deblogfile,
+				"Unbekanntes System: %s\n", sysname);
 			reject(argv[0], sysname, passwd);
 		}
 	} else {
-		fprintf(deblogfile, "Illegale Systemdatei: Kein "HN_SYS": Header: %s\n", filename);
+		fprintf(deblogfile,
+			"Illegale Systemdatei: Kein "HN_SYS": Header: %s\n",
+			filename);
 		reject(argv[0], sysname, passwd);
 	}
 
@@ -327,7 +332,8 @@ ask_passwort:
 	if (access(filename, R_OK) != 0) {
 		f = fopen(outname, "wb");
 		if (!f) {
-			fprintf(deblogfile, "Kann Netcall %s nicht erzeugen\n", outname);
+			fprintf(deblogfile,
+				"Kann Netcall %s nicht erzeugen\n", outname);
 			fclose(deblogfile);
 			return 1;
 		}
@@ -341,7 +347,9 @@ ask_passwort:
 			return 1;
 		}
 		if(rename(filename, outname)) {
-			fprintf(deblogfile, "Umbenennen: %s -> %s fehlgeschlagen\n", filename, outname);
+			fprintf(deblogfile,
+				"Umbenennen: %s -> %s fehlgeschlagen\n",
+				filename, outname);
 			fclose(deblogfile);
 			return 1;
 		}
@@ -374,7 +382,8 @@ ask_passwort:
 			sernr[j] = toupper(getchar());
 		serchk = getchar();
 /* Die Pruefsumme der Seriennummer zu pruefen, ist eigentlich unnoetig. ccr */
-/*		if ((sernr[0]+sernr[1]+sernr[2]+sernr[3]) == serchk & 0x0ff)*/ {
+/*		if ((sernr[0]+sernr[1]+sernr[2]+sernr[3]) == serchk & 0x0ff)*/
+		{
 			alarm(0);
 			putchar(ACK); fflush(stdout);
 			sernr[4] = '\0';

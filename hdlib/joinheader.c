@@ -3,6 +3,7 @@
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1993-94  Martin Husemann
  *  Copyright (C) 1995     Christopher Creutzig
+ *  Copyright (C) 1999     Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,14 +26,14 @@
  *
  *  Bugreports, suggestions for improvement, patches, ports to other systems
  *  etc. are welcome. Contact the maintainer by e-mail:
- *  christopher@nescio.foebud.org or snail-mail:
- *  Christopher Creutzig, Im Samtfelde 19, 33098 Paderborn
+ *  dirk.meyer@dinoex.sub.org or snail-mail:
+ *  Dirk Meyer, Im Grund 4, 34317 Habichstwald
  *
  *  There is a mailing-list for user-support:
  *   unix-connect@mailinglisten.im-netz.de,
- *  to join, ask Nora Etukudo at
+ *  write a mail with subject "Help" to
  *   nora.e@mailinglisten.im-netz.de
- *
+ *  for instructions on how to join this list.
  */
 
 
@@ -44,7 +45,6 @@
  */
 
 #include "config.h"
-#include "utility.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -56,6 +56,8 @@
 #endif
 #endif
 
+#include "utility.h"
+#include "crc.h"
 #include "header.h"
 #include "uulog.h"
 
@@ -86,8 +88,8 @@ header_p copy_one_header(header_p p)
 
 /*
  * join_header wirkt wie eine Addition. Es wird ein Header erzeugt, der aus
- * den Daten der beiden anderen Headern besteht. Die beiden bergebenen
- * Header werden dabei nicht ge„ndert.
+ * den Daten der beiden anderen Headern besteht. Die beiden uebergebenen
+ * Header werden dabei nicht geaendert.
  *
  * Die Reihenfolge der other-Verkettung bleibt dabei erhalten.
  */
@@ -124,7 +126,7 @@ header_p join_header(header_p p1, header_p p2)
         }
         p->next = NULL;
 
-        /* Sentinel wieder l”schen */
+        /* Sentinel wieder loeschen */
         p = start->next;
         dfree (start);
         return p;

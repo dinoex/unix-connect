@@ -2,6 +2,7 @@
 /*
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1993-94  Martin Husemann
+ *  Copyright (C) 1999     Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,30 +25,24 @@
  *
  *  Bugreports, suggestions for improvement, patches, ports to other systems
  *  etc. are welcome. Contact the maintainer by e-mail:
- *  christopher@nescio.foebud.org or snail-mail:
- *  Christopher Creutzig, Im Samtfelde 19, 33098 Paderborn
+ *  dirk.meyer@dinoex.sub.org or snail-mail:
+ *  Dirk Meyer, Im Grund 4, 34317 Habichstwald
  *
  *  There is a mailing-list for user-support:
  *   unix-connect@mailinglisten.im-netz.de,
- *  to join, ask Nora Etukudo at
+ *  write a mail with subject "Help" to
  *   nora.e@mailinglisten.im-netz.de
- *
+ *  for instructions on how to join this list.
  */
-
 
 /*
  *  utility.c
  *
- *  Lib-Funktionen fÅr RFC/Connect
- *
- * Datum        NZ  Aenderungen
- * ===========  ==  ===========
- * 15-Feb-1993  KK  Dokumentation erstellt.
+ *  Lib-Funktionen fuer RFC/Connect
  *
  */
 
 #include "config.h"
-#include "utility.h"
 
 #include <stdlib.h>
 #ifdef HAVE_STRING_H
@@ -60,6 +55,7 @@
 
 #include "boxstat.h"
 #include "uulog.h"
+#include "utility.h"
 
 /*@@
  *
@@ -115,46 +111,17 @@ void * dalloc(size_t s)
  *   char * - Zeiger auf Kopie.
  *
  * BUGS
- *   Die Funktionalit‰t ist doppelt. Es sollte alles dstrdup verwenden.
+ *   Die Funktionalitaet ist doppelt. Es sollte alles dstrdup verwenden.
  *
  */
 
-char * str2dup(const char *s)
+char *
+str2dup(const char *s)
 {
 	char *p = strdup(s);
 	if (!p) out_of_memory("strdup");
 
 	return p;
-}
-
-/*@@
- *
- * NAME
- *   ulibinit -- Initialisierung der Bibliothek.
- *
- * VISIBILITY
- *   global
- *
- * SYNOPSIS
- *   #include <utility.h>
- *   void ulibinit(void);
- *
- * DESCRIPTION
- *   Diese Funktion macht zur Zeit gar nichts.
- *
- * PARAMETER
- *   keine.
- *
- * RESULT
- *   keins.
- *
- * BUGS
- *   keine.
- *
- */
-
-void ulibinit()
-{
 }
 
 /* EOF */

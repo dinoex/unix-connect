@@ -43,21 +43,12 @@
  *  Schnittstelle zum Hayes-Dialer
  */
 
-# ifndef FILE
-# include <stdio.h>
-# endif
-
-#ifndef SYSDEP_H
-#include "sysdep.h"
-#endif
-
-
-
 /*
- *  W„hlt mit dem angegeben Kommando bis eine Verbindung entsteht oder
+ *  Waehlt mit dem angegeben Kommando bis eine Verbindung entsteht oder
  *  ein fataler Fehler auftritt.
  *
  *  Ergebnis:  0 - Verbindung steht
- *	       1 - Verbindung nicht m”glich
+ *	       1 - Verbindung nicht moeglich
  */
 int redial(const char *anwahl, int lmodem, int maxtry);
+

@@ -123,8 +123,8 @@ int Long_line;
  *	merge two buffers to one string
  *---------------------------------------------------------------------------*/
 
-char *merge_strings( const char *const s1, const char *const s2 );
-char *merge_strings( const char *const s1, const char *const s2 )
+static char *
+merge_strings( const char *const s1, const char *const s2 )
 {
 	char *new_ptr;
 	size_t len;
@@ -150,8 +150,8 @@ char *merge_strings( const char *const s1, const char *const s2 )
  *	get single line in buffer
  *---------------------------------------------------------------------------*/
 
-int read_single_line( void );
-int read_single_line( void )
+static int
+read_single_line( void )
 {
 	char *cptr;
 	size_t len;
@@ -199,8 +199,8 @@ int read_single_line( void )
  *	get long lines
  *---------------------------------------------------------------------------*/
 
-int read_long_line( void );
-int read_long_line( void )
+static int
+read_long_line( void )
 {
 	int rc;
 	char *backup_ptr;
@@ -244,8 +244,8 @@ int read_long_line( void )
  *	using "gzip" which supports "decompress" too
  *---------------------------------------------------------------------------*/
 
-void uncompress( void );
-void uncompress( void )
+static void
+uncompress( void )
 {
 	int rc;
 	int phandle[ 2 ];
@@ -323,26 +323,11 @@ void uncompress( void )
 }
 
 /*---------------------------------------------------------------------------*
- *	decompress data from stdin
- *---------------------------------------------------------------------------*/
-
-char *addstr(const char *s1, const char *s2);
-char *addstr(const char *s1, const char *s2)
-{
-	char *s;
-
-	if ( (s = (char *) malloc(strlen(s1)+strlen(s2)+1)) == NULL )
-		return(NULL);
-	strcpy(s, s1);
-	return(strcat(s, s2));
-}
-
-/*---------------------------------------------------------------------------*
  *	feed the mail for delivery
  *---------------------------------------------------------------------------*/
 
-void feed_mail( void );
-void feed_mail( void )
+static void
+feed_mail( void )
 {
 	int rc;
 	long nr_to;
@@ -578,8 +563,8 @@ void feed_mail( void )
  *	display help
  *---------------------------------------------------------------------------*/
 
-void usage( void );
-void usage( void )
+static void
+usage( void )
 {
 	fprintf( stderr, START_MESSAGE, "rsmtp" );
 	fprintf( stderr,
@@ -595,13 +580,8 @@ void usage( void )
  *	parse comand line and execute
  *---------------------------------------------------------------------------*/
 
-void main( int argc, const char *const *argv )
-#ifdef __GNUC__
-__attribute__ ((noreturn))
-#endif
-;
-
-void main( int argc, const char *const *argv )
+int
+main( int argc, const char *const *argv )
 {
 	const char	*cptr;
 	char		ch;
@@ -725,6 +705,7 @@ void main( int argc, const char *const *argv )
 
 	} while ( ON );
 	exit( EX_CONFIG );
+	return 0; /* gcc hat ein Problem */
 }
 
 /*---------------------------------------------------------------------------*

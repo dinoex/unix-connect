@@ -45,7 +45,6 @@
  */
 
 #include "config.h"
-#include "utility.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -56,9 +55,10 @@
 # include <strings.h>
 #endif
 #endif
-
 #include <ctype.h>
 
+#include "utility.h"
+#include "crc.h"
 #include "header.h"
 #include "uulog.h"
 
@@ -67,7 +67,8 @@ static int may_i_call_fatal = 1;
 
 int rd_para_error = HEAD_NO_ERROR;
 
-int set_rd_para_reaction (int new_reaction)
+int
+set_rd_para_reaction(int new_reaction)
 {
    int old_reaction = may_i_call_fatal;
    if (new_reaction >= 0) may_i_call_fatal = new_reaction;
@@ -88,8 +89,8 @@ static crc_t crc;
  * int name == 1 : Wenn der eingelesene Text mit CRC: beginnt, crc nicht
  *                 berechnen, bis zum naechsten name == 1
  */
-char *crc_gets(char *buffer, size_t max_len, FILE *f, int name);
-char *crc_gets(char *buffer, size_t max_len, FILE *f, int name)
+static char *
+crc_gets(char *buffer, size_t max_len, FILE *f, int name)
 {
 	unsigned char *p;
 	int z;
@@ -130,7 +131,8 @@ char *crc_gets(char *buffer, size_t max_len, FILE *f, int name)
 	return buffer;
 }
 
-header_p rd_packet(FILE *f, crc_t *erg_crc)
+header_p
+rd_packet(FILE *f, crc_t *erg_crc)
 
 #else
 
@@ -140,7 +142,8 @@ header_p rd_packet(FILE *f, crc_t *erg_crc)
 
 #define	crc_gets(b,l,f,n)	fgets(b,l,f)
 
-header_p rd_para(FILE *f)
+header_p
+rd_para(FILE *f)
 
 #endif
 
@@ -158,10 +161,10 @@ header_p rd_para(FILE *f)
 #endif
 	while(!feof(f)) {
 
-	      /* nÑchste Header-Zeile holen */
+	      /* naechste Header-Zeile holen */
 	      if (!crc_gets(hname, MAX_HEADER_NAME_LEN, f, 1)) break;
               if (hname[0] == '#' || hname[0] == ' ') {
-		/* Kommentarzeile Åberlesen... */
+		/* Kommentarzeile ueberlesen... */
 		while (1) {
 			p = strchr(hname, '\n');
 			if (p) break;
@@ -192,7 +195,7 @@ header_p rd_para(FILE *f)
               }
 	      *p++ = '\0'; /* p zeigt auf Anfang des Headers. */
 
-              /* Syntax prÅfen */
+              /* Syntax pruefen */
               for (str1=hname; *str1; str1++) {
                  if (!isascii(*str1))
                  {
@@ -285,3 +288,4 @@ header_p rd_para(FILE *f)
 #endif
 	return start;
 }
+

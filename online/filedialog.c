@@ -48,21 +48,14 @@
  */
 
 #include "config.h"
-#include "utility.h"
+#include "zconnect.h"
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#ifdef HAVE_STRING_H
-# include <string.h>
-#else
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
-#endif
-#endif
 #include <sys/types.h>
 
-#include "zconnect.h"
+#include "utility.h"
 
 static unsigned senden = NONE;
 static unsigned empfangen = NONE;
@@ -151,7 +144,7 @@ void datei_dialog(void)
 		 *  Datum ermitteln, falls mitgeschickt. Nur wenn unsere
 		 *  Version neuer ist, wird die Datei geschickt.
 		 */
-/* Momentan nicht funktionsfähig, str2eda ist geändert. */
+/* Momentan nicht funktionsfaehig, str2eda ist geaendert. */
 		s = strrchr(dir, ' ');
 		if (s) {
 /*			int tz_hour, tz_min;

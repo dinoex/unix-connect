@@ -37,9 +37,6 @@
  *  for instructions on how to join this list.
  */
 
-#ifndef __MIME_H
-#define __MIME_H
-
 #define SP_MULTIPART_BOUNDARY  "--8<----"
 
 typedef enum { cte_none, cte_7bit, cte_quoted_printable, cte_base64, cte_8bit,
@@ -90,4 +87,3 @@ int is_8_bit(const char *string) ATR_CONST;
 int parse_mime_header(int direction, header_p hd, mime_header_info_struct *);
 char *decode_mime_string(const char *buf) ATR_CONST;
 
-#endif /* __MIME_H */

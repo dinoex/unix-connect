@@ -3,6 +3,7 @@
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1993-95  Martin Husemann
  *  Copyright (C) 1995     Christopher Creutzig
+ *  Copyright (C) 1999     Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,19 +26,18 @@
  *
  *  Bugreports, suggestions for improvement, patches, ports to other systems
  *  etc. are welcome. Contact the maintainer by e-mail:
- *  christopher@nescio.foebud.org or snail-mail:
- *  Christopher Creutzig, Im Samtfelde 19, 33098 Paderborn
+ *  dirk.meyer@dinoex.sub.org or snail-mail:
+ *  Dirk Meyer, Im Grund 4, 34317 Habichstwald
  *
  *  There is a mailing-list for user-support:
  *   unix-connect@mailinglisten.im-netz.de,
- *  to join, ask Nora Etukudo at
+ *  write a mail with subject "Help" to
  *   nora.e@mailinglisten.im-netz.de
- *
+ *  for instructions on how to join this list.
  */
 
 
 #include "config.h"
-#include "utility.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -49,15 +49,17 @@
 #endif
 #endif
 
+#include "utility.h"
 #include "uulog.h"
+#include "crc.h"
 #include "header.h"
 #include "hd_def.h"
 #include "hd_nam.h"
 
 const char *hd_crlf = "\n";
 
-void test1(void);
-void test1(void)
+static void
+test1(void)
 {
 	header_p p;
 
@@ -74,7 +76,8 @@ void test1(void)
 	}
 }
 
-int main(int argc, char *argv[])
+int
+main(int argc, char *argv[])
 {
     FILE *f;
     header_p h[100], ges, p, x;

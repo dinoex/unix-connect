@@ -3,6 +3,7 @@
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1993-94  Martin Husemann
  *  Copyright (C) 1995     Christopher Creutzig
+ *  Copyright (C) 1999     Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,8 +26,8 @@
  *
  *  Bugreports, suggestions for improvement, patches, ports to other systems
  *  etc. are welcome. Contact the maintainer by e-mail:
- *  christopher@nescio.foebud.org or snail-mail:
- *  Christopher Creutzig, Im Samtfelde 19, 33098 Paderborn
+ *  dirk.meyer@dinoex.sub.org or snail-mail:
+ *  Dirk Meyer, Im Grund 4, 34317 Habichstwald
  *
  *  There is a mailing-list for user-support:
  *   unix-connect@mailinglisten.im-netz.de,
@@ -35,16 +36,10 @@
  *  for instructions on how to join this list.
  */
 
-
-#ifndef SYSDEP_H
-#include "sysdep.h"
-#endif
-
-
-
 typedef unsigned short crc_t;
 
-extern crc_t crctab[];
+extern const crc_t crctab[];
 
 #define CRC(cp, crc) \
 ( crctab[(((crc_t)crc >> 8) & 255)] ^ ((crc_t)crc << 8) ^ (crc_t)cp)
+

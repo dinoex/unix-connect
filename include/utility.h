@@ -40,18 +40,12 @@
 /*
  *  utility.h
  *
- *  Lib-Funktionen für RFC/Connect
+ *  Lib-Funktionen fuer RFC/Connect
  */
-
-#ifndef SYSDEP_H
-#include "sysdep.h"
-#endif
-#include <time.h>
 
 void * dalloc(size_t);
 char * dstrdup(const char *);
 char * str2dup(const char *);
-void ulibinit(void);
 
 int stricmp(const char *a, const char *b);
 char * strlwr(char *);
@@ -68,7 +62,7 @@ int stccpy(char *, const char *, int);
 void qstccpy(char *, const char *, int);
 
 /*
- *  Prüfe ein lock-File und warte gegebenenfalls, bis es verschwindet.
+ *  Pruefe ein lock-File und warte gegebenenfalls, bis es verschwindet.
  *  'ltimeout' gibt die Warte-Strategie an:
  *
  *	< 0 :	warte maximal abs(ltimeout) Sekunden und versuch dann, den

@@ -1,4 +1,12 @@
 
+Änderungen seit 0.83:
+
+- configure --enable-badheaders
+  setzt Compiler-Option PLUS_IGNORE_BAD_HEADERS
+
+- configure --enable-uxheader
+  setzt Compiler-Option PLUS_KEEP_U_X_HEADER
+
 Änderungen seit 0.82:
 
 - Warnings erweitert

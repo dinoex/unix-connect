@@ -44,11 +44,15 @@
  *   Funktion:  Sucht einen Header
  */
 
-# include "config.h"
-# include <stdio.h>
-# include "header.h"
+#include "config.h"
 
-header_p find(unsigned int code, header_p ptr)
+#include <stdio.h>
+
+#include "crc.h"
+#include "header.h"
+
+header_p
+find(unsigned int code, header_p ptr)
 {
 
         while (ptr && code > ptr->code)
@@ -59,3 +63,4 @@ header_p find(unsigned int code, header_p ptr)
         else
         	return NULL;
 }
+

@@ -48,14 +48,13 @@
  * 21-Feb-1993  KK  Dokumentation erstellt.
  * 25-Feb-1993  MH  Dokumentation ergaenzt, Defaults korrigiert
  * 09-Apr-1993	MH  Routing-Eintraege ergaenzt
- * 22-Feb-1994	MH  Auf aktuellen Config-Stand angepaﬂt
+ * 22-Feb-1994	MH  Auf aktuellen Config-Stand angepasst
  * 23-Nov-1995  CC  ZNETZ-Unterstuetzung entfernt
  * 10-Oct-1996  CC  Dirk Meyers automatische Entscheidung Sommer/Winterzeit
  *
  */
 
 #include "config.h"
-#include "utility.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -67,12 +66,15 @@
 #endif
 #endif
 #include <time.h>
-#include "ministat.h"
+
+#include "utility.h"
 #include "boxstat.h"
+#include "crc.h"
 #include "header.h"
 #include "hd_nam.h"
 #include "hd_def.h"
 #include "uulog.h"
+#include "ministat.h"
 
 /* Globale Variable, siehe boxstat.h enthaelt:
  *

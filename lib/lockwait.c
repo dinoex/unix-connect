@@ -38,7 +38,6 @@
 
 
 #include "config.h"
-#include "utility.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -47,11 +46,12 @@
 #include <unistd.h>
 #endif
 
+#include "utility.h"
 
 #define	WAIT_SLEEP	5
 
 /*
- *  Prüfe ein lock-File und warte gegebenenfalls, bis es verschwindet.
+ *  Pruefe ein lock-File und warte gegebenenfalls, bis es verschwindet.
  *  'timeout' gibt die Warte-Strategie an:
  *
  *	< 0 :	warte maximal abs(timeout) Sekunden und versuch dann, den

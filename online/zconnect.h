@@ -74,12 +74,14 @@
 #include <setjmp.h>
 #include <signal.h>
 
+#include "crc.h"
 #include "header.h"
 #include "hd_def.h"
 #include "hd_nam.h"
 #include "version.h"
 #include "track.h"
 #include "line.h"
+#include "boxstat.h"
 #include "ministat.h"
 #include "uulog.h"
 

@@ -35,13 +35,6 @@
  *  for instructions on how to join this list.
  */
 
-#ifndef __UUCONV_H
-#define __UUCONV_H
-
-#ifndef __MIME_H
-#include "mime.h"
-#endif
-
 char *date2eda( const char *str, FILE *fout );
 int valid_newsgroups( const char *data );
 void printbretter(const char *newsgroups, const char *zc_header, FILE *f);
@@ -57,4 +50,3 @@ int make_body(char *bigbuffer, size_t msglen,
 	mime_header_info_struct *mime_info,
 	int binaer, char *smallbuffer, FILE *zconnect);
 
-#endif

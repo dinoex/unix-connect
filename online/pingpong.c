@@ -44,18 +44,13 @@
  */
 
 #include "config.h"
-#include "utility.h"
-
-#ifdef HAVE_STRING_H
-# include <string.h>
-#else
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
-#endif
-#endif
-#include <unistd.h>
-
 #include "zconnect.h"
+
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
+#include "utility.h"
 
 int auflegen = 0;
 int auflegen_gesendet = 0;
@@ -72,7 +67,8 @@ static char *auflegen_msg = NULL;
  *		  "auflegen" wird gesetzt, "auflegen_gesendet" erst, wenn der
  *		  Header wirklich verschickt wurde.
  */
-void logoff(const char *msg)
+void
+logoff(const char *msg)
 {
 	auflegen = 1;
 	auflegen_gesendet = 0;
@@ -83,8 +79,8 @@ void logoff(const char *msg)
  *   send_ack(phase) :	sendet ein Acknowledge fuer einen korrekt empfangenen
  *			Block aus der angegebenen Phase [1 .. 4]
  */
-void send_ack(int phase);
-void send_ack(int phase)
+static void
+send_ack(int phase)
 {
 	char tmp[5];
 	header_p p;
@@ -96,11 +92,11 @@ void send_ack(int phase)
 }
 
 /*
- *   send_tme(phase) :	sendet ein Transmission End fuer einen korrekt gesendeten
- *			Block aus der angegebenen Phase [1 .. 4]
+ *   send_tme(phase) :	sendet ein Transmission End fuer einen korrekt
+ *			gesendeten Block aus der angegebenen Phase [1 .. 4]
  */
-void send_tme(int phase);
-void send_tme(int phase)
+static void
+send_tme(int phase)
 {
 	char tmp[5];
 	header_p p;
@@ -119,8 +115,8 @@ void send_tme(int phase)
  *		  weiss immer genau, welches Paket jetzt vom Sender kommen
  *		  muss.
  */
-void send_nak(void);
-void send_nak(void)
+static void
+send_nak(void)
 {
 	header_p p;
 
@@ -132,7 +128,8 @@ void send_nak(void)
 /*
  *  get_blk(int phase) :  Empfange die BLK(phase) Daten
  */
-header_p get_blk(int phase)
+header_p
+get_blk(int phase)
 {
 	header_p p, c, s, last;
 	char tme[6], blk[6];
@@ -163,14 +160,18 @@ header_p get_blk(int phase)
 
 		sscanf(c->text, "%x", &crc_hd);
 		if (crc != crc_hd) {
-			fputs("Paket mit ungueltigem CRC empfangen...\n", deblogfile);
+			fputs("Paket mit ungueltigem CRC empfangen...\n",
+				deblogfile);
 			send_nak();
 			continue;
 		}
 
 		c = find(HD_LOGOFF, p);
 		if (c) {
-			fprintf(deblogfile, "Logoff-Anforderung durch die Gegenseite:\n\t\"%s\"\n\n", c->text);
+			fprintf(deblogfile,
+				"Logoff-Anforderung durch "
+				"die Gegenseite:\n\t\"%s\"\n\n",
+				c->text);
 			auflegen_empfangen = 1;
 			auflegen = 1;
 			send_ack(phase);
@@ -178,7 +179,8 @@ header_p get_blk(int phase)
 		}
 		s = find(HD_STATUS, p);
 		if (!s) {
-			fputs("Paket ohne STATUS empfangen...\n", deblogfile);
+			fputs("Paket ohne STATUS empfangen...\n",
+				deblogfile);
 			continue;
 		}
 
@@ -196,21 +198,22 @@ header_p get_blk(int phase)
 			send_ack(phase);
 			if (last) free_para(last);
 			last = p;
-			p = NULL;	/* p (und damit last) nicht freigeben */
+			p = NULL; /* p (und damit last) nicht freigeben */
 			continue;
 		} else if (stricmp(s->text, tme) == 0) {
 			if (p) free_para(p);
 			return last;
 		} else if (stricmp(s->text, "NAK0") == 0) {
-			fprintf(deblogfile, "NAK0 empangen beim Warten auf %s\n", blk);
+			fprintf(deblogfile,
+				"NAK0 empangen beim Warten auf %s\n", blk);
 			/*
 			 *  Wir sollen wiederholen. Aber was?
 			 *  Eigentlich wollen wir doch Daten kriegen...
 			 */
 			if (last)
-				send_ack(phase);	/* Ist sicher OK */
+				send_ack(phase); /* Ist sicher OK */
 			else
-				send_nak();		/* Das ist schon etwas komisch */
+				send_nak(); /* Das ist schon etwas komisch */
 			continue;
 		}
 	}
@@ -219,7 +222,8 @@ header_p get_blk(int phase)
 /*
  *  put_blk(int phase) :  Sende die BLK(phase) Daten
  */
-header_p put_blk(header_p block, int phase)
+header_p
+put_blk(header_p block, int phase)
 {
 	header_p p, c, s;
 	char blk[6], lack[6];
@@ -282,7 +286,8 @@ header_p put_blk(header_p block, int phase)
 
 		s = find(HD_STATUS, p);
 		if (!s) {
-			fputs("Antwort ohne STATUS empfangen...\n", deblogfile);
+			fputs("Antwort ohne STATUS empfangen...\n",
+				deblogfile);
 			/* xxx
 			 *  Auch hier vielleicht ein send_nak() ?
 			 */
@@ -331,8 +336,8 @@ header_p put_blk(header_p block, int phase)
  *   send_eot(phase) :	sendet ein Acknowledge fuer einen korrekt empfangenen
  *			Block aus der angegebenen Phase [5 .. 6] (3 Bloecke)
  */
-void send_eot(int phase);
-void send_eot(int phase)
+static void
+send_eot(int phase)
 {
 	char tmp[5];
 	header_p p;
@@ -350,7 +355,8 @@ void send_eot(int phase)
 /*
  *  get_beg(int phase) :  Empfange die BEG(phase) Daten
  */
-header_p get_beg(int phase)
+header_p
+get_beg(int phase)
 {
 	header_p p, c, s, last;
 	char beg[6];
@@ -380,14 +386,18 @@ header_p get_beg(int phase)
 
 		sscanf(c->text, "%x", &crc_hd);
 		if (crc != crc_hd) {
-			fputs("Paket mit ungueltigem CRC empfangen...\n", deblogfile);
+			fputs("Paket mit ungueltigem CRC empfangen...\n",
+				deblogfile);
 			send_nak();
 			continue;
 		}
 
 		c = find(HD_LOGOFF, p);
 		if (c) {
-			fprintf(deblogfile, "Logoff-Anforderung durch die Gegenseite:\n\t\"%s\"\n\n", c->text);
+			fprintf(deblogfile,
+				"Logoff-Anforderung durch "
+				"die Gegenseite:\n\t\"%s\"\n\n",
+				c->text);
 			auflegen_empfangen = 1;
 			auflegen = 1;
 			send_ack(phase);
@@ -403,15 +413,16 @@ header_p get_beg(int phase)
 			send_eot(phase);
 			return p;
 		} else if (stricmp(s->text, "NAK0") == 0) {
-			fprintf(deblogfile, "NAK0 empangen beim Warten auf %s\n", beg);
+			fprintf(deblogfile,
+				"NAK0 empangen beim Warten auf %s\n", beg);
 			/*
 			 *  Wir sollen wiederholen. Aber was?
 			 *  Eigentlich wollen wir doch Daten kriegen...
 			 */
 			if (last)
-				send_ack(phase);	/* Ist sicher OK */
+				send_ack(phase); /* Ist sicher OK */
 			else
-				send_nak();		/* Das ist schon etwas komisch */
+				send_nak(); /* Das ist schon etwas komisch */
 			continue;
 		}
 	}

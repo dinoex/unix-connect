@@ -50,6 +50,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "crc.h"
 #include "header.h"
 #include "uulog.h"
 #include "hd_nam.h"
@@ -69,7 +70,8 @@ typedef struct newHeaderRecstruct
 
 static newHeaderRec * unknownHeaders = NULL;
 
-int identify(const char *name)
+int
+identify(const char *name)
 {
 	static char hname[1000];
 	const struct predefd *p;
@@ -102,7 +104,8 @@ int identify(const char *name)
 	return n->code;
 }
 
-header_p internal_add_header(const char *inhalt, unsigned int code,
+header_p
+internal_add_header(const char *inhalt, unsigned int code,
 			header_p ptr, const char *hname)
 {
 	header_p p, last, new;
@@ -159,7 +162,8 @@ header_p internal_add_header(const char *inhalt, unsigned int code,
 	return ptr;
 }
 
-header_p add_header(const char *inhalt, unsigned int code, header_p ptr)
+header_p
+add_header(const char *inhalt, unsigned int code, header_p ptr)
 {
 	if (code > TOTAL_KEYWORDS+1)
 		return NULL;

@@ -44,7 +44,6 @@
  */
 
 #include "config.h"
-#include "utility.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -69,9 +68,11 @@
 #include <sysexits.h>
 #include <errno.h>
 
+#include "utility.h"
 #include "lib.h"
 #include "boxstat.h"
 #include "ministat.h"
+#include "crc.h"
 #include "header.h"
 #include "hd_def.h"
 #include "hd_nam.h"
@@ -99,25 +100,27 @@ extern char umlautstr[], convertstr[];
 
 const char *hd_crlf = "\r\n";
 
-void usage(void)
+void
+usage(void)
 {
 	fputs(
 "UUwsmtp  -  RFC821/822 Batch aus ZCONNECT erzeugen\n"
 "Aufrufe:\n"
 "        uuwsmtp (ZCONNECT-Datei) (SMTP-Directory) [Absende-System]\n"
-"          alter Standard, Eingabedatei wird gelöscht,\n"
+"          alter Standard, Eingabedatei wird geloescht,\n"
 "          Ausgabedatei wird im Verzeichns erzeugt.\n"
 "        uuwsmtp -f (ZCONNECT-Datei) [Absende-System]\n"
-"          Ergebnis geht nach stdout, Eingabedatei wird gelöscht,\n"
+"          Ergebnis geht nach stdout, Eingabedatei wird geloescht,\n"
 "        uuwsmtp -d (ZCONNECT-Datei) (SMTP-Datei) [Absende-System]\n"
-"          Modus mit höchster Sicherheit, oder zum Testen.\n"
+"          Modus mit hoechster Sicherheit, oder zum Testen.\n"
 "        uuwsmtp -p [Absendesystem]\n"
 "          Echte Pipe\n"
 , stderr);
 	exit( EX_USAGE );
 }
 
-void do_help(void)
+void
+do_help(void)
 {
 	fputs(
 "UUwsmtp  -  convert from zconnect to RFC821/822 BSMTP mail batch\n"
@@ -145,7 +148,8 @@ void do_help(void)
 	exit( EX_OK );
 }
 
-int main(int argc, const char *const *argv)
+int
+main(int argc, const char *const *argv)
 {
 	FILE *fin, *fout;
 	const char *cptr;
@@ -160,7 +164,6 @@ int main(int argc, const char *const *argv)
 	initlog("uuwsmtp");
 	pointuser = NULL;
 	pointsys = NULL;
-	ulibinit();
 	minireadstat();
 	srand( (unsigned) time(NULL));
 
@@ -370,7 +373,8 @@ int main(int argc, const char *const *argv)
 
 #define ENC(c)	(!((c) & 0x03f) ? '`' : (((c) & 0x03f) + ' '))
 
-void convert(FILE *zconnect, FILE *smtp)
+void
+convert(FILE *zconnect, FILE *smtp)
 {
 	header_p hd, p, habs;
 	FILE *tmp;
@@ -378,11 +382,11 @@ void convert(FILE *zconnect, FILE *smtp)
 	const char *mid;
 	char zbuf[4], *sp, *zp, *bufende, *c, *file, *typ;
 	static int binno = 0;
-	long comment, len, ascii_len, lines;
+	long comment, len, ascii_len;
 	size_t buffree;
 	size_t bytecount, znr;
 	int start_of_line, multipart;
-	int qualify, local, has_lines;
+	int qualify, local;
 	int wasmime, charset, eightbit, ctl, err;
 	mime_header_info_struct mime_info;
 #ifdef UUENCODE_CHKSUM
@@ -390,15 +394,19 @@ void convert(FILE *zconnect, FILE *smtp)
 #endif
 
 	c = NULL;
-	has_lines = 0;
-	hd = rd_para(zconnect);
-	if (!hd) return;
-	lines = 0; tmp = NULL;
-	p = find(HD_MID, hd);
-	mid = p ? p->text : "-";
 	qualify = 0;
 	ctl=0;
 	err=0;
+	tmp = NULL;
+
+	hd = rd_para(zconnect);
+	if (!hd) return;
+
+	p = find(HD_LEN, hd);
+	len = p ? atol(p->text) : 0;
+	hd = del_header(HD_LEN, hd);
+	p = find(HD_MID, hd);
+	mid = p ? p->text : "-";
 	habs = find(HD_WAB, hd);
 	if (!habs) habs = find(HD_ABS, hd);
 	if (!habs) {
@@ -443,17 +451,17 @@ void convert(FILE *zconnect, FILE *smtp)
 				if (isspace(*s)) break;
 			*s = '\0';
 		} else
-		  /* STAT: CTL und STAT: ERR nicht bouncen */
-		  if(ctl || err)
-		    buffer[0] = '\0';
-		if(NULL==p->other)
+		/* STAT: CTL und STAT: ERR nicht bouncen */
+		if (ctl || err)
+			buffer[0] = '\0';
+		if (NULL==p->other)
 			fprintf(smtp, "MAIL FROM:<%s>\r\n", buffer);
 	}
 	for (p = find(HD_EMP, hd); p; p = p->other) {
 		char pbuffer[300], *at;
 
-		newlog(Z2ULOG, "mid=%s, from=%s, to=%s", \
-			mid, habs->text, p->text);
+		newlog(Z2ULOG, "mid=%s, from=%s, to=%s size=%ld", \
+			mid, habs->text, p->text, len);
 		strncpy(buffer, p->text, 300);
        		strcpy(pbuffer, buffer);
 		local = 0;
@@ -483,7 +491,7 @@ void convert(FILE *zconnect, FILE *smtp)
 					}
 				dfree(pbufferlow);
 			}
-#ifdef RCPT_WITH_BANG
+#ifdef PLUS_RCPT_WITH_BANG
 			strcat(pbuffer, "!");
 			strcat(pbuffer, buffer);
 #else
@@ -515,13 +523,8 @@ void convert(FILE *zconnect, FILE *smtp)
 	p = find(HD_FIL, hd);
 	if (p) {
 		file = dstrdup(p->text);
-/* Wir reichen den Header als X-ZC-FILE: durch. */
-/*		hd = del_header(HD_FIL, hd); */
 	} else
 		file = NULL;
-	p = find(HD_LEN, hd);
-	len = p ? atol(p->text) : 0;
-	hd = del_header(HD_LEN, hd);
 	p = find(HD_CHARSET, hd);
 	if (p) {
 		if (strncasecmp(p->text, "ISO", 3) == 0) {
@@ -549,14 +552,8 @@ void convert(FILE *zconnect, FILE *smtp)
 	wasmime = parse_mime_header(1, hd, &mime_info);
 
 	hd = del_header(HD_STAT, hd);
+	hd = del_header(HD_UU_U_LINES, hd);
 
-/*	p = find(HD_UU_U_LINES, hd);
-	if (p) {
-		has_lines = 1;
-		fprintf(smtp,HN_UU_LINES": %s%s",p->text,eol);
-		hd = del_header(HD_UU_U_LINES, hd);
-	}
-*/
 	/* U-, F- und ZConnect-eigene unbekannte
 	 * Headerzeilen richtig umwandeln:
 	 * (z.B. auch MIME-Headerzeilen mit U- !)
@@ -612,8 +609,8 @@ void convert(FILE *zconnect, FILE *smtp)
 		read_req = SMALLBUFFER > ascii_len ? ascii_len : SMALLBUFFER-1;
 		if (!read_req) break;
 	/* Es tauchen nachrichten auf, die (illegale) NULL-Bytes enthalten.
-	   Merkwürdigerweise werden sie von den meisten ZC-Programmen
-	   geroutet, also sollten wir sie auch nicht einfach kürzen. */
+	   Merkwuerdigerweise werden sie von den meisten ZC-Programmen
+	   geroutet, also sollten wir sie auch nicht einfach kuerzen. */
 		really_read=fread(smallbuffer, 1, read_req, zconnect);
 		for(c=smallbuffer; c < (smallbuffer+really_read); c++) {
 			if (*c=='\0') { *c=' '; }
@@ -662,8 +659,7 @@ void convert(FILE *zconnect, FILE *smtp)
 				eightbit |= *c;
 				buffree--;
 				if (*c == '\n') {
-				/*	lines++;
-				 *	start_of_line = 1; */
+					start_of_line = 1;
 					if (c[1] == '.') {
 						*bufende++ = '.';
 						buffree--;
@@ -707,8 +703,6 @@ void convert(FILE *zconnect, FILE *smtp)
 			}
 			*bufende++ = *c;
 			buffree--;
-		/*	if (*c == '\n')
-				lines++; */
 		}
 		for (bytecount = 0, zp = smallbuffer+1;
 					len > 0 || bytecount > 0; ) {
@@ -737,8 +731,6 @@ void convert(FILE *zconnect, FILE *smtp)
 					}
 					*bufende++ = *c;
 					buffree--;
-				/*	if (*c == '\n')
-						lines++; */
 				}
 			}
 			if (len > 0) {
@@ -781,8 +773,6 @@ void convert(FILE *zconnect, FILE *smtp)
 			}
 			*bufende++ = *c;
 			buffree--;
-		/*	if (*c == '\n')
-				lines++; */
 		}
 	}
 	*bufende = '\0';
@@ -829,14 +819,6 @@ void convert(FILE *zconnect, FILE *smtp)
 				fputs(HN_UU_CONTENT_TRANSFER_ENCODING
 					": 8bit\r\n", smtp);
 	}
-
-#if 0
-	if (!typ && !has_lines) {
-		if (!start_of_line)
-			lines++; /* CR/LF Wird unten hinzugefuegt */
-		fprintf(smtp, HN_UU_LINES": %ld\r\n", lines);
-	}
-#endif
 
 	/* Hier ist der Header jetzt vollstaendig. */
 	fputs("\r\n", smtp);

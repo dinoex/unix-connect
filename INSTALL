@@ -131,22 +131,36 @@ Hiermit wird eine sehr selten benoetigte Erweiterung fuer
 spezielle Binaermails hereincompiliert (fuer APC Unix software).
 
 
---enable-bang            Keine Bang-Pfade verwenden.
+--enable-bang            Bang-Pfade erzeugen.
 
 UNIX-Connect erzeugt Nachrichten im BSMTP-Format. Für die
 Weiterverarbeitung mit UUCP-Programmen sollten die Envelope-Adressen
 in Bang-Notation erzeugt werden, für die Weiterverarbeitung mit qmail
 nicht. Den meisten Programmen ist es egal.
 
+--enable-uxheader        Erzeuge aus X-Headern => U-X-Header.
 
---with-dialprae=code      Wählcode (Default=atdt).
+Vor Gatebau97 wurden alle X-Header als U-X-Header gegagetet.
+Sie werden auch weiterhin zurückkonvertiert.
+Nach dem Gatebau Beschuß, werden X- Header nun nicht mehr
+verändert, sondern 1:1 durchgereicht.
+
+--enable-badheader       Ignoriere defekte Header.
+
+Wenn ungültige Headerzeilen gelesen werden, so werden diese mit
+dieser Option ignoriert. Header-Namen mit 8-Bit Zeichen oder
+Leerzeichen werden so aus den Nachrichten entfert.
+Nach RFC1034 sollten solche Artikel nicht verändert werden,
+sondern einfach entsorgt werden.
+
+--with-dialprae=code     Wählcode (Default=atdt).
 
 Was einem Wählbefehl vorausgestellt werden soll. Im Zweifelsfall auch den
 Rauswahlcode für die Nebenstellenanlage angeben (zB atdp0,).
 
 
---with-ortswahl=code      Ortsvorwahl (Default=0).
---with-intwahl=code       Internationale Vorwahl (Default=00).
+--with-ortswahl=code     Ortsvorwahl (Default=0).
+--with-intwahl=code      Internationale Vorwahl (Default=00).
 
 Eigentlich selbsterklärend.
 

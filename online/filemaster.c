@@ -47,12 +47,13 @@
  */
 
 #include "config.h"
-#include "utility.h"
 #include "zconnect.h"
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+
+#include "utility.h"
 
 static unsigned senden = NONE;
 static unsigned empfangen = ALL;

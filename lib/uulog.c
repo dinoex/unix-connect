@@ -42,7 +42,7 @@
 /*
  *  uulog.c
  *
- *  Logfile-Routinen für den ZCONNECT/RFC GateWay
+ *  Logfile-Routinen fuer den ZCONNECT/RFC GateWay
  *
  */
 
@@ -57,7 +57,10 @@
 #include <time.h>
 
 #include "uulog.h"
-#include "ministat.h"
+#include "boxstat.h"
+#ifndef HAVE_SYSLOG
+# include "ministat.h"
+#endif
 
 #define	MAX_LOG_LINE	200
 
@@ -68,7 +71,8 @@ FILE *uudeblogfile;
 
 const char *def_debuglog;
 
-void initlog(const char *xname) {
+void
+initlog(const char *xname) {
 #ifdef HAVE_SYSLOG
 	openlog(xname, LOG_PID, SYSLOG_KANAL);
 #else

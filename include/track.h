@@ -3,6 +3,7 @@
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1993-94  Martin Husemann
  *  Copyright (C) 1995     Christopher Creutzig
+ *  Copyright (C) 1999     Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,8 +26,8 @@
  *
  *  Bugreports, suggestions for improvement, patches, ports to other systems
  *  etc. are welcome. Contact the maintainer by e-mail:
- *  christopher@nescio.foebud.org or snail-mail:
- *  Christopher Creutzig, Im Samtfelde 19, 33098 Paderborn
+ *  dirk.meyer@dinoex.sub.org or snail-mail:
+ *  Dirk Meyer, Im Grund 4, 34317 Habichstwald
  *
  *  There is a mailing-list for user-support:
  *   unix-connect@mailinglisten.im-netz.de,
@@ -38,32 +39,28 @@
 /*
  *   track.h
  *
- *   Header fr track.c
+ *   Header fuer track.c
  *
  *   track.c implementiert einen Knuth-Morris-Pratt Algorithmus
  *   zur simultanen Patternsuche in mehreren String ohne Backup.
  */
 
-#ifndef SYSDEP_H
-#include "sysdep.h"
-#endif
+# define MAXPATTERN    256 /* Laenger darf der Suchbegriff nicht sein */
+# define MAXTRACKS	16 /* Mehr Strings koennen wir nicht verwalten */
 
-
-# define MAXPATTERN    256 /* L„nger darf der Suchbegriff nicht sein */
-# define MAXTRACKS	16 /* Mehr Strings k”nnen wir nicht verwalten */
-
-/* init_track initialisiert den Such-Automaten und bergibt das      */
+/* init_track initialisiert den Such-Automaten und uebergibt das     */
 /* zu suchende Pattern.                                              */
-/* Rckgabewert ist die interne Nummer des patterns, die bei einem   */
-/* Treffer von track_char zurckgeliefert wird.			     */
+/* Rueckgabewert ist die interne Nummer des patterns, die bei einem  */
+/* Treffer von track_char zurueckgeliefert wird.		     */
 int init_track(const char *pattern);
 
-/* track_char bergibt das n„chste Zeichen.                          */
-/* Rckgabewert ist -1 : wenn das Pattern nocht nicht gefunden wurde */
-/*		  >= 0 : die Nummer des gefundenen Patterns	     */
+/* track_char uebergibt das naechste Zeichen.                         */
+/* Rueckgabewert ist -1 : wenn das Pattern nocht nicht gefunden wurde */
+/*		   >= 0 : die Nummer des gefundenen Patterns	      */
 int track_char(const char input);
 
 /* free_track entfernt das pattern aus der internen Suchstruktur und */
 /* gibt diesen Eintrag wieder frei				     */
 void free_track(const int patnr);
 void free_all_tracks(void);
+

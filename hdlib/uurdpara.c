@@ -49,13 +49,12 @@
  *              erzeugt, ansonsten die News-Version.
  *
  *              Unterschied: SMTP markiert das Ende der Eingabe mit "\r\n.\r\n",
- *              im Newsbatch ist die LÑnge der News vorher bekannt. Au·erdem
- *              ist im Newsbatch Åblicherweise nur "\n" als Zeilenende,
+ *              im Newsbatch ist die Laenge der News vorher bekannt. Ausserdem
+ *              ist im Newsbatch ueblicherweise nur "\n" als Zeilenende,
  *              im SMTP-Batch aber "\r\n".
  */
 
 #include "config.h"
-#include "utility.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -67,7 +66,10 @@
 #endif
 #endif
 #include <ctype.h>
+#include <sysexits.h>
 
+#include "utility.h"
+#include "crc.h"
 #include "header.h"
 #include "uulog.h"
 
@@ -75,7 +77,7 @@ static char *uugets(char *s, int n, FILE *stream);
 
 #ifndef SMTP
 
-extern long readlength;		/* Wird auf 0 heruntergezÑhlt */
+extern long readlength;		/* Wird auf 0 heruntergezaehlt */
 #define	COUNTDOWN(count)	readlength -= (count)
 #define CHECKCOUNT(action)	if (readlength<1) action
 
@@ -106,19 +108,25 @@ header_p smtp_rd_para(FILE *f)
 #endif /* SMTP */
 
 {
-        header_p start;
-        char c, *p, *str1, *str2, *inhalt;
+	header_p start;
+	char c, *p, *str1, *str2, *inhalt;
 	char buffer[MAX_HEADER_NAME_LEN+1], hname[MAX_HEADER_NAME_LEN+1];
-        int was_malloc;
+	int was_malloc;
 	unsigned code;
+#if PLUS_IGNORE_BAD_HEADERS
+	int line_bad;
+#endif
 
-        start = NULL;
+	start = NULL;
 	while(!feof(f)) {
 
 	      CHECKCOUNT(break);
 	      /* naechste Header-Zeile holen */
 	      if (!uugets(hname, MAX_HEADER_NAME_LEN, f)) break;
 	      hname[MAX_HEADER_NAME_LEN] = '\0'; /* Sentinel */
+#if PLUS_IGNORE_BAD_HEADERS
+		line_bad = 0;
+#endif
 
               if ((hname[0] == '\r') || (hname[0] == '\n')) {
                   if (start)
@@ -131,21 +139,47 @@ header_p smtp_rd_para(FILE *f)
               p = strchr(hname, ':');
               if (!p)
               {
-                  uufatal(__FILE__, "Header ohne Doppelpunkt: %s", hname);
+		newlog( ERRLOG,
+			__FILE__ " Header ohne Doppelpunkt: %s",
+			hname);
+#ifndef PLUS_IGNORE_BAD_HEADERS
+		exit( EX_DATAERR );
+#endif
               }
 	      *p++ = '\0'; /* p zeigt auf Anfang des Headers. */
 
-              /* Syntax prÅfen */
+              /* Syntax pruefen */
               for (str1=hname; *str1; str1++) {
-                 if (!isascii(*str1))
+		 if (!isascii(*str1))
                  {
-                    uufatal(__FILE__,"Nicht-ASCII-Zeichen im Header: %s", hname);
+			newlog( ERRLOG,
+				__FILE__ " Nicht-ASCII-Zeichen im Header: %s",
+				hname);
+#ifdef PLUS_IGNORE_BAD_HEADERS
+			line_bad = 1;
+			break;
+#else
+			exit( EX_DATAERR );
+#endif
                  }
                  if (isspace(*str1))
                  {
-                    uufatal(__FILE__, "Leerzeichen im Headernamen: %s", hname);
+			newlog( ERRLOG,
+				__FILE__ " Leerzeichen im Headernamen: %s",
+				hname);
+#ifdef PLUS_IGNORE_BAD_HEADERS
+			line_bad = 1;
+			break;
+#else
+			exit( EX_DATAERR );
+#endif
                  }
               }
+
+#ifdef PLUS_IGNORE_BAD_HEADERS
+		if ( line_bad )
+			continue;
+#endif
 
 	      /* Header identifiziern */
 	      code = identify(hname);
@@ -184,7 +218,7 @@ header_p smtp_rd_para(FILE *f)
                       if (str2) *str2 = '\0';
 
                       /* Wenn weder \n noch \r gefunden werden, dann ist der
-                       * Header lÑnger als MAX_HEADER_NAME_LEN Bytes. */
+                       * Header laenger als MAX_HEADER_NAME_LEN Bytes. */
 		      if (!str1 && !str2) {
 				while (1) {
 					str1 = malloc(strlen(inhalt) + MAX_HEADER_NAME_LEN + 1);

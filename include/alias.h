@@ -40,7 +40,7 @@
 /*
  * alias.h
  *
- * Prototypen für die Alias-Zugriffsfunktionen
+ * Prototypen fuer die Alias-Zugriffsfunktionen
  */
 
 #ifndef SYSDEP_H

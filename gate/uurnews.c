@@ -45,7 +45,6 @@
 
 
 #include "config.h"
-#include "utility.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -78,10 +77,13 @@
 #include <errno.h>
 #include <sysexits.h>
 
+#include "utility.h"
+#include "crc.h"
 #include "header.h"
 #include "uulog.h"
 #include "hd_nam.h"
 #include "hd_def.h"
+#include "boxstat.h"
 #include "ministat.h"
 #include "mime.h"
 #include "lib.h"
@@ -111,25 +113,27 @@ size_t buffsize = 0;	/* gegenwaertig allokierte Buffer-Groesse */
 const char *fqdn = NULL;
 int main_is_mail = 0;	/* Nein, wir sind nicht fuer PM EMP:s zustaendig */
 
-void usage(void)
+void
+usage(void)
 {
 	fputs(
 "UUrnews  -  RFC1036 Batch nach ZCONNECT konvertieren\n"
 "Aufrufe:\n"
 "        uurnews (RNEWS-Datei) (ZCONNECT-Datei)\n"
-"          alter Standard, Eingabedatei wird gelöscht\n"
+"          alter Standard, Eingabedatei wird geloescht\n"
 "        uurnews -f (FQDN-ZCONNECT-Host)\n"
 "          alter Standard, Eingabe von stdin,\n"
 "          Ausgabedatei wird im Verzeichns des Systems erzeugt.\n"
 "        uurnews -d (RNEWS-Datei) (ZCONNECT-Datei)\n"
-"          Modus mit höchster Sicherheit, oder zum Testen.\n"
+"          Modus mit hoechster Sicherheit, oder zum Testen.\n"
 "        uurnews -p [ (FQDN-ZCONNECT-Host) ]\n"
 "          Echte Pipe\n"
 , stderr);
 	exit( EX_USAGE );
 }
 
-void do_help(void)
+void
+do_help(void)
 {
 	fputs(
 "UUrnews  -  convert RFC1036 news batch to zconnect\n"
@@ -156,7 +160,8 @@ void do_help(void)
 	exit( EX_OK );
 }
 
-int main(int argc, const char *const *argv)
+int
+main(int argc, const char *const *argv)
 {
 	FILE *fin, *fout;
 	const char *cptr;
@@ -169,7 +174,6 @@ int main(int argc, const char *const *argv)
 	char ch;
 
 	initlog("uurnews");
-	ulibinit();
 	minireadstat();
 	srand( (unsigned) time(NULL));
 
@@ -360,7 +364,8 @@ int main(int argc, const char *const *argv)
 }
 
 
-void convert(FILE *news, FILE *zconnect)
+void
+convert(FILE *news, FILE *zconnect)
 {
 	static char line[MAXLINE];
 
@@ -377,7 +382,8 @@ void convert(FILE *news, FILE *zconnect)
 	}
 }
 
-void convdata(FILE *news, FILE *zconnect)
+void
+convdata(FILE *news, FILE *zconnect)
 {
 	char *n, *s;
 	size_t msglen, wrlen;
@@ -469,7 +475,7 @@ void convdata(FILE *news, FILE *zconnect)
 	     for(;p;t=p, p=p->other) {
 	        char *x=decode_mime_string(p->text);
 		iso2pc(x);
-#ifndef NO_PLUS_KEEP_X_HEADER
+#ifndef PLUS_KEEP_U_X_HEADER
 		fprintf (zconnect, "U-%s: %s\r\n", p->header, x);
 #else
 		/* TetiSoft: X- bleibt X- (Gatebau '97) */
@@ -484,7 +490,7 @@ void convdata(FILE *news, FILE *zconnect)
 	   }
 #endif
 #ifdef REAL_GATE
-/* Artikel, die von Usenet-Seite aus hereinkommen, dürfen nicht wieder
+/* Artikel, die von Usenet-Seite aus hereinkommen, duerfen nicht wieder
    herausgeschickt werden. */
 	fprintf(zconnect, HN_X_DONT_GATE_IT": \r\n");
 #endif
