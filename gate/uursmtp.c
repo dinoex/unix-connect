@@ -575,7 +575,11 @@ convdata(FILE *smtp, FILE *zconnect)
 			break;  /* Ende der Nachricht */
 		if (*n == '.') strcpy(n, n+1);
 		while (*n) {
+#ifdef ENABLE_MAIL_NEED_CRLF
 			if (*n == '\r' || *n == '\n') break;
+#else
+			if (*n == '\n') break;
+#endif
 			n++;
 			msglen++;
 		}
