@@ -117,22 +117,27 @@ delheader.o: delheader.c ../include/crc.h ../include/header.h \
 find.o: find.c ../include/crc.h ../include/header.h
 freepara.o: freepara.c ../include/crc.h ../include/header.h \
  ../include/utility.h
-hash.o: hash.c hd_def.h ../include/utility.h ../include/crc.h \
- ../include/header.h ../include/uulog.h hd_nam.h hd_nlist.h
-joinheader.o: joinheader.c ../include/utility.h ../include/crc.h \
- ../include/header.h ../include/uulog.h
-pkread.o: pkread.c ../include/utility.h ../include/crc.h \
- ../include/header.h ../include/uulog.h
+hash.o: hash.c ../include/istring.h hd_def.h ../include/utility.h \
+ ../include/crc.h ../include/header.h ../include/uulog.h hd_nam.h \
+ hd_nlist.h
+joinheader.o: joinheader.c ../include/istring.h ../include/utility.h \
+ ../include/crc.h ../include/header.h ../include/uulog.h
+pkread.o: pkread.c ../include/istring.h ../include/utility.h \
+ ../include/crc.h ../include/header.h ../include/uulog.h
 pkwrite.o: pkwrite.c ../include/crc.h ../include/header.h hd_nam.h
-rdpara.o: rdpara.c ../include/utility.h ../include/crc.h \
- ../include/header.h ../include/uulog.h
-smtprd.o: smtprd.c ../include/utility.h ../include/crc.h \
- ../include/header.h ../include/uulog.h ../include/sysexits2.h
-testheader.o: testheader.c ../include/utility.h ../include/uulog.h \
- ../include/crc.h ../include/header.h hd_def.h hd_nam.h
-uurd.o: uurd.c ../include/utility.h ../include/crc.h \
- ../include/header.h ../include/uulog.h ../include/sysexits2.h
-uurdpara.o: uurdpara.c ../include/utility.h ../include/crc.h \
- ../include/header.h ../include/uulog.h ../include/sysexits2.h
+rdpara.o: rdpara.c ../include/istring.h ../include/utility.h \
+ ../include/crc.h ../include/header.h ../include/uulog.h
+smtprd.o: smtprd.c ../include/istring.h ../include/utility.h \
+ ../include/crc.h ../include/header.h ../include/uulog.h \
+ ../include/sysexits2.h
+testheader.o: testheader.c ../include/istring.h ../include/utility.h \
+ ../include/uulog.h ../include/crc.h ../include/header.h hd_def.h \
+ hd_nam.h
+uurd.o: uurd.c ../include/istring.h ../include/utility.h \
+ ../include/crc.h ../include/header.h ../include/uulog.h \
+ ../include/sysexits2.h
+uurdpara.o: uurdpara.c ../include/istring.h ../include/utility.h \
+ ../include/crc.h ../include/header.h ../include/uulog.h \
+ ../include/sysexits2.h
 wrpara.o: wrpara.c ../include/crc.h ../include/header.h hd_nam.h
 # eof

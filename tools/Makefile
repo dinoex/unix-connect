@@ -62,11 +62,11 @@ zconsplit:	zconsplit.o $(LIBS) Makefile
 
 # automatic depend
 list-systems.o: list-systems.c ../include/config.h ../include/sysdep.h \
- ../include/utility.h ../include/crc.h ../include/header.h \
- ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/boxstat.h \
- ../include/ministat.h
-zconsplit.o: zconsplit.c ../include/config.h ../include/sysdep.h \
+ ../include/istring.h ../include/idir.h ../include/utility.h \
  ../include/crc.h ../include/header.h ../hdlib/hd_def.h \
- ../hdlib/hd_nam.h ../include/boxstat.h ../include/ministat.h \
- ../include/utility.h
+ ../hdlib/hd_nam.h ../include/boxstat.h ../include/ministat.h
+zconsplit.o: zconsplit.c ../include/config.h ../include/sysdep.h \
+ ../include/istring.h ../include/crc.h ../include/header.h \
+ ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/boxstat.h \
+ ../include/ministat.h ../include/utility.h
 # eof

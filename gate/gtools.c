@@ -1,7 +1,7 @@
 /* $Id$ */
 /*
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
- *  Copyright (C) 1996-99  Dirk Meyer
+ *  Copyright (C) 1996-2000  Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -43,33 +43,12 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#ifdef HAVE_STRING_H
-# include <string.h>
-#else
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
-#endif
-#endif
+#include "istring.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <time.h>
 #include <fcntl.h>
-#if HAVE_DIRENT_H
-# include <dirent.h>
-# define NAMLEN(dirent) strlen((dirent)->d_name)
-#else
-# define dirent direct
-# define NAMLEN(dirent) (dirent)->d_namlen
-# if HAVE_SYS_NDIR_H
-#  include <sys/ndir.h>
-# endif
-# if HAVE_SYS_DIR_H
-#  include <sys/dir.h>
-# endif
-# if HAVE_NDIR_H
-#  include <ndir.h>
-# endif
-#endif
+#include "idir.h"
 #include <errno.h>
 
 #include "gtools.h"
@@ -111,7 +90,7 @@ open_new_file( const char *name, const char *dir, const char *ext )
 	if ((statrc = stat(dir, &st)) || !S_ISDIR(st.st_mode)) {
 		if(!statrc) errno=ENOTDIR;
 #ifdef ENABLE_AUTO_CREATE
-		if (mkdir(datei, 02775) != 0) {
+		if (mkdir(dir, 02775) != 0) {
 #endif
 		fprintf( stderr,
 			"%s: error create file in output dir %s: %s\n",

@@ -72,27 +72,29 @@ strlib.a:	$(STROBJS) Makefile
 	$(RANLIB) strlib.a
 
 # automatic depend
-backup.o: backup.c ../include/utility.h ../include/calllib.h \
- ../include/uulog.h ../include/uudebug.h
+backup.o: backup.c ../include/idir.h ../include/istring.h \
+ ../include/utility.h ../include/calllib.h ../include/uulog.h \
+ ../include/uudebug.h ../include/ministat.h
 hayes.o: hayes.c ../include/config.h ../include/sysdep.h \
  ../include/crc.h ../include/header.h ../hdlib/hd_def.h \
  ../hdlib/hd_nam.h ../include/ministat.h ../include/hayes.h \
  ../include/track.h
 lockwait.o: lockwait.c ../include/config.h ../include/sysdep.h \
  ../include/utility.h
-ministat.o: ministat.c ../include/utility.h ../include/boxstat.h \
- ../include/crc.h ../include/header.h ../hdlib/hd_nam.h \
- ../hdlib/hd_def.h ../include/uulog.h ../include/ministat.h
+ministat.o: ministat.c ../include/istring.h ../include/utility.h \
+ ../include/boxstat.h ../include/crc.h ../include/header.h \
+ ../hdlib/hd_nam.h ../hdlib/hd_def.h ../include/uulog.h \
+ ../include/ministat.h
 pattern.o: pattern.c ../include/config.h ../include/sysdep.h \
- ../include/utility.h ../include/pattern.h
+ ../include/istring.h ../include/utility.h ../include/pattern.h
 rawtty.o: rawtty.c ../include/config.h ../include/sysdep.h \
  ../include/line.h
-readonedir.o: readonedir.c ../include/utility.h ../include/calllib.h \
- ../include/uulog.h
+readonedir.o: readonedir.c ../include/idir.h ../include/istring.h \
+ ../include/utility.h ../include/calllib.h ../include/uulog.h
 stccpy.o: stccpy.c ../include/config.h ../include/sysdep.h \
  ../include/utility.h
 strdup.o: strdup.c ../include/config.h ../include/sysdep.h \
- ../include/utility.h ../include/uulog.h
+ ../include/istring.h ../include/utility.h ../include/uulog.h
 stricmp.o: stricmp.c ../include/config.h ../include/sysdep.h \
  ../include/utility.h
 strlwr.o: strlwr.c ../include/config.h ../include/sysdep.h \
@@ -100,13 +102,14 @@ strlwr.o: strlwr.c ../include/config.h ../include/sysdep.h \
 strupr.o: strupr.c ../include/config.h ../include/sysdep.h \
  ../include/utility.h
 track.o: track.c ../include/config.h ../include/sysdep.h \
- ../include/utility.h ../include/track.h
+ ../include/istring.h ../include/utility.h ../include/track.h
 trap.o: trap.c ../include/config.h ../include/sysdep.h \
  ../include/trap.h ../include/ministat.h
 utility.o: utility.c ../include/config.h ../include/sysdep.h \
- ../include/boxstat.h ../include/uulog.h ../include/utility.h
+ ../include/istring.h ../include/boxstat.h ../include/uulog.h \
+ ../include/utility.h
 uudebug.o: uudebug.c ../include/config.h ../include/sysdep.h \
- ../include/uulog.h ../include/uudebug.h
+ ../include/istring.h ../include/uulog.h ../include/uudebug.h
 uufatal.o: uufatal.c ../include/uulog.h ../include/sysexits2.h
 uulog.o: uulog.c ../include/uulog.h
 # eof

@@ -1,11 +1,5 @@
 %{
-#ifdef HAVE_STRING_H
-# include <string.h>
-#else
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
-#endif
-#endif
+#include "istring.h"
 #include "hd_def.h"
 %}
 struct predefd { const char *header; int code; };

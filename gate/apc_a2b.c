@@ -1,9 +1,9 @@
 /* $Id$ */
 /*
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
- *  Copyright (C) 1995     Moritz Both
- *  Copyright (C) 1995-98  Christopher Creutzig
- *  Copyright (C) 1999     Dirk Meyer
+ *  Copyright (C) 1995       Moritz Both
+ *  Copyright (C) 1995-1998  Christopher Creutzig
+ *  Copyright (C) 1999-2000  Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -38,13 +38,7 @@
 
 /* apc_a2b.c - Funktion fuer APC Binaernachrichten-Wandlung */
 
-#ifdef HAVE_STRING_H
-# include <string.h>
-#else
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
-#endif
-#endif
+#include "istring.h"
 
 #include "apc_a2b.h"
 

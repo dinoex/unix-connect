@@ -57,5 +57,6 @@ datelib.a:	$(OBJS)
 
 # automatic depend
 dateabstoks.o: dateabstoks.c datetok.h
-getindate.o: getindate.c datetok.h ../include/datelib.h
+getindate.o: getindate.c ../include/istring.h datetok.h \
+ ../include/datelib.h
 # eof

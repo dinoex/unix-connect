@@ -101,14 +101,14 @@ import.o: import.c ../include/config.h ../include/sysdep.h zconnect.h \
  ../include/crc.h ../include/header.h ../hdlib/hd_def.h \
  ../hdlib/hd_nam.h ../include/version.h ../include/track.h \
  ../include/line.h ../include/boxstat.h ../include/ministat.h \
- ../include/uulog.h ../include/utility.h ../include/xprog.h \
- ../include/calllib.h ../include/uudebug.h
+ ../include/uulog.h ../include/idir.h ../include/utility.h \
+ ../include/xprog.h ../include/calllib.h ../include/uudebug.h
 januslogin.o: januslogin.c ../include/config.h ../include/sysdep.h \
  zconnect.h ../include/crc.h ../include/header.h ../hdlib/hd_def.h \
  ../hdlib/hd_nam.h ../include/version.h ../include/track.h \
  ../include/line.h ../include/boxstat.h ../include/ministat.h \
- ../include/uulog.h ../include/utility.h ../include/xprog.h \
- locknames.h
+ ../include/uulog.h ../include/idir.h ../include/utility.h \
+ ../include/xprog.h locknames.h ../include/calllib.h
 lock.o: lock.c ../include/config.h ../include/sysdep.h zconnect.h \
  ../include/crc.h ../include/header.h ../hdlib/hd_def.h \
  ../hdlib/hd_nam.h ../include/version.h ../include/track.h \
@@ -156,6 +156,7 @@ sysmaster.o: sysmaster.c ../include/config.h ../include/sysdep.h \
  ../include/line.h ../include/boxstat.h ../include/ministat.h \
  ../include/uulog.h ../include/utility.h
 xprog.o: xprog.c ../include/config.h ../include/sysdep.h \
- ../include/utility.h ../include/boxstat.h ../include/ministat.h \
- ../include/xprog.h ../include/uudebug.h
+ ../include/iwait.h ../include/istring.h ../include/utility.h \
+ ../include/boxstat.h ../include/ministat.h ../include/xprog.h \
+ ../include/uudebug.h ../include/uulog.h
 # eof

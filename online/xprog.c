@@ -44,28 +44,14 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/types.h>
-#if HAVE_SYS_WAIT_H
-# include <sys/wait.h>
-#endif
-#ifndef WEXITSTATUS
-# define WEXITSTATUS(stat_val) ((unsigned)(stat_val) >> 8)
-#endif
-#ifndef WIFEXITED
-# define WIFEXITED(stat_val) (((stat_val) & 255) == 0)
-#endif
+#include "iwait.h"
 #ifdef HAVE_SYS_FCNTL_H
 #include <sys/fcntl.h>
 #endif
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#ifdef HAVE_STRING_H
-# include <string.h>
-#else
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
-#endif
-#endif
+#include "istring.h"
 #include <stdarg.h>
 #include <utime.h>
 #include <sys/stat.h>

@@ -58,7 +58,7 @@
 #endif
 #include <ctype.h>
 #include <sys/stat.h>
-#include <dirent.h>
+#include "idir.h"
 
 #include "utility.h"
 #include "xprog.h"

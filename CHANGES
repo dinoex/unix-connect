@@ -4,6 +4,10 @@ Aenderungen an UnixConnect
 
 seit 0.88
 
+- include/istring.h, include/idir.h,
+  */*.c: (Dirk Meyer)
+  includes vereinfacht.
+
 - shell/auspack.in, shell/einpack.in: (Dirk Meyer)
   unrar und unarj eingebaut.
   zip0 zip1 und zip2 werden auch erkannt.
