@@ -67,9 +67,6 @@
 #include "track.h"
 #include "line.h"
 
-/* Sende ein einzelnes Kommando an das Modem (siehe unten) */
-int do_hayes(const char *command, int modem);
-
 /*@@
  *
  * NAME
@@ -220,14 +217,16 @@ do_hayes(const char *command, int modem)
 	char c;    /* Antwort des Modems */
 	int found; /* Returncode         */
 
-	/* Dem Modem etwas Ruhe goennen */
 #ifdef SLOW_MODEM
+	/* Dem Modem etwas Ruhe goennen */
        	sleep(1);
 #endif
 
 	/* Kommando senden */
-	write(modem, command, strlen(command));
-	write(modem, "\r", 1);
+	if ( strlen(command) > 0 ) {
+		write(modem, command, strlen(command));
+		write(modem, "\r", 1);
+	}
 
 #ifdef MODEM_DEBUG
 	/* Debugging */
@@ -237,7 +236,10 @@ do_hayes(const char *command, int modem)
 
 	/* Antwort einlesen, bis der Tracker etwas findet */
 	do {
-		read(modem, &c, 1);
+		if ( read(modem, &c, 1) != 1 ) {
+			found = -1;
+			break;
+		}
 #ifdef MODEM_DEBUG
 		if(isprint(c)) fprintf(stderr, "%c", c);
 		else {

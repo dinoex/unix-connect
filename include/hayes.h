@@ -50,5 +50,7 @@
  *  Ergebnis:  0 - Verbindung steht
  *	       1 - Verbindung nicht moeglich
  */
+int do_hayes(const char *command, int modem);
+
 int redial(const char *anwahl, int lmodem, int maxtry);
 

@@ -4,6 +4,46 @@ Aenderungen an UnixConnect
 
 seit 0.89
 
+- lib/hayes.c: (Dirk Meyer)
+  do_hayes muss abbrechen, falls das Modem-device
+  wegen eines Hangup-Signal nicht mehr bereit ist.
+  Funktion noch robuster gestaltet.
+
+- lib/strcdup.c: (Dirk Meyer)
+  strcdup.c:72: warning: implicit declaration of function `malloc'
+  include erweitert.
+
+- online/call.c: (Dirk Meyer)
+  Störende Linefeeds in den Aufrufen von newlog() entfernt.
+  Wiederherstellung: Anwahlversuche anders auswerten.
+  hayes_hangup sendet falsche Sequenz.
+
+- online/call.c: (Matthias Andree)
+  Neue Funktion hayes_hangup: Schickt +++ (1 s Pause) ATH0 an Modem.
+  Neue Funktion make_dialstr: konstruiert Anwahlstring aus
+  Rufnummer und Dial-String aus Konfiguration.
+  Neue Funktion janus_wait: wartet auf NAK-ACK Handshake
+  Konfiguratisonsfehler vor dem Anruf erkennen.
+  Tmpdir nicht mehr global schreibbar.
+
+- lib/hayes.c, include/hayes.h: (Matthias Andree)
+  Prototyp "do_hayes" jetzt im Includefile.
+
+- Makefile.in: (Dirk Meyer)
+  Fehlermeldung wenn Makefile aktualisiert wird.
+  (install): hängt von all nur in den tieferen Makefiles ab.
+
+- Makefile.in: (Matthias Andree)
+  Jetzt "|| exit" eingebaut (GNUmake-Problem).
+  Bei genauerer Lektüre und weiteren Test stellt sich
+  heraus, daß make mit und ohne -k wie erwünscht funktioniert.
+
+- include/track.h: (Matthias Andree)
+  läßt sich nun auch mehrfach einbinden.
+
+- Makefile.global.in: (Matthias Andree)
+  Cleanfiles erweitert.
+
 - install-sh: (Dirk Meyer)
   Tabs und Spaces entfernt.
 

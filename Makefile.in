@@ -51,7 +51,7 @@ TARGETDIRS=$(BINDIR) $(ETCDIR) $(ETCDIR)/systems \
 
 all:
 	for dir in $(SUBDIRS); do \
-		(cd $$dir && $(MAKE) -$(MAKEFLAGS) all) done
+		(cd $$dir && $(MAKE) -$(MAKEFLAGS) all) || exit $$? ; done
 
 install:
 	for dir in $(TARGETDIRS); do \
@@ -62,14 +62,14 @@ install:
 		mkdir $(SPOOLDIR)/netcall; \
 		chown $(USER) $(SPOOLDIR)/netcall; fi
 	for dir in $(SUBDIRS); do \
-		(cd $$dir && $(MAKE) -$(MAKEFLAGS) install) done
+		(cd $$dir && $(MAKE) -$(MAKEFLAGS) install) || exit $$? ; done
 
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' install
 
 uninstall:
 	for dir in $(SUBDIRS); do \
-		(cd $$dir && $(MAKE) -$(MAKEFLAGS) uninstall) done
+		(cd $$dir && $(MAKE) -$(MAKEFLAGS) uninstall) || exit $$? ; done
 	@echo ""
 	@echo "If you don't want to install this package again"
 	@echo "then remove the following directorys:"
@@ -80,7 +80,7 @@ uninstall:
 clean:
 	-rm -f $(CLEANFILES)
 	for dir in $(SUBDIRS); do \
-		(cd $$dir && $(MAKE) -$(MAKEFLAGS) clean) done
+		(cd $$dir && $(MAKE) -$(MAKEFLAGS) clean) || exit $$? ; done
 
 mostlyclean: clean
 
@@ -98,7 +98,7 @@ maintainer-clean:
 
 check:
 	for dir in hdlib gate; do \
-		(cd $$dir && $(MAKE) -$(MAKEFLAGS) check) done
+		(cd $$dir && $(MAKE) -$(MAKEFLAGS) check) || exit $$? ; done
 
 newhash:
 	cd hdlib && $(MAKE) -$(MAKEFLAGS) newhash
@@ -119,11 +119,13 @@ depend:	all Makefile.global
 		echo "# eof" >>Makefile.new; \
 		if ! diff Makefile Makefile.new; then \
 			mv -f Makefile.new Makefile; fi; \
-		rm -f Makefile.new Makefile.depend ); \
+		rm -f Makefile.new Makefile.depend ) || exit $$? ; \
 	done
 
 Makefile: Makefile.in config.status
 	CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
+	@echo "please call make again"
+	@exit 1
 
 Makefile.global: Makefile.global.in config.status
 	CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status

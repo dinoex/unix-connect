@@ -45,6 +45,9 @@
  *   zur simultanen Patternsuche in mehreren String ohne Backup.
  */
 
+#ifndef TRACK_H
+#define TRACK_H
+
 # define MAXPATTERN    256 /* Laenger darf der Suchbegriff nicht sein */
 # define MAXTRACKS	16 /* Mehr Strings koennen wir nicht verwalten */
 
@@ -64,3 +67,4 @@ int track_char(const char input);
 void free_track(const int patnr);
 void free_all_tracks(void);
 
+#endif /* TRACK_H */

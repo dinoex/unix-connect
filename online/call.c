@@ -105,8 +105,8 @@ static int files = 0;
 
 char g_int_prefix[20];	/* international prefix, z.B. 49 fuer Deutschland */
 char g_ovst[40];	/* Ortsnetz, z.B. 521 fuer Bielefeld */
-void setup_dial_info(const char *intnl,
-	char *int_prefix, char *ovst, char *telno);
+void
+setup_dial_info(const char *intnl, char *int_prefix, char *ovst, char *telno);
 
 #ifndef O_RDWR
 #define O_RDWR	2
@@ -132,10 +132,61 @@ usage(void)
 	exit(1);
 }
 
-int anruf (char *intntl, header_p sys, header_p ich, int ttyf);
+int anruf( header_p sys, header_p ich, int ttyf, int tries );
 
 char tty[FILENAME_MAX];
 int gmodem;
+
+/** dialstring bauen, Default: AT DT */
+static int
+make_dialstr(char *dialstr, size_t maxlen, char *intntl)
+{
+	/* input:
+	   dialstr: Zielstring
+	   maxlen: max. Länge desselben
+	   phone: Rufnummer
+	 * return:
+	    0: Erfolg
+	   -1: Überlauf
+	   -2: kein %s im Config-Dialstring
+	 */
+	int rc;
+	char phone[60], telno[60], vorw[60], country[60];
+	header_p p;
+
+	while (*intntl && !isspace(*intntl))
+		intntl++;
+	while (*intntl && isspace(*intntl))
+		intntl++;
+	setup_dial_info(intntl, country, vorw, telno);
+	if (strcmp(country, g_int_prefix) == 0) {
+		/* nationaler Anruf */
+		if (strcmp(vorw, g_ovst) == 0) {
+			/* lokaler Anruf */
+			rc = snprintf(phone, sizeof(phone), "%s", telno);
+		} else {
+			rc = snprintf(phone, sizeof(phone), "%s%s%s",
+				 fernwahl, vorw, telno);
+		}
+	} else {
+		/* internationaler Anruf */
+		rc = snprintf(phone, sizeof(phone), "%s%s%s%s",
+			      international ? international:"00",
+			      country, vorw, telno);
+	}
+	if (rc < 0) return -1;
+
+	p = find(HD_MODEM_DIAL, config);
+	if(p && !strstr(p->text, "%s")) {
+		newlog(ERRLOG, "Konfiguration hat kein %%s im Dialstring!");
+		dialstr[0]='\0';
+		return -2;
+	}
+	rc = snprintf(dialstr, maxlen,
+		      p ? p->text : "AT DT %s",
+		      phone);
+	return rc < 0 ? rc : 0;
+}
 
 static void
 cleanup(void)
@@ -154,37 +205,48 @@ anrufdauer( void )
 
 	time(&now);
 	newlog(logname,
+#ifdef ENABLE_DIFFTIME
+		"Anrufdauer: ca. %g Sekunden online",
+		difftime(now, online_start));
+#else
 		"Anrufdauer: ca. %ld Sekunden online",
 		(long)(now-online_start));
+#endif
 	online_start = 0;
 }
+
+int maxtry;
 
 int
 main(int argc, const char **argv)
 {
 	const char *sysname, *speed;
-	char sysfile[FILENAME_MAX], deblogname[FILENAME_MAX];
+	char sysfile[FILENAME_MAX];
+	char deblogname[FILENAME_MAX];
 	FILE *f;
 	header_p sys, ich, p;
 	int i;
-	static volatile int maxtry;
 
 	initlog("call");
+
+	if (0 == strcmp(argv[0], "-h")) usage();
+	if (argc < 4 || argc > 5) usage();
 
 	gmodem=-1;
 	atexit(cleanup);
 
-	if (argc < 4 || argc > 5) usage();
 	sysname = strlwr( dstrdup( argv[1] ));
 	if (!strchr(argv[2], '/'))
-		sprintf(tty, "/dev/%s", argv[2]);
+		snprintf(tty, sizeof(tty), "/dev/%s", argv[2]);
 	else
 		strcpy(tty, argv[2]);
+
 	speed = argv[3];
+
+	maxtry = 1;
 	if (argc > 4)
 		maxtry = atoi(argv[4]);
-	else
-		maxtry = 1;
+
 	minireadstat();
 	sprintf(deblogname, "%s/" DEBUGLOG_FILE, logdir);
 	if(debuglevel>0) {
@@ -226,8 +288,7 @@ main(int argc, const char **argv)
 	   sleep(60);
 	}
 	if (!i) {
-		fprintf(deblogfile, "Cannot lock device: %s\n", tty);
-		fprintf(stderr, "Kann %s nicht reservieren...\n", tty);
+		newlog(ERRLOG, "Cannot lock device: %s", tty);
 		return 9;
 	}
 
@@ -270,9 +331,8 @@ main(int argc, const char **argv)
 #endif
 		); DMLOG("open modem");
 	if (gmodem < 0) {
-		perror(tty);
-		fprintf(deblogfile,
-			"Can not access device %s: %s\n", tty, strerror(errno));
+		newlog(ERRLOG,
+			"Can not access device %s: %s", tty, strerror(errno));
 		return 10;
 	}
 #if !defined(__NetBSD__)
@@ -300,8 +360,7 @@ main(int argc, const char **argv)
 	dup(gmodem); dup(gmodem); DMLOG("dup modem 2x to stdin and stdout");
 
 	if (setjmp(timeout)) {
-		fputs("\nABBRUCH: Timeout\n", stderr);
-		fputs("\nABBRUCH: Timeout\n", deblogfile);
+		newlog(ERRLOG, "ABBRUCH: Timeout");
 		lock_device(0, tty);
 		anrufdauer();
 		if (files) aufraeumen();
@@ -310,10 +369,7 @@ main(int argc, const char **argv)
 	}
 	if (setjmp(nocarrier)) {
 		if (!auflegen) {
-			fputs("\nABBRUCH: Gegenstelle hat aufgelegt!\n",
-				stderr);
-			fputs("\nABBRUCH: Gegenstelle hat aufgelegt!\n",
-				deblogfile);
+			newlog(ERRLOG, "ABBRUCH: Gegenstelle hat aufgelegt");
 		}
 		lock_device(0, tty);
 		anrufdauer();
@@ -325,25 +381,15 @@ main(int argc, const char **argv)
 	signal(SIGALRM, handle_timeout);
 	setup_dial_info(ortsnetz, g_int_prefix, g_ovst, NULL);
 
-	while(maxtry) {
-		p = find(HD_TEL, sys);
-		if (!p) {
-			newlog(ERRLOG,
-				"Keine Telefonnummer fuer %s gefunden",
-				sysname);
-
-			return 2;
-		}
-
-		while (p && maxtry) {
-			DMLOG("place call on modem");
-			if (anruf(p->text, sys, ich, gmodem)) {
-				maxtry = 0; break;
-			}
-			p = p->other;
-			maxtry--;
-		}
+	p = find(HD_TEL, sys);
+	if (!p) {
+		newlog(ERRLOG,
+			"Keine Telefonnummer fuer %s gefunden",
+			sysname);
+		return 2;
 	}
+
+	anruf(sys, ich, gmodem, maxtry);
 
 	if (online_start) {
 		anrufdauer();
@@ -364,7 +410,43 @@ main(int argc, const char **argv)
 #define JANUS		0
 #define ZCONNECT	1
 
+static const char *verf[] = { "JANUS", "ZCONNECT", NULL };
 static const char *logstr[] = { "JANUS\r", "zconnect\r" };
+
+/* (1 s pause) +++ (1 s pause) ATH0 <LF>
+ * ans Modem schicken und zweimal auf OK warten */
+static int
+hayes_hangup(int lmodem)
+{
+	/* returns:
+	 * 0: ok
+	 * 1: Fehler bei +++
+	 * 2: Fehler bei ATH0
+	 */
+	int t_nocarr;
+	int t_ok;
+	int t_error;
+	int ok;
+
+	free_all_tracks();
+	t_nocarr = init_track("NO CARRIER");
+	t_ok = init_track("OK");
+	t_error = init_track("ERROR");
+
+	alarm(10);
+	sleep(1);
+	write( lmodem, "+++", 3 );
+	sleep(1);
+	ok = do_hayes("", lmodem);
+	if(ok != t_ok) {
+		return 1;
+	}
+	ok = do_hayes("ATH0", lmodem);
+	if(ok != t_ok) {
+		return 2;
+	}
+	return 0;
+}
 
 static int
 login(int lmodem, int verfahren, const char *myname, const char *passwd)
@@ -489,23 +571,52 @@ setup_dial_info(const char *intnl, char *int_prefix, char *ovst, char *telno)
 	strcpy(telno, q);
 }
 
-static const char *verf[] = { "JANUS", "ZCONNECT", NULL };
+int
+janus_wait(int lmodem)
+{
+	/* FIXME: erkennt Protokollfehler nicht */
+	char c;
+
+	fprintf(stderr, "....\n");
+	alarm(10*60);
+	do {
+		while (read(lmodem, &c, 1) != 1) {
+			newlog(DEBUGLOG,
+				"can't read from modem: %s", strerror(errno));
+			return 1;
+		}
+	} while (c != NAK);
+	alarm(0);
+	fprintf(stderr, "Gegenseite hat gepackt\n");
+
+	alarm(15);
+	do {
+		write(lmodem, "UNIXD", 5);
+		while (read(lmodem, &c, 1) != 1) {
+			newlog(DEBUGLOG,
+				"can't read from modem: %s", strerror(errno));
+			return 1;
+		}
+	} while (c != ACK);
+	alarm(0);
+	fprintf(stderr, "Seriennummern OK\n");
+	return 0;
+}
 
 int
-anruf(char *intntl, header_p sys, header_p ich, int lmodem)
+anruf( header_p sys, header_p ich, int lmodem, int tries )
 {
-	char dialstr[60], phone[60], telno[60], vorw[60], country[60];
+	char dialstr[80];
 	char lockname[FILENAME_MAX];
 	header_p p;
 	char *name, *pw;
 	const char **v;
 	int i, err;
-	static int dial_cnt = 1;
+	int dial_cnt = 1;
 
 	/* fuer Janus */
 	char *arcer=NULL, *arcerin=NULL, *transfer=NULL, *domain;
 	header_p t, d;
-	char c;
 	int netcall_error;
 	char filename[FILENAME_MAX];
 	char tmpname[FILENAME_MAX];
@@ -515,40 +626,41 @@ anruf(char *intntl, header_p sys, header_p ich, int lmodem)
 	struct stat st;
 	/* ende fuer Janus */
 
-
-	while (*intntl && !isspace(*intntl))
-		intntl++;
-	while (*intntl && isspace(*intntl))
-		intntl++;
-	setup_dial_info(intntl, country, vorw, telno);
-	if (strcmp(country, g_int_prefix) == 0) {
-		if (strcmp(vorw, g_ovst) == 0) {
-			strcpy(phone, telno);		/* local call */
-		} else {
-			strcpy(phone, fernwahl);	/* mit Vorwahl */
-			strcat(phone, vorw);
-			strcat(phone, telno);
-		}
-	} else {
-		/* internationaler Anruf */
-		strcpy(phone, international ? international:"00");
-		strcat(phone, country);
-		strcat(phone, vorw);
-		strcat(phone, telno);
+	t = find(HD_ARCEROUT, sys);
+	if (!t) {
+		newlog(ERRLOG,
+			"Kein ausgehender Packer definiert");
+		return 1;
 	}
+	arcer = t->text;
+	strlwr(arcer);
 
-	p = find(HD_MODEM_DIAL, config);
-	if (!p)
-		sprintf(dialstr, "AT DP %s", phone);
-	else
-		sprintf(dialstr, p->text, phone);
+	t = find(HD_ARCERIN, sys);
+	if (!t) {
+		newlog(ERRLOG,
+			"Kein eingehender Packer definiert");
+		return 1;
+	}
+	arcerin = t->text;
+	strlwr(arcerin);
+
+	t = find(HD_PROTO, sys);
+	if (!t) {
+		newlog(ERRLOG,
+			"Kein Uebertragungsprotokoll definiert");
+		return 1;
+	}
+	transfer = t->text;
+	strlwr(transfer);
 
 	name = NULL;
 	p = find(HD_SYS, ich);
 	if (p) name = p->text;
+
 	pw = NULL;
 	p = find(HD_PASSWD, sys);
 	if (p) pw = p->text;
+
 	p = find(HD_X_CALL, sys);
 	if (!p) {
 		fprintf(stderr, "Welches Netcall-Verfahren????\n");
@@ -558,9 +670,6 @@ anruf(char *intntl, header_p sys, header_p ich, int lmodem)
 		if (stricmp(*v, p->text) == 0)
 			break;
 	if (!*v) return 1;
-
-	fprintf(stderr, "%3d. Anwahlversuch: %-.25s ", dial_cnt++, phone);
-	fflush(stderr);
 
 	if (i < ZCONNECT) {
 		t = find(HD_SYS, sys);
@@ -579,53 +688,53 @@ anruf(char *intntl, header_p sys, header_p ich, int lmodem)
 		}
 
 		for (domain = strtok(d->text, " ;,:");
-				domain; domain = strtok(NULL, " ;,:")) {
+				domain;
+				domain = strtok(NULL, " ;,:")) {
 			sprintf(sysname, "%s.%s", t->text, domain);
 			strlwr(sysname);
 			sprintf(tmpname, "%s/%s", netcalldir, sysname);
+			newlog(logname,
+				"Suche Verzeichnis, versuche %s...", tmpname);
 			if (access(tmpname, R_OK|X_OK) == 0)
 				break;
 		}
 
-		t = find(HD_ARCEROUT, sys);
-		if (!t) {
-			newlog(ERRLOG,
-				"Kein ausgehender Packer definiert");
+		if(access(tmpname, R_OK|X_OK)) {
+			/* Problem: temp. Verzeichnis nicht zu haben */
+			newlog(logname,
+				"Problem beim Netcall: Verzeichnis "
+				"nicht gefunden");
 			return 1;
 		}
-		arcer = t->text;
-		strlwr(arcer);
-
-		t = find(HD_ARCERIN, sys);
-		if (!t) {
-			newlog(ERRLOG,
-				"Kein eingehender Packer definiert");
-			return 1;
-		}
-		arcerin = t->text;
-		strlwr(arcerin);
-
-		t = find(HD_PROTO, sys);
-		if (!t) {
-			newlog(ERRLOG,
-				"Kein Uebertragungsprotokoll definiert");
-			return 1;
-		}
-		transfer = t->text;
-		strlwr(transfer);
 	}
 
-	if (redial(dialstr, lmodem, 1)) return 0;
+	/* ##### HIER WIRD ANGEWAEHLT ##### */
+	p = find(HD_TEL, sys);
+	while(tries) {
+		if(!p) p = find(HD_TEL, sys);
+		make_dialstr(dialstr, sizeof(dialstr), p->text);
+
+		fprintf(stderr, "%3d. Anwahlversuch: %-.25s\n", 
+			dial_cnt++, dialstr);
+
+		if (redial(dialstr, lmodem, 1) != 0 ) {
+			tries--;
+			p = p->other;
+		}
+		/* connect */
+		break;
+	}
 
 	set_local(lmodem, 0);
 	time(&online_start);
 
 	if (i < ZCONNECT) {
 		if (name) dfree(name);
-		name = strdup(boxstat.boxname);
-		if (!name) name = strdup( "???" );
-		else strupr(name);
+		name = dstrdup(boxstat.boxname);
+		strupr(name);
+#ifdef ENABLE_CAPS_IN_PASSWORD
 		strupr(pw);
+#endif
 	}
 	if(login(lmodem, i, name, pw)) return 0;
 
@@ -634,25 +743,14 @@ anruf(char *intntl, header_p sys, header_p ich, int lmodem)
 
 		netcall_error = 0;
 
-		fprintf(stderr, "....\n");
-		alarm(10*60);
-		do {
-			do { } while (read(lmodem, &c, 1) != 1);
-		} while (c != NAK);
-		alarm(0);
-		fprintf(stderr, "Gegenseite hat gepackt\n");
-		alarm(15);
-		do {
-			write(lmodem, "UNIXD", 5);
-			do { } while (read(lmodem, &c, 1) != 1);
- 		} while (c != ACK);
- 		alarm(0);
- 		fprintf(stderr, "Seriennummern OK\n");
+		if ( janus_wait(lmodem) != 0 )
+			return 0;
 
 		sprintf(tmpname, "%s/%s.%d.dir", netcalldir, sysname, getpid());
-		mkdir(tmpname, 0777);
-
+		mkdir(tmpname, 0755);
 		chdir(tmpname);
+		/* outname: ausgehendes Archiv
+		 * filename: */
 		sprintf(outname, "%s/caller.%s", tmpname, arcer);
 		sprintf(filename, "%s/%s.%s", netcalldir, sysname, arcer);
 		sprintf(lockname, "%s/%s/" PREARC_LOCK, netcalldir, sysname);
@@ -660,8 +758,8 @@ anruf(char *intntl, header_p sys, header_p ich, int lmodem)
 			FILE *f;
 			if(access(filename, F_OK) == 0) {
 				newlog(ERRLOG,
-					"Leerer Puffer, weil Puffer"
-					" %s nicht lesbar: %s\n",
+					"Leerer Puffer, weil keine Erlaubnis "
+					"zum Lesen von %s: %s",
 					outname, strerror(errno));
 			}
 
@@ -677,8 +775,6 @@ anruf(char *intntl, header_p sys, header_p ich, int lmodem)
 			fclose(f);
 		} else { /* can read filename */
 			if (waitnolock(lockname, 180)) {
-				fprintf(deblogfile,
-					"Prearc LOCK: %s\n", lockname);
 				fclose(deblogfile);
 				newlog(OUTGOING, "System %s Prearc LOCK: %s",
 					sysname, lockname );
@@ -689,7 +785,7 @@ anruf(char *intntl, header_p sys, header_p ich, int lmodem)
 			if(link(filename, outname)) {
 				fclose(deblogfile);
 				newlog(ERRLOG,
-				"Linken: %s -> %s fehlgeschlagen: %s\n",
+					"Linken: %s -> %s fehlgeschlagen: %s",
 					filename, outname, strerror(errno));
 				netcall_error = 1;
 				goto finish;
@@ -706,6 +802,7 @@ anruf(char *intntl, header_p sys, header_p ich, int lmodem)
 			netcall_error = 1;
 			goto finish;
 		}
+
 		newlog(logname, "Sende %s (%ld Bytes) per %s",
 		       outname, (long)st.st_size, transfer);
 
@@ -717,9 +814,7 @@ anruf(char *intntl, header_p sys, header_p ich, int lmodem)
 			goto finish;
 		}
 
-		fprintf(deblogfile, "Empfange per %s\n", transfer);
-		fprintf(stderr, "Empfange %s\n", transfer);
-		newlog(logname, "Empfange %s", transfer);
+		newlog(logname, "Empfange mit %s", transfer);
 		if (recvfile(transfer, inname)) {
 			newlog(logname,
 				"Empfang der Daten fehlgeschlagen");
@@ -729,20 +824,22 @@ anruf(char *intntl, header_p sys, header_p ich, int lmodem)
 		st.st_size = 0;
 		if(stat(inname, &st)) {
 			newlog(logname,
-				"Zugriff auf %s fehlgeschlagen: %s\n",
+				"Zugriff auf %s fehlgeschlagen: %s",
 				inname, strerror(errno));
 		}
-		newlog(logname, "%ld Bytes empfangen\n", (long)st.st_size);
+		newlog(logname, "%ld Bytes empfangen", (long)st.st_size);
 
 
 	finish:
-		anrufdauer();
 
 		/* Fertig, Modem auflegen */
 		signal(SIGHUP, SIG_IGN);
 		fclose(stdin);
 		fclose(stdout);
+		hayes_hangup(lmodem); DMLOG("hayes hangup modem");
 		hangup(lmodem); DMLOG("hangup modem");
+		anrufdauer();
+
 		restore_linesettings(lmodem);
 		DMLOG("restoring modem parameters");
 		close(lmodem); lmodem=-1; DMLOG("close modem");
@@ -752,7 +849,7 @@ anruf(char *intntl, header_p sys, header_p ich, int lmodem)
 		dup2(fileno(stderr),fileno(stdout));
 
 		if(!netcall_error) {
-		/* Netcall war erfolgreich, also Daten loeschen */
+			/* Netcall war erfolgreich, also Daten loeschen */
 		if(have_file) {
 			/* Backups von Nullpuffern sind
 			   uninteressant */
@@ -772,14 +869,14 @@ anruf(char *intntl, header_p sys, header_p ich, int lmodem)
 			   sollten wir es auch nicht loeschen */
 			if ( remove(filename) ) {
 				newlog(ERRLOG,
-				       "Loeschen von %s fehlgeschlagen: %s\n",
+				       "Loeschen von %s fehlgeschlagen: %s",
 				       filename, strerror(errno));
 			}
 		}
 		/* das ist nur ein Link, den putzen wir weg */
 		if ( unlink(outname)) {
 			newlog(ERRLOG,
-			       "Loeschen von %s fehlgeschlagen: %s\n",
+			       "Loeschen von %s fehlgeschlagen: %s",
 			       outname, strerror(errno));
 		}
 
@@ -808,8 +905,9 @@ anruf(char *intntl, header_p sys, header_p ich, int lmodem)
 				chdir ("/");
 				if(rmdir(tmpname)) {
 					newlog(ERRLOG,
-					       "Loeschen von %s fehlgeschlagen: %s\n",
-					       tmpname, strerror(errno));
+						"Loeschen von %s "
+						"fehlgeschlagen: %s",
+						tmpname, strerror(errno));
 				}
 				fclose(deblogfile);
 				exit(0);

@@ -4,6 +4,12 @@ $Id$
 
 seit 0.89
 
+- configure --enable-difftime
+  Berechne Zeit in Bruchteilen.
+
+- configure --enable-caps-in-passwd
+  Verwende Großschreibung im Passwort beim Anruf.
+
 - helpers/makesubst:
   Ausdrücke erweitert.
 

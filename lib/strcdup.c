@@ -30,8 +30,9 @@
 
 #include "config.h"
 
-#include "istring.h"
+#include <stdlib.h>
 
+#include "istring.h"
 #include "utility.h"
 
 /*@@

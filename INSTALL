@@ -182,7 +182,7 @@ in den Rot-Header übernommen werden.
 --disable-janus-checksum Checksummer der Seriennummer unterdrücken.
 
 Durch die Checksumme wird das Ender der Vorpackphase erkannt.
-Damit kann ZModem auf beiden Seiten glichzeitig gestarrtet
+Damit kann ZModem auf beiden Seiten gleichzeitig gestartet
 werden. Anderenfalls können die Daten verloren gehen,
 falls ZModem mit einem "Echo" spricht.
 
@@ -282,6 +282,17 @@ ZConnect-Systeme.
 
 NCB-Mail Systeme lehnen Nachricht ab wenn der Betreff leer ist.
 Der Betreff wird hier auf "-" geändert.
+
+
+--enable-difftime        Berechne Zeit in Bruchteilen.
+
+Anrufdauer genauer als 1 Sekunde ermitteln.
+
+
+--enable-caps-in-passwd  Verwende Großschreibung im Passwort.
+
+Das Passwort wird immer in Großschrift gewandelt,
+bevor es zum Angerufenen System geschickt wird.
 
 
 --enable-testing         Verwende neuen Onlinecode.

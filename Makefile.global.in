@@ -71,7 +71,7 @@ CFLAGS += -DBINDIR=$(BINDIR) -DETCDIR=$(ETCDIR)
 CFLAGS += -DCONFIG_FILE=\"$(ETCDIR)/config\"
 CFLAGS += -D_PATH_SENDMAIL=\"$(SENDMAIL)\"
 APCOBJS  = @APCOBJS@
-CLEANFILES = *.o *.a *.bak *.BAK *.rej *.orig core *.core
+CLEANFILES = *.o *.a *.bak *.BAK *.rej *.orig core *.core *~ \\\#*\\\#
 
 .c.o:   ../Makefile.global
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
