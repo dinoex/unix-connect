@@ -95,16 +95,18 @@ BINMIN	= \
 all:	$(TARMIN)
 	date
 
+install:	${DESTDIR} \
+		$(SPOOLDIR)/rsmtp \
+		$(TARMIN) \
+		$(BINMIN)
+
 clean:
 	-rm -f $(CLEANFILES)
 
 clobber:	clean
 	-rm -rf $(TARMIN)
 
-install:	${DESTDIR} \
-		$(SPOOLDIR)/rsmtp \
-		$(TARMIN) \
-		$(BINMIN)
+tidy:		clobber
 
 rsmtp:		rsmtp.o
 bsmtp:		bsmtp.o
@@ -133,7 +135,7 @@ $(DESTDIR)/rsmtp: rsmtp
 $(DESTDIR)/bsmtp: bsmtp
 	$(INSTALL) $(BINMODE) $(BINOWN) bsmtp $@
 
-.c.o:
+.c.o:	../Makefile.global
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
 
 # end of makefile

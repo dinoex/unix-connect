@@ -38,61 +38,43 @@
 
 include Makefile.global
 
+SUBDIRS = lib date hdlib online gate tools etc shell helpers \
+	rsmtp \
+	mail-and-news/$(MAIL) \
+	mail-and-news/$(NEWS)
+
 all:
 	(cd lib; $(MAKE) strlib.a)
 	(cd hdlib; $(MAKE) all)
-	shell/update hdlib/hd_nam.h include/hd_nam.h
-	shell/update hdlib/hd_def.h include/hd_def.h
-	(cd lib; $(MAKE) all)
-	(cd date; $(MAKE) all)
-	(cd online; $(MAKE) all)
-	(cd gate; $(MAKE) all)
-	(cd tools; $(MAKE) all)
-	(cd rsmtp; $(MAKE) all)
+	helpers/update hdlib/hd_nam.h include/hd_nam.h
+	helpers/update hdlib/hd_def.h include/hd_def.h
+	for dir in $(SUBDIRS); do (cd $$dir; $(MAKE) all); done
 
 install:
 	if test ! -d $(BINDIR); then mkdir $(BINDIR); chown $(USER) $(BINDIR); fi
 	if test ! -d $(ETCDIR); then mkdir $(ETCDIR); chown $(USER) $(ETCDIR); fi
 	if test ! -d $(ETCDIR)/systems; then mkdir $(ETCDIR)/systems; chown $(USER) $(ETCDIR)/systems; fi
-	(cd online; $(MAKE) install)
-	(cd gate; $(MAKE) install)
-	(cd tools; $(MAKE) install)
-	(cd shell; $(MAKE) install)
-	(cd rsmtp; $(MAKE) install)
-	(cd etc; $(MAKE) install)
+	for dir in $(SUBDIRS); do (cd $$dir; $(MAKE) install); done
 
 clean:
 	-rm -f $(CLEANFILES)
-	(cd lib; $(MAKE) clean)
-	(cd date; $(MAKE) clean)
-	(cd hdlib; $(MAKE) clean)
-	(cd online; $(MAKE) clean)
-	(cd gate; $(MAKE) clean)
-	(cd tools; $(MAKE) clean)
-	(cd rsmtp; $(MAKE) clean)
+	for dir in $(SUBDIRS); do (cd $$dir; $(MAKE) clean); done
 
 clobber:
+	-rm -f $(CLEANFILES)
 	-rm -f include/hd_nam.h
 	-rm -f include/hd_def.h
-	(cd lib; $(MAKE) clobber)
-	(cd date; $(MAKE) clobber)
-	(cd hdlib; $(MAKE) clobber)
-	(cd online; $(MAKE) clobber)
-	(cd gate; $(MAKE) clobber)
-	(cd tools; $(MAKE) clobber)
-	(cd rsmtp; $(MAKE) clobber)
+	for dir in $(SUBDIRS); do (cd $$dir; $(MAKE) clobber); done
 
 tidy:	clobber
+	for dir in $(SUBDIRS); do (cd $$dir; $(MAKE) tidy); done
 	-rm -f configure.dat
 	-rm -f .makefile.conf
 	-rm -f Makefile.global Makefile
 	-rm -f config.cache config.log config.status
 	-rm -f include/sysdep.h include/policy.h
-	-rm -f etc/config
 
-distrib:	tidy
-	(cd hdlib; $(MAKE) -f Makefile.in tidy)
-	(cd hdlib; $(MAKE) -f Makefile.in SHELL=/bin/sh hash.c)
-	-rm -f docs/unix-connect.{aux,log,toc,cp,fn,ky,pg,tp,vr}
+rehash:
+	(cd hdlib; $(MAKE) rehash)
 
-
+# eof

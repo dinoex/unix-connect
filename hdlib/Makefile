@@ -47,16 +47,22 @@ GFLAGS	= -L ANSI-C -C -D -G -K header -N predefd_header -t
 OBJS	= hash.o delheader.o find.o freepara.o joinheader.o rdpara.o \
 	  wrpara.o pkread.o pkwrite.o crc.o uurd.o smtprd.o
 
-test:	testheader test.in uuheader.a
-	./testheader test.in test.out
-	diff -p test.out test.erg
-
 all:    uuheader.a $(LIBS)
 
 install:	all
 
-testheader:	testheader.o uuheader.a $(LIBS)
-	$(CC) $(CFLAGS) -o testheader testheader.o uuheader.a ../lib/ministat.o $(LIBS) $(LDFLAGS)
+clean:
+	-rm -f $(CLEANFILES) header.tmp header.gtmp
+
+clobber:	clean
+
+tidy:	clobber
+
+rehash-clean:	clobber
+	-rm -f hd_def.h hd_nam.h hd_nlist.h
+	-rm -f testheader hash.c header.gperf
+
+rehash:	rehash-clean hash.c
 
 uurd.o:	uurdpara.c
 	-rm -f uurd.c
@@ -98,20 +104,18 @@ header.gperf hd_def.h hd_nam.h hd_nlist.h:	header.lst
 	awk '{printf("%s, HD_%s\n", $$1, $$2)}' header.tmp | tr '[a-z]' '[A-Z]' > header.gperf
 	-rm -f header.tmp
 
+testheader:	testheader.o uuheader.a $(LIBS)
+	$(CC) $(CFLAGS) -o testheader testheader.o uuheader.a ../lib/ministat.o $(LIBS) $(LDFLAGS)
+
+test:	testheader test.in uuheader.a
+	./testheader test.in test.out
+	diff -p test.out test.erg
+
 uuheader.a:	$(OBJS)
 	ar r uuheader.a $(OBJS)
 	$(RANLIB) uuheader.a
 
-clean:
-	-rm -f $(CLEANFILES) header.tmp header.gtmp
-
-clobber:	clean
-
-tidy:	clobber
-	-rm -f hd_*.h hd_*.c
-	-rm -f testheader hash.c header.gperf
-
-.c.o:
+.c.o:	../Makefile.global
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
 
 crc.o : crc.c ../include/crc.h ../include/sysdep.h 

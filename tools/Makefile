@@ -45,9 +45,13 @@ install:	all
 	cp $(PROGS) $(DESTDIR)
 	( cd $(DESTDIR); chown $(USER) $(PROGS) )
 
-#
-#  Einzelne Ziele:
-#
+clean:
+	-rm -f $(CLEANFILES)
+
+clobber:	clean
+	-rm -f $(PROGS)
+
+tidy:	clobber
 
 list-systems:	list-systems.o $(LIBS)
 	$(CC) -o list-systems list-systems.o $(LIBS) $(LDFLAGS)
@@ -55,17 +59,7 @@ list-systems:	list-systems.o $(LIBS)
 zconsplit:	zconsplit.o $(LIBS)
 	$(CC) -o zconsplit zconsplit.o $(LIBS) $(LDFLAGS)
 
-#
-#  Administrativa:
-#
-
-clean:
-	-rm -f $(CLEANFILES)
-
-clobber:	clean
-	-rm -f $(PROGS)
-
-.c.o:
+.c.o:	../Makefile.global
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
 
 list-systems.o : list-systems.c ../include/config.h ../include/sysdep.h ../include/lib.h \

@@ -53,6 +53,14 @@ install:	all
 	chmod +s $(DESTDIR)/uursmtp $(DESTDIR)/uurnews
 	chmod +s $(DESTDIR)/uuwsmtp $(DESTDIR)/uuwnews
 
+clean:
+	-rm -f $(CLEANFILES)
+
+clobber:	clean
+	-rm -f uurnews uursmtp uuwsmtp uuwnews
+
+tidy:		clobber
+
 uursmtp:	uursmtp.o uuconv.o mime.o alias.o iso2pc.o $(APCOBJS) $(DATELIB) $(LIBS)
 	$(CC) $(MODELL) -o $@ $@.o uuconv.o mime.o alias.o iso2pc.o $(APCOBJS) $(DATELIB) $(LIBS) $(LDFLAGS)
 
@@ -69,13 +77,7 @@ testmime:	testmime.o mime.o $(DATELIB) $(LIBS)
 	$(CC) $(MODELL) -o $@ $@.o mime.o $(DATELIB) $(LIBS) \
 	 -lreadline -ltermcap $(LDFLAGS)
 
-clean:
-	-rm -f $(CLEANFILES)
-
-clobber:	clean
-	-rm -f uurnews uursmtp uuwsmtp uuwnews
-
-.c.o:	
+.c.o:	../Makefile.global
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
 
 # Individuelle Abhaengigkeiten [gcc -I../include -MM *.c]

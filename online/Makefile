@@ -53,6 +53,14 @@ install:	all
 	cp $(PROGS) $(DESTDIR)
 	( cd $(DESTDIR); chown $(USER) $(PROGS) )
 
+clean:
+	-rm -f $(CLEANFILES)
+
+clobber:	clean
+	-rm -f $(PROGS)
+
+tidy:		clobber
+
 receiver:	$(ROBJS) $(LIBS)
 	$(CC) -o receiver $(ROBJS) $(LIBS) $(LDFLAGS)
 
@@ -62,13 +70,7 @@ zcall:	$(COBJS) $(LIBS)
 januslogin:	januslogin.o xprog.o lockdev.o lock.o import.o $(LIBS)
 	$(CC) -o januslogin januslogin.o xprog.o lockdev.o lock.o import.o $(LIBS) $(LDFLAGS)
 
-clean:
-	-rm -f $(CLEANFILES)
-
-clobber:	clean
-	-rm -f $(PROGS)
-
-.c.o:
+.c.o:	../Makefile.global
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
 
 # Individuelle Abhaengigkeiten [gcc -I../include -MM *.c]

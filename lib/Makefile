@@ -51,6 +51,8 @@ clean:
 
 clobber:	clean
 
+tidy:		clobber
+
 gatelib.a:	$(OBJS)
 	ar r gatelib.a $(OBJS)
 	$(RANLIB) gatelib.a
@@ -59,7 +61,7 @@ strlib.a:	$(STROBJS)
 	ar r strlib.a $(STROBJS)
 	$(RANLIB) strlib.a
 
-.c.o:
+.c.o:	../Makefile.global
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
 
 # Individuelle Abhaengigkeiten [gcc -I../include -MM *.c]

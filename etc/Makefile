@@ -22,6 +22,5 @@ clean:
 clobber:
 
 tidy:
-	-rm config config.in
+	-rm -f config config.in
 
-distrib:

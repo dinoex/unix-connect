@@ -40,14 +40,18 @@ OBJS	= getindate.o datetok.o
 
 all:	$(OBJS)
 
+install:
+
 clean:
 	-rm -f $(CLEANFILES)
 
 clobber:	clean
 
+tidy:		clobber
+
 datetok.o : datetok.c datetok.h
 getindate.o : getindate.c datetok.h
 
-.c.o:
+.c.o:	../Makefile.global
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
 
