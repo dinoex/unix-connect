@@ -3,8 +3,9 @@
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1993-1994  Martin Husemann
  *  Copyright (C) 1995-1998  Christopher Creutzig
- *  Copyright (C) 1999       Andreas Barth, Option "-p"
- *  Copyright (C) 1996-2000  Dirk Meyer
+ *  Copyright (C) 1999       Andreas Barth
+ *  Copyright (C) 2000       Moritz Both
+ *  Copyright (C) 1996-2001  Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -426,10 +427,14 @@ convert(FILE *zconnect, FILE *smtp)
 		if (pointuser) {
 			/*
 			 * Technisch fuer diese Mail verantwortlich
-			 * ist der Default-Pointuser, also der erste
-			 * in der Liste.
+			 * ist der Pointuser. get_pointuser() holt
+			 * den ersten aus der Liste oder den, der
+			 * vorgeschlagen ist als Parameter
 			 */
-			strcpy(buffer, pointuser->text);
+			char *pu = get_pointuser(buffer);
+			strncpy(buffer, pu, 300);
+			buffer[299] = 0;
+
 			for (s=buffer; *s; s++)
 				if (isspace(*s)) break;
 			*s = '\0';
@@ -446,6 +451,7 @@ convert(FILE *zconnect, FILE *smtp)
 		newlog(Z2ULOG, "mid=<%s>, from=%s, to=%s size=%ld", \
 			mid, habs->text, p->text, len);
 		strncpy(buffer, p->text, 300);
+		buffer[ 300 ] = 0;
        		strcpy(pbuffer, buffer);
 		local = 0;
 		at = strchr(buffer, '@');

@@ -2,7 +2,7 @@
 /*
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1995       Christopher Creutzig
- *  Copyright (C) 1999-2000  Dirk Meyer
+ *  Copyright (C) 1999-2001  Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@
 
 char *eda2date(const char *text );
 int valid_newsgroups( const char *data );
+char *get_pointuser(const char *suggestion);
 int adrmatch(const char *abs1, const char *abs2);
 int printnewsgroup(const char *brett, FILE *f);
 void printnewsgroups(header_p p, const char *uuheader, FILE *f);
