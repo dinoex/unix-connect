@@ -4,6 +4,8 @@ $Id$
 Aenderungen an UnixConnect
 seit 0.78
 
+- "!not-for-mail" im Pfad erzeugen, wenn point dies nicht sendet.
+
 - References wieder mit Whitespaces
 
 - Option fuer syslogd -D LOGSYSLOG
