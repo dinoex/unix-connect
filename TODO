@@ -31,6 +31,10 @@ Was muß noch getan werden?
 
 - MA: call.c aufräumen. Alle Checks, PreArc VOR dem Onlinegehen!
 
+- AIX: rtty.c: cfmakeraw?
+- AIX: trap.c: __sighandler_t 
+- AIX: lockdev.c: sys/mkdev.h
+
 ### Problems:
 
 - News verwerfen, wenn ordnungsgemäße Wandlung nicht möglich.
