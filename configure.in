@@ -12,6 +12,7 @@ AC_PROG_AWK
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_CC
+AC_PROG_RANLIB
 
 dnl      checks for libraries
 dnl Replace `main' with a function in -lreadline:
@@ -20,11 +21,12 @@ dnl Replace `main' with a function in -ltermcap:
 dnl AC_CHECK_LIB(termcap, main)
 
 dnl      checks for header files
-dnl AC_HEADER_DIRENT
 dnl AC_HEADER_STDC
 dnl AC_HEADER_MAJOR
-dnl AC_HEADER_SYS_WAIT
 dnl AC_CHECK_HEADERS(fcntl.h paths.h sgtty.h sys/file.h sys/ioctl.h syslog.h termio.h)
+
+AC_HEADER_SYS_WAIT
+AC_HEADER_DIRENT
 AC_CHECK_HEADERS(string.h unistd.h limits.h sys/fcntl.h)
 if eval "test \"`echo '$ac_cv_header_string_h'`\" = no"; then
   AC_CHECK_HEADERS(strings.h)
@@ -254,7 +256,7 @@ AC_MSG_CHECKING(Nachrichten zurückkonvertieren verbieten)
 AC_ARG_ENABLE(full-gate,
 [ --disable-full-gate      Nachrichten zurückkonvertieren verbieten.],
 [ case "$enableval" in
-  yes)
+  no)
         AC_MSG_RESULT(Ja)
         AC_DEFINE(DISABLE_FULL_GATE)
         ;;
@@ -270,7 +272,7 @@ AC_MSG_CHECKING(Fehler nicht in X-Header protokollieren)
 AC_ARG_ENABLE(log-xheader,
 [ --disable-log-xheader    Fehler nicht in X-Header protokollieren.],
 [ case "$enableval" in
-  yes)
+  no)
         AC_MSG_RESULT(Ja)
         AC_DEFINE(DISABLE_LOG_X_HEADER)
         ;;
@@ -286,7 +288,7 @@ AC_MSG_CHECKING(Nicht alle Header erzeugen)
 AC_ARG_ENABLE(uucp-server,
 [ --disable-uucp-server    Nicht alle Header erzeugen, für reine Leafsites.],
 [ case "$enableval" in
-  yes)
+  no)
         AC_MSG_RESULT(Ja)
         AC_DEFINE(DISABLE_UUCP_SERVER)
         ;;
@@ -302,7 +304,7 @@ AC_MSG_CHECKING(Umlaute in Mail mit us-ascii umschreiben)
 AC_ARG_ENABLE(iso-in-mail,
 [ --disable-iso-in-mail    Umlaute in Mail mit us-ascii umschreiben.],
 [ case "$enableval" in
-  yes)
+  no)
         AC_MSG_RESULT(Ja)
         AC_DEFINE(DISABLE_ISO_IN_MAIL)
         ;;
@@ -318,7 +320,7 @@ AC_MSG_CHECKING(Umlaute in News mit us-ascii umschreiben)
 AC_ARG_ENABLE(iso-in-news,
 [ --disable-iso-in-news    Umlaute in News mit us-ascii umschreiben.],
 [ case "$enableval" in
-  yes)
+  no)
         AC_MSG_RESULT(Ja)
         AC_DEFINE(DISABLE_ISO_IN_NEWS)
         ;;
@@ -334,7 +336,7 @@ AC_MSG_CHECKING(Sonderbehandlung des ROT-Headers für MAPS)
 AC_ARG_ENABLE(rot-for-maps,
 [ --disable-rot-for-maps   Sonderbehandlung des ROT-Headers für MAPS.],
 [ case "$enableval" in
-  yes)
+  no)
         AC_MSG_RESULT(Ja)
         AC_DEFINE(DISABLE_ROT_FOR_MAPS)
         ;;
@@ -350,7 +352,7 @@ AC_MSG_CHECKING(Sonderbehandlung für Usernamen im ROT-Header)
 AC_ARG_ENABLE(nouser-in-rot,
 [ --disable-nouser-in-rot  Sonderbehandlung für Usernamen im ROT-Header.],
 [ case "$enableval" in
-  yes)
+  no)
         AC_MSG_RESULT(Ja)
         AC_DEFINE(DISABLE_NOUSER_IN_ROT)
         ;;
@@ -360,6 +362,66 @@ AC_ARG_ENABLE(nouser-in-rot,
   esac ],[
   AC_MSG_RESULT(Nein)]
 )
+
+
+AC_MSG_CHECKING(Checksummer der Seriennummer unterdrücken)
+AC_ARG_ENABLE(janus-checksum,
+[ --disable-janus-checksum Checksummer der Seriennummer unterdrücken.],
+[ case "$enableval" in
+  no)
+        AC_MSG_RESULT(Ja)
+        AC_DEFINE(DISABLE_JANUS_CHECKSUM)
+        ;;
+  *)
+        AC_MSG_RESULT(Nein)
+        ;;
+  esac ],[
+  AC_MSG_RESULT(Nein)]
+)
+
+
+EXTRA_CDIR="rsmtp"
+AC_MSG_CHECKING(Batched SMTP lesen und Schreiben)
+AC_ARG_ENABLE(rsmtp,
+[ --disable-rsmtp          Batched SMTP lesen und Schreiben.],
+[ case "$enableval" in
+  no)
+        AC_MSG_RESULT(Nein)
+	EXTRA_CDIR=""
+        AC_DEFINE(DISABLE_RSMTP)
+        ;;
+  *)
+        AC_MSG_RESULT(Ja)
+        ;;
+  esac ],[
+  AC_MSG_RESULT(Ja)]
+)
+AC_SUBST(EXTRA_CDIR)
+
+
+ONLINE_LIB="gatelib.a"
+ONLINE_DIR="online tools"
+SHELL_DIR="shell"
+AC_MSG_CHECKING(Onlinefunktionen für Janus und ZConnect)
+AC_ARG_ENABLE(online,
+[ --disable-online         Onlinefunktionen für Janus und ZConnect.],
+[ case "$enableval" in
+  no)
+        AC_MSG_RESULT(Nein)
+	ONLINE_LIB=""
+	ONLINE_DIR=""
+	SHELL_DIR=""
+        AC_DEFINE(DISABLE_ONLINE)
+        ;;
+  *)
+        AC_MSG_RESULT(Ja)
+        ;;
+  esac ],[
+  AC_MSG_RESULT(Ja)]
+)
+AC_SUBST(ONLINE_LIB)
+AC_SUBST(ONLINE_DIR)
+AC_SUBST(SHELL_DIR)
 
 
 AC_MSG_CHECKING(Bang-Pfade)
@@ -376,6 +438,7 @@ AC_ARG_ENABLE(bang,
   esac ],[
   AC_MSG_RESULT(Nein)
 ])
+
 
 AC_MSG_CHECKING(Erzeuge U-X-Header)
 AC_ARG_ENABLE(uxheader,
@@ -490,12 +553,28 @@ AC_ARG_ENABLE(short-spooldir,
 
 
 AC_MSG_CHECKING(Lege eine Pause für langsame Modems ein.)
-AC_ARG_ENABLE(slow-modemldir,
+AC_ARG_ENABLE(slow-modem,
 [ --enable-slow-modem      Lege eine Pause für langsame Modems ein.],
 [ case "$enableval" in
   yes)
         AC_MSG_RESULT(Ja)
         AC_DEFINE(SLOW_MODEM)
+        ;;
+  *)
+        AC_MSG_RESULT(Nein)
+        ;;
+  esac ],[
+  AC_MSG_RESULT(Nein)
+])
+
+
+AC_MSG_CHECKING(Verwende neuen Onlinecode)
+AC_ARG_ENABLE(testing,
+[ --enable-testing        Verwende neuen Onlinecode.],
+[ case "$enableval" in
+  yes)
+        AC_MSG_RESULT(Ja)
+        AC_DEFINE(ENABLE_TESTING)
         ;;
   *)
         AC_MSG_RESULT(Nein)
@@ -779,7 +858,6 @@ AC_SUBST(LDFLAGS)
 AC_SUBST(PATHADD)
 AC_SUBST(LIBOBJS)
 
-AC_PROG_RANLIB
 
 AC_CHECK_PROGS(shell,sh,/bin/sh)
 dnl AC_MSG_RESULT($shell)

@@ -491,6 +491,8 @@ setup_dial_info(const char *intnl, char *int_prefix, char *ovst, char *telno)
 
 static const char *verf[] = { "JANUS", "ZCONNECT", NULL };
 
+#ifdef ENABLE_TESTING
+
 int
 anruf(char *intntl, header_p sys, header_p ich, int lmodem)
 {
@@ -865,3 +867,297 @@ anruf(char *intntl, header_p sys, header_p ich, int lmodem)
 
 	return 1;
 }
+
+#else
+
+int anruf (char *intntl, header_p sys, header_p ich, int lmodem)
+{
+	char dialstr[60], phone[60], telno[60], vorw[60], country[60];
+	char lockname[FILENAME_MAX];
+	header_p p;
+	char *name, *pw;
+	const char **v;
+	int i, err;
+	static int dial_cnt = 1;
+
+	while (*intntl && !isspace(*intntl))
+		intntl++;
+	while (*intntl && isspace(*intntl))
+		intntl++;
+	setup_dial_info(intntl, country, vorw, telno);
+	if (strcmp(country, g_int_prefix) == 0) {
+		if (strcmp(vorw, g_ovst) == 0) {
+			strcpy(phone, telno);		/* local call */
+		} else {
+			strcpy(phone, fernwahl);	/* mit Vorwahl */
+			strcat(phone, vorw);
+			strcat(phone, telno);
+		}
+	} else {
+		strcpy(phone, international ? international:"00");	/* internationaler Anruf */
+		strcat(phone, country);
+		strcat(phone, vorw);
+		strcat(phone, telno);
+	}
+
+	p = find(HD_MODEM_DIAL, config);
+	if (!p)
+		sprintf(dialstr, "AT DP %s", phone);
+	else
+		sprintf(dialstr, p->text, phone);
+
+	name = NULL;
+	p = find(HD_SYS, ich);
+	if (p) name = p->text;
+	pw = NULL;
+	p = find(HD_PASSWD, sys);
+	if (p) pw = p->text;
+	p = find(HD_X_CALL, sys);
+	if (!p) {
+		fprintf(stderr, "Welches Netcall-Verfahren????\n");
+		exit(20);
+	}
+	for (i = 0, v = verf; *v; i++, v++)
+		if (stricmp(*v, p->text) == 0)
+			break;
+	if (!*v) return 1;
+
+	fprintf(stderr, "%3d. Anwahlversuch: %-14s ", dial_cnt++, phone);
+	fflush(stderr);
+
+	if (redial(dialstr, lmodem, 1)) return 0;
+
+	time(&online_start);
+
+	if (i < ZCONNECT) {
+		if (name) dfree(name);
+		name = strdup(boxstat.boxname);
+		if (!name) name = strdup( "???" );
+		else strupr(name);
+		strupr(pw);
+	}
+	err = login(lmodem, i, name, pw);
+
+	if (err) return 0;
+
+	if (i < ZCONNECT) {
+		char filename[FILENAME_MAX];
+		char tmpname[FILENAME_MAX];
+		char outname[FILENAME_MAX];
+		char sysname[FILENAME_MAX];
+		char *arcer, *arcerin, *transfer, *domain;
+		header_p t, d;
+		char c;
+		struct stat st;
+
+		fprintf(stderr, "....\n");
+		alarm(10*60);
+		do {
+			do { } while (read(lmodem, &c, 1) != 1);
+		} while (c != NAK);
+		alarm(0);
+		fprintf(stderr, "Gegenseite hat gepackt\n");
+		alarm(15);
+		do {
+			write(lmodem, "UNIXD", 5);
+			do { } while (read(lmodem, &c, 1) != 1);
+ 		} while (c != ACK);
+ 		alarm(0);
+ 		fprintf(stderr, "Seriennummern OK\n");
+
+		t = find(HD_SYS, sys);
+		if (!t) {
+			fprintf(stderr,
+				"Illegale Systemdatei: Kein " HN_SYS
+				": Header oder falscher Name: %s\n", filename);
+			newlog(ERRLOG,
+				"Illegale Systemdatei: Kein " HN_SYS
+				": Header oder falscher Name: %s", filename);
+			return 1;
+		}
+		d = find(HD_DOMAIN, sys);
+		if (!d) {
+			fprintf(stderr,
+				"Illegale Systemdatei: Kein " HN_DOMAIN
+				": Header: %s\n", filename);
+			newlog(ERRLOG,
+				"Illegale Systemdatei: Kein " HN_DOMAIN
+				": Header: %s", filename);
+			return 1;
+		}
+
+		for (domain = strtok(d->text, " ;,:"); domain; domain = strtok(NULL, " ;,:")) {
+			sprintf(sysname, "%s.%s", t->text, domain);
+			strlwr(sysname);
+			sprintf(tmpname, "%s/%s", netcalldir, sysname);
+			if (access(tmpname, R_OK|X_OK) == 0)
+				break;
+		}
+
+		t = find(HD_ARCEROUT, sys);
+		if (!t) {
+			fputs("Kein ARCer (ausgehend) definiert!\n", stderr);
+			newlog(ERRLOG,
+				"Kein ausgehender Packer definiert");
+			return 1;
+		}
+		arcer = t->text;
+		strlwr(arcer);
+
+		t = find(HD_ARCERIN, sys);
+		if (!t) {
+			fputs("Kein ARCer (eingehend) definiert!\n", stderr);
+			newlog(ERRLOG,
+				"Kein eingehender Packer definiert");
+			return 1;
+		}
+		arcerin = t->text;
+		strlwr(arcerin);
+
+		t = find(HD_PROTO, sys);
+		if (!t) {
+			fputs("Kein Uebertragungsprotokoll definiert!\n",
+				stderr);
+			newlog(ERRLOG,
+				"Kein Uebertragungsprotokoll definiert");
+			return 1;
+		}
+		transfer = t->text;
+		strlwr(transfer);
+
+		sprintf(tmpname, "%s/%s.%d.dir", netcalldir, sysname, getpid());
+		mkdir(tmpname, 0777);
+
+		chdir(tmpname);
+		sprintf(outname, "%s/caller.%s", tmpname, arcer);
+		sprintf(filename, "%s/%s.%s", netcalldir, sysname, arcer);
+		sprintf(lockname, "%s/%s/" PREARC_LOCK, netcalldir, sysname);
+
+		if (access(filename, R_OK) != 0) {
+			FILE *f;
+
+			f = fopen(outname, "wb");
+			if (!f) {
+				fprintf(stderr,
+					"Kann Netcall %s nicht erzeugen: %s\n",
+					outname, strerror(errno));
+				newlog(ERRLOG,
+					"Kann Netcall %s nicht erzeugen: %s",
+					outname, strerror(errno));
+				fclose(deblogfile);
+				return 1;
+			}
+			fputs("\r\n", f);
+			fclose(f);
+		} else {
+			if (waitnolock(lockname, 180)) {
+				fprintf(deblogfile,
+					"Prearc LOCK: %s\n", lockname);
+				fclose(deblogfile);
+				newlog(OUTGOING, "System %s Prearc LOCK: %s",
+					sysname, lockname );
+				return 1;
+			}
+			if(rename(filename, outname)) {
+				fprintf(stderr,
+				"Umbenennen: %s -> %s fehlgeschlagen: %s\n",
+					filename, outname, strerror(errno));
+				fclose(deblogfile);
+				newlog(ERRLOG,
+				"Umbenennen: %s -> %s fehlgeschlagen: %s\n",
+					filename, outname, strerror(errno));
+				return 1;
+			}
+		}
+		sprintf(filename, "called.%s", arcer);
+		sprintf(outname, "caller.%s", arcer);
+
+		st.st_size = 0;
+		stat(outname, &st);
+		fprintf(deblogfile, "Sende %s (%ld Bytes) per %s\n",
+			outname, (long)st.st_size, transfer);
+		fprintf(stderr, "Sende %s (%ld Bytes) per %s\n",
+			outname, (long)st.st_size, transfer);
+		newlog(logname, "Sende %s (%ld Bytes) per %s",
+			outname, (long)st.st_size, transfer);
+		if (sendfile(transfer, outname)) {
+			fprintf(stderr, "Versand der Daten fehlgeschlagen\n");
+			fprintf(deblogfile,
+				"Versand der Daten fehlgeschlagen\n");
+			newlog(logname,
+				"Versand der Daten fehlgeschlagen");
+			return 1;
+		}
+
+		fprintf(deblogfile, "Empfange per %s\n", transfer);
+		fprintf(stderr, "Empfange %s\n", transfer);
+		newlog(logname, "Empfange %s", transfer);
+		if (recvfile(transfer, filename)) {
+			fprintf(stderr, "Empfang der Daten fehlgeschlagen\n");
+			fprintf(deblogfile,
+				"Empfang der Daten fehlgeschlagen\n");
+			newlog(logname,
+				"Empfang der Daten fehlgeschlagen");
+			return 1;
+		}
+		st.st_size = 0;
+		stat(filename, &st);
+		fprintf(stderr, "%ld Bytes empfangen\n", (long)st.st_size);
+		fprintf(deblogfile, "%ld Bytes empfangen\n", (long)st.st_size);
+		newlog(logname,
+			"%ld Bytes empfangen\n", (long)st.st_size);
+
+		anrufdauer();
+
+		/* Fertig, Modem auflegen */
+		signal(SIGHUP, SIG_IGN);
+		fclose(stdin);
+		fclose(stdout);
+		hangup(lmodem); DMLOG("hangup modem");
+		restore_linesettings(lmodem); DMLOG("restoring modem parameters");
+		close(lmodem); lmodem=-1; DMLOG("close modem");
+		fopen("/dev/null", "r");	/* neuer stdin */
+		dup2(fileno(stderr),fileno(stdout)); /* stderr wird in stdout kopiert */
+
+		/* Netcall war erfolgreich, also Daten loeschen */
+		remove(outname);
+		fclose(deblogfile);
+
+		/*
+		 * Und empfangene Daten (im Hintergrund) einlesen,
+		 * das Modem wird sofort wieder freigegeben.
+		 */
+		if (fork() == 0) {
+			/* Ich bin child */
+			deblogfile=fopen("/tmp/import.deblogfile", "a");
+			DMLOG("child forked");
+			import_all(arcerin, sysname);
+			chdir ("/");
+			rmdir(tmpname);
+			fclose(deblogfile);
+			_exit(0);
+		}
+		return(1);
+
+	} else {
+		/* ZCONNECT */
+
+		system_master(ich, sys);
+		if (auflegen) return 1;
+		bereitstellen();
+		files = 1;
+		senden_queue = todo;
+		todo = NULL;
+		while (!auflegen) {
+			datei_master(ich, sys);
+		}
+		anrufdauer();
+		close(lmodem); DMLOG("close modem");
+		aufraeumen();
+		exit (0);
+	}
+
+	return 1;
+}
+
+#endif

@@ -399,7 +399,7 @@ convert(FILE *zconnect, FILE *smtp)
 	habs = find(HD_WAB, hd);
 	if (!habs) habs = find(HD_ABS, hd);
 	if (!habs) {
-		newlog(ERRLOG, "mid=%s Kein Absender", mid );
+		newlog(ERRLOG, "mid=<%s> Kein Absender", mid );
 		exit( EX_DATAERR );
 	}
 /* Nachrichten mit STAT: CTL bekommen einen leeren Envelope-Absender. */
@@ -449,7 +449,7 @@ convert(FILE *zconnect, FILE *smtp)
 	for (p = find(HD_EMP, hd); p; p = p->other) {
 		char pbuffer[300], *at;
 
-		newlog(Z2ULOG, "mid=%s, from=%s, to=%s size=%ld", \
+		newlog(Z2ULOG, "mid=<%s>, from=%s, to=%s size=%ld", \
 			mid, habs->text, p->text, len);
 		strncpy(buffer, p->text, 300);
        		strcpy(pbuffer, buffer);

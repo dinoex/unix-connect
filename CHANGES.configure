@@ -2,6 +2,26 @@ $Id$
 
 Änderungen an configure
 
+seit 0.86
+
+- verwende autoconf Definintionen:
+  AC_HEADER_SYS_WAIT
+  AC_HEADER_DIRENT
+
+- configure --enable-testing
+  Verwende neuen Onlinecode.
+
+- configure --disable-janus-checksum
+  Checksummer der Seriennummer unterdrücken.
+
+- configure --disable-rsmtp
+  Batched SMTP lesen und Schreiben.
+
+- configure --disable-online
+  Onlinefunktionen für Janus und ZConnect.
+
+- Bugfix, disable wurde nicht ausgeführt.
+
 seit 0.85
 
 - limits.h statt values.h, configure sucht danach

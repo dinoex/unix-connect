@@ -102,7 +102,7 @@ void prologue(void)
 
 	auflegen = 0;	/* Noch kein Grund zum Verbindungsabbau gefunden  */
 
-	fputs("\r\n" PROGRAM ", v" OL_VERSION
+	fputs("\r\n" PROGRAM ", v" VERSION
 		", (C)opyright 1993 Martin Husemann\r\n"
 		"ZCONNECT 3.1 (C)opyright 1992/93 ZERBERUS GmbH, Friedland\r\n"
 		, stdout);

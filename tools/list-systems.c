@@ -53,12 +53,21 @@
 # include <strings.h>
 #endif
 #endif
-#ifdef HAS_BSD_DIRECT
-#include <sys/types.h>
-#include <sys/dirent.h>
-#include <sys/dir.h>
+#if HAVE_DIRENT_H
+# include <dirent.h>
+# define NAMLEN(dirent) strlen((dirent)->d_name)
 #else
-#include <dirent.h>
+# define dirent direct
+# define NAMLEN(dirent) (dirent)->d_namlen
+# if HAVE_SYS_NDIR_H
+#  include <sys/ndir.h>
+# endif
+# if HAVE_SYS_DIR_H
+#  include <sys/dir.h>
+# endif
+# if HAVE_NDIR_H
+#  include <ndir.h>
+# endif
 #endif
 
 #include "utility.h"
@@ -84,11 +93,7 @@ int
 main(int argc, char **argv)
 {
 	DIR *dir;
-#ifdef HAS_BSD_DIRECT
-	struct direct *ent;
-#else
 	struct dirent *ent;
-#endif
 	FILE *f;
 	char name[FILENAME_MAX], sys[100], rot[100], *s;
 	header_p hd, p;

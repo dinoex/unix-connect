@@ -39,24 +39,27 @@
 include Makefile.global
 
 # order is significant!
-CDIRS = date hdlib lib gate online tools rsmtp
+CDIRS = date hdlib lib gate @ONLINE_DIR@ @EXTRA_CDIR@
 SUBDIRS = $(CDIRS) \
 	mail-and-news/$(MAIL) \
 	mail-and-news/$(NEWS) \
-	shell etc
+	@SHELL_DIR@ etc
+TARGETDIRS=$(BINDIR) $(ETCDIR) $(ETCDIR)/systems \
+	$(SPOOLDIR) $(SPOOLDIR)/logfiles \
+	$(SPOOLDIR)/locks $(SPOOLDIR)/backin $(SPOOLDIR)/backout
 
 all:
 	for dir in $(SUBDIRS); do \
 		(cd $$dir && $(MAKE) -$(MAKEFLAGS) all) done
 
 install:
-	if test ! -d $(BINDIR); then \
-		mkdir $(BINDIR); chown $(USER) $(BINDIR); fi
-	if test ! -d $(ETCDIR); then  \
-		mkdir $(ETCDIR); chown $(USER) $(ETCDIR); fi
-	if test ! -d $(ETCDIR)/systems; then \
-		mkdir $(ETCDIR)/systems; \
-		chown $(USER) $(ETCDIR)/systems; fi
+	for dir in $(TARGETDIRS); do \
+		if test ! -d $$dir; then \
+			mkdir $$dir; chown $(USER).$(GROUP) $$dir; fi \
+	done
+	if test ! -d $(SPOOLDIR)/netcall; then \
+		mkdir $(SPOOLDIR)/netcall; \
+		chown $(USER) $(SPOOLDIR)/netcall; fi
 	for dir in $(SUBDIRS); do \
 		(cd $$dir && $(MAKE) -$(MAKEFLAGS) install) done
 

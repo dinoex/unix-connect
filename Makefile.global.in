@@ -40,3 +40,4 @@ CLEANFILES = *.o *.a *.bak *.BAK *.rej *.orig core *.core
 .c.o:   ../Makefile.global
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
 
+ONLINE_LIB = @ONLINE_LIB@

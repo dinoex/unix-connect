@@ -57,7 +57,6 @@
 #define NEXTSTEP
 
 #define HAS_BSD_SGTTY	/* benutze <sgtty.h> TTY-Interface */
-#define	HAS_BSD_DIRECT	/* struct direct statt struct dirent */
 #define HAS_BSD_GETWD	/* getwd() mit einem Argument */
 
 /*
@@ -70,6 +69,5 @@ extern char *strdup(const char *);
 #define	SEEK_SET	0
 
 #define pid_t int
-#define WEXITSTATUS(x)	(x.w_retcode)
 
 #endif

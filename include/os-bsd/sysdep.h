@@ -56,7 +56,6 @@
 #define BSD	/* beliebiges BSD, auch z.B. NeXT */
 
 #define HAS_BSD_SGTTY	/* benutze <sgtty.h> TTY-Interface */
-#define	HAS_BSD_DIRECT	/* struct direct statt struct dirent */
 #define HAS_BSD_GETWD	/* getwd() mit einem Argument */
 
 /*

@@ -46,11 +46,21 @@
 #include <time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#ifdef HAS_BSD_DIRECT
-#include <sys/dirent.h>
-#include <sys/dir.h>
+#if HAVE_DIRENT_H
+# include <dirent.h>
+# define NAMLEN(dirent) strlen((dirent)->d_name)
 #else
-#include <dirent.h>
+# define dirent direct
+# define NAMLEN(dirent) (dirent)->d_namlen
+# if HAVE_SYS_NDIR_H
+#  include <sys/ndir.h>
+# endif
+# if HAVE_SYS_DIR_H
+#  include <sys/dir.h>
+# endif
+# if HAVE_NDIR_H
+#  include <ndir.h>
+# endif
 #endif
 #ifdef HAVE_SYS_FCNTL_H
 #include <sys/fcntl.h>

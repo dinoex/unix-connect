@@ -5,15 +5,13 @@ INSTALL - Anleitung zur Installation von UNIX-Connect
       zur Installation von UNIX-Connect ist im TeXinfo-Format in der Datei
       docs/uconn.texi zu finden.
 
-      Derzeit (v0.79) ist allerdings diese Datei bereits aktualisiert,
+      Derzeit (v0.87) ist allerdings diese Datei bereits aktualisiert,
       docs/uconn.texi aber noch auf Stand von v0.53...
 
       Diese Datei ist neu geschrieben zur Anpassung an das neue
       configure-Script von Andreas Barth <aba@muenchen.pro-bahn.de>.
-      Der Fileserver und die Erweiterung für die APC Unix software
-      stehen damit vorübergehend nicht zur Verfügung.
 
-      Datum: 8. August 1999
+      Datum: 22. Oktober 1999
 
       Unix-Connect ist freie Software und unterliegt der GPL. Näheres
       in der Datei COPYING.
@@ -181,6 +179,27 @@ Mit dieser Option wird erzwungen, das alle Namen aus der Path-Zeile
 in den Rot-Header übernommen werden.
 
 
+--disable-janus-checksum Checksummer der Seriennummer unterdrücken.
+
+Durch die Checksumme wird das Ender der Vorpackphase erkannt.
+Damit kann Zmodem auf beiden Seiten glichzeitig gestarrtet
+werden. Anderenfalls können die Daten verloren gehen,
+falls Zmodem mit einem "Echo" spricht.
+
+
+--disable-rsmtp          Batched SMTP lesen und Schreiben.
+
+Zusatzpaket mit den Programmen "rsmtp" und "bsmtp" deaktivieren.
+Wird für Sendmail (Copyright: Sendmail, Inc.) benötigt.
+Das bstmp-Paket von Felix Schröter ist ebenfals geeignet.
+
+
+--disable-online         Onlinefunktionen für Janus und ZConnect.
+
+Deaktiviert alle Online-Funktionen. Erzeugt und installiert
+werden nur noch die reinen Gateway-Programme.
+
+
 --enable-bang            Bang-Pfade erzeugen.
 
 UNIX-Connect erzeugt Nachrichten im BSMTP-Format. Für die
@@ -250,7 +269,13 @@ Online-Programme und Scripte müssen von Hand angepaßt werden.
 
 --enable-slow-modem      Lege eine Pause für langsame Modems ein.
 
-Verzrögerung für langsame Modem in Online-Teil.
+Verzögerung für langsame Modem in Online-Teil.
+
+
+--enable-testing        Verwende neuen Onlinecode.
+
+Neue Funktion in import.c und call.c verwenden.
+Noch in der Test-Phase.
 
 
 --with-dialprae=code     Wählcode (Default=atdt).

@@ -382,7 +382,9 @@ ask_passwort:
 			sernr[j] = toupper(getchar());
 		serchk = getchar();
 /* Die Pruefsumme der Seriennummer zu pruefen, ist eigentlich unnoetig. ccr */
-/*		if ((sernr[0]+sernr[1]+sernr[2]+sernr[3]) == serchk & 0x0ff)*/
+#ifndef DISABLE_JANUS_CHECKSUM
+		if ((sernr[0]+sernr[1]+sernr[2]+sernr[3]) == (serchk & 0x0ff))
+#endif
 		{
 			alarm(0);
 			putchar(ACK); fflush(stdout);

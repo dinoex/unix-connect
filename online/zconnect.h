@@ -93,7 +93,7 @@
  * -------------------------------------------------------------------------*/
 
 #define	TCP_BANNER	\
-	"ZCONNECT 3.1 via TCP server - this is " MAILER " v" OL_VERSION "\n" \
+	"ZCONNECT 3.1 via TCP server - this is " MAILER " v" VERSION "\n" \
 	"Copyright " COPYRIGHT "\n" \
 	"\n" \
 	"Username: "

@@ -44,7 +44,7 @@ MINIOBJS= ministat.o
 STROBJS	= utility.o stricmp.o strlwr.o strupr.o strdup.o stccpy.o \
 	  uufatal.o uulog.o
 
-all:	gatelib.a strlib.a ministat.a
+all:	strlib.a ministat.a $(ONLINE_LIB)
 
 install:	all
 

@@ -41,7 +41,7 @@
  * version.h
  */
 
-#define	VERSION		"0.86"
+#define	VERSION		"0.86-dm3"
 
 #define	MAILER		"UNIX/Connect"
 #define	COPYRIGHT	\
@@ -54,6 +54,4 @@
  *   Fuer die Online-Phase:
  */
 #define PROGRAM		MAILER " fuer " BRAND
-
-#define OL_VERSION	"0.76"
 

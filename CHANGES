@@ -2,6 +2,32 @@ $Id$
 
 Aenderungen an UnixConnect
 
+seit 0.86
+
+- include/*/sysdep.h:
+  HAS_BSD_DIRECT entfernt, da automatisch erkannt.
+  WEXITSTATUS entfernt, da automatisch erkannt.
+
+- online/xprog.c, rsmtp/rsmtp.c:
+  HAVE_SYS_WAIT_H nach autoconf Empfehlungen eingebaut.
+
+- gate/gtools.c, gate/mime.c, lib/backup.c, lib/readonedir.c,
+  online/import.c, tools/list-systems.c:
+  HAVE_DIRENT_H nach autoconf Empfehlungen eingebaut.
+
+- online/januslogin.c:
+  Die Pruefsumme der Seriennummer als Option DISABLE_JANUS_CHECKSUM
+
+- online/call.c online/import.c:
+  alter Code aus 0.82 eingefügt.
+  Option ENABLE_TESTING aktiviert den neuen Teil
+
+- gate/uuwsmtp.c:
+  mid immer in <> Loggen.
+
+- include/version.h: online/zconnect.h: online/prepare.c:
+  OL_VERSION durch Version ersetzt.
+
 seit 0.85
 
 - gate/*.c hdlib/*.c lib/uufatal.c lib/uulog.c lib/uustat.c:
