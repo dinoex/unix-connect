@@ -164,7 +164,7 @@ int fsdo_lock (const char *zlock)
 	  return FALSE;
       if (o < 0)
 	{
-	  fprintf (deblogfile, "creat (%s): %s", ztempfile, strerror (errno));
+	  fprintf (deblogfile, "creat (%s): %s\n", ztempfile, strerror (errno));
 	  dfree (zfree);
 	  dfree (ztempfile);
 	  return FALSE;
@@ -186,7 +186,7 @@ int fsdo_lock (const char *zlock)
     zerr = "close";
   if (zerr != NULL)
     {
-      fprintf (deblogfile, "%s (%s): %s", zerr, ztempfile, strerror (errno));
+      fprintf (deblogfile, "%s (%s): %s\n", zerr, ztempfile, strerror (errno));
       (void) remove (ztempfile);
       dfree (zfree);
       dfree (ztempfile);
@@ -212,7 +212,7 @@ int fsdo_lock (const char *zlock)
 
       if (errno != EEXIST)
 	{
-	  fprintf (deblogfile, "link (%s, %s): %s", ztempfile, zpath,
+	  fprintf (deblogfile, "link (%s, %s): %s\n", ztempfile, zpath,
 		strerror (errno));
 	  break;
 	}
@@ -283,7 +283,7 @@ int fsdo_lock (const char *zlock)
       if (kill (ipid, 0) == 0 || errno == EPERM)
 	break;
 
-      fprintf (deblogfile, "Found stale lock %s held by process %d",
+      fprintf (deblogfile, "Found stale lock %s held by process %d\n",
 	    zpath, ipid);
 
       /* This is a stale lock, created by a process that no longer
@@ -445,7 +445,7 @@ int fsdo_lock (const char *zlock)
 
   if (zerr != NULL)
     {
-      fprintf (deblogfile, "%s (%s): %s", zerr, zpath, strerror (errno));
+      fprintf (deblogfile, "%s (%s): %s\n", zerr, zpath, strerror (errno));
     }
 
   if (o >= 0)
@@ -458,7 +458,7 @@ int fsdo_lock (const char *zlock)
      various different directories it's probably more trouble than
      it's worth.  */
   if (remove (ztempfile) != 0)
-    fprintf (deblogfile, "remove (%s): %s", ztempfile, strerror (errno));
+    fprintf (deblogfile, "remove (%s): %s\n", ztempfile, strerror (errno));
 
   dfree (ztempfile);
 
@@ -485,7 +485,7 @@ int fsdo_unlock (const char *zlock)
     }
   else
     {
-      fprintf (deblogfile, "remove (%s): %s", zpath, strerror (errno));
+      fprintf (deblogfile, "remove (%s): %s\n", zpath, strerror (errno));
       dfree (zfree);
       return FALSE;
     }

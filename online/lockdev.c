@@ -81,7 +81,7 @@ lock_device (int flok, const char *device)
 
 	if (stat (device, &s) != 0)
 	  {
-	    fprintf (deblogfile, "stat (%s): %s", device,
+	    fprintf (deblogfile, "stat (%s): %s\n", device,
 		  strerror (errno));
 	    return FALSE;
 	  }
@@ -108,7 +108,7 @@ lock_device (int flok, const char *device)
 	{
 	  if (lockttyexist (z))
 	    {
-	      fprintf (deblogfile, "%s: port already locked", device);
+	      fprintf (deblogfile, "%s: port already locked\n", device);
 	      fret = FALSE;
 	    }
 	  else
@@ -136,7 +136,7 @@ lock_device (int flok, const char *device)
 			       (const char *) NULL);
 	      if (ipid < 0)
 		{
-		  fprintf (deblogfile, "ixsspawn (/etc/enable %s): %s",
+		  fprintf (deblogfile, "ixsspawn (/etc/enable %s): %s\n",
 			qsysdep->zenable, strerror (errno));
 		  fret = FALSE;
 		}
