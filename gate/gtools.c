@@ -41,8 +41,6 @@
  */
 
 
-#include "config.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #ifdef HAVE_STRING_H

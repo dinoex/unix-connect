@@ -91,6 +91,8 @@ main(int argc, char **argv)
 	FILE *inp, *prv, *brt;
 	char name[FILENAME_MAX];
 
+	minireadstat();
+
 	if (argc != 2) usage();
 	inp = fopen(argv[1], "rb");
 	if (!inp) {

@@ -44,8 +44,6 @@
  *   Funktion:  Sucht einen Header
  */
 
-#include "config.h"
-
 #include <stdio.h>
 
 #include "crc.h"

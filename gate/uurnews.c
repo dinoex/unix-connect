@@ -44,8 +44,6 @@
  */
 
 
-#include "config.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -56,24 +54,7 @@
 # include <strings.h>
 #endif
 #endif
-#ifdef NEED_VALUES_H
-#include <values.h>
-#endif
-#include <errno.h>
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
 #include <ctype.h>
-#ifdef HAS_BSD_DIRECT
-#include <sys/types.h>
-#include <sys/dirent.h>
-#include <sys/dir.h>
-#else
-#include <dirent.h>
-#endif
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 #include <errno.h>
 
 #include "utility.h"
@@ -475,7 +456,7 @@ convdata(FILE *news, FILE *zconnect)
 	     for(;p;t=p, p=p->other) {
 	        char *x=decode_mime_string(p->text);
 		iso2pc(x);
-#ifndef PLUS_KEEP_U_X_HEADER
+#ifndef ENABLE_U_X_HEADER
 		fprintf (zconnect, "U-%s: %s\r\n", p->header, x);
 #else
 		/* TetiSoft: X- bleibt X- (Gatebau '97) */

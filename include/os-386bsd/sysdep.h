@@ -54,20 +54,6 @@
 
 #define BSD	/* beliebiges BSD, auch z.B. NeXT */
 
-#define HAS_STRING_H /* Die str... Funktionen sind in <string.h> */
-#define HAS_SYS_FCNTL_H
-
 #define HAS_BSD_SGTTY	/* benutze <sgtty.h> TTY-Interface */
-
-#define MAXINT	0x7fffffff
-
-/*
- *  Die Online-Empfangsprogramme koennen ohne Passwortabfrage des
- *  Systems eingebunden werden, sie fragen daher selbst nach einem
- *  Passwort:
- */
-
-#define	ASK_PASSWD
-
 
 #endif

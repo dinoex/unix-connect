@@ -55,32 +55,19 @@
 #define SVR4	/* SYS5 auch setzen! */
 #define SYSV	/* beliebiges System V */
 
-#define HAS_STRING_H		/* Die str... Funktionen sind in <string.h> */
-#define HAS_STRINGS_H           /* fuer index() */
 /* #define HAS_POSIX_TERMIOS */	/* benutze <termios.h> IOCTL's */
 #define HAS_SYSV_TERMIO
 #define NEED_CRTSCTS		/* Flag in termio */
-#define HAS_UNISTD_H            /* Brauchen wir eben */
+
 #define MAJOR_IN_SYSMACROS	/* major()/minor() in sys/sysmacros.h */
 /* #define	NEED_MODE_H		 inlcude mode.h fuer open-modes */
-#define NEED_VALUES_H		/* include values.h */
+
 #define FILENAME_MAX 255	/* So ist es in sys/dir.h auch definiert,
 					aber als MAXNAMLEN */
 
 #define LEAVE_CTRL_TTY		/* Entlasse das Controlling TTY... */
 /* #define USE_SETSID		 ... durch einen Aufruf von setsid(2) */
 #define USE_SETPGRP		/* ... durch einen Aufruf von setpgrp(2) */
-#define HAS_SYS_FCNTL_H
-#define SPRINTF_RETURNS_S    /* sprintf(s,...) returns s anstatt der
-				Anzahl der geschriebenen Zeichen */
-
-/*
- *  Die Online-Empfangsprogramme koennen ohne Passwortabfrage des
- *  Systems eingebunden werden, sie fragen daher selbst nach einem
- *  Passwort:
- */
-
-#define	ASK_PASSWD
 
 /* Das haben wir sonst nicht in SunOS 4 : */
 #define strerror(x) sys_errlist[x]

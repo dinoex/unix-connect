@@ -50,6 +50,7 @@ clean:
 distclean:		clean
 
 datelib.a:	$(OBJS)
+	-rm -f datelib.a
 	ar r datelib.a $(OBJS)
 	$(RANLIB) datelib.a
 

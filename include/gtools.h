@@ -63,3 +63,6 @@ __attribute__ ((noreturn))
 
 FILE *open_new_file( const char *name, const char *dir, const char *ext );
 
+#define BIGBUFFER	(256*1024)	/* Kopier-Puffer ( > 30k) */
+#define SMALLBUFFER	(64*1024)	/* Kopier-Puffer ( > 30k) */
+

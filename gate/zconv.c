@@ -44,8 +44,6 @@
  *
  */
 
-#include "config.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #ifdef HAVE_STRING_H
@@ -55,16 +53,11 @@
 # include <strings.h>
 #endif
 #endif
-#include "lib.h"
-#ifdef NEED_VALUES_H
-#include <values.h>
-#endif
-#include <sys/types.h>
-#include <sys/timeb.h>
-#include <time.h>
 #include <ctype.h>
+#include <time.h>
 
 #include "utility.h"
+#include "lib.h"
 #include "crc.h"
 #include "header.h"
 #include "hd_def.h"
@@ -234,7 +227,6 @@ convheader(header_p hd, FILE *f)
 	char *mime_name, *absname;
 	int org_from, pos, nokop;
 
-	minireadstat();
 	org_from = 0;
 	nokop = 0;
 	to = find(HD_UU_U_TO, hd);
@@ -345,7 +337,7 @@ convheader(header_p hd, FILE *f)
 	}
 	p = find(HD_MID, hd);
 	if (p) {
-#ifdef CARE_FOR_POINT_MIDS
+#ifdef ENABLE_POINT_MESSAGE_ID
 		if (pointuser) {
 			extern char *pointsys;
 			char *s;
@@ -353,12 +345,15 @@ convheader(header_p hd, FILE *f)
 			s = strchr(p->text, '@');
 			if (s) *s = '\0';
 			if(strchr(pointsys, '.') != 0)
-				fprintf(f,HN_UU_MESSAGE_ID": <%s@%s>%s", p->text, pointsys, eol);
+				fprintf(f,HN_UU_MESSAGE_ID": <%s@%s>%s",
+					p->text, pointsys, eol);
 			else
-				fprintf(f, HN_UU_MESSAGE_ID": <%s@%s.%s.%s>%s", p->text, pointsys, boxstat.boxname, boxstat.boxdomain, eol);
+				fprintf(f, HN_UU_MESSAGE_ID": <%s@%s.%s.%s>%s",
+					p->text, pointsys, boxstat.boxname,
+					boxstat.boxdomain, eol);
 			if (s) *s = '@';
 		} else
-#endif /* CARE_FOR_POINT_MIDS */
+#endif /* ENABLE_POINT_MESSAGE_ID */
 			fprintf(f, HN_UU_MESSAGE_ID": <%s>%s", p->text, eol);
 		hd = del_header(HD_MID, hd);
 	}
@@ -902,7 +897,7 @@ u_f_and_all(FILE *f, header_p hd)
 				dfree(text);
 				continue;
 			}
-#ifndef PLUS_KEEP_U_X_HEADER
+#ifndef ENABLE_U_X_HEADER
 			/* TetiSoft: X- bleibt X- (Gatebau '97) */
 			if (strncasecmp(p1->header,"X-",2) != 0)
 				fputs("X-ZC-", f);

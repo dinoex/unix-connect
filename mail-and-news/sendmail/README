@@ -1,9 +1,9 @@
-UNIX/Connect und sendmail 8.7.x
-===============================
+UNIX/Connect und sendmail
+=========================
 
  Hier eine Möglichkeit, UNIX/Connect und sendmail miteinander laufen zu
-lassen. Ich habe sie selbst nicht getestet. Die erste Version stammt von
-Nora E. Etukudo (nora.e@sirene.woman.de), Dirk Meyer hat einen Bugfix
+lassen. Die erste Version stammt von Nora E. Etukudo
+(nora.e@sirene.woman.de), Dirk Meyer hat einen Bugfix
 eingesandt, bei dem ich noch Signal-Behandlung eingebaut habe.
 
 				Christopher Creutzig
@@ -15,7 +15,7 @@ Unix-Connect.
 1) RFC-Mail
    --> sendmail
        --> Mzconnect(*)
-           --> mail.zconnect(*)
+           --> mail.uconnect(*)
                --> zbatchsmtp
                    --> uursmtp
    --> ZConnect
@@ -24,49 +24,19 @@ Unix-Connect.
    --> uuwsmtp
        --> rsmtp(**)
            --> sendmail
-   --> RFC-Mail
+               --> RFC-Mail
 
 (*)  liegen hier im Verzeichnis
+     uconnect.m4 ins Verzeichnis cf/mailer
+
 (**) bsmtp-0_94.tar.gz, kommt von
      Felix Schroeter <felix@snake.pond.sub.org>
 
+(**) oder das rsmtp/bsmtp vor Dirk Meyer einsetzten.
+
 In der Sendmail M4-Konfigurationsdatei muß dann
 
-   MAILER(zconnect)dnl
+   MAILER(uconnect)dnl
 
 eingetragen werden.
-
-Liebe Grüße, Nora.
--------------------------------------------------------------------------
-Zweite Version, geht praktisch genauso, als Mailer wird uconnect statt
-zconnect verwendet:
-
-Hallo,
-:
-ich habe mir das Beispiel für sendmail mal angeschaut,
-das ist so nicht geeignet:
-
-Wenn mehere EMP's uebergeben werden,
-so erzeugt sendmail mehere Argumente.
-In der im alten Beispiel angegebenen Reihenfolge
-simmen dann Host uund Envelope nicht mehr.
-
-Ich habe die Reihenfolge angepast,
-damit funtionieren auch mehrerer Empfaenger.
-
-Vorsicht:
-Tippfehler sind möglich, ich setzte hier ein anderes Script ein.
-
-Probleme:
-Was ist wenn die Komandozeile zu lang wird ?
-Signale werde nicht berücksichtig!
-
-Kommentare erwünscht.
-:
-Gruß Dirk
-
--- Dirk Meyer, Im Grund 4, 34317 Habichtswald, Tel 05606/6512 Q (voice)
--- Origin: DINOEX Habichtswald  -FRG-  [dirk.meyer@dinoex.sub.org]
-
-less: sendmail.cf may be a binary file. See it anyway?
 

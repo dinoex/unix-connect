@@ -44,8 +44,6 @@
 */
 
 
-#include "config.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #ifdef HAVE_STRING_H
@@ -55,14 +53,11 @@
 # include <strings.h>
 #endif
 #endif
-#ifdef NEED_VALUES_H
-#include <values.h>
-#endif
-#include <sys/types.h>
-#include <sys/timeb.h>
-#include <time.h>
 #include <ctype.h>
-#include <unistd.h>
+#include <time.h>
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
+#endif
 
 #include "utility.h"
 #include "crc.h"
@@ -926,14 +921,14 @@ convheader(header_p hd, FILE *f, char *from)
 			rot = printpath(from);
 		}
 
-#ifdef CLIP_MAPS_ROT
+#ifndef DISABLE_ROT_FOR_MAPS
 		/* Haben wir eine Mail vorliegen? Wenn ja, geht sie an maps? */
 		if (to)
 			if(strncasecmp(to, "maps@", sizeof("maps@")-1)==0) {
 	  			s = strrchr(rot, '!');
 	 			if (s) *s = '\0';
 			}
-#endif /* CLIP_MAPS_ROT */
+#endif /* DISABLE_ROT_FOR_MAPS */
 
 		fprintf(f, HN_ROT": %s\r\n", rot);
 		dfree(rot);
@@ -1080,7 +1075,7 @@ convheader(header_p hd, FILE *f, char *from)
 			hd=del_header(p->code, hd);
 			continue;
 		}
-#ifndef PLUS_KEEP_U_X_HEADER
+#ifndef ENABLE_U_X_HEADER
 		if (strncasecmp(p->header, "X-", 2) == 0) {
 			for (t = p; t; t = t->other) {
 			  char *x=decode_mime_string(t->text);
@@ -1234,20 +1229,22 @@ make_body(char *bigbuffer, size_t msglen,
 		 * (ist auch bei nicht-MIME-Nachrichten gesetzt)
 		 */
 		 if (mime_info->text_plain) {
-#ifdef CONVERT_ISO
-			/* Bei Zeichensaetzen us-ascii, undefiniert oder iso-8859-1
+#ifndef ENABLE_ISO_IN_ZCONNECT
+			/* Bei Zeichensaetzen us-ascii,
+			 * undefiniert oder iso-8859-1
 			 * konvertieren wir nach IBM */
 			if (mime_info->charset > 1 )
 				fprintf(zconnect, HN_CHARSET": ISO%d\r\n", mime_info->charset);
 			else
 				iso2pc_size(start, msglen);
-#else /* CONVERT_ISO */
-			/* Wir konvertieren nie nach IBM, setzen aber eine CHARSET:
+#else /* ENABLE_ISO_IN_ZCONNECT */
+			/* Wir konvertieren nie nach IBM,
+			 * setzen aber eine CHARSET:
 			 * Headerzeile (default: ISO1)
 			 */
 			fprintf(zconnect, HN_CHARSET": ISO%d\r\n",
 				mime_info->charset >0 ? mime_info->charset : 1);
-#endif /* CONVERT_ISO */
+#endif /* ENABLE_ISO_IN_ZCONNECT */
 		}
 		fprintf (zconnect, HN_LEN": %d\r\n\r\n", msglen);
 

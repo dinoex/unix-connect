@@ -35,6 +35,8 @@
  *  for instructions on how to join this list.
  */
 
+#define	MAXLINE		8192		/* Z.B. in einem SMTP Batch */
+
 char *eda2date(const char *text );
 int valid_newsgroups( const char *data );
 int adrmatch(const char *abs1, const char *abs2);

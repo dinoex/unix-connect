@@ -36,7 +36,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 #ifdef HAVE_STRING_H
 # include <string.h>
 #else
@@ -44,6 +43,7 @@
 # include <strings.h>
 #endif
 #endif
+#include <time.h>
 #include <stdarg.h>
 
 #include "datelib.h"

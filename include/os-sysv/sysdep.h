@@ -58,20 +58,6 @@
 #endif
 
 #define SYSV	/* beliebiges System V */
-
-#define HAS_STRING_H	/* Die str... Funktionen sind in <string.h> */
-
 #define HAS_SYSV_TERMIO	/* benutze <termio.h> IOCTL's */
-
-#define NEED_VALUES_H	/* include values.h */
-
-/*
- *  Die Online-Empfangsprogramme koennen ohne Passwortabfrage des
- *  Systems eingebunden werden, sie fragen daher selbst nach einem
- *  Passwort:
- */
-
-#define	ASK_PASSWD
-
 
 #endif

@@ -56,23 +56,11 @@
 #define SVR4	/* SYS5 auch setzen! */
 #define SYSV	/* beliebiges System V */
 
-#define HAS_STRING_H		/* Die str... Funktionen sind in <string.h> */
 #define HAS_POSIX_TERMIOS	/* benutze <termios.h> IOCTL's */
 #define MAJOR_IN_MKDEV		/* major()/minor() in sys/mkdev.h */
 #define	NEED_MODE_H		/* inlcude mode.h fuer open-modes */
-#define NEED_VALUES_H		/* include values.h */
-
 #define LEAVE_CTRL_TTY		/* Entlasse das Controlling TTY... */
 /* #define USE_SETSID		 ... durch einen Aufruf von setsid(2) */
 #define USE_SETPGRP		/* ... durch einen Aufruf von setpgrp(2) */
-#define HAS_SYS_FCNTL_H
-
-/*
- *  Die Online-Empfangsprogramme koennen ohne Passwortabfrage des
- *  Systems eingebunden werden, sie fragen daher selbst nach einem
- *  Passwort:
- */
-
-#define	ASK_PASSWD
 
 #endif

@@ -37,7 +37,8 @@
 
 include ../Makefile.global
 
-LIBS	= ../lib/gatelib.a ../lib/strlib.a ../hdlib/uuheader.a
+LIBS	= ../lib/gatelib.a ../lib/ministat.a \
+	  ../hdlib/uuheader.a ../lib/strlib.a
 
 PROGS	= zcall receiver januslogin
 

@@ -54,28 +54,13 @@
 #define	BRAND	"System V"
 
 #define SYSV	/* beliebiges System V */
-#define ISC	/* ISC */
 
 #include <sys/types.h>	/* ISC Typedefs */
-
 
 #ifndef FILENAME_MAX
 #define FILENAME_MAX 1024	/* POSIX verlangt das in <stdio.h> */
 #endif
 
-#define HAS_STRING_H	/* Die str... Funktionen sind in <string.h> */
-
 #define HAS_POSIX_TERMIOS	/* benutze <termios.h> IOCTL's */
-
-#define NEED_VALUES_H		/* brauche #include <values.h> */
-
-/*
- *  Die Online-Empfangsprogramme koennen ohne Passwortabfrage des
- *  Systems eingebunden werden, sie fragen daher selbst nach einem
- *  Passwort:
- */
-
-#define	ASK_PASSWD
-
 
 #endif

@@ -44,8 +44,6 @@
  *   Funktion:  Gibt einen Header wieder frei
  */
 
-#include "config.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 

@@ -36,13 +36,15 @@
 
 include ../Makefile.global
 
-OBJS	= hayes.o pattern.o track.o rawtty.o lockwait.o \
-	  trap.o readonedir.o backup.o uudebug.o
+GATEOBJS= hayes.o pattern.o track.o rawtty.o lockwait.o \
+	  trap.o readonedir.o backup.o uudebug.o ministat.o
+
+MINIOBJS= ministat.o
 
 STROBJS	= utility.o stricmp.o strlwr.o strupr.o strdup.o stccpy.o \
-	  uufatal.o uulog.o ministat.o
+	  uufatal.o uulog.o
 
-all:	gatelib.a strlib.a
+all:	gatelib.a strlib.a ministat.a
 
 install:	all
 
@@ -53,11 +55,18 @@ clean:
 
 distclean:	clean
 
-gatelib.a:	$(OBJS) Makefile
-	ar r gatelib.a $(OBJS)
+gatelib.a:	$(GATEOBJS) Makefile
+	-rm -f gatelib.a
+	ar r gatelib.a $(GATEOBJS)
 	$(RANLIB) gatelib.a
 
+ministat.a:	$(MINIOBJS) Makefile
+	-rm -f ministat.a
+	ar r ministat.a $(MINIOBJS)
+	$(RANLIB) ministat.a
+
 strlib.a:	$(STROBJS) Makefile
+	-rm -f strlib.a
 	ar r strlib.a $(STROBJS)
 	$(RANLIB) strlib.a
 
@@ -70,10 +79,9 @@ hayes.o: hayes.c ../include/config.h ../include/sysdep.h \
  ../include/track.h
 lockwait.o: lockwait.c ../include/config.h ../include/sysdep.h \
  ../include/utility.h
-ministat.o: ministat.c ../include/config.h ../include/sysdep.h \
- ../include/utility.h ../include/boxstat.h ../include/crc.h \
- ../include/header.h ../hdlib/hd_nam.h ../hdlib/hd_def.h \
- ../include/uulog.h ../include/ministat.h
+ministat.o: ministat.c ../include/utility.h ../include/boxstat.h \
+ ../include/crc.h ../include/header.h ../hdlib/hd_nam.h \
+ ../hdlib/hd_def.h ../include/uulog.h ../include/ministat.h
 pattern.o: pattern.c ../include/config.h ../include/sysdep.h \
  ../include/utility.h ../include/pattern.h
 rawtty.o: rawtty.c ../include/config.h ../include/sysdep.h \
@@ -98,8 +106,6 @@ utility.o: utility.c ../include/config.h ../include/sysdep.h \
  ../include/boxstat.h ../include/uulog.h ../include/utility.h
 uudebug.o: uudebug.c ../include/config.h ../include/sysdep.h \
  ../include/uulog.h ../include/uudebug.h
-uufatal.o: uufatal.c ../include/config.h ../include/sysdep.h \
- ../include/uulog.h ../include/sysexits2.h
-uulog.o: uulog.c ../include/config.h ../include/sysdep.h \
- ../include/uulog.h ../include/boxstat.h
+uufatal.o: uufatal.c ../include/uulog.h ../include/sysexits2.h
+uulog.o: uulog.c ../include/uulog.h
 # eof

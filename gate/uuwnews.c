@@ -43,8 +43,6 @@
  *
  */
 
-#include "config.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #ifdef HAVE_STRING_H
@@ -55,16 +53,10 @@
 #endif
 #endif
 #include <ctype.h>
-#ifdef NEED_VALUES_H
-#include <values.h>
+#ifdef HAVE_LIMITS_H
+#include <limits.h>
 #endif
 #include <time.h>
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 #include <errno.h>
 
 #include "utility.h"
@@ -368,9 +360,7 @@ void
 convert(FILE *zconnect, FILE *news)
 {
 	header_p hd, p;
-#ifdef NO_Z38_CROSS_ROUTING
 	header_p pst, habs;
-#endif
 	FILE *tmp, *tmphd;
 	time_t j;
 	char id[30], zbuf[4], lines_line[50], *sp, *zp,
@@ -463,7 +453,8 @@ convert(FILE *zconnect, FILE *news)
 		newlog(ERRLOG, "Temporaere Datei nicht schreibbar!");
 		exit( EX_CANTCREAT );
 	}
-	setvbuf(tmp, NULL, (_IOFBF), (long)(BIGBUFFER) > (long)(MAXINT) ? (MAXINT) : (BIGBUFFER));
+	setvbuf(tmp, NULL, (_IOFBF),
+		(long)(BIGBUFFER) > (long)(INT_MAX) ? (INT_MAX) : (BIGBUFFER));
 	/* Steht schon ein Approved-Header im Text? */
 	p = find(HD_UU_U_APPROVED, hd);
 	if(p){

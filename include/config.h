@@ -39,88 +39,16 @@
 #include "sysdep.h"
 #endif
 
-#define BIGBUFFER	(256*1024)	/* Kopier-Puffer ( > 30k) */
-#define SMALLBUFFER	(64*1024)	/* unused? */
-#define	MAXLINE		8192		/* Z.B. in einem SMTP Batch */
+/*  
+ *  Die Online-Empfangsprogramme koennen ohne Passwortabfrage des
+ *  Systems eingebunden werden, sie fragen daher selbst nach einem
+ *  Passwort:
+ */
+#define ASK_PASSWD
 
 /*
  *   receiver und zcall erhalten die Faehigkeit, per TCP/IP miteinander
  *   zu kommunizieren. Dazu muessen BSD sockets vorhanden sein.
  */
 #define TCP_SUPPORT
-
-/*
- *   Definiert, falls ZCONNECT-Systeme Daten nicht wieder an RFC-
- *   Systeme zurueckgeben.
- *   Nicht benoetigte UUCP-Header werden sonst komplett transportiert.
- *
- *	DISABLE_UUCP_SERVER
- */
-
-/*
- *   Die folgenden Flags legen fest, bei welchen Konvertierungen eine
- *   Umlautwandlung PC437 --> ISO-8859-1 nicht stattfindet.
- *   Wird das entsprechende Flag definiert, wird ae, oe, ue benutzt...
- *
- *	DISABLE_ISO_IN_MAIL
- *	DISABLE_ISO_IN_NEWS
- */
-
-/*
- *   Das folgende Flag definiert, ob beim Uebergang von RFC -> ZCONNECT
- *   eine ISO-8859-1 --> PC437 Konvertierung stattfindet, wenn die RFC-
- *   Nachricht ISO-8859-1-Zeichen enthaelt.
- *
- *  Das Ganze fuehrt dazu, dass Nachrichten nicht mehr unbedingt unveraendert
- *  durch ZConnect hindurchgereicht werden und sollte mit Vorsicht genossen
- *  werden. Andererseits koennen viele Leute keine ISO-8859-1-Nachrichten
- *  lesen, weil ihre ZConnect-Programme den entsprechenden ZConnect-Header
- *  nicht auswerten.
- */
-#define	CONVERT_ISO		/* Bei allen Nachrichten von RFC -> ZCONNECT */
-
-
-/*
- *   Das folgende ist eine politische Entscheidung und nicht ganz einfach
- *   zu treffen. Ist NO_Z38_CROSS_ROUTING gesetzt, werden News geloescht,
- *   wenn sie
- *
- *      a) Ueber ein Z3.8 System transportiert wurden
- *      b) aber nicht auf einem Z3.8 System geschrieben wurden
- *
- *   Der Normalfall ( RFC -> Z3.8 -> ZCONNECT -> RFC ) ist einsichtig,
- *   leider(?) werden dadurch aber auch Mini-Netze, die nur ueber ein
- *   Z3.8-Gateway angeschlossen sind ausgeschaltet, wenn sie ein Nachrichten-
- *   format benutzen, das nicht transparent nach Z3.8 konvertiert werden
- *   kann.
- *
- *   Diese Option MUSS eingeschaltet werden, wenn auf dem System Bretter
- *   global vernetzt sind (/Z-NETZ/TELEKOM/GATEWAY u.ae.).
- *
- *   Sie darf nicht eingeschaltet werden, wenn dieses System
- *
- *    a) keine Verbindungen ausser der ZCONNECT-Verbindung hat oder
- *    b) es sich hier um einen Point handelt.
- */
-
-#define	NO_Z38_CROSS_ROUTING
-
-/* Der ZConnect-Standard schreibt fuer Message-IDs von Points eine bestimmte
- * Form vor ( <lokalteil>@<point>.<server>.<do>.<main> ). Diese Form
- * kann vom Gateway erzwungen werden. Das kann aber dazu fuehren,
- * dass die Bezugsverkettung im Point nicht mehr sauber funktioniert...
- */
-/* #define CARE_FOR_POINT_MIDS */
-
-/* Es gibt in der Behandlung des Routstrings Unterschiede zwischen
- * ZConnect und RFC. Die allgemeine Einigung sieht so aus, dass die
- * RFC-Notation einfach in den ZC-ROT:-Header kopiert wird. Das vermeidet
- * Probleme nach dem Zurueckgaten, auch wenn die Routstrings streng nach
- * ZC falsch sind (der letzte Eintrag muesste verworfen werden).
- * Leider fuehrt das dazu, dass Nachrichten an den Pseudouser MAPS eines
- * Zerberus-Systems nicht anerkannt werden. Daher gibt es die Option,
- * bei Nachrichten an MAPS@* den Routstring auf ZConnect-Format zu stutzen.
- * Das sollte eigentlich keine Probleme machen.
- */
-#define CLIP_MAPS_ROT
 

@@ -2,6 +2,28 @@ $Id$
 
 Änderungen an configure
 
+seit 0.85
+
+- limits.h statt values.h, configure sucht danach
+
+- configure --disable-uucp-server
+  Nicht alle Header erzeugen, für reine Leafsites.
+
+- configure --disable-iso-in-mail
+  Umlaute in Mail mit us-ascii umschreiben.
+
+- configure --disable-iso-in-news
+  Umlaute in News mit us-ascii umschreiben.
+
+- configure --disable-rot-for-maps
+  Sonderbehandlung des ROT-Headers für MAPS.
+
+- configure --enable-iso-in-zconnect
+  Erzeuge ISO-Charset in ZConnect.
+
+- configure --enable-point-messageid
+  Erzeuge Message-IDs für Points. 
+
 seit 0.84
 
 - -Wconversion abgeschaltet, das bläht die Ausgabe dermaßen

@@ -43,8 +43,6 @@
  *
  */
 
-#include "config.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #ifdef HAVE_STRING_H
@@ -55,16 +53,7 @@
 #endif
 #endif
 #include <ctype.h>
-#ifdef NEED_VALUES_H
-#include <values.h>
-#endif
 #include <time.h>
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
-#endif
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 #include <errno.h>
 
 #include "utility.h"

@@ -43,8 +43,6 @@
  * Alias-Zugriffsfunktionen
  */
 
-#include "config.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #ifdef HAVE_STRING_H
@@ -64,10 +62,9 @@
 #include "hd_nam.h"
 #include "uulog.h"
 #include "alias.h"
+#include "ministat.h"
 
-extern void minireadstat(void);
 static int init_done = 0;
-extern char *aliasliste;
 
 int prefix_len;
 
@@ -118,7 +115,6 @@ init(void)
 	if (init_done) return;
 	init_done = 1;
 	data = NULL;
-	minireadstat();
 	if (aliasliste) {
 		FILE *f;
 		header_p hd, p;

@@ -38,8 +38,6 @@
 
 /* apc_a2b.c - Funktion fuer APC Binaernachrichten-Wandlung */
 
-#include "config.h"
-
 #ifdef HAVE_STRING_H
 # include <string.h>
 #else

@@ -46,8 +46,6 @@
  *                                  wird erzeugt und mitgeschrieben
  */
 
-#include "config.h"
-
 #include <stdio.h>
 
 #include "crc.h"

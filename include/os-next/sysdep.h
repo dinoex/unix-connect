@@ -56,32 +56,15 @@
 #define BSD	/* beliebiges BSD, auch z.B. NeXT */
 #define NEXTSTEP
 
-#define HAS_STRINGS_H /* Die str... Funktionen sind in <strings.h> */
-
 #define HAS_BSD_SGTTY	/* benutze <sgtty.h> TTY-Interface */
-
 #define	HAS_BSD_DIRECT	/* struct direct statt struct dirent */
-
 #define HAS_BSD_GETWD	/* getwd() mit einem Argument */
-#define NO_UNISTD_H	/* Kein <unistd.h> */
-#define HAS_SYS_FCNTL_H	/* #include <sys/fcntl.h> */
-
-/*
- *  Die Online-Empfangsprogramme koennen ohne Passwortabfrage des
- *  Systems eingebunden werden, sie fragen daher selbst nach einem
- *  Passwort:
- */
-
-#define	ASK_PASSWD
-
 
 /*
  *  Fehlende Prototypen in System-Headern:
  */
 
 extern char *strdup(const char *);
-
-#define MAXINT 0x7fffffff
 
 #define	FILENAME_MAX	1024
 #define	SEEK_SET	0

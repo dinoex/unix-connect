@@ -2,6 +2,52 @@ $Id$
 
 Aenderungen an UnixConnect
 
+seit 0.85
+
+- gate/*.c hdlib/*.c lib/uufatal.c lib/uulog.c lib/uustat.c:
+  inlcude "config.h" entfernt.
+
+- include/*/sysdep.h:
+  HAVE_*_H entfernt, da durch configure gesetzt.
+
+- include/*/sysdep.h gate/mime.c:
+  SPRINTFS_RETURNS_S obsolet, entfernt.
+
+- inlcude/config.h include/*/sysdep.h:
+  ASK_PASSWD nach config.h verschoben.
+
+- gate/*c include/config.h include/gtools.h include/*conv.h:
+  etliche Defines aufgeraümt, neue Varaibelen für configure.
+  Includes reduziert.
+
+- Makefile.global include/version.h:
+  Version wieder zurück ins Includefile.
+
+- */Makefile:
+  alle libs jetzt vor "ar" loeschen,
+  damit keine alten objekte überigbleiben.
+  neue lib ministat.a, Reihenfolge der lib's
+  jetzt eindeutig:
+	gatelib minstat hdlib strlib
+
+- gate/zconv.c:
+  minireadstat() entfernt
+
+- tools/zconsplit.c:
+  minireadstat() fehte!!
+
+- gate/alias.c:
+  Abhängigkeit von minstat.h fehlte.
+
+- lib/uulog.c:
+  obsolete Abhängigkeit von minstat.h entfernt.
+
+- hdlib/gperf.prefix:
+  absoluter include von string.h ersetzt
+
+- Mailfile.global.in, hdlib/Makefile:
+  LN aus configure benutzen.
+
 seit 0.84
 
 - online/xprog.c: (Matthias Andree)

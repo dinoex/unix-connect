@@ -41,6 +41,8 @@
  * version.h
  */
 
+#define	VERSION		"0.86"
+
 #define	MAILER		"UNIX/Connect"
 #define	COPYRIGHT	\
 "(C) 1993,94 Martin Husemann,\n" \

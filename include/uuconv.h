@@ -35,6 +35,8 @@
  *  for instructions on how to join this list.
  */
 
+#define	MAXLINE		8192		/* Z.B. in einem SMTP Batch */
+
 char *date2eda( const char *str, FILE *fout );
 int valid_newsgroups( const char *data );
 void printbretter(const char *newsgroups, const char *zc_header, FILE *f);

@@ -42,8 +42,6 @@
  *
  */
 
-#include "config.h"
-
 #include <stddef.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -222,15 +220,10 @@ mime_encode(const char *iso)
 				/*
 				 * sprintf gibt die Anzahl der geschriebenen
 				 * Bytes zurueck. Sollte auf jeden Fall 3 sein.
-				 * Wenn SPRINTF_RETURNS_S definiert ist,
-				 * ist das nicht der Fall!
+				 * unter sunos liefer sprints den string "s"
 				 */
-#ifdef SPRINTF_RETURNS_S
 				sprintf(encoded,"=%02X",(*p));
 				encoded+=3;
-#else
-				encoded += (sprintf(encoded,"=%02X",(*p)));
-#endif
 			}else{
 				*encoded++ = *p;
 			}

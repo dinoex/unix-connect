@@ -35,7 +35,7 @@
 
 include ../Makefile.global
 
-LIBS	= ../hdlib/uuheader.a ../lib/strlib.a ../hdlib/uuheader.a
+LIBS	= ../lib/ministat.a ../hdlib/uuheader.a ../lib/strlib.a
 
 PROGS	= zconsplit list-systems
 

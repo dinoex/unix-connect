@@ -4,34 +4,7 @@ Was muß noch getan werden?
 
 - Januslogin: offene Dateien?
 
-- MIME-Verpackung eines langen Headers ohne Whitespace (z.B. PGP-KEY)
-
-- Sommerzeit vom System bekommen
-
-- Passworte case-sensitiv pruefen.
-
 - flock() verwenden.
-
-- VIA <-> Received ?
-
-- Header-Inhalt auf ungueltige Zeichen pruefen
-
-- ERR: in Body (?)
-
-- Duerfen Path:-Header umgebrochen werden?
-
-- Wenn in der config kein Name gesetzt ist: gethostname() verwenden füer
-  Gate-Zeile.
-
-- Kein Date:-Header (legal) führt zu Nachricht ohne EDA (illegal).
-
-- News verwerfen, wenn ordnungsgemäße Wandlung nicht möglich.
-
-- Es kann nur ein Call-Dev. angegeben werden. Ich moechte aber mehrere angeben
-  koennen, deren locks dann in dieser Reihenfolge geprueft werden und dann zum
-  Anrufen genutzt werden.
-
-- GATE sollte base64 statt uuencode kodieren.
 
 - BUG: anruf() initialisiert die Schnittstelle nicht richtig besteht
   weiter, wird durch meinen Patch NICHT behoben.
@@ -44,10 +17,37 @@ Was muß noch getan werden?
 - isatty(2) benutzen, um die Ausgaben auf stderr einzuschränken, wenn
   zcall von Cron gestartet wird...
 
+- Ausgehende Puffer beim Janus-Netcall gehen manchmal verloren!!
+  Zmodem hack?
+
+- MA: call.c aufräumen. Alle Checks, PreArc VOR dem Onlinegehen!
+
+### Problems:
+
+- News verwerfen, wenn ordnungsgemäße Wandlung nicht möglich.
+
+### Extensions:
+
+- Passworte case-sensitiv pruefen.
+
+- Kein Date:-Header (legal) führt zu Nachricht ohne EDA (illegal).
+
+- MIME-Verpackung eines langen Headers ohne Whitespace (z.B. PGP-KEY)
+
+- Header-Inhalt auf ungueltige Zeichen pruefen
+
+- GATE sollte base64 statt uuencode kodieren.
+
 - Quoted-printable decodieren! Optional auch erzeugen?
   Binaerfiles auch in Base64 dekodieren (oder mpack aufrufen?)
 
 - WAB: vernünftig behandeln, speziell beim ersetzen von Point-ABS: !!!
+
+### Features:
+
+- Es kann nur ein Call-Dev. angegeben werden. Ich moechte aber mehrere angeben
+  koennen, deren locks dann in dieser Reihenfolge geprueft werden und dann zum
+  Anrufen genutzt werden.
 
 - Batchfähige Verwaltungsroutinen mit perl
   TCL/TK Frontend
@@ -55,7 +55,4 @@ Was muß noch getan werden?
 - TCP/IP support auch in zcall,
   evtl. 'ftp' als Transfer-Protokoll integrieren
 
-- Ausgehende Puffer beim Janus-Netcall gehen manchmal verloren!!
-  Zmodem hack?
-
-- MA: call.c aufräumen. Alle Checks, PreArc VOR dem Onlinegehen!
+###

@@ -40,7 +40,7 @@ include ../Makefile.global
 # Makefile fuer den UNIX-Connect Gateway
 
 COMMON	= mime.o alias.o gtools.o
-LIBS	= ../lib/strlib.a ../hdlib/uuheader.a
+LIBS	= ../lib/ministat.a ../hdlib/uuheader.a ../lib/strlib.a
 DATELIB	= ../date/datelib.a
 PROGS	= uurnews uursmtp uuwsmtp uuwnews
 TPROGS	= testeda testmime
@@ -82,58 +82,51 @@ testeda:	testeda.o $(DATELIB) Makefile
 	$(CC) $(CFLAGS) -o testeda testeda.o $(DATELIB) $(LDFLAGS)
 
 # automatic depend
-alias.o: alias.c ../include/config.h ../include/sysdep.h \
- ../include/utility.h ../include/crc.h ../include/header.h \
- ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/uulog.h \
- ../include/alias.h
-apc_a2b.o: apc_a2b.c ../include/config.h ../include/sysdep.h \
- ../include/apc_a2b.h
-atob.o: atob.c ../include/config.h ../include/sysdep.h
-gtools.o: gtools.c ../include/config.h ../include/sysdep.h \
- ../include/gtools.h ../include/version.h ../include/sysexits2.h
-iso2pc.o: iso2pc.c ../include/lib.h
-mime.o: mime.c ../include/config.h ../include/sysdep.h \
- ../include/utility.h ../include/crc.h ../include/header.h \
- ../include/mime.h ../hdlib/hd_def.h ../include/uulog.h \
+alias.o: alias.c ../include/utility.h ../include/crc.h \
+ ../include/header.h ../hdlib/hd_def.h ../hdlib/hd_nam.h \
+ ../include/uulog.h ../include/alias.h ../include/sysdep.h \
+ ../include/ministat.h
+apc_a2b.o: apc_a2b.c ../include/apc_a2b.h
+atob.o: atob.c
+gtools.o: gtools.c ../include/gtools.h ../include/version.h \
  ../include/sysexits2.h
+iso2pc.o: iso2pc.c ../include/lib.h
+mime.o: mime.c ../include/utility.h ../include/crc.h \
+ ../include/header.h ../include/mime.h ../hdlib/hd_def.h \
+ ../include/uulog.h ../include/sysexits2.h
 pc2iso.o: pc2iso.c ../include/lib.h
 testeda.o: testeda.c ../include/datelib.h
 testmime.o: testmime.c
-uuapprove.o: uuapprove.c ../include/config.h ../include/sysdep.h \
- ../include/utility.h ../include/uulog.h ../include/uuapprove.h
-uuconv.o: uuconv.c ../include/config.h ../include/sysdep.h \
+uuapprove.o: uuapprove.c ../include/utility.h ../include/uulog.h \
+ ../include/uuapprove.h
+uuconv.o: uuconv.c ../include/utility.h ../include/crc.h \
+ ../include/header.h ../hdlib/hd_def.h ../hdlib/hd_nam.h \
+ ../include/boxstat.h ../include/version.h ../include/uulog.h \
+ ../include/alias.h ../include/sysdep.h ../include/mime.h \
+ ../include/uuconv.h ../include/lib.h ../include/datelib.h
+uurnews.o: uurnews.c ../include/utility.h ../include/crc.h \
+ ../include/header.h ../include/uulog.h ../hdlib/hd_nam.h \
+ ../hdlib/hd_def.h ../include/boxstat.h ../include/ministat.h \
+ ../include/mime.h ../include/lib.h ../include/uuconv.h \
+ ../include/gtools.h ../include/sysexits2.h
+uursmtp.o: uursmtp.c ../include/boxstat.h ../include/ministat.h \
  ../include/utility.h ../include/crc.h ../include/header.h \
- ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/boxstat.h \
- ../include/version.h ../include/uulog.h ../include/alias.h \
- ../include/mime.h ../include/uuconv.h ../include/lib.h \
- ../include/datelib.h
-uurnews.o: uurnews.c ../include/config.h ../include/sysdep.h \
- ../include/utility.h ../include/crc.h ../include/header.h \
- ../include/uulog.h ../hdlib/hd_nam.h ../hdlib/hd_def.h \
- ../include/boxstat.h ../include/ministat.h ../include/mime.h \
- ../include/lib.h ../include/uuconv.h ../include/gtools.h \
- ../include/sysexits2.h
-uursmtp.o: uursmtp.c ../include/config.h ../include/sysdep.h \
- ../include/boxstat.h ../include/ministat.h ../include/utility.h \
- ../include/crc.h ../include/header.h ../hdlib/hd_nam.h \
- ../hdlib/hd_def.h ../include/uulog.h ../include/mime.h \
- ../include/lib.h ../include/uuconv.h ../include/gtools.h \
- ../include/sysexits2.h
-uuwnews.o: uuwnews.c ../include/config.h ../include/sysdep.h \
- ../include/utility.h ../include/lib.h ../include/boxstat.h \
- ../include/ministat.h ../include/crc.h ../include/header.h \
- ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/uuapprove.h \
+ ../hdlib/hd_nam.h ../hdlib/hd_def.h ../include/uulog.h \
+ ../include/mime.h ../include/lib.h ../include/uuconv.h \
+ ../include/gtools.h ../include/sysexits2.h
+uuwnews.o: uuwnews.c ../include/utility.h ../include/lib.h \
+ ../include/boxstat.h ../include/ministat.h ../include/crc.h \
+ ../include/header.h ../hdlib/hd_def.h ../hdlib/hd_nam.h \
+ ../include/uuapprove.h ../include/uulog.h ../include/mime.h \
+ ../include/zconv.h ../include/gtools.h ../include/sysexits2.h
+uuwsmtp.o: uuwsmtp.c ../include/utility.h ../include/lib.h \
+ ../include/boxstat.h ../include/ministat.h ../include/crc.h \
+ ../include/header.h ../hdlib/hd_def.h ../hdlib/hd_nam.h \
  ../include/uulog.h ../include/mime.h ../include/zconv.h \
  ../include/gtools.h ../include/sysexits2.h
-uuwsmtp.o: uuwsmtp.c ../include/config.h ../include/sysdep.h \
- ../include/utility.h ../include/lib.h ../include/boxstat.h \
- ../include/ministat.h ../include/crc.h ../include/header.h \
- ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/uulog.h \
- ../include/mime.h ../include/zconv.h ../include/gtools.h \
- ../include/sysexits2.h
-zconv.o: zconv.c ../include/config.h ../include/sysdep.h \
- ../include/lib.h ../include/utility.h ../include/crc.h \
- ../include/header.h ../hdlib/hd_def.h ../hdlib/hd_nam.h \
- ../include/uulog.h ../include/alias.h ../include/version.h \
- ../include/boxstat.h ../include/mime.h ../include/zconv.h
+zconv.o: zconv.c ../include/utility.h ../include/lib.h \
+ ../include/crc.h ../include/header.h ../hdlib/hd_def.h \
+ ../hdlib/hd_nam.h ../include/uulog.h ../include/alias.h \
+ ../include/sysdep.h ../include/version.h ../include/boxstat.h \
+ ../include/mime.h ../include/zconv.h
 # eof

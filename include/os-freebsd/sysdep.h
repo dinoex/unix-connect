@@ -48,33 +48,14 @@
 #define SYSDEP_H
 
 #define	OS	"UNIX"
-#define	BRAND	"BSDI BSD/386"
+#define	BRAND	"FreeBSD"
 
 #ifndef BSD	/* param.h */
 #define BSD	/* beliebiges BSD, auch z.B. NeXT */
 #endif
 
-#define HAS_STRING_H /* Die str... Funktionen sind in <string.h> */
-#define HAS_SYS_FCNTL_H
-#define HAS_UNISTD_H
-
 #define HAS_POSIX_TERMIOS
 #define NEED_CRTSCTS		/* brauche HW-Handshake in termios */
-
 #define LEAVE_CTRL_TTY
 
-/* man weiss nie... */
-#include <limits.h>
-#define MAXINT INT_MAX
-
-/*
- *  Die Online-Empfangsprogramme koennen ohne Passwortabfrage des
- *  Systems eingebunden werden, sie fragen daher selbst nach einem
- *  Passwort:
- */
-
-#define	ASK_PASSWD
-
-
 #endif
-

@@ -47,8 +47,6 @@
  */
 
 
-#include "config.h"
-
 #include <stdio.h>
 #include <stdarg.h>
 #ifdef HAVE_SYSLOG
@@ -57,10 +55,6 @@
 #include <time.h>
 
 #include "uulog.h"
-#include "boxstat.h"
-#ifndef HAVE_SYSLOG
-# include "ministat.h"
-#endif
 
 #define	MAX_LOG_LINE	200
 
@@ -68,8 +62,6 @@
 static char name[30];
 FILE *uudeblogfile;
 #endif
-
-const char *def_debuglog;
 
 void
 initlog(const char *xname) {
@@ -79,7 +71,6 @@ initlog(const char *xname) {
 	stccpy(name,xname,sizeof(name));
 	uudeblogfile = NULL;
 #endif
-	minireadstat();
 }
 
 void

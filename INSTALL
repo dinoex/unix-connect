@@ -138,6 +138,42 @@ X-Date-Error:
 Mit dieser Option wird keiner cwder Header erzeugt.
 
 
+--disable-uucp-server    Nicht alle Header erzeugen, für reine Leafsites.
+
+Wandlung und Erzeugen von Headerzeilen für die Rückkonvertierung
+unterbinden. Die Gatebau wird hier weitgehend nicht berücksichtigt.
+Die UUCP/RFC Informationen werden am Gate weggeworfen.
+Es gehen fast alle wesentlichen Informationen verloren.
+Ein Rückwandeln dieser Nachrichten führt zu erheblichen Problemen.
+
+
+--disable-iso-in-mail    Umlaute in Mail mit us-ascii umschreiben.
+
+Dies Flag legt fest, das bei Mail eine
+Umlautwandlung PC437 --> ISO-8859-1 nicht stattfindet.
+Wird das entsprechende Flag definiert, wird ae, oe, ue benutzt.
+
+
+--disable-iso-in-news    Umlaute in News mit us-ascii umschreiben.
+
+Dies Flag legt fest, das bei News eine
+Umlautwandlung PC437 --> ISO-8859-1 nicht stattfindet.
+Wird das entsprechende Flag definiert, wird ae, oe, ue benutzt.
+
+
+--disable-rot-for-maps   Sonderbehandlung des ROT-Headers für MAPS.
+
+Es gibt in der Behandlung des Routstrings Unterschiede zwischen
+ZConnect und RFC. Die allgemeine Einigung sieht so aus, dass die
+RFC-Notation einfach in den ZC-ROT:-Header kopiert wird. Das vermeidet
+Probleme nach dem Zurueckgaten, auch wenn die Routstrings streng nach
+ZC falsch sind (der letzte Eintrag muesste verworfen werden).
+Leider fuehrt das dazu, dass Nachrichten an den Pseudouser MAPS eines
+Zerberus-Systems nicht anerkannt werden. Daher gibt es die Option,
+bei Nachrichten an MAPS@* den Routstring auf ZConnect-Format zu stutzen.
+Das sollte eigentlich keine Probleme machen.
+
+
 --enable-bang            Bang-Pfade erzeugen.
 
 UNIX-Connect erzeugt Nachrichten im BSMTP-Format. Für die
@@ -171,6 +207,25 @@ dem ich noch keinen Fehler zuordnen konnte. UNIX/Connect kann diesen
 Wert (nur die 128) auf Wunsch ignorieren.
 Dies ist normalerweise ein Abbruch, dieser Hack
 kann zu Datenverlusten führen.
+
+
+--enable-iso-in-zconnect Erzeuge ISO-Charset in ZConnect.
+
+Diese Flag definiert, ob beim Uebergang von RFC -> ZCONNECT
+eine ISO-8859-1 --> PC437 Konvertierung stattfindet,
+wenn die RFC-Nachricht ISO-8859-1-Zeichen enthaelt.
+Das Ganze fuehrt dazu, dass Nachrichten nicht mehr unbedingt unveraendert
+durch ZConnect hindurchgereicht werden und sollte mit Vorsicht genossen
+werden. Andererseits koennen viele Leute keine ISO-8859-1-Nachrichten
+lesen, weil ihre ZConnect-Programme den entsprechenden ZConnect-Header
+nicht auswerten.
+
+--enable-point-messageid Erzeuge Message-IDs für Points.
+
+Der ZConnect-Standard schreibt fuer Message-IDs von Points eine bestimmte
+Form vor ( <lokalteil>@<point>.<server>.<do>.<main> ). Diese Form
+kann vom Gateway erzwungen werden. Das kann aber dazu fuehren,
+dass die Bezugsverkettung im Point nicht mehr sauber funktioniert...
 
 
 --with-dialprae=code     Wählcode (Default=atdt).
