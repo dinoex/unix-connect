@@ -2,6 +2,11 @@ $Id$
 
 Aenderungen an UnixConnect
 
+seit 0.94
+
+- mail-and-news/inn/send-zcon.in: (Matthias Andree)
+  Leezeichen an Zeilenende entfernt. Bug: sf#513081.
+
 seit 0.93
 
 - gate/zconv.c: (Dirk Meyer)
