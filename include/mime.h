@@ -74,14 +74,21 @@ typedef struct {
 extern mime_cte_struct mime_ctes[];
 extern mime_cty_struct mime_ctys[];
 
+#undef ATR_CONST
+#ifdef __GNUC__
+#define ATR_CONST __attribute__ ((const))
+#else
+#define ATR_CONST
+#endif
+
 int decode_cte(char *msg, long *msglenp, int *eightbit, 
 	mime_header_info_struct *info);
 int decode_x_uuencode(char *, long *, int *, mime_header_info_struct *);
-char *mime_encode(char *iso);
-char *mime_address(char *zcon_ad);
-int count(char *s, char c);
-int is_8_bit(unsigned char *string);
+char *mime_encode(const char *iso) ATR_CONST;
+char *mime_address(const char *zcon_ad) ATR_CONST;
+int count(const char *s, char c) ATR_CONST;
+int is_8_bit(const unsigned char *string) ATR_CONST;
 int parse_mime_header(int direction, header_p hd, mime_header_info_struct *);
-char *decode_mime_string(const char *buf);
+char *decode_mime_string(const char *buf) ATR_CONST;
 
 #endif /* __MIME_H */
