@@ -73,72 +73,89 @@ januslogin:	januslogin.o xprog.o lockdev.o lock.o import.o $(LIBS)
 .c.o:	../Makefile.global
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
 
-# Individuelle Abhaengigkeiten [gcc -I../include -MM *.c]
-
-action.o : action.c ../include/config.h ../include/sysdep.h zconnect.h ../include/header.h \
-  ../include/crc.h ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/version.h \
-  ../include/track.h ../include/line.h ../include/ministat.h ../include/boxstat.h \
-  ../include/uulog.h ../include/lib.h ../include/xprog.h
-call.o : call.c ../include/config.h ../include/sysdep.h zconnect.h ../include/header.h \
-  ../include/crc.h ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/version.h \
-  ../include/track.h ../include/line.h ../include/ministat.h ../include/boxstat.h \
-  ../include/uulog.h ../include/lib.h ../include/hayes.h ../include/xprog.h locknames.h
-common.o : common.c ../include/config.h ../include/sysdep.h zconnect.h ../include/header.h \
-  ../include/crc.h ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/version.h \
-  ../include/track.h ../include/line.h ../include/ministat.h ../include/boxstat.h \
-  ../include/uulog.h ../include/lib.h
-filedialog.o : filedialog.c ../include/config.h ../include/sysdep.h zconnect.h \
-  ../include/header.h ../include/crc.h ../hdlib/hd_def.h ../hdlib/hd_nam.h \
-  ../include/version.h ../include/track.h ../include/line.h ../include/ministat.h \
-  ../include/boxstat.h ../include/uulog.h ../include/lib.h ../include/utility.h
-filemaster.o : filemaster.c ../include/config.h ../include/sysdep.h zconnect.h \
-  ../include/header.h ../include/crc.h ../hdlib/hd_def.h ../hdlib/hd_nam.h \
-  ../include/version.h ../include/track.h ../include/line.h ../include/ministat.h \
-  ../include/boxstat.h ../include/uulog.h ../include/lib.h
-import.o : import.c ../include/config.h ../include/sysdep.h zconnect.h ../include/header.h \
-  ../include/crc.h ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/version.h \
-  ../include/track.h ../include/line.h ../include/ministat.h ../include/boxstat.h \
-  ../include/uulog.h ../include/lib.h ../include/xprog.h
-lock.o : lock.c ../include/config.h ../include/sysdep.h ../include/policy.h \
-  zconnect.h ../include/header.h ../include/crc.h ../hdlib/hd_def.h ../hdlib/hd_nam.h \
-  ../include/version.h ../include/track.h ../include/line.h ../include/ministat.h \
-  ../include/boxstat.h ../include/uulog.h
-lockdev.o : lockdev.c ../include/config.h ../include/sysdep.h zconnect.h ../include/header.h \
-  ../include/crc.h ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/version.h \
-  ../include/track.h ../include/line.h ../include/ministat.h ../include/boxstat.h \
-  ../include/uulog.h ../include/policy.h
-myself.o : myself.c ../include/config.h ../include/sysdep.h zconnect.h ../include/header.h \
-  ../include/crc.h ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/version.h \
-  ../include/track.h ../include/line.h ../include/ministat.h ../include/boxstat.h \
-  ../include/uulog.h
-januslogin.o : januslogin.c ../include/config.h ../include/sysdep.h zconnect.h \
-  ../include/header.h ../include/crc.h ../hdlib/hd_def.h ../hdlib/hd_nam.h \
-  ../include/version.h ../include/track.h ../include/line.h ../include/ministat.h \
-  ../include/boxstat.h ../include/uulog.h ../include/xprog.h ../include/lib.h \
-  locknames.h
-pingpong.o : pingpong.c ../include/config.h ../include/sysdep.h zconnect.h ../include/header.h \
-  ../include/crc.h ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/version.h \
-  ../include/track.h ../include/line.h ../include/ministat.h ../include/boxstat.h \
-  ../include/uulog.h ../include/lib.h
-prepare.o : prepare.c ../include/config.h ../include/sysdep.h zconnect.h ../include/header.h \
-  ../include/crc.h ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/version.h \
-  ../include/track.h ../include/line.h ../include/ministat.h ../include/boxstat.h \
-  ../include/uulog.h ../include/lib.h ../include/xprog.h locknames.h
-prologue.o : prologue.c ../include/config.h ../include/sysdep.h ../include/version.h \
-  zconnect.h ../include/header.h ../include/crc.h ../hdlib/hd_def.h ../hdlib/hd_nam.h \
-  ../include/track.h ../include/line.h ../include/ministat.h ../include/boxstat.h \
-  ../include/uulog.h ../include/lib.h
-receiver.o : receiver.c ../include/config.h ../include/sysdep.h zconnect.h ../include/header.h \
-  ../include/crc.h ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/version.h \
-  ../include/track.h ../include/line.h ../include/ministat.h ../include/boxstat.h \
-  ../include/uulog.h ../include/lib.h
-sysdialog.o : sysdialog.c ../include/config.h ../include/sysdep.h zconnect.h \
-  ../include/header.h ../include/crc.h ../hdlib/hd_def.h ../hdlib/hd_nam.h \
-  ../include/version.h ../include/track.h ../include/line.h ../include/ministat.h \
-  ../include/boxstat.h ../include/uulog.h /usr/include/sys/stat.h ../include/lib.h
-sysmaster.o : sysmaster.c ../include/config.h ../include/sysdep.h zconnect.h \
-  ../include/header.h ../include/crc.h ../hdlib/hd_def.h ../hdlib/hd_nam.h \
-  ../include/version.h ../include/track.h ../include/line.h ../include/ministat.h \
-  ../include/boxstat.h ../include/uulog.h ../include/utility.h ../include/lib.h
-xprog.o : xprog.c ../include/config.h ../include/sysdep.h ../include/boxstat.h \
-  ../include/ministat.h ../include/header.h ../include/crc.h ../include/lib.h
+# automatic depend
+action.o: action.c ../include/config.h ../include/sysdep.h zconnect.h \
+ ../include/header.h ../include/crc.h ../hdlib/hd_def.h \
+ ../hdlib/hd_nam.h ../include/version.h ../include/track.h \
+ ../include/line.h ../include/ministat.h ../include/boxstat.h \
+ ../include/uulog.h ../include/lib.h ../include/xprog.h
+call.o: call.c ../include/config.h ../include/sysdep.h zconnect.h \
+ ../include/header.h ../include/crc.h ../hdlib/hd_def.h \
+ ../hdlib/hd_nam.h ../include/version.h ../include/track.h \
+ ../include/line.h ../include/ministat.h ../include/boxstat.h \
+ ../include/uulog.h ../include/lib.h ../include/hayes.h \
+ ../include/xprog.h locknames.h
+common.o: common.c ../include/config.h ../include/sysdep.h zconnect.h \
+ ../include/header.h ../include/crc.h ../hdlib/hd_def.h \
+ ../hdlib/hd_nam.h ../include/version.h ../include/track.h \
+ ../include/line.h ../include/ministat.h ../include/boxstat.h \
+ ../include/uulog.h ../include/lib.h
+filedialog.o: filedialog.c ../include/config.h ../include/sysdep.h \
+ zconnect.h ../include/header.h ../include/crc.h ../hdlib/hd_def.h \
+ ../hdlib/hd_nam.h ../include/version.h ../include/track.h \
+ ../include/line.h ../include/ministat.h ../include/boxstat.h \
+ ../include/uulog.h ../include/lib.h ../include/utility.h
+filemaster.o: filemaster.c ../include/config.h ../include/sysdep.h \
+ zconnect.h ../include/header.h ../include/crc.h ../hdlib/hd_def.h \
+ ../hdlib/hd_nam.h ../include/version.h ../include/track.h \
+ ../include/line.h ../include/ministat.h ../include/boxstat.h \
+ ../include/uulog.h ../include/lib.h
+import.o: import.c ../include/config.h ../include/sysdep.h zconnect.h \
+ ../include/header.h ../include/crc.h ../hdlib/hd_def.h \
+ ../hdlib/hd_nam.h ../include/version.h ../include/track.h \
+ ../include/line.h ../include/ministat.h ../include/boxstat.h \
+ ../include/uulog.h ../include/lib.h ../include/xprog.h
+januslogin.o: januslogin.c ../include/config.h ../include/sysdep.h \
+ zconnect.h ../include/header.h ../include/crc.h ../hdlib/hd_def.h \
+ ../hdlib/hd_nam.h ../include/version.h ../include/track.h \
+ ../include/line.h ../include/ministat.h ../include/boxstat.h \
+ ../include/uulog.h ../include/xprog.h ../include/lib.h locknames.h
+lock.o: lock.c ../include/config.h ../include/sysdep.h \
+ ../include/policy.h zconnect.h ../include/header.h ../include/crc.h \
+ ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/version.h \
+ ../include/track.h ../include/line.h ../include/ministat.h \
+ ../include/boxstat.h ../include/uulog.h ../include/lib.h
+lockdev.o: lockdev.c ../include/config.h ../include/sysdep.h \
+ zconnect.h ../include/header.h ../include/crc.h ../hdlib/hd_def.h \
+ ../hdlib/hd_nam.h ../include/version.h ../include/track.h \
+ ../include/line.h ../include/ministat.h ../include/boxstat.h \
+ ../include/uulog.h ../include/policy.h ../include/lib.h
+myself.o: myself.c ../include/config.h ../include/sysdep.h zconnect.h \
+ ../include/header.h ../include/crc.h ../hdlib/hd_def.h \
+ ../hdlib/hd_nam.h ../include/version.h ../include/track.h \
+ ../include/line.h ../include/ministat.h ../include/boxstat.h \
+ ../include/uulog.h
+pingpong.o: pingpong.c ../include/config.h ../include/sysdep.h \
+ zconnect.h ../include/header.h ../include/crc.h ../hdlib/hd_def.h \
+ ../hdlib/hd_nam.h ../include/version.h ../include/track.h \
+ ../include/line.h ../include/ministat.h ../include/boxstat.h \
+ ../include/uulog.h ../include/lib.h
+prepare.o: prepare.c ../include/config.h ../include/sysdep.h \
+ zconnect.h ../include/header.h ../include/crc.h ../hdlib/hd_def.h \
+ ../hdlib/hd_nam.h ../include/version.h ../include/track.h \
+ ../include/line.h ../include/ministat.h ../include/boxstat.h \
+ ../include/uulog.h ../include/lib.h ../include/xprog.h locknames.h
+prologue.o: prologue.c ../include/config.h ../include/sysdep.h \
+ ../include/version.h zconnect.h ../include/header.h ../include/crc.h \
+ ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/track.h \
+ ../include/line.h ../include/ministat.h ../include/boxstat.h \
+ ../include/uulog.h ../include/lib.h
+receiver.o: receiver.c ../include/config.h ../include/sysdep.h \
+ zconnect.h ../include/header.h ../include/crc.h ../hdlib/hd_def.h \
+ ../hdlib/hd_nam.h ../include/version.h ../include/track.h \
+ ../include/line.h ../include/ministat.h ../include/boxstat.h \
+ ../include/uulog.h ../include/lib.h
+sysdialog.o: sysdialog.c ../include/config.h ../include/sysdep.h \
+ zconnect.h ../include/header.h ../include/crc.h ../hdlib/hd_def.h \
+ ../hdlib/hd_nam.h ../include/version.h ../include/track.h \
+ ../include/line.h ../include/ministat.h ../include/boxstat.h \
+ ../include/uulog.h /usr/include/sys/stat.h ../include/lib.h
+sysmaster.o: sysmaster.c ../include/config.h ../include/sysdep.h \
+ zconnect.h ../include/header.h ../include/crc.h ../hdlib/hd_def.h \
+ ../hdlib/hd_nam.h ../include/version.h ../include/track.h \
+ ../include/line.h ../include/ministat.h ../include/boxstat.h \
+ ../include/uulog.h ../include/utility.h ../include/lib.h
+xprog.o: xprog.c ../include/config.h ../include/sysdep.h \
+ ../include/boxstat.h ../include/ministat.h ../include/header.h \
+ ../include/crc.h ../include/lib.h
+# eof

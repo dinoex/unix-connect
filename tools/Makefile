@@ -62,9 +62,13 @@ zconsplit:	zconsplit.o $(LIBS)
 .c.o:	../Makefile.global
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
 
-list-systems.o : list-systems.c ../include/config.h ../include/sysdep.h ../include/lib.h \
-  ../include/header.h ../include/crc.h ../hdlib/hd_def.h ../hdlib/hd_nam.h \
-  ../include/ministat.h ../include/boxstat.h
-zconsplit.o : zconsplit.c ../include/config.h ../include/sysdep.h ../include/header.h \
-  ../include/crc.h ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/boxstat.h \
-  ../include/ministat.h ../include/version.h
+# automatic depend
+list-systems.o: list-systems.c ../include/config.h ../include/sysdep.h \
+ ../include/lib.h ../include/header.h ../include/crc.h \
+ ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/ministat.h \
+ ../include/boxstat.h
+zconsplit.o: zconsplit.c ../include/config.h ../include/sysdep.h \
+ ../include/header.h ../include/crc.h ../hdlib/hd_def.h \
+ ../hdlib/hd_nam.h ../include/boxstat.h ../include/ministat.h \
+ ../include/version.h
+# eof

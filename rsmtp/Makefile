@@ -108,9 +108,6 @@ clobber:	clean
 
 tidy:		clobber
 
-rsmtp:		rsmtp.o
-bsmtp:		bsmtp.o
-
 rsmtp:	rsmtp.o
 	$(CC) -o rsmtp rsmtp.o $(LIBS) $(LDFLAGS)
 
@@ -139,3 +136,7 @@ $(DESTDIR)/bsmtp: bsmtp
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
 
 # end of makefile
+# automatic depend
+bsmtp.o: bsmtp.c version.h
+rsmtp.o: rsmtp.c version.h
+# eof

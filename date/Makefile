@@ -52,6 +52,8 @@ tidy:		clobber
 .c.o:	../Makefile.global
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
 
-datetok.o : datetok.c datetok.h
-getindate.o : getindate.c datetok.h
-
+# automatic depend
+datetok.o: datetok.c ../include/config.h ../include/sysdep.h datetok.h
+getindate.o: getindate.c ../include/config.h ../include/sysdep.h \
+ datetok.h
+# eof

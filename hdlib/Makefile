@@ -53,6 +53,7 @@ install:	all
 
 clean:
 	-rm -f $(CLEANFILES) header.tmp header.gtmp test.out
+	-rm -f uurd.c smtprd.c pkread.c pkwrite.c
 
 clobber:	clean
 	-rm -f testheader
@@ -69,25 +70,21 @@ uurd.o:	uurdpara.c
 	@-rm -f uurd.c
 	@-ln uurdpara.c uurd.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c uurd.c
-	@-rm -f uurd.c
 
 smtprd.o:	uurdpara.c
 	@-rm -f smtprd.c
 	@-ln uurdpara.c smtprd.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -DSMTP -c smtprd.c
-	@-rm -f smtprd.c
 
 pkread.o:	rdpara.c
 	@-rm -f pkread.c
 	@-ln rdpara.c pkread.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -DDO_CRC -c pkread.c
-	@-rm -f pkread.c
 
 pkwrite.o:	wrpara.c
 	@-rm -f pkwrite.c
 	@-ln wrpara.c pkwrite.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -DDO_CRC -c pkwrite.c
-	@-rm -f pkwrite.c
 
 hash.c:	header.gperf hash.epilogue gperf.prefix
 	cat gperf.prefix header.gperf > header.gtmp
@@ -119,19 +116,37 @@ uuheader.a:	$(OBJS)
 .c.o:	../Makefile.global
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
 
-crc.o : crc.c ../include/crc.h ../include/sysdep.h
-delheader.o : delheader.c ../include/header.h ../include/sysdep.h ../include/crc.h
-find.o : find.c ../include/header.h ../include/sysdep.h ../include/crc.h
-freepara.o : freepara.c ../include/header.h ../include/sysdep.h ../include/crc.h
-hash.o : hash.c hd_def.h ../include/header.h ../include/sysdep.h ../include/crc.h \
-  ../include/uulog.h hd_nam.h hd_nlist.h
-joinheader.o : joinheader.c ../include/header.h ../include/sysdep.h ../include/crc.h \
-  ../include/uulog.h
-rdpara.o : rdpara.c ../include/header.h ../include/sysdep.h ../include/crc.h \
-  ../include/uulog.h
-testheader.o : testheader.c ../include/uulog.h ../include/sysdep.h ../include/header.h \
-  ../include/crc.h hd_def.h hd_nam.h
-uurdpara.o : uurdpara.c ../include/header.h ../include/sysdep.h ../include/crc.h \
-  ../include/uulog.h
-wrpara.o : wrpara.c ../include/header.h ../include/sysdep.h ../include/crc.h \
-  hd_nam.h
+# automatic depend
+crc.o: crc.c ../include/crc.h ../include/sysdep.h
+delheader.o: delheader.c ../include/config.h ../include/sysdep.h \
+ ../include/header.h ../include/crc.h
+find.o: find.c ../include/config.h ../include/sysdep.h \
+ ../include/header.h ../include/crc.h
+freepara.o: freepara.c ../include/config.h ../include/sysdep.h \
+ ../include/header.h ../include/crc.h
+hash.o: hash.c /usr/include/string.h hd_def.h ../include/header.h \
+ ../include/sysdep.h ../include/crc.h ../include/uulog.h hd_nam.h \
+ ../include/lib.h hd_nlist.h
+joinheader.o: joinheader.c ../include/config.h ../include/sysdep.h \
+ ../include/header.h ../include/crc.h ../include/uulog.h \
+ ../include/lib.h
+pkread.o: pkread.c ../include/config.h ../include/sysdep.h \
+ ../include/header.h ../include/crc.h ../include/uulog.h \
+ ../include/lib.h
+pkwrite.o: pkwrite.c ../include/config.h ../include/sysdep.h \
+ ../include/header.h ../include/crc.h hd_nam.h
+rdpara.o: rdpara.c ../include/config.h ../include/sysdep.h \
+ ../include/header.h ../include/crc.h ../include/uulog.h \
+ ../include/lib.h
+smtprd.o: smtprd.c ../include/config.h ../include/sysdep.h \
+ ../include/header.h ../include/crc.h ../include/uulog.h
+testheader.o: testheader.c ../include/config.h ../include/sysdep.h \
+ ../include/uulog.h ../include/header.h ../include/crc.h hd_def.h \
+ hd_nam.h
+uurd.o: uurd.c ../include/config.h ../include/sysdep.h \
+ ../include/header.h ../include/crc.h ../include/uulog.h
+uurdpara.o: uurdpara.c ../include/config.h ../include/sysdep.h \
+ ../include/header.h ../include/crc.h ../include/uulog.h
+wrpara.o: wrpara.c ../include/config.h ../include/sysdep.h \
+ ../include/header.h ../include/crc.h hd_nam.h
+# eof

@@ -4,6 +4,8 @@ $Id$
 Aenderungen an UnixConnect
 seit 0.79
 
+- Makefiles weitgehend ueberarbeiet
+
 - Syslog über configure automatisch erkennen
 
 - configure respektiert CFLAGS
