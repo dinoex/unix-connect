@@ -92,6 +92,10 @@ maintainer-clean:
 	cd hdlib && $(MAKE) -$(MAKEFLAGS) maintainer-clean
 	$(MAKE) -$(MAKEFLAGS) distclean
 
+check:
+	for dir in hdlib gate; do \
+		(cd $$dir && $(MAKE) -$(MAKEFLAGS) check) done
+
 newhash:
 	cd hdlib && $(MAKE) -$(MAKEFLAGS) newhash
 
