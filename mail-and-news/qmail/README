@@ -39,7 +39,7 @@ Ansonsten gehts im Prinzip so:
 _Die Seite von qmail zu UnixConnect:_
 - Wir haben zuerst bsmtp von Olaf Titz <olaf@bigred.inka.de> installiert,
   sind ein paar Perlscripte, gibts auf alle Faelle via www.qmail.org zu
-  finden.
+  finden.  http://sites.inka.de/sites/bigred/sw/qbsmtp.txt
 
 [ Die Originalversion von Olaf Titz ignoriert leider alle auftretenden
 Fehler seitens des Konvertierungsprogramms. Eine Version, bei der
