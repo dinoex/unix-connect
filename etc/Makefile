@@ -3,6 +3,7 @@
 # steht unter der GPL
 
 include ../Makefile.global
+include ../Makefile.includes
 
 FILES=config approved alias autoeintrag.zconnect myself.zconnect
 
@@ -16,10 +17,6 @@ install:
 	if test ! -f $(ETCDIR)/$i; then \
 		install -o $(USER) -g $(GROUP) -m 660 $i $(ETCDIR); \
 	fi; done
-
-clean:
-
-clobber:
 
 tidy:
 	-rm -f config

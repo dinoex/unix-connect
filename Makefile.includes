@@ -1,0 +1,14 @@
+all:
+
+install:
+
+clean: clean-includes
+
+clean-includes:
+	-rm -f $(CLEANFILES)
+
+clobber: clean
+
+tidy: clobber
+
+distrib: tidy

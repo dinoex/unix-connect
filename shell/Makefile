@@ -35,20 +35,16 @@
 #
 
 include ../Makefile.global
+include ../Makefile.includes
 
 FILES = anruf auspack einpack import prearc uumlist
 
 all:
 	for file in $(FILES); do $(SHELL) ../helpers/subst < $$file.in > $$file; done
 
-clean:
-	-rm -f $(CLEANFILES)
-
 install: $(FILES)
 	install -o $(USER) -g $(GROUP) -m 775 $(FILES) $(BINDIR)
 
 clobber:	clean
 	-rm -f $(FILES)
-
-tidy:	clobber
 
