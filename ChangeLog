@@ -4,6 +4,32 @@ Aenderungen an UnixConnect
 
 seit 0.88
 
+- lib/hayes.c: (Dirk Meyer)
+  Neuer Anfang einer Zeile senden,
+  damit das erste "AT" gleich verstanden wird.
+
+- online/call.c: (Dirk Meyer)
+  Neue version von "anruf" getestet, alte entfernt
+  Anfufdauer nur noch einmal ausgeben.
+  Backup2 eingebaut.
+
+- online/lock.c online/lockdev.c: (Dirk Meyer)
+  Debuglog mit Zeilenende schreiben.
+
+- online/xprog.c: (Dirk Meyer)
+  Pfade für FreeBSD eingefügt.
+  Fehlermeldungen erweitert.
+
+- shell/auspack.in: (Dirk Meyer)
+  "sh" kompatibel, "bash"-key _function_ entfernt.
+
+- include/line.h, lib/rawtty.c, online/call.c: (Dirk Meyer)
+  Eingangsdaten vom Modem verwerfen,
+  sonst wird fehlerhafterweise "JANUS" mehrfach gesendet.
+
+- Makefile.in: (Dirk Meyer)
+  Verzeichnisss "error" und "rsmtp" mit anlegen.
+
 - Makefile.includes: (Dirk Meyer)
   aufgelöst.
 
@@ -41,8 +67,8 @@ seit 0.88
 
 - hdlib/header.list, etc/config.in, include/ministat.h, lib/ministat.c,
   online/calllib.h, lib/backup.c, online/import.c,
-  online/januslogin.c: (Krischan Jodies)
-  Neues nummeriertes Backup
+  online/januslogin.c: (Krischan Jodies) (Dirk Meyer)
+  Neues nummeriertes Backup, Keine unterverzeichnisse.
 
 - mail-and-news/sendmail/zbatchsmtp.in: (Krischan Jodies)
   Spoolverzeichnisse mit "./", für Systemnamen mit Sonderzeichen am Anfang.
