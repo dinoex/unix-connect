@@ -71,22 +71,22 @@
 #include "uulog.h"
 #include "alias.h"
 #include "mime.h"
+#include "uuconv.h"
 #ifdef APC_A2B
 #  include "apc_a2b.h"
 #endif
 #include "lib.h"
+#include "datelib.h"
 
 extern char *fqdn;	/* FQDN des Hosts, fuer den hier ZCONNECT erzeugt wird */
 char wab_name[MAXLINE] = "", wab_host[MAXLINE] = "", wab_domain[MAXLINE] = "";
 static char sp_name[MAXLINE], sp_host[MAXLINE], sp_domain[MAXLINE], rna[MAXLINE];
 
-time_t parsedate(char *date_header, int *time_zone);
-
 int dont_gate = 0;	/* Flag fuer Pseudo Z3.8 Nachrichten */
 
 /* Hier werden die nach ZConnect gewandelten Brettnamen
    auf Gültigkeit geprüft. */
-static int valid_newsgroups( char *data )
+int valid_newsgroups( char *data )
 {
 	if(NULL==data)
 		return 0;
@@ -102,7 +102,7 @@ static int valid_newsgroups( char *data )
  * Wenn zc_header NULL ist, druckt es nur eine Zeile aus
  * der ersten angegebenen newsgroup und fertig.
  */
-static void printbretter(char *newsgroups, char *zc_header, FILE *f)
+void printbretter(const char *newsgroups, const char *zc_header, FILE *f)
 {
 	static char adr[MAXLINE];
 	char *bak, *st, *q, *s;
@@ -228,7 +228,7 @@ char *next_komma(char *s)
 
 
 void splitaddr(char *rfc_addr, char *name, char *host, char *domain,
-	char *rna)
+	char *lrna)
 {
 	static char adr[MAXLINE];
 	char *q, *q1, *s;
@@ -236,14 +236,14 @@ void splitaddr(char *rfc_addr, char *name, char *host, char *domain,
 	*name = '\0';
 	*host = '\0';
 	*domain = '\0';
-	*rna = '\0';
+	*lrna = '\0';
 	q = strchr(rfc_addr, '<');
 	if (q) {
 		strcpy(adr, q+1);
 		q = strchr(adr, '>');
 		if (q) *q = '\0';
-		strcpy(rna, rfc_addr);
-		q = strchr(rna, '<');
+		strcpy(lrna, rfc_addr);
+		q = strchr(lrna, '<');
 		while (isspace(*(--q) ))
 			;
 		q++;
@@ -273,8 +273,8 @@ void splitaddr(char *rfc_addr, char *name, char *host, char *domain,
 			s=NULL;
 		*q = '\0';
 		if (s) {
-			strcpy(rna, s);
-			s = strrchr(rna, ')');
+			strcpy(lrna, s);
+			s = strrchr(lrna, ')');
 			if (s) *s = '\0';
 		}
 	}
@@ -364,7 +364,8 @@ void splitaddr(char *rfc_addr, char *name, char *host, char *domain,
  *		die Anzahl der ausgegebenen Adressen (alle ungültigen werden
  *		nicht erzeugt)
  */
-int convaddr(char *zconnect_header, char *rfc_addr, int max, FILE *f)
+int convaddr(const char *zconnect_header, const char *rfc_addr,
+	int max, FILE *f)
 {
 	char *komma, *start, *line;
 	static char zaddr[MAXLINE];
@@ -497,9 +498,10 @@ char *printpath(char *reverse_path)
 	return(rot);
 }
 
-header_p convheader(header_p hd, FILE *f, char *host, char *from)
+extern int main_is_mail;
+
+header_p convheader(header_p hd, FILE *f, char *from)
 {
-	extern int main_is_mail;
 	int has_wab=0;
 	header_p p, t;
 	char *s, *st, *e, *to;
@@ -781,15 +783,15 @@ header_p convheader(header_p hd, FILE *f, char *host, char *from)
 	}
 	p = find(HD_UU_REFERENCES, hd);
 	if (p) {
-		char buffer[MAXLINE], *t;
+		char buffer[MAXLINE], *t2;
 
 		for (s=strchr(p->text, '<'); s && *s; s=strchr(s, '<')) {
 			fputs(HN_BEZ": ", f);
-			for (t = buffer, s++; *s && *s != '>'; s++) {
+			for (t2 = buffer, s++; *s && *s != '>'; s++) {
 				putc(*s, f);
-				*t++ = *s;
+				*t2++ = *s;
 			}
-			*t = '\0';
+			*t2 = '\0';
 			fputs("\r\n", f);
 		}
 		hd = del_header(HD_UU_REFERENCES, hd);
@@ -1060,8 +1062,8 @@ header_p convheader(header_p hd, FILE *f, char *host, char *from)
 
 int make_body(char *bigbuffer, size_t msglen,
 		mime_header_info_struct *mime_info,
-		int binaer, char *smallbuffer, FILE *zconnect) {
-	int eightbit;
+		int binaer, char *smallbuffer, FILE *zconnect)
+{
 #ifdef APC_A2B
 	size_t latob;
 #endif
@@ -1154,7 +1156,7 @@ int make_body(char *bigbuffer, size_t msglen,
 			else
 				wrlen -= (p2 - bigbuffer);
 			/* Na, dann versuchen wir mal zu decodieren */
-			if (decode_x_uuencode(p2, (long *)&wrlen, &eightbit, mime_info))
+			if (decode_x_uuencode(p2, (long *)&wrlen, mime_info))
 				fprintf(zconnect, HN_TYPE": BIN\r\n");
 		}
 		else

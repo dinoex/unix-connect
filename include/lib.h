@@ -3,6 +3,7 @@
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1993-94  Martin Husemann
  *  Copyright (C) 1995     Christopher Creutzig
+ *  Copyright (C) 1999     Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,8 +26,8 @@
  *
  *  Bugreports, suggestions for improvement, patches, ports to other systems
  *  etc. are welcome. Contact the maintainer by e-mail:
- *  christopher@nescio.foebud.org or snail-mail:
- *  Christopher Creutzig, Im Samtfelde 19, 33098 Paderborn
+ *  dirk.meyer@dinoex.sub.org or snail-mail:
+ *  Dirk Meyer, Im Grund 4, 34317 Habichstwald
  *
  *  There is a mailing-list for user-support:
  *   unix-connect@mailinglisten.im-netz.de,
@@ -37,7 +38,7 @@
 
 char *strupr(char *a);
 char *strlwr(char *a);
-int stricmp(const char *, const char *);
+int stricmp(const char *a, const char *b);
 int lock_device (int flok, const char *device);
 
 char *dstrdup(const char *);
@@ -61,13 +62,13 @@ void ulputs(char *text, FILE *f);
 
 /*
  *  Prüfe ein lock-File und warte gegebenenfalls, bis es verschwindet.
- *  'timeout' gibt die Warte-Strategie an:
+ *  'ltimeout' gibt die Warte-Strategie an:
  *
- *	< 0 :	warte maximal abs(timeout) Sekunden und versuch dann, den
+ *	< 0 :	warte maximal abs(ltimeout) Sekunden und versuch dann, den
  *		Lock zu entfernen
  *	  0 :	warte zur Not ewig
  *	> 0 :	warte maximal timeout Sekunden und gib dann auf
  *
  *   Returns:	0 bei Erfolg
  */
-int waitnolock(const char *lockname, long timeout);
+int waitnolock(const char *lockname, long ltimeout);

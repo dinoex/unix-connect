@@ -2,7 +2,9 @@
 /*
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1993-94  Martin Husemann
- *  Copyright (C) 1995     Christopher Creutzig
+ *  Copyright (C) 1995     Moritz Both
+ *  Copyright (C) 1995-98  Christopher Creutzig
+ *  Copyright (C) 1999     Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,19 +27,14 @@
  *
  *  Bugreports, suggestions for improvement, patches, ports to other systems
  *  etc. are welcome. Contact the maintainer by e-mail:
- *  christopher@nescio.foebud.org or snail-mail:
- *  Christopher Creutzig, Im Samtfelde 19, 33098 Paderborn
+ *  dirk.meyer@dinoex.sub.org or snail-mail:
+ *  Dirk Meyer, Im Grund 4, 34317 Habichstwald
  *
  *  There is a mailing-list for user-support:
  *   unix-connect@mailinglisten.im-netz.de,
  *  write a mail with subject "Help" to
  *   nora.e@mailinglisten.im-netz.de
  *  for instructions on how to join this list.
- */
-
-/*
- * Copyright (C) 1995 M.Both
- * Copyright (C) 1995 C.Creutzig
  */
 
 #ifndef __MIME_H
@@ -52,12 +49,12 @@ typedef enum { cty_none, cty_text, cty_multipart, cty_message, cty_application,
 		cty_image, cty_audio, cty_video, cty_unknown } mime_cty;
 
 typedef struct {
-	char *name;
+	const char *name;
 	mime_cte cte;
 } mime_cte_struct;
 
 typedef struct {
-	char *name;
+	const char *name;
 	mime_cty cty;
 } mime_cty_struct;
 
@@ -81,9 +78,11 @@ extern mime_cty_struct mime_ctys[];
 #define ATR_CONST
 #endif
 
+int is_mime(unsigned char *string);
+int count_8_bit(const unsigned char *string);
 int decode_cte(char *msg, long *msglenp, int *eightbit,
 	mime_header_info_struct *info);
-int decode_x_uuencode(char *, long *, int *, mime_header_info_struct *);
+int decode_x_uuencode(char *, long *, mime_header_info_struct *);
 char *mime_encode(const char *iso) ATR_CONST;
 char *mime_address(const char *zcon_ad) ATR_CONST;
 int count(const char *s, char c) ATR_CONST;

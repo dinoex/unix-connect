@@ -285,7 +285,7 @@ void convdata(FILE *news, FILE *zconnect)
 	msglen=wrlen;
 
 	/* Header konvertieren und ausgeben */
-	hd = convheader(hd, zconnect, NULL, NULL);
+	hd = convheader(hd, zconnect, NULL);
 
 	/* MIME Content-Transfer-Encoding decodieren */
 	decoded = decode_cte(bigbuffer, &msglen, &eightbit, &mime_info);

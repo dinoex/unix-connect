@@ -80,7 +80,7 @@ typedef struct alias_st {
 
 static alias_list data = NULL;
 
-void insert(char *znetz, char *uucp, int v)
+static void insert(char *znetz, char *uucp, int v)
 {
 	alias_list p;
 
@@ -149,7 +149,7 @@ static void init(void)
 	}
 }
 
-char *z_search(char *gesucht, int v)
+char *z_search(const char *gesucht, int v)
 {
 	alias_list p;
 /* Aus irgendeinem Grund (den ich noch nicht finde konnte)
@@ -189,7 +189,7 @@ char *z_search(char *gesucht, int v)
 	return NULL;
 }
 
-char *u_search(char *gesucht, int v)
+char *u_search(const char *gesucht, int v)
 {
 	alias_list p;
 

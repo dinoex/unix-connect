@@ -23,3 +23,63 @@ CFLAGS += -DDESTDIR=$(DESTDIR) -DBINDIR=$(BINDIR) -DETCDIR=$(ETCDIR)
 CFLAGS += -DCONFIG_FILE=\"$(ETCDIR)/config\"
 APCOBJS  = @APCOBJS@
 CLEANFILES = *.o *.a *.bak *.rej *.orig core *.core
+
+WARNALL	= \
+	-W \
+	-Wimplicit \
+	-Wreturn-type \
+	-Wunused \
+	-Wswitch \
+	-Wcomment \
+	-Wtrigraphs \
+	-Wformat \
+	-Wchar-subscripts \
+	-Wuninitialized \
+	-Wparentheses
+
+WARNGCC24x = \
+	-pedantic \
+	-Wconversion \
+	-Wtraditional \
+	-Wenum-clash \
+
+WARNGCC25x = \
+	-Wconversion \
+	-Wenum-clash \
+
+WARNGCC26x = \
+	-Wmissing-declarations \
+	-pedantic \
+	-Wtraditional \
+	-Wenum-clash \
+
+WARNGCC27x = \
+	-Wmissing-declarations \
+	-pedantic
+
+WARNEGCS = \
+	-Wimplicit-int \
+	-Wimplicit-function-delcaration \
+	-Wmissing-declarations \
+
+WARNBASE = \
+	$(WARNALL) \
+	-Wshadow \
+	-Wid-clash-30 \
+	-Wpointer-arith \
+	-Wcast-qual \
+	-Wcast-align \
+	-Wwrite-strings \
+	-Waggregate-return \
+	-Wstrict-prototypes \
+	-Wmissing-prototypes \
+	-Wnested-externs \
+	-Woverloaded-virtual \
+	-Winline
+
+WARN	= \
+	$(WARNBASE) \
+	$(WARNEGCS)
+
+CFLAGS+= $(WARN)
+

@@ -3,6 +3,7 @@
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1993-94  Martin Husemann
  *  Copyright (C) 1995-98  Christopher Creutzig
+ *  Copyright (C) 1994     Peter Much
  *  Copyright (C) 1999     Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -87,20 +88,21 @@
 # define DEBUGLOG	"debug.log"
 #endif
 
-extern char *nomem;
-
+extern const char *nomem;
 
 #ifdef HAVE_SYSLOG
-void logfile(int lchan, char *from, char *to, char *mid, char *format,...)
+void logfile(int lchan,
 #else
-void logfile(char *lfilename, char *from, char *to, char *mid, char *format,...)
+void logfile(char *lfilename,
 #endif
+	const char *from, const char *to, const char *mid, 
+	const char *format, ...)
 #ifdef __GNUC__
 __attribute__ ((format(printf,5,6)))
 #endif
 ;
 
-void uufatal(char *prog, char *format, ...)
+void uufatal(const char *prog, const char *format, ...)
 #ifdef __GNUC__
 __attribute__ ((noreturn, format(printf,2,3)))
 #endif

@@ -71,10 +71,11 @@
 #include "version.h"
 #include "boxstat.h"
 #include "mime.h"
+#include "zconv.h"
 
-void foldputs(FILE *, char *, char *);
-void foldputh(FILE *f, char *hd, header_p t);
-void foldputaddrs(FILE *f, char *hd, header_p t);
+void foldputs(FILE *, const char *, const char *);
+void foldputh(FILE *f, const char *hd, header_p t);
+void foldputaddrs(FILE *f, const char *hd, header_p t);
 char umlautstr[] = "\x94\x99\x84\x8e\x81\x9a\xe1",
  convertstr[] = "oeOeaeAeueUess";
 extern char eol[];
@@ -85,7 +86,7 @@ extern header_p pointuser;
  *  Liefert 1, wenn die beiden Adressteile (ohne Realname) identisch
  *  sind
  */
-int adrmatch(char *abs1, char *abs2)
+int adrmatch(const char *abs1, const char *abs2)
 {
 	while (toupper(*abs1) == toupper(*abs2)) {
 		abs1++; abs2++;
@@ -125,7 +126,8 @@ void ulputs(char *text, FILE *f)
 /* Druckt EINE newsgroup nach EINEM Brett.
  * Gibt !=0 zurueck im Ungluecksfall.
  */
-int printnewsgroup(char *brett, FILE *f) {
+int printnewsgroup(const char *brett, FILE *f)
+{
 	char *s;
 	static char buffer[MAXLINE];
 
@@ -154,7 +156,7 @@ int printnewsgroup(char *brett, FILE *f) {
 /* Druckt in file f alle newsgroups, die als Bretter in
  * den Headerzeilen p ... p->other usw. stehen.
  */
-static void printnewsgroups(header_p p, char *uuheader, FILE *f)
+void printnewsgroups(header_p p, const char *uuheader, FILE *f)
 {
 	header_p t;
 
@@ -169,13 +171,15 @@ static void printnewsgroups(header_p p, char *uuheader, FILE *f)
 	fputs(eol, f);
 }
 
+extern int main_is_mail;
+extern char *pointsys;
+
 header_p convheader(header_p hd, FILE *f)
 {
 	header_p p, t, to, cc, bcc;
-	char *s, *test, *abs, *oabs, *sender;
+	char *s, *test, *habs, *oabs, *sender;
 	char *mime_name, *absname;
 	int org_from, pos, nokop;
-	extern int main_is_mail;
 
 	minireadstat();
 	org_from = 0;
@@ -326,11 +330,11 @@ header_p convheader(header_p hd, FILE *f)
 		}
 		hd = del_header(HD_CONTROL, hd);
 	}
-	abs = NULL;
+	habs = NULL;
 	sender = NULL;
 	p = find(HD_OAB, hd);
 	if (p) {
-		abs = dstrdup(p->text);
+		habs = dstrdup(p->text);
 		p = find(HD_ABS, hd);
 		if (p) {
 			sender = dstrdup(p->text);
@@ -340,7 +344,7 @@ header_p convheader(header_p hd, FILE *f)
 	} else {
 		p = find(HD_ABS, hd);
 		if (p) {
-			abs = dstrdup(p->text);
+			habs = dstrdup(p->text);
 			p = find(HD_WAB, hd);
 			if(p)
 			{
@@ -351,16 +355,14 @@ header_p convheader(header_p hd, FILE *f)
 		}
 	}
 	if (pointuser) {
-		header_p p;
-
-		for (p = pointuser; p; p=p->other)
-			if (adrmatch(abs, p->text)) {
+		for (t = pointuser; t; t=t->other)
+			if (adrmatch(habs, t->text)) {
 				/*
 				 * Ok, wegen Schreibweise aber durch unsere
 				 * Version ersetzen
 				 */
-				dfree(abs);
-				abs = dstrdup(p->text);
+				dfree(habs);
+				habs = dstrdup(t->text);
 				break;
 			}
 		/*
@@ -368,35 +370,35 @@ header_p convheader(header_p hd, FILE *f)
 		 *  den ersten Point-User: aus der Liste (das ist der Default-
 		 *  User)
 		 */
-		if (!p) {
-			dfree(abs);
-			abs = dstrdup(pointuser->text);
+		if (!t) {
+			dfree(habs);
+			habs = dstrdup(pointuser->text);
 		}
 	}
-	if(abs)
-		oabs = dstrdup(abs);
+	if(habs)
+		oabs = dstrdup(habs);
 	else /* fehlerhafte Eingabedatei, kein ABS:-Header */
 	{
 #ifdef LOG_ERRORS_IN_HEADERS
 		fprintf(f, "X-Gate-Error: No ABS%s", eol);
 #endif
 		oabs = dstrdup("");
-		abs = dstrdup("");
+		habs = dstrdup("");
 	}
-	if (!abs || !oabs) {
+	if (!habs || !oabs) {
 		out_of_mem(__FILE__,__LINE__);
 	}
-	s = strchr(abs, ' ');
+	s = strchr(habs, ' ');
 	if (s) *s = '\0';
-	strlwr(abs);
-	test = strrchr(abs, '@');
+	strlwr(habs);
+	test = strrchr(habs, '@');
 /* ist das hier echt noch nötig? -- ccr */
 	if (test && strncmp(test, "@uucp", 5)==0) {
 		*test = '\0';
-		test = strrchr(abs, '%');
+		test = strrchr(habs, '%');
 		if (test) *test = '@';
 		dfree(oabs);
-		oabs = dstrdup(abs);
+		oabs = dstrdup(habs);
 	} else
 		if (s) *s = ' ';
 	if (!org_from) {
@@ -427,7 +429,6 @@ header_p convheader(header_p hd, FILE *f)
 	      }
 	      dfree(absname);
 	    } else {
-              extern char *pointsys;
               if ( !(strlen(p->text)) && pointsys ) {
                  fprintf(f, HN_UU_PATH": %s!not-for-mail%s", pointsys, eol);
               } else {
@@ -464,23 +465,22 @@ header_p convheader(header_p hd, FILE *f)
 
 	p = find(HD_EB, hd);
 	if (p) {
-		header_p t;
 		for(t=p; t; t=t->other) {
 			if (*(t->text))
 			{
 			  pc2iso(t->text,strlen(t->text));
 			  mime_name=mime_address(t->text);
 			} else {
-			  /* abs wird hier zerstoert */
-			  pc2iso(abs,strlen(abs));
-			  mime_name=mime_address(abs);
+			  /* habs wird hier zerstoert */
+			  pc2iso(habs,strlen(habs));
+			  mime_name=mime_address(habs);
 			}
 			fprintf(f, HN_UU_RETURN_RECEIPT_TO ": %s%s", mime_name, eol);
 			dfree(mime_name);
 		}
 		hd = del_header(HD_EB, hd);
 	}
-	dfree(abs);
+	dfree(habs);
 	dfree(oabs);
 	p = find(HD_ORG, hd);
 	if (p) {
@@ -631,10 +631,10 @@ header_p convheader(header_p hd, FILE *f)
  * werden soll, das Zeilenende aber schon da ist, es wird also mit einem
  * '\t' begonnen.
  */
-void foldputs(FILE *f, char *hd, char *inhalt)
+void foldputs(FILE *f, const char *hd, const char *inhalt)
 {
 	int col;
-	char *p;
+	const char *p;
 
 	if(NULL != hd)
 	{
@@ -660,7 +660,7 @@ void foldputs(FILE *f, char *hd, char *inhalt)
  * ZC-Headern zusammengesetzt ist. hd wird wie in foldputs
  * verwendet.
  */
-void foldputh(FILE *f, char *hd, header_p t)
+void foldputh(FILE *f, const char *hd, header_p t)
 {
 	int col;
 	header_p p;
@@ -694,7 +694,7 @@ void foldputh(FILE *f, char *hd, header_p t)
  * diejenigen ausgegeben, die ein '@' enthalten, sie werden dafür
  * durch mime_encode "gejagt".
  */
-void foldputaddrs(FILE *f, char *hd, header_p t)
+void foldputaddrs(FILE *f, const char *hd, header_p t)
 {
 	int col;
 	header_p p;
@@ -729,7 +729,8 @@ void foldputaddrs(FILE *f, char *hd, header_p t)
 	fputs(eol, f);
 }
 
-void u_f_and_all(FILE *f, header_p hd) {
+void u_f_and_all(FILE *f, header_p hd)
+{
 	header_p p, p1;
 	char *text;
 

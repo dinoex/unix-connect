@@ -21,9 +21,10 @@
 #include <sys/types.h>
 #include <sys/timeb.h>
 #include "datetok.h"
+#include "datelib.h"
 
 int prsindate(char *line, struct tm *tm, int *tzp);
-int parsetime(char *time, struct tm *tm);
+int parsetime(char *ptime, struct tm *tm);
 
 /* STREQ is an optimised strcmp(a,b)==0 */
 #define STREQ(a, b) ((a)[0] == (b)[0] && strcmp(a, b) == 0)
@@ -227,19 +228,19 @@ int prsindate(char *line, struct tm *tm, int *tzp) /* line can be modified */
 }
 
 /* return -1 on failure */
-int parsetime(char *time, struct tm *tm)
+int parsetime(char *ptime, struct tm *tm)
 {
 	register char c;
 	register int x;
 
 	tm->tm_sec = 0;
-	GOBBLE_NUM(time, c, x, &tm->tm_hour);
+	GOBBLE_NUM(ptime, c, x, &tm->tm_hour);
 	if (c != ':')
 		return -1;		/* only hour; too short */
-	GOBBLE_NUM(time, c, x, &tm->tm_min);
+	GOBBLE_NUM(ptime, c, x, &tm->tm_min);
 	if (c != ':')
 		return 0;		/* no seconds; okay */
-	GOBBLE_NUM(time, c, x, &tm->tm_sec);
+	GOBBLE_NUM(ptime, c, x, &tm->tm_sec);
 	/* this may be considered too strict.  garbage at end of time? */
 	return (c == '\0' || ISSPACE(c)? 0: -1);
 }

@@ -3,6 +3,7 @@
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1993-94  Martin Husemann
  *  Copyright (C) 1995     Christopher Creutzig
+ *  Copyright (C) 1999     Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,8 +26,8 @@
  *
  *  Bugreports, suggestions for improvement, patches, ports to other systems
  *  etc. are welcome. Contact the maintainer by e-mail:
- *  christopher@nescio.foebud.org or snail-mail:
- *  Christopher Creutzig, Im Samtfelde 19, 33098 Paderborn
+ *  dirk.meyer@dinoex.sub.org or snail-mail:
+ *  Dirk Meyer, Im Grund 4, 34317 Habichstwald
  *
  *  There is a mailing-list for user-support:
  *   unix-connect@mailinglisten.im-netz.de,
@@ -61,7 +62,7 @@
 typedef struct para_s {
 	char *text;      /* Pointer auf den Inhalts-String */
 	char *header;    /* Pointer auf den Namen dieses Headers */
-	unsigned code;   /* Interner Code dieses Header-Namens */
+	int code;        /* Interner Code dieses Header-Namens */
 
         struct para_s
              *other,     /* Pointer auf weitere Header mit diesem code */
@@ -86,8 +87,9 @@ extern int rd_para_error;
  * Die Funktionen:
  */
 
-extern char *hd_crlf;	/* Muss vom main() definiert werden, um fuer dieses */
-			/* Programm die Zeilenendekonvention festzulegen */
+extern const char *hd_crlf;
+	/* Muss vom main() definiert werden, um fuer dieses */
+	/* Programm die Zeilenendekonvention festzulegen */
 
 /* void wr_para (header_p, FILE *); */
 #define wr_para(p,f) { wr_para_continue(p,f); fputs(hd_crlf, f); }
@@ -109,18 +111,18 @@ void     wr_para_continue(header_p, FILE *);
 void     wr_paraf(header_p ptr, FILE *fp,int laenge);
 long     size_para(header_p);
 void     do_free_para(header_p);
-header_p find(unsigned, header_p);
+header_p find(int, header_p);
 header_p truefind(int, header_p);
 char *	 header_name(int);
 char *headertext (header_p, int, char *);
-header_p internal_add_header(char *, int, header_p, const char *);
-header_p add_header(char *, int, header_p);
-header_p replace_header(char *, int, header_p);
-header_p del_header(unsigned, header_p);
+header_p internal_add_header(const char *, int, header_p, const char *);
+header_p add_header(const char *, int, header_p);
+header_p del_header(int, header_p);
+header_p copy_one_header(header_p p);
 header_p join_header(header_p, header_p);
 header_p unify_header(header_p, header_p);
 #define copy_header(p) join_header(p,NULL)
-unsigned identify(const char *);
+int identify(const char *);
 
 /* header_p new_header(char *, int); */
 # define new_header(text, code) add_header(text, code, NULL)

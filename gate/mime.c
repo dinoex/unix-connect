@@ -98,13 +98,6 @@ static const char *base64_charset =
 static int decode_base64(char *, long *, int*);
 static int get_base64_6(char);
 static int decode_quoted_printable(char *, long *, int *);
-/* Prototyp in mime.h:
- * int decode_x_uuencode(char *, long *, int *, mime_header_info_struct *);
- * char *decode_mime_string(const char *);
- */
-
-/* static int dqp_hex2bin(char[2]); */
-
 
 /*
  * zaehlt das Auftreten eines Zeichens in einem String
@@ -188,11 +181,11 @@ int count_8_bit(const unsigned char *string)
 char *mime_encode(const char *iso)
 {
 	char *encoded, *enc;
-	unsigned char *p;
-	static char specialchar[]="()<>@,;:\"/[]?.= ";
+	const unsigned char *p;
+	static const char specialchar[]="()<>@,;:\"/[]?.= ";
 	int len;
 
-	p=(unsigned char*)iso;
+	p=(const unsigned char*)iso;
 
 	/*
 	 * falls noetig, wird konvertiert, ansonsten umkopiert:
@@ -207,7 +200,7 @@ char *mime_encode(const char *iso)
 		strcpy(encoded,"=?ISO-8859-1?Q?");
 		encoded += strlen("=?ISO-8859-1?Q?");
 
-		for(p=(unsigned char*)iso; *p; p++)
+		for(p=(const unsigned char*)iso; *p; p++)
 		{
 			if((strchr(specialchar,*p)!=0) || (*p > 0x7E))
 			{
@@ -320,7 +313,7 @@ int decode_cte(char *msg, long *msglenp, int *eightbit,
 			return decode_base64(msg, msglenp, eightbit);
 		case cte_x_uuencode:
 			/* auch info uebergeben fuer ggf. Filename */
-			return decode_x_uuencode(msg, msglenp, eightbit, info);
+			return decode_x_uuencode(msg, msglenp, info);
 		case cte_quoted_printable:
 			return decode_quoted_printable(msg, msglenp, eightbit);
 	}
@@ -589,8 +582,9 @@ int parse_mime_header(int direction, header_p hd,
 		return 0; /* kein MIME-Version: */
 }
 
-int decode_x_uuencode(char *msg, long *msglenp, int *eightbit,
-	mime_header_info_struct *info) {
+int decode_x_uuencode(char *msg, long *msglenp,
+	mime_header_info_struct *info)
+{
 		char tmpdir[FILENAME_MAX], sikdir[FILENAME_MAX], *src, *s;
 		long cnt;
 		static int bin_count = 0;

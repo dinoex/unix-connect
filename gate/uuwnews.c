@@ -214,7 +214,7 @@ void convert(FILE *zconnect, FILE *news)
 {
 	header_p hd, p;
 #ifdef NO_Z38_CROSS_ROUTING
-	header_p pst, abs;
+	header_p pst, habs;
 #endif
 	FILE *tmp, *tmphd;
 	time_t j;
@@ -250,10 +250,10 @@ void convert(FILE *zconnect, FILE *news)
 			 *  (jedenfalls nicht Z3.8), und sie wurde per Z3.8-
 			 *  Transport verstuemmelt.
 			 */
-			abs = find(HD_ABS, hd);
+			habs = find(HD_ABS, hd);
 			skip = 1;
-			if (abs)	/* Kam sie ueber einen Gate? */
-				skip = strchr(abs->text, '%') != NULL;
+			if (habs)	/* Kam sie ueber einen Gate? */
+				skip = strchr(habs->text, '%') != NULL;
 			break;
 		}
 	}

@@ -91,7 +91,7 @@
 #endif
 
 int main_is_mail = 1;	/* Wir sind hauptsaechlich fuer PM EMP: zustaendig */
-char *hd_crlf = "\n";
+const char *hd_crlf = "\n";
 
 header_p smtp_rd_para(FILE *);
 
@@ -99,7 +99,7 @@ typedef enum {	cmd_noop, cmd_helo, cmd_mail, cmd_rcpt, cmd_data,
 		cmd_rset, cmd_quit, cmd_unknown } smtp_cmd;
 
 typedef struct {
-	char *name;
+	const char *name;
 	smtp_cmd cmd;
 } cmd_list, *cmd_p;
 
@@ -112,8 +112,7 @@ void usage(void);
 void convert(FILE *, FILE *);
 void clear(void);
 void enterfwd(char *path);
-void convdata(char *smtpdomain, char *reverspath, forward_p fwdpaths,
-	FILE *smtp, FILE *zconnect);
+void convdata(FILE *smtp, FILE *zconnect);
 
 static int deliver;
 
@@ -297,7 +296,7 @@ void convert(FILE *smtp, FILE *zconnect)
 		   		  q = strrchr(s+1, ':');
 		   		  enterfwd(q ? q+1 : s+1);
 		   		  break;
-		   case cmd_data: convdata(smtpdomain, reverspath, fwdpaths, smtp, zconnect);
+		   case cmd_data: convdata(smtp, zconnect);
 		   		  clear();
 		   		  break;
 		   case cmd_rset: clear();
@@ -336,10 +335,10 @@ void enterfwd(char *path)
 	neu->path = dstrdup(path);
 }
 
-void convdata(char *smtpdomain, char *reverspath, forward_p fwdpaths,
-	FILE *smtp, FILE *zconnect)
+void convdata(FILE *smtp, FILE *zconnect)
 {
-	char *n, *abs, *mid;
+	char *n;
+	const char *habs, *mid;
 	static char rna[MAXLINE];
 	long msglen;
 	header_p hd, p;
@@ -358,7 +357,7 @@ void convdata(char *smtpdomain, char *reverspath, forward_p fwdpaths,
 
 	/* Daten fuer das Logfile zusammenstellen: */
 	p = find(HD_UU_FROM, hd);
-	abs = p ? p->text : "-";
+	habs = p ? p->text : "-";
 	p = find(HD_UU_MESSAGE_ID, hd);
 	mid = p ? p->text : "-";
 
@@ -410,7 +409,7 @@ void convdata(char *smtpdomain, char *reverspath, forward_p fwdpaths,
 	/* Envelope-Adresse konvertieren: */
 	for(cnt=0,emp=fwdpaths; emp; emp=emp->next) {
 		cnt += convaddr(HN_EMP, emp->path, 1, zconnect);
-		logfile(U2ZLOG, abs, emp->path, mid, "\n");
+		logfile(U2ZLOG, habs, emp->path, mid, "\n");
 	}
 	if (!cnt) {
 		deliver = 0;
@@ -420,7 +419,7 @@ void convdata(char *smtpdomain, char *reverspath, forward_p fwdpaths,
 	splitaddr(reverspath, wab_name, wab_host, wab_domain, rna);
 
 	/* Header konvertieren und ausgeben: */
-	hd = convheader(hd, zconnect, smtpdomain, reverspath);
+	hd = convheader(hd, zconnect, reverspath);
 
 	/* Mimes Content-transfer-encoding decodieren - danach haben wir,
 	 * abhaengig vom Content-Type, evtl. Binaerdaten.

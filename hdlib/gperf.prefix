@@ -2,5 +2,8 @@
 #include "string.h"
 #include "hd_def.h"
 %}
-struct predefd { char *header; int code; };
+struct predefd { const char *header; int code; };
+
+const struct predefd *
+predefd_header (register const char *str, register unsigned int len);
 %%

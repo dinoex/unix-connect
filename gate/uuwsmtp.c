@@ -98,7 +98,7 @@ static char *id;
 extern char umlautstr[], convertstr[];
 #endif
 
-char *hd_crlf = "\r\n";
+const char *hd_crlf = "\r\n";
 
 int main(int argc, char **argv)
 {
@@ -220,9 +220,10 @@ void usage(void)
 
 void convert(FILE *zconnect, FILE *smtp)
 {
-	header_p hd, p, abs;
+	header_p hd, p, habs;
 	FILE *tmp;
-	char buffer[300], *mid;
+	char buffer[300];
+	const char *mid;
 	char zbuf[4], *sp, *zp, *bufende, *c, *file, *typ;
 	static int binno = 0;
 	long comment, len, ascii_len, lines;
@@ -244,9 +245,9 @@ void convert(FILE *zconnect, FILE *smtp)
 	qualify = 0;
 	ctl=0;
 	err=0;
-	abs = find(HD_WAB, hd);
-	if (!abs) abs = find(HD_ABS, hd);
-	if (!abs) uufatal(__FILE__, "- - %s Kein Absender!", mid);
+	habs = find(HD_WAB, hd);
+	if (!habs) habs = find(HD_ABS, hd);
+	if (!habs) uufatal(__FILE__, "- - %s Kein Absender!", mid);
 /* Nachrichten mit STAT: CTL bekommen einen leeren Envelope-Absender. */
 	p = find(HD_STAT, hd);
 	while(p) {
@@ -257,7 +258,7 @@ void convert(FILE *zconnect, FILE *smtp)
 	  p=p->other;
 	}
 
-	for (p = abs; p; p = p->other) {
+	for (p = habs; p; p = p->other) {
 		char *s;
 
 		strcpy(buffer, p->text);
@@ -293,7 +294,7 @@ void convert(FILE *zconnect, FILE *smtp)
 	for (p = find(HD_EMP, hd); p; p = p->other) {
 		char pbuffer[300], *at;
 
-		logfile(Z2ULOG, abs->text, p->text, mid, "\n");
+		logfile(Z2ULOG, habs->text, p->text, mid, "\n");
 		strncpy(buffer, p->text, 300);
        		strcpy(pbuffer, buffer);
 		local = 0;
