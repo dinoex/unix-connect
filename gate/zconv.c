@@ -5,7 +5,7 @@
  *  Copyright (C) 1995-1998  Christopher Creutzig
  *  Copyright (C) 1999       Andreas Barth, Pfad bei Pointsystemen
  *  Copyright (C) 1999       Moritz Both
- *  Copyright (C) 1996-2000  Dirk Meyer
+ *  Copyright (C) 1996-2001  Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -473,7 +473,7 @@ convheader(header_p hd, FILE *f)
 		dfree(mime_name);
 		hd = del_header(HD_UU_U_FROM, hd);
 	}
-	if (sender && !main_is_mail ) {
+	if (sender) {
 		pc2iso(sender);
 		mime_name=mime_address(sender);
 		fprintf(f, HN_UU_SENDER ": %s%s", mime_name, eol);
