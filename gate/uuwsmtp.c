@@ -5,6 +5,7 @@
  *  Copyright (C) 1995-1998  Christopher Creutzig
  *  Copyright (C) 1999       Andreas Barth
  *  Copyright (C) 2000       Moritz Both
+ *  Copyright (C) 2001       Detlef Würkner
  *  Copyright (C) 1996-2001  Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -517,7 +518,9 @@ convert(FILE *zconnect, FILE *smtp)
 	p = find(HD_CHARSET, hd);
 	if (p) {
 		if (strncasecmp(p->text, "ISO", 3) == 0) {
-			charset = (p->text)[3] - '0';
+			/* Es gibt mittlerweile auch zweistellige
+			   ISO-8859-XX-Nummern, z.B. 15 */
+			charset = atol(&p->text[3]);
 		}
 		else
 			charset = -2; /* unbekannt */
