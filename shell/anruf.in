@@ -19,10 +19,10 @@ esac
 
 $ECHO "Packe die vorliegenden Daten..."
 su news -c "/usr/lib/news/send-zcon bionic.zerberus.de"
-@DESTDIR@/prearc
+@BINDIR@/prearc
 
 $ECHO "Anruf beim Server..."
-@DESTDIR@/zcall bionic.zerberus.de modem 38400 10
+@BINDIR@/zcall bionic.zerberus.de modem 38400 10
 #
 #	Warum auch immer - zcall hinterl‰ﬂt das Ausgabedevice bei
 #	mir in einem ungeordneten Zustand. Also wieder korrigieren:

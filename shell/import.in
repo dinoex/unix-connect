@@ -12,15 +12,23 @@ IAM=@FQDN@
 
 #
 #  Wichtig: hier den Pfad so erweitern, das die Gateway-Programme sowie
-#  smail und rnews erreichbar sind!
+#  "rmail" und rnews erreichbar sind!
 #
-PATH=@DESTDIR@:@PATHADD@:$PATH; export PATH
+PATH=@BINDIR@@PATHADD@:$PATH; export PATH
 
 #
-#  Der Smail-Aufruf zum Einlesen der Mails (nach der Konvertierung in
+#  Der Aufruf zum Einlesen der Mails (nach der Konvertierung in
 #  Batched-SMTP Format)
 #
-RSMTP="smail -bm -bS -obq -oMs $1 -oMr zconnect"
+RSMTP="@RSMTP@"
+
+#
+#  So tun, als wären wir über uucp unterwegs ... zum Loggen
+#
+if test -n $1; then 
+	export UU_MACHINE=$1
+fi
+
 
 echo '##################################################################' >&2
 date >&2
@@ -28,11 +36,9 @@ echo "Import der empfangenen Daten von $1" >&2
 
 TMP=import.$$
 
-if [ -d @SPOOLDIR@/error ]
+if [ ! -d @SPOOLDIR@/error ]
 then
-	echo >/dev/null
-else
-	mkdir @SPOOLDIR@/error || { echo "Ich kann @SPOOLDIR@/error nicht anlegen!"; exit 1; }
+	mkdir @SPOOLDIR@/error || { echo "Ich kann /var/spool/zconnect/error nicht anlegen!"; exit 1; }
 fi
 
 mkdir $TMP || { echo "kann temporaer-Verzeichnis nicht anlegen!"; exit 1; }
@@ -45,14 +51,14 @@ do
 
 		mv $file $TMP
 		cd $TMP
-		zconsplit $file
-		if [ -f $file.prv ]
+		zconsplit $file || { echo "zconsplit $file failed: $?";  exit 1; }
+		if [ -f $file.prv -a -s $file.prv ]
 		then
-			(((uuwsmtp -f $file.prv $1 | $RSMTP) 2>> /tmp/zlog)||(mv $file.prv @SPOOLDIR@/error/; echo $file.prv " defekt -> @SPOOLDIR@/error/" |mail postmaster))
+			(((uuwsmtp -f $file.prv $1 | $RSMTP) 2>> /tmp/zlog)||(mv $file.prv @SPOOLDIR@/error/; echo $file.prv " defekt -> /var/spool/zconnect/error/" |mail postmaster))
 		fi
-		if [ -f $file.brt ]
+		if [ -f $file.brt -a -s $file.brt ]
 		then
-			(((uuwnews -f $file.brt $1 | rnews) 2>> /tmp/zlog)||(mv $file.brt @SPOOLDIR@/error/; echo $file.brt " defekt -> @SPOOLDIR@/error/" |mail postmaster))
+			(((uuwnews -f $file.brt $1 | rnews) 2>> /tmp/zlog)||(mv $file.brt @SPOOLDIR@/error/; echo $file.brt " defekt -> /var/spool/zconnect/error/" |mail postmaster))
 		fi
 		if [ -f $file ]
 		then
@@ -65,3 +71,5 @@ done
 rm -rf $TMP
 
 # $TMP haengt von unserer Prozess-ID ab, kann also nicht belegt sein.
+
+

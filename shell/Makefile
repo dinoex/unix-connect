@@ -36,14 +36,18 @@
 
 include ../Makefile.global
 
-install:
-	for file in *.SH; do \
-		OUT=$(DESTDIR)/`basename $$file .SH`; \
-		sed -e 's:@DESTDIR@:'$(DESTDIR)':g' \
-		-e 's:@SPOOLDIR@:'$(SPOOLDIR)':g' \
-		-e 's/@FQDN@/'$(FQDN)'/g' \
-		-e 's#@PATHADD@#'$(PATHADD)'#g' \
-		< $$file > $$OUT; \
-		chmod a+x $$OUT; \
-		chown $(USER) $$OUT; \
-	done
+FILES = anruf auspack einpack import prearc uumlist
+
+all:
+	for file in $(FILES); do $(SHELL) ../helpers/subst < $$file.in > $$file; done
+
+clean:
+	-rm -f $(FILES)
+
+install: $(FILES)
+	install -o $(USER) -g $(GROUP) -m 775 $(FILES) $(BINDIR)
+
+clobber:	clean
+
+tidy:	clobber
+

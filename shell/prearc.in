@@ -50,18 +50,18 @@ fi
 SPOOL=@SPOOLDIR@
 TMP=prearc.$$
 
-PATH=@DESTDIR@:@PATHADD@:$PATH; export PATH
+PATH=@BINDIR@@PATHADD@:$PATH; export PATH
 
 zbatchsmtp
 
-cd @DESTDIR@/systems
+cd @ETCDIR@/systems
 
 for sys in *
 do
   if [ -d $SPOOL/$sys ]
   then
-	arc=`fgrep -i 'ArcerOut:' @DESTDIR@/systems/$sys | awk '{print $2}'`
-	fmt=`fgrep -i 'X-Call:' @DESTDIR@/systems/$sys | awk '{print $2}'`
+	arc=`fgrep -i 'ArcerOut:' @ETCDIR@/systems/$sys | awk '{print $2}'`
+	fmt=`fgrep -i 'X-Call:' @ETCDIR@/systems/$sys | awk '{print $2}'`
 
 	SYSLOCK=$SPOOL/$sys/prearc.lck		# Prearc laueft
 	NETLOCK=$SPOOL/$sys/netcall.lck		# Netcall laeuft
@@ -92,19 +92,19 @@ do
 			done
 			einpack $arc ../../$sys puffer
 			rm -f *
-			chown zconnect ../../$sys.* 2> /dev/null
+			chown @USER@ ../../$sys.* 2> /dev/null
 		fi
 		if [ $fmt = "JANUS" ]
 		then
 			einpack $arc ../../$sys *
-			chown zconnect ../../$sys.* 2>/dev/null
+			chown @USER@ ../../$sys.* 2>/dev/null
 		fi
 		if [ $fmt = "ZCONNECT" ]
 		then
 			einpack $arc ../../prv.$sys *.prv *.eil *.neu 2>/dev/null
 			einpack $arc ../../brt.$sys *.brt 2>/dev/null
-			chown zconnect ../../prv.$sys.* 2>/dev/null
-			chown zconnect ../../brt.$sys.* 2>/dev/null
+			chown @USER@ ../../prv.$sys.* 2>/dev/null
+			chown @USER@ ../../brt.$sys.* 2>/dev/null
 		fi
 		cd ..
 		rm -rf $TMP
