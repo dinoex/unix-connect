@@ -36,21 +36,24 @@
 
 include ../Makefile.global
 
-OBJS	= getindate.o datetok.o
+OBJS	= getindate.o dateabstoks.o
 
-all:	$(OBJS)
+all:	datelib.a
 
 install:	all
 
 uninstall:
 
 clean:
-	-rm -f $(CLEANFILES)
+	-rm -f $(CLEANFILES) datelib.a
 
 distclean:		clean
 
+datelib.a:	$(OBJS)
+	ar r datelib.a $(OBJS)
+	$(RANLIB) datelib.a
+
 # automatic depend
-datetok.o: datetok.c ../include/config.h ../include/sysdep.h datetok.h
-getindate.o: getindate.c ../include/config.h ../include/sysdep.h \
- datetok.h ../include/datelib.h
+dateabstoks.o: dateabstoks.c datetok.h
+getindate.o: getindate.c datetok.h ../include/datelib.h
 # eof

@@ -37,7 +37,7 @@
 include ../Makefile.global
 
 OBJS	= hayes.o pattern.o stricmp.o track.o uufatal.o utility.o strlwr.o \
-	  strupr.o strdup.o rawtty.o str2eda.o ministat.o lockwait.o uulog.o \
+	  strupr.o strdup.o rawtty.o ministat.o lockwait.o uulog.o \
 	  trap.o
 
 STROBJS	= stricmp.o uufatal.o utility.o strlwr.o strupr.o strdup.o stccpy.o
@@ -78,8 +78,6 @@ rawtty.o: rawtty.c ../include/config.h ../include/sysdep.h \
  ../include/line.h
 stccpy.o: stccpy.c ../include/config.h ../include/sysdep.h \
  ../include/utility.h
-str2eda.o: str2eda.c ../include/config.h ../include/sysdep.h \
- ../include/utility.h
 strdup.o: strdup.c ../include/config.h ../include/sysdep.h \
  ../include/utility.h ../include/uulog.h
 stricmp.o: stricmp.c ../include/config.h ../include/sysdep.h \
@@ -96,8 +94,7 @@ trap.o: trap.c ../include/config.h ../include/sysdep.h \
 utility.o: utility.c ../include/config.h ../include/sysdep.h \
  ../include/utility.h ../include/boxstat.h ../include/uulog.h
 uufatal.o: uufatal.c ../include/config.h ../include/sysdep.h \
- ../include/ministat.h ../include/boxstat.h ../include/header.h \
- ../include/crc.h ../include/uulog.h
+ ../include/uulog.h
 uulog.o: uulog.c ../include/config.h ../include/sysdep.h \
  ../include/uulog.h ../include/ministat.h ../include/boxstat.h \
  ../include/header.h ../include/crc.h

@@ -79,11 +79,42 @@
 #include "lib.h"
 #include "datelib.h"
 
-extern char *fqdn;	/* FQDN des Hosts, fuer den hier ZCONNECT erzeugt wird */
+/* FQDN des Hosts, fuer den hier ZCONNECT erzeugt wird */
+extern char *fqdn;
+
 char wab_name[MAXLINE] = "", wab_host[MAXLINE] = "", wab_domain[MAXLINE] = "";
-static char sp_name[MAXLINE], sp_host[MAXLINE], sp_domain[MAXLINE], rna[MAXLINE];
+static char sp_name[MAXLINE], sp_host[MAXLINE];
+static char sp_domain[MAXLINE], rna[MAXLINE];
 
 int dont_gate = 0;	/* Flag fuer Pseudo Z3.8 Nachrichten */
+
+
+char *date2eda( const char *str, FILE *fout )
+{
+	int tz;
+	char *datum;
+	struct tm *lt;
+	time_t dt;
+
+	datum = strdup(str);
+	dt = parsedate(datum, &tz);
+	free(datum);
+	if (dt == -1) {
+		tz = 0;
+		dt = time(NULL);
+		if ( fout != NULL )
+			fprintf( fout,
+				"U-X-Date-Error: parse error in Date: %s\r\n",
+				str );
+	}
+	lt = localtime(&dt);
+	datum = dalloc( 20 + 20 );
+	sprintf(datum, "%04d%02d%02d%02d%02d%02dW%+d:%02d",
+		lt->tm_year+1900, lt->tm_mon+1, lt->tm_mday,
+		lt->tm_hour, lt->tm_min, lt->tm_sec,
+		tz/60, abs(tz%60));
+	return datum;
+}
 
 /* Hier werden die nach ZConnect gewandelten Brettnamen
    auf Gültigkeit geprüft. */
@@ -675,28 +706,15 @@ header_p convheader(header_p hd, FILE *f, char *from)
 		fputs(HN_BET": -\r\n", f);
 	p = find(HD_UU_DATE, hd);
 	if (p) {
-		int tz;
 		char *datum;
-		struct tm *lt;
-		time_t dt;
 
-		datum = dstrdup(p->text);
-		dt = parsedate(datum, &tz);
-		dfree(datum);
-		if (dt == -1) {
-			tz = 0;
-			dt = time(NULL);
-#ifdef LOG_ERRORS_IN_HEADERS
-			fputs("U-X-Date-Error: parse error in Date: line\r\n",f);
-#endif
-		}
 		fprintf(f, HN_UU_U_DATE": %s\r\n", p->text);
-		dt += (3600 * (boxstat.timezone));
-		lt = gmtime(&dt);
-		fprintf(f, HN_EDA": %04d%02d%02d%02d%02d%02dW%+d:%02d\r\n",
-			lt->tm_year+1900, lt->tm_mon+1, lt->tm_mday,
-			lt->tm_hour, lt->tm_min, lt->tm_sec,
-			tz/60, abs(tz%60));
+#ifdef LOG_ERRORS_IN_HEADERS
+		datum = date2eda( p->text, f );
+#else
+		datum = date2eda( p->text, NULL );
+#endif
+		fprintf(f, HN_EDA": %s\r\n", datum );
 		hd = del_header(HD_UU_DATE, hd);
 	}
 	p = find(HD_UU_IN_REPLY_TO, hd);
@@ -928,28 +946,15 @@ header_p convheader(header_p hd, FILE *f, char *from)
 	}
 	p = find(HD_UU_EXPIRES, hd);
 	if (p) {
-		struct tm *lt;
-		int tz;
 		char *datum;
-		time_t dt;
 
-		datum = dstrdup(p->text);
-		dt = parsedate(datum, &tz);
-		dfree(datum);
-		if (dt == -1) {
-			tz = 0;
-			dt = time(NULL);
-#ifdef UUCP_SERVER
-			fputs ("U-X-Date-Error: parse error in Expires: line\r\n", f);
+		fprintf(f, HN_UU_U_EXPIRES": %s\r\n", p->text);
+#ifdef LOG_ERRORS_IN_HEADERS
+		datum = date2eda( p->text, f );
+#else
+		datum = date2eda( p->text, NULL );
 #endif
-		}
-		fprintf (f, HN_UU_U_EXPIRES": %s\r\n", p->text);
-		dt += (3600 * (boxstat.timezone ));
-		lt = gmtime(&dt);
-		fprintf(f, HN_LDA": %04d%02d%02d%02d%02d%02dW%+2d:%02d\r\n",
-			lt->tm_year+1900, lt->tm_mon+1, lt->tm_mday,
-			lt->tm_hour, lt->tm_min, lt->tm_sec,
-			tz/60, tz%60);
+		fprintf(f, HN_LDA": %s\r\n", datum );
 		hd = del_header(HD_UU_EXPIRES, hd);
 	}
 	p = find(HD_UU_REPLY_TO, hd);

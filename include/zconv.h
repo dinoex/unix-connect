@@ -38,11 +38,15 @@
 #ifndef __ZCONV_H
 #define __ZCONV_H
 
+char *eda2date(const char *text );
 int adrmatch(const char *abs1, const char *abs2);
 void ulputs(char *text, FILE *f);
 int printnewsgroup(const char *brett, FILE *f);
 void printnewsgroups(header_p p, const char *uuheader, FILE *f);
 header_p convheader(header_p hd, FILE *f);
 void u_f_and_all(FILE *f, header_p hd);
+void foldputs(FILE *, const char *, const char *);
+void foldputh(FILE *f, const char *hd, header_p t);
+void foldputaddrs(FILE *f, const char *hd, header_p t);
 
 #endif

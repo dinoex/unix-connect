@@ -2,6 +2,17 @@
 $Id$
 
 Aenderungen an UnixConnect
+seit 0.81
+
+- parsdate hat ebenfalls Probleme mit mktime, str2eda ebenso
+  beide Funktionen überarbeitet. parsedate() ist in
+  datelib.a zu finden.
+  check in um mktime zu verifizieren.
+  Resultat in zconv.c/uconv.c/testeda.c
+
+- uufatal.c weiter verkützt,
+  version.h kann durch -DVERSION überschrieben werden.
+
 seit 0.80
 
 - unsigned char/size_t überarbeitet, Typefehler behoben.

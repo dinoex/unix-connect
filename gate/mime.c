@@ -246,7 +246,7 @@ char *mime_address(const char *zcon_ad)
 {
 	char *mime_ad, *rn, *mime_ad_start;
 	char *klammer_auf;
-	int len;
+	size_t len;
 
 	len = strlen(zcon_ad) + 2;
 
@@ -267,7 +267,8 @@ char *mime_address(const char *zcon_ad)
 	mime_ad = dalloc(len * sizeof(char));
 	mime_ad_start = mime_ad;
 
-	for(; (*zcon_ad!='\0') && (!isspace(*zcon_ad)) && (*zcon_ad !='(') ; zcon_ad++)
+	for(; (*zcon_ad!='\0') && (!isspace(*zcon_ad)) && (*zcon_ad !='(') ;
+			zcon_ad++)
 		*mime_ad++=*zcon_ad;
 	if(zcon_ad) zcon_ad=klammer_auf;
 	if(zcon_ad)
@@ -296,7 +297,7 @@ char *mime_address(const char *zcon_ad)
 				   den Rueckgabewert von index nicht zu pruefen. */
 		else
 			/* Es fehlen noch Klammern zu. */
-			for(i=0; i<klammern && (long)strlen(mime_ad_start) < len; i++)
+			for(i=0; i<klammern && strlen(mime_ad_start)<len; i++)
 				strcat(mime_ad,")");
 	}else{
 		*mime_ad=0;

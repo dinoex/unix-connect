@@ -42,6 +42,7 @@
 #include "mime.h"
 #endif
 
+char *date2eda( const char *str, FILE *fout );
 int valid_newsgroups( char *data );
 void printbretter(const char *newsgroups, const char *zc_header, FILE *f);
 char *fqdn_at(char *s);

@@ -46,7 +46,6 @@
 typedef struct {
 	char *boxname;
 	char *boxdomain;
-	int sommerzeit;
 	int timezone;
 } bs_st;
 

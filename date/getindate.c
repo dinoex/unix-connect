@@ -1,13 +1,13 @@
 /* $Id$ */
 /*
  * Aus der C-News Distribution, (C)opyright Henry Spencer et al.
+ * mktime fix (C) Dirk Meyer
  */
 
 /*
  * getindate - parse the common Internet date case (rfc 822 & 1123) *fast*
  */
 
-#include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -20,6 +20,7 @@
 #include <time.h>
 #include <sys/types.h>
 #include <sys/timeb.h>
+
 #include "datetok.h"
 #include "datelib.h"
 
@@ -70,15 +71,25 @@ int parsetime(char *ptime, struct tm *tm);
 time_t parsedate(char *line, int *tz)			/* can be modified */
 {
 	struct tm date;
+	time_t dt;
 
 	if (prsindate(line, &date, tz) < 0) {
 		*tz = 0;
 		return -1;
-	} else {
-		if (*tz < -12*60 || *tz > 12*60)
-			*tz = 0;
-		return mktime(&date) - *tz*60l;
-	}
+	};
+	if ( date.tm_year < 0 || date.tm_mon < 0 || date.tm_mon > 11
+	|| date.tm_mday < 1 || date.tm_hour < 0 || date.tm_hour >= 24
+	|| date.tm_min < 0 || date.tm_min > 59
+	|| date.tm_sec < 0 || date.tm_sec > 61) { /* allow 2 leap seconds */
+		return -1;
+	};
+	if (*tz < -12*60 || *tz > 12*60)
+		*tz = 0;
+	date.tm_isdst = -1;
+	dt = mktime(&date) + *tz*60l;
+	/* time is now in Localtime */
+	*tz = -(*tz); /* switch direction for next funtcion */
+	return dt;
 }
 
 /*
@@ -193,7 +204,7 @@ int prsindate(char *line, struct tm *tm, int *tzp) /* line can be modified */
 #endif
 			/* FALLTHROUGH */
 		case TZ:
-			*tzp = -FROMVAL(tp);
+			*tzp = FROMVAL(tp);
 			/* FALLTHROUGH */
 		case IGNORE:
 			break;

@@ -43,7 +43,9 @@
  *   Haupt-Version: gibt den Stand der Gateway-Routinen wieder und
  *   wird im X-Gateway: Header vermerkt.
  */
+#ifndef VERSION
 #define	VERSION		"0.81"
+#endif
 
 #define	MAILER		"UNIX/Connect"
 #define	COPYRIGHT	\

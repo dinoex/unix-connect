@@ -1,8 +1,6 @@
 /* $Id$ */
 /*
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
- *  Copyright (C) 1993-94  Martin Husemann
- *  Copyright (C) 1995-98  Christopher Creutzig
  *  Copyright (C) 1996-99  Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -36,10 +34,6 @@
  *  for instructions on how to join this list.
  */
 
-
-#include "config.h"
-#include "utility.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -49,36 +43,67 @@
 #ifdef HAVE_STRINGS_H
 # include <strings.h>
 #endif
+#include <stdarg.h>
 
-char *str2eda(const char *text, int *tz_hour, int *tz_min)
+#include "datelib.h"
+
+typedef struct {
+	const char *eda;
+	const char *str;
+} testeda_t;
+
+const testeda_t Samples[] = {
+/* MEST/CEST */
+	{ "19960720001008W+2:00",
+		"Sat, 20 Jul 1996 02:10:08 +0200" },
+/* MET/CET */
+	{ "19981231233000W+1:00",
+		"Fri, 01 Jan 1999 00:30:00 +0100" },
+/* GMT */
+	{ "19960721000000W+0:00",
+		"Sun, 21 Jul 1996 00:00:00 +0000" },
+/* PDT */
+	{ "19960524080805W-6:00",
+		"Fri, 24 May 1996 02:08:05 -0600" },
+/* PST */
+	{ "19960224080805W-6:00",
+		"Sat, 24 Feb 1996 02:08:05 -0600" },
+/* ASIA */
+	{ "19960524054239W+8:00",
+		"Fri, 24 May 1996 13:42:39 +0800" },
+/* Australia */
+	{ "19960522141553W+11:00",
+		"Thu, 23 May 1996 01:15:53 +1100" },
+/* France */
+	{ "19960719171700W+1:00",
+		"Fri, 19 Jul 1996 18:17:00 +0100" },
+	{ NULL, NULL }
+};
+
+int boxstat_timezone = 1;
+char answer[ 1024 ];
+char sdate[ 1024 ];
+
+char *eda2date(const char *text);
+char *eda2date(const char *text)
 {
 	struct tm t;
 	time_t dt;
 	char s_or_w;
-	char *answer;
 	char buffer[24];
+	int tz_hour;
+	int tz_min;
 
-	answer=dalloc(sizeof(char)*84);
-
-	*tz_hour = *tz_min = 0;
+	tz_hour = tz_min = 0;
 	memset(&t, 0, sizeof t);
 	sscanf(text, "%04d%02d%02d%02d%02d%02d%c%d:%d",
 		&t.tm_year, &t.tm_mon, &t.tm_mday,
 		&t.tm_hour, &t.tm_min, &t.tm_sec,
-		&s_or_w, tz_hour, tz_min);
+		&s_or_w, &tz_hour, &tz_min);
 
 	t.tm_year -= 1900;
 	t.tm_mon -= 1;
-
-/*
- * Das hier führt aus irgendeinem Grund dazu, daß immer
- * Sonntag herauskommt...
- *
- *	if(s_or_w=='S' || s_or_w=='S')
- *		t.tm_isdst = 1;
- *	else
- *		t.tm_isdst = 0;
- */
+	t.tm_isdst = -1;
 
 /*
         Ziel: die lokale Zeit des Absenders
@@ -86,8 +111,6 @@ char *str2eda(const char *text, int *tz_hour, int *tz_min)
         Wir bilden mit mktime einen Zeitwert, als ob es unsere
         eigene lokale Zeit waere. Dies liefert uns einen Fehler
         um die Differez der Zeitzonen von Absender und Gate.
-	In der Winterzeit gibt es keine Probleme, aber fuer
-	ein Datum im Sommer muessen wir gegensteuern.
         Wir korregieren den Zeitwert mit der Zeitzone des Absenders.
         Der Restfehler ist nun unsere eigene Zeitzone zu GMT.
 
@@ -101,22 +124,90 @@ char *str2eda(const char *text, int *tz_hour, int *tz_min)
 	Dirk Meyer
 */
 
-	t.tm_isdst = 0;
 	dt = mktime(&t);
-#ifndef	PLUS_OLD_MKTIME
-	if ( t.tm_isdst != 0 )
-		dt -= 7200L;
-#endif
-	dt += ( ( ((long)(*tz_hour) * 60L) + (long)(*tz_min)) * 60L );
+	dt += ( ( ((long)(tz_hour) * 60L) + (long)(tz_min)) * 60L );
 	t = *localtime( &dt );
-	t.tm_isdst = 0;
+	t.tm_isdst = -1;
 
 /* und den Wochentag berechnen... */
 	dt = mktime(&t);
 
 	strftime(answer, 60, "%a, %d %b %Y %H:%M:%S", &t);
-	sprintf(buffer, " %+03d%02d", *tz_hour, *tz_min);
+	sprintf(buffer, " %+03d%02d", tz_hour, tz_min);
 	strcat(answer, buffer);
 
 	return answer;
 }
+
+char *date2eda( const char *str );
+char *date2eda( const char *str )
+{
+	int tz;
+	char *datum;
+	struct tm *lt;
+	time_t dt;
+
+	datum = strdup(str);
+	dt = parsedate(datum, &tz);
+	free(datum);
+	if (dt == -1) {
+		tz = 0;
+		dt = time(NULL);
+		fputs("U-X-Date-Error: parse error in Date: line\r\n",stderr);
+	}
+	lt = localtime(&dt);
+	sprintf(sdate, "%04d%02d%02d%02d%02d%02dW%+d:%02d",
+		lt->tm_year+1900, lt->tm_mon+1, lt->tm_mday,
+		lt->tm_hour, lt->tm_min, lt->tm_sec,
+		tz/60, abs(tz%60));
+	return sdate;
+}
+
+int loop_samples( void );
+int loop_samples( void )
+{
+	const char *new_date;
+	const char *new_eda;
+	int i;
+	int err;
+
+	err = 0;
+	i = 0;
+	while( Samples[ i ].eda != NULL ) {
+		new_date = eda2date( Samples[ i ].eda );
+		if ( strcmp( new_date, Samples[ i ].str ) != 0 ) {
+			printf( "Fehler: ZC->RFC\n" );
+			printf( " in:%s\n", Samples[ i ].eda );
+			printf( "out:%s\n", Samples[ i ].str );
+			printf( "new:%s\n", new_date );
+			printf( "\n" );
+			err ++;
+		}
+		new_eda = date2eda( Samples[ i ].str );
+		if ( strcmp( new_eda, Samples[ i ].eda ) != 0 ) {
+			printf( "Fehler: RFC->ZC\n" );
+			printf( " in:%s\n", Samples[ i ].str );
+			printf( "out:%s\n", Samples[ i ].eda );
+			printf( "new:%s\n", new_eda );
+			printf( "\n" );
+			err ++;
+		}
+		i ++;
+	}
+	return err;
+}
+
+void main( void )
+{
+	int err;
+
+	err = 0;
+	boxstat_timezone = 1;
+	err += loop_samples();
+	if ( err == 0 )
+		exit( 0 );
+
+	printf( "%d Errors found\n", err );
+	exit( 1 );
+}
+

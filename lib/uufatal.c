@@ -46,15 +46,11 @@
  */
 
 #include "config.h"
+
 #include <stdio.h>
 #include <stdarg.h>
-#ifdef HAVE_SYSLOG
-# include <syslog.h>
-#endif
-#include <time.h>
 #include <sysexits.h>
 
-#include "ministat.h"
 #include "uulog.h"
 
 #define	MAX_LOG_LINE	200

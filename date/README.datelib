@@ -9,6 +9,11 @@ gebraucht).
 
 Dann noch ein paar ANSI Prototypen...
 
-
 Martin Husemann
 Wed Jan 13 22:18:47 1993
+
+Updates aus cmews-Cleanup-Release-Patchlever-G
+DST flags für mktime richtig auswerten.
+
+Dirk Meyer
+Sun Sep 12 21:11:42 CEST 1999

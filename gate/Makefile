@@ -41,8 +41,9 @@ include ../Makefile.global
 
 COMMON	= mime.o alias.o gtools.o
 LIBS	= ../lib/ministat.o ../hdlib/uuheader.a ../lib/gatelib.a
-DATELIB	= ../date/getindate.o ../date/datetok.o
+DATELIB	= ../date/datelib.a
 PROGS	= uurnews uursmtp uuwsmtp uuwnews
+TPROGS	= testeda testmime
 
 all:	$(PROGS)
 
@@ -54,11 +55,12 @@ uninstall:
 	-cd $(BINDIR) && rm -f $(PROGS)
 
 clean:
-	-rm -f $(CLEANFILES) $(PROGS)
+	-rm -f $(CLEANFILES) $(PROGS) $(TPROGS)
 
 distclean:	clean
 
-check:	testmime
+check:	testeda
+	./testeda
 
 uursmtp:	uursmtp.o uuconv.o iso2pc.o $(COMMON) $(APCOBJS) $(DATELIB) $(LIBS)
 	$(CC) $(MODELL) -o $@ $@.o uuconv.o iso2pc.o $(COMMON) $(APCOBJS) $(DATELIB) $(LIBS) $(LDFLAGS)
@@ -76,6 +78,9 @@ testmime:	testmime.o mime.o $(DATELIB) $(LIBS)
 	$(CC) $(MODELL) -o $@ $@.o mime.o $(DATELIB) $(LIBS) \
 	-lreadline -ltermcap $(LDFLAGS)
 
+testeda:	testeda.o $(DATELIB)
+	$(CC) $(CFLAGS) -o testeda testeda.o $(DATELIB) $(LDFLAGS)
+
 # automatic depend
 alias.o: alias.c ../include/config.h ../include/sysdep.h \
  ../include/utility.h ../include/alias.h ../include/header.h \
@@ -91,6 +96,7 @@ mime.o: mime.c ../include/config.h ../include/sysdep.h \
  ../include/utility.h ../include/header.h ../include/crc.h \
  ../include/mime.h ../hdlib/hd_def.h ../include/uulog.h
 pc2iso.o: pc2iso.c ../include/lib.h
+testeda.o: testeda.c ../include/datelib.h
 testmime.o: testmime.c
 uuapprove.o: uuapprove.c ../include/config.h ../include/sysdep.h \
  ../include/utility.h ../include/uulog.h ../include/uuapprove.h

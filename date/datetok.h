@@ -20,20 +20,24 @@
 #define AMPM	8
 /* below here are unused so far */
 #define SECONDS	9
-#define MONTHS	10
-#define YEARS	11
-#define NUMBER	12
+#define HOURS	10	/* */
+#define DAYS	11	/* */
+#define MONTHS	12
+#define YEARS	13
+#define NUMBER	14
 /* these are only for relative dates */
-#define BEFORE	13
-#define AFTER	14
-#define AGO	15
+#define BEFORE	15
+#define AFTER	16
+#define AGO	17
+#define ORDINAL 18
 
-
+#ifdef notdef
 #define SECS(n)		((time_t)(n))
 #define MINS(n)		((time_t)(n) * SECS(60))
 #define HOURS(n)	((time_t)(n) * MINS(60))	/* 3600 secs */
 #define DAYS(n)		((time_t)(n) * HOURS(24))	/* 86400 secs */
 /* months and years are not constant length, must be specially dealt with */
+#endif
 
 #define TOKMAXLEN 6	/* only this many chars are stored in datetktbl */
 

@@ -379,19 +379,6 @@ void minireadstat(void)
     uufatal("Konfiguration",
 	    HN_ZEITZONE" Eintrag in der CONFIG-Datei nicht numerisch: %s\n", p->text);
 
-  /* Sommerzeit: */
+  /* Sommerzeit: ignorieren */
   p = find(HD_SOMMERZEIT, config);
-  if (!p) {
-    struct tm *zeit;
-    time_t now;
-
-    boxstat.sommerzeit = 0;
-
-    now = time(NULL);
-    zeit = localtime( &now );
-    if (zeit->tm_isdst != 0)
-      boxstat.sommerzeit = 1;
-
-  } else
-    sscanf(p->text, "%d", &(boxstat.sommerzeit));
 }

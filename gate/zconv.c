@@ -4,6 +4,7 @@
  *  Copyright (C) 1993-94  Martin Husemann
  *  Copyright (C) 1995-98  Christopher Creutzig
  *  Copyright (C) 1999     Andreas Barth, Pfad bei Pointsystemen
+ *  Copyright (C) 1999     Moritz Both
  *  Copyright (C) 1996-99  Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -74,14 +75,69 @@
 #include "mime.h"
 #include "zconv.h"
 
-void foldputs(FILE *, const char *, const char *);
-void foldputh(FILE *f, const char *hd, header_p t);
-void foldputaddrs(FILE *f, const char *hd, header_p t);
 char umlautstr[] = "\0x94\0x99\0x84\0x8e\0x81\0x9a\0xe1",
  convertstr[] = "oeOeaeAeueUess";
+
 extern char eol[];
 
 extern header_p pointuser;
+
+char *eda2date(const char *text )
+{
+	struct tm t;
+	time_t dt;
+	char s_or_w;
+	char *answer;
+	char buffer[24];
+	int tz_hour;
+	int tz_min;
+
+	answer=dalloc(sizeof(char)*84);
+
+	tz_hour = tz_min = 0;
+	memset(&t, 0, sizeof t);
+	sscanf(text, "%04d%02d%02d%02d%02d%02d%c%d:%d",
+		&t.tm_year, &t.tm_mon, &t.tm_mday,
+		&t.tm_hour, &t.tm_min, &t.tm_sec,
+		&s_or_w, &tz_hour, &tz_min);
+
+	t.tm_year -= 1900;
+	t.tm_mon -= 1;
+	t.tm_isdst = -1;
+
+/*
+        Ziel: die lokale Zeit des Absenders
+
+        Wir bilden mit mktime einen Zeitwert, als ob es unsere
+        eigene lokale Zeit waere. Dies liefert uns einen Fehler
+        um die Differez der Zeitzonen von Absender und Gate.
+        Wir korregieren den Zeitwert mit der Zeitzone des Absenders.
+        Der Restfehler ist nun unsere eigene Zeitzone zu GMT.
+
+        Mit localtime bilden wir nun die tm-Struktur neu. Da unser
+        Zeitwert aber golobal war ist das Ergebnis um unsere eigene
+        Zeitzone verschoben. Das Resultat ist die Zeit des Absenders
+
+        ueber diese Formel werden die Stunden, Wochentage, Datumsübegänge,
+        Schaltjahre und sonstige Probleme einfach geloest.
+
+	Dirk Meyer
+*/
+
+	dt = mktime(&t);
+	dt += ( ( ((long)(tz_hour) * 60L) + (long)(tz_min)) * 60L );
+	t = *localtime( &dt );
+	t.tm_isdst = -1;
+
+/* und den Wochentag berechnen... */
+	dt = mktime(&t);
+
+	strftime(answer, 60, "%a, %d %b %Y %H:%M:%S", &t);
+	sprintf(buffer, " %+03d%02d", tz_hour, tz_min);
+	strcat(answer, buffer);
+
+	return answer;
+}
 
 /*
  *  Liefert 1, wenn die beiden Adressteile (ohne Realname) identisch
@@ -394,7 +450,7 @@ header_p convheader(header_p hd, FILE *f)
 	strlwr(habs);
 	test = strrchr(habs, '@');
 /* ist das hier echt noch nötig? -- ccr */
-	if (test && strncmp(test, "@uucp", 5)==0) {
+	if (test && strcmp(test, "@uucp")==0) {
 		*test = '\0';
 		test = strrchr(habs, '%');
 		if (test) *test = '@';
@@ -476,13 +532,16 @@ header_p convheader(header_p hd, FILE *f)
 			  pc2iso(habs);
 			  mime_name=mime_address(habs);
 			}
-			fprintf(f, HN_UU_RETURN_RECEIPT_TO ": %s%s", mime_name, eol);
+			fprintf(f, HN_UU_RETURN_RECEIPT_TO ": %s%s",
+				mime_name, eol);
 			dfree(mime_name);
 		}
 		hd = del_header(HD_EB, hd);
 	}
 	dfree(habs);
 	dfree(oabs);
+	if (sender)
+		dfree(sender);
 	p = find(HD_ORG, hd);
 	if (p) {
 	        pc2iso(p->text);
@@ -511,12 +570,8 @@ header_p convheader(header_p hd, FILE *f)
 		p = find(HD_EDA, hd);
 		if (p) {
 			char * buffer;
-			int tz_hour, tz_min;
 
-			buffer = str2eda(p->text, &tz_hour, &tz_min);
-			if (buffer ==NULL)
-				out_of_memory(__FILE__);
-
+			buffer = eda2date(p->text);
 			fprintf(f, HN_UU_DATE": %s%s", buffer, eol);
 			hd = del_header(HD_EDA, hd);
 			dfree(buffer);
@@ -531,12 +586,8 @@ header_p convheader(header_p hd, FILE *f)
 		p = find(HD_LDA, hd);
 		if (p) {
 			char *buffer;
-			int tz_hour, tz_min;
 
-			buffer = str2eda(p->text, &tz_hour, &tz_min);
-			if(buffer ==NULL)
-				out_of_memory(__FILE__);
-
+			buffer = eda2date(p->text);
 			fprintf(f, HN_UU_EXPIRES": %s%s", buffer, eol);
 			hd = del_header(HD_LDA, hd);
 			dfree(buffer);
@@ -547,7 +598,7 @@ header_p convheader(header_p hd, FILE *f)
 		fputs(HN_UU_REPLY_TO": ", f);
 	        for (pos = 10, t=p; t; t=t->other)
 	        {
-/* zur Sicherheit nach Brett schauen //// xxx */
+		   /* zur Sicherheit nach Brett schauen //// xxx */
 		   mime_name=mime_address(t->text);
 		   if(pos > 65)
 		   {
@@ -564,7 +615,7 @@ header_p convheader(header_p hd, FILE *f)
 	p = find(HD_DISKUSSION_IN, hd);
 	if (p) {
 		if (!p->other && strchr(p->text, '@')) {
-	/* immer poster? //// xxx */
+			/* immer poster? //// xxx */
 			fprintf(f, HN_UU_FOLLOWUP_TO": poster%s", eol);
 		} else {
 			printnewsgroups(p, HN_UU_FOLLOWUP_TO, f);
@@ -628,16 +679,90 @@ header_p convheader(header_p hd, FILE *f)
 }
 
 /*
+ * Gibt einen String inhalt aus, der gemaess RFC822 umbrochen wird.
+ * Ein '\t' im auszugebenden String erzwingt einen Umbruch.
+ * *col gibt eine Spalte an, in der wir beginnen und steht nach der
+ * Rueckkehr auf der derzeitigen Position.
+ *
+ * Gibt =kein= Zeilenende-Zeichen aus! (Im Gegensatz zu foldputs(), s.u.)
+ * (C) Moritz Both
+ */
+
+void foldputs_no_eol(FILE *f, const char *inhalt, int *col)
+{
+#if 0
+	int i; 
+	char *p, *p1, *lastspace;
+	char ch;
+
+	p=inhalt;
+	while (*p) {
+		lastspace=NULL;
+		/* move MAXCOL characters forward; stop at a tab character;
+		   remeber position of final space */
+		for(p1=p; *p1 && (*col)<MAXCOL; p1++, (*col)++) {
+			if (*p1 == '\t')
+				break;
+			if (*p1 == ' ')
+				lastspace=p1;
+		}
+		if ((*col) == MAXCOL && *p1 != '\t') {
+			/* There was no tab char. See if there will be a tab
+			   or the end of the string
+			   within the next 7 characters, then we wrap there.
+			 */
+			for (i=0; i<7 && p1[i] && p1[i] != '\t'; i++);
+			if (i<7) {
+				p1+=i;
+			} else {
+				/* Move to last space, if any */
+				if (lastspace) {
+					 p1=lastspace;
+				} else {
+					/* else, look for next one */
+					while(*p1 && !isspace(*p1))
+						p1++;
+				}
+			}
+		}
+		ch = *p1;
+		*p1='\0';
+		fputs(p, f);
+		*p1=ch;
+		while(*p1 && isspace(*p1))
+			p1++;
+		if (*p1) {
+			fputs(eol, f);
+			putc('\t', f);
+			(*col)=10;
+		}
+		p = p1;
+	}
+#else
+	const char *p;
+
+	for (p=inhalt; *p; p++)
+		if (isspace(*p) && (*col) > 60) {
+			fputs(eol, f); fputs("\t", f);
+			*col = 10;
+		} else {
+			putc(*p, f);
+			(*col)++;
+		}
+#endif
+}
+
+/*
  * Gibt einen Header RFC822-umbrochen aus. Wenn hd != NULL, wird
  * der Name des Headers, gefolgt von einem ": ", vorangestellt.
  * ansonsten wird davon ausgegangen, daß eine neue Zeile begonnen
- * werden soll, das Zeilenende aber schon da ist, es wird also mit einem
- * '\t' begonnen.
+ * werden soll, das Zeilenende aber schon da ist, es wird also mit
+ * einem '\t' begonnen. Gibt am Ende ein eol aus.
  */
+
 void foldputs(FILE *f, const char *hd, const char *inhalt)
 {
 	int col;
-	const char *p;
 
 	if(NULL != hd)
 	{
@@ -647,14 +772,7 @@ void foldputs(FILE *f, const char *hd, const char *inhalt)
 		fputs("\t", f);
 		col = 10;
 	}
-	for (p=inhalt; *p; p++)
-		if (isspace(*p) && col > 60) {
-			fputs(eol, f); fputs("\t", f);
-			col = 10;
-		} else {
-			putc(*p, f);
-			col++;
-		}
+	foldputs_no_eol(f, inhalt, &col);
 	fputs(eol, f);
 }
 

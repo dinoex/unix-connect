@@ -67,8 +67,6 @@ int stccpy(char *, const char *, int);
 #endif   
 void qstccpy(char *, const char *, int);
 
-char * str2eda(const char *text, int *tz_hour, int *tz_min);
-
 /*
  *  Prüfe ein lock-File und warte gegebenenfalls, bis es verschwindet.
  *  'ltimeout' gibt die Warte-Strategie an:

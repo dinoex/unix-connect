@@ -63,3 +63,5 @@ Was kann noch getan werden?
 
 - Ausgehende Puffer beim Janus-Netcall gehen manchmal verloren!!
 
+- % Zeichen in den Logs führen zu Problemen ...
+
