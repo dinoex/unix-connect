@@ -175,8 +175,6 @@ backup2(const char *backupdir, const char *file,
 			return 2;
 		}
 
-		snprintf(systemdir,sizeof(systemdir)-1,"%s/%s",
-				backupdir,sysname);
 		if (backupnumber == NULL) {
 			backupnr = 5;
 			newlog(ERRLOG,
@@ -191,24 +189,20 @@ backup2(const char *backupdir, const char *file,
 					" Nehme stattdessen 5.");
 			}
 		}
-		if ( (mkdir (systemdir, 0700) < 0) && (errno != EEXIST) ) {
-			newlog(ERRLOG,
-				"Kann Verzeichnis %s nicht anlegen (%s)."
-				" Backup nicht erzeugt!",
-				systemdir,strerror(errno));
-			return 1;
-		}
-		if ( getcwd(olddir,FILENAME_MAX-1) != NULL ) {
+
+		if ( getcwd(olddir,FILENAME_MAX-1) == NULL ) {
 		      newlog(ERRLOG,
-				"Cannot get actual directoryr %s:",
+				"Cannot get actual directory:%s",
 				strerror(errno));
 			return 1;
 		}
-		/* Ins Systemverzeichnis wechseln,
+		/* Ins Backupverzeichnis wechseln,
 		   damit ENOENT bei lstat bedeutet,
 		   dass die Datei nicht da ist
 		   (und nicht evtl. dass im Pfad ein Eintrag ungueltig ist)
 		 */
+		snprintf(systemdir,sizeof(systemdir)-1,"%s/%s",
+				backupdir,sysname);
 		newlog(DEBUGLOG,"Backup: chdir(%s)",systemdir);
 		if (chdir(systemdir) < 0 ) {
 		      newlog(ERRLOG,"Cannot chdir to %s (%s)",
