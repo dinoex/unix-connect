@@ -70,7 +70,6 @@ WARNBASE = \
 	-Woverloaded-virtual \
 	-Winline
 
-
 WARNEXT	= \
 	$(WARN) \
 	-Wredundant-decls \
@@ -79,31 +78,10 @@ WARNEXT	= \
 	-Wno-parentheses \
 	-Wtest
 
-ifdef FREEBSD
-	CPPFLAGS= -DUNIX -DHAVE_SYSEXITS $(HFLAGS)
-	WARN	= \
-		$(WARNBASE) \
-		-Wtraditional \
-		$(WARNGCC27x)
-endif
-ifdef LINUX
-	CPPFLAGS= -DUNIX -DHAVE_SYSEXITS $(HFLAGS)
-	WARN	= \
-		$(WARNBASE) \
-		$(WARNEGCS)
-endif
-
-ifndef NO_DEBUG
-	CFLAGS	= -O2 -g $(WARN)
-	LDFLAGS	= -g
-	INSTALL	= install -c
-else
-	CFLAGS	= -O2 $(WARN)
-	LDFLAGS	= -s
-	INSTALL	= install -cs
-endif
-	CXX=gcc
-	CXXFLAGS= -g -Wall -Werror
+CPPFLAGS+= -DUNIX -DHAVE_SYSEXITS
+CFLAGS	= -O2 -g $(WARN)
+LDFLAGS	= -g
+INSTALL	= install -c
 
 CPPFLAGS+= -DMAILDIR="\"$(RSMTPSPOOL)"\"
 
