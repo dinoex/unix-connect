@@ -136,6 +136,11 @@ int anruf (char *intntl, header_p sys, header_p ich, int ttyf);
 char tty[FILENAME_MAX];
 int modem;
 
+void cleanup() {
+  if(modem>-1)
+    restore_linesettings(modem);
+}
+
 int main(int argc, char **argv)
 {
 	char *sysname, *speed;
@@ -145,6 +150,9 @@ int main(int argc, char **argv)
 	time_t now;
 	int i;
 	static volatile int maxtry;
+
+	modem=-1;
+	atexit(cleanup);
 
 	if (argc < 4 || argc > 5) usage();
 	sysname = argv[1];
@@ -665,7 +673,7 @@ int anruf (char *intntl, header_p sys, header_p ich, int modem)
 		fclose(stdout);
 		hangup(modem); DMLOG("hangup modem");
 		restore_linesettings(modem); DMLOG("restoring modem parameters");
-		close(modem); DMLOG("close modem");
+		close(modem); modem=-1; DMLOG("close modem");
 		fopen("/dev/null", "r");	/* neuer stdin */
 		dup2(fileno(stderr),fileno(stdout)); /* stderr wird in stdout kopiert */
 
