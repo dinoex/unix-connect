@@ -40,7 +40,7 @@ include ../Makefile.global
 # Makefile fuer den UNIX-Connect Gateway
 
 COMMON	= mime.o alias.o gtools.o
-LIBS	= ../hdlib/uuheader.a ../lib/strlib.a
+LIBS	= ../lib/strlib.a ../hdlib/uuheader.a
 DATELIB	= ../date/datelib.a
 PROGS	= uurnews uursmtp uuwsmtp uuwnews
 TPROGS	= testeda testmime

@@ -63,7 +63,7 @@ strlib.a:	$(STROBJS) Makefile
 
 # automatic depend
 backup.o: backup.c ../include/utility.h ../include/calllib.h \
- ../include/uulog.h
+ ../include/uulog.h ../include/uudebug.h
 hayes.o: hayes.c ../include/config.h ../include/sysdep.h \
  ../include/crc.h ../include/header.h ../hdlib/hd_def.h \
  ../hdlib/hd_nam.h ../include/ministat.h ../include/hayes.h \
@@ -96,6 +96,8 @@ trap.o: trap.c ../include/config.h ../include/sysdep.h \
  ../include/trap.h ../include/ministat.h
 utility.o: utility.c ../include/config.h ../include/sysdep.h \
  ../include/boxstat.h ../include/uulog.h ../include/utility.h
+uudebug.o: uudebug.c ../include/config.h ../include/sysdep.h \
+ ../include/uulog.h ../include/uudebug.h
 uufatal.o: uufatal.c ../include/config.h ../include/sysdep.h \
  ../include/uulog.h ../include/sysexits2.h
 uulog.o: uulog.c ../include/config.h ../include/sysdep.h \

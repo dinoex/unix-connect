@@ -40,7 +40,7 @@ include ../Makefile.global
 
 # Makefile fuer die Header-Verwaltung
 
-LIBS	= ../lib/ministat.o ../lib/uulog.o ../lib/strlib.a
+LIBS	= ../lib/strlib.a
 
 GFLAGS	= -L ANSI-C -C -D -G -K header -N predefd_header -t
 
@@ -98,7 +98,7 @@ header.gperf hd_def.h hd_nam.h hd_nlist.h:	header.lst
 	awk '{printf("%s, HD_%s\n", $$1, $$2)}' header.tmp | tr '[a-z]' '[A-Z]' > header.gperf
 	@-rm -f header.tmp
 
-testheader:	testheader.o uuheader.a $(LIBS)
+testheader:	testheader.o uuheader.a $(LIBS) Makefile
 	$(CC) $(CFLAGS) -o testheader testheader.o uuheader.a $(LIBS) $(LDFLAGS)
 
 check:	testheader test.in uuheader.a

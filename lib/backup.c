@@ -70,6 +70,7 @@
 #include "utility.h"
 #include "calllib.h"
 #include "uulog.h"
+#include "uudebug.h"
 
 /* backup
  * inputs:
