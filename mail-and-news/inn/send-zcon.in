@@ -9,6 +9,7 @@
 PROGNAME=`basename $0`
 LOCK=${LOCKS}/LOCK.${PROGNAME}
 LOG=${MOST_LOGS}/${PROGNAME}.log
+ZCHOSTS=@ETCDIR@/news-zconnecthosts
 
 MAXJOBS=200
 
@@ -30,15 +31,7 @@ shlock -p $$ -f ${LOCK} || {
 if [ -n "$1" ] ; then
     LIST="$*"
 else
-    LIST=""
-    case `date +%H` in
-    01|04|07|21|23)
-	LIST="kurz-ai aoa clsib21 leafusa metasoft"
-	;;
-    06|12|15|17|20)
-	LIST="esca"
-	;;
-    esac
+    test -s $ZCHOSTS && LIST=`cat $ZCHOSTS|grep -v '^#'`
 fi
 
 case ${HAVE_UUSTAT} in

@@ -2,6 +2,11 @@ $Id$
 
 Änderungen an configure
 
+seit 0.88
+
+- configure --enable-auto-create
+  Erzeuge Spoolverzeichisse im Betrieb.
+
 seit 0.87
 
 - (Matthias Andree)

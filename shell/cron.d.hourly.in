@@ -1,0 +1,3 @@
+#!/bin/sh
+@BINDIR@/send-zconnect
+@BINDIR@/prearc

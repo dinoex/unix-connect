@@ -110,10 +110,16 @@ open_new_file( const char *name, const char *dir, const char *ext )
 	/* Matthias Andree: Pruefen, ob das Spooldirectory existiert */
 	if ((statrc = stat(dir, &st)) || !S_ISDIR(st.st_mode)) {
 		if(!statrc) errno=ENOTDIR;
+#ifdef ENABLE_AUTO_CREATE
+		if (mkdir(dir, 02775) != 0) {
+#endif
 		fprintf( stderr,
 			"%s: error create file in output dir %s: %s\n",
 			name, dir, strerror( errno ) );
 		exit(EX_CANTCREAT);
+#ifdef ENABLE_AUTO_CREATE
+		}
+#endif
 	}
 /* Um sicherzugehen, dass wir keine Datei ueberschreiben,
  * oeffnen wir sie zunaechst mit O_EXCL. Um weiter unten

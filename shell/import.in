@@ -108,7 +108,7 @@ do
 
 		mv $file $TMP ||
 		{ error="cannot mv $file $TMP: $?"; ende; }
-		cd $TMP
+		cd $TMP || exit 1
 		zconsplit $file ||
 		{ error="zconsplit $file failed: $?"; ende; }
 		if [ -f $file ]

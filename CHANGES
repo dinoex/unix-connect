@@ -2,6 +2,24 @@ $Id$
 
 Aenderungen an UnixConnect
 
+seit 0.88
+
+- shell/import.in:
+  exit wenn Verzeichnis nicht existiert.
+
+- shell/prearc.in: (Moritz Both)
+  exit wenn Verzeichnis nicht existiert.
+
+- shell/cron.d.hourly.in, shell/logrotate.d.entry.in (Moritz Both)
+  neu aufgenommen
+
+- mail-and-news/inn/send-zcon.in: (Moritz Both)
+  Liste der Sites aud @ETCDIR@/news-zconnecthosts
+
+- gate/gtool.c: (Moritz Both)
+  Option ENABLE_AUTO_CREATE
+  Erzeuge Spoolverzeichnisse im Betrieb.
+
 seit 0.87
 
 - Makefile.global.in, configure.in, mail-and-news/cnews/Makefile, 

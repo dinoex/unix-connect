@@ -54,7 +54,7 @@ PATH=@BINDIR@@PATHADD@:$PATH; export PATH
 
 zbatchsmtp
 
-cd @ETCDIR@/systems
+cd @ETCDIR@/systems || exit 1
 
 for sys in *
 do
@@ -66,7 +66,11 @@ do
 	SYSLOCK=$SPOOL/$sys/prearc.lck		# Prearc laueft
 	NETLOCK=$SPOOL/$sys/netcall.lck		# Netcall laeuft
 
-	cd $SPOOL/$sys
+	if ! cd $SPOOL/$sys
+	then
+		echo "$0: cd $SPOOL/$sys failed"
+		continue
+	fi
 
 	# Lock fuer dieses System erzeugen
 	# (das ist so einfach, weil niemand ausser 'prearc' dort Locks erzeugt,

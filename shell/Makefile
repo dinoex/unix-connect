@@ -39,7 +39,8 @@ include ../Makefile.global
 include ../Makefile.includes
 
 FILESKEEP = anruf
-FILESFORCE = auspack einpack import prearc uumlist
+FILESFORCE = auspack einpack import prearc uumlist \
+	cron.d.hourly logrotate.d.entry
 FILES = $(FILESKEEP) $(FILESFORCE)
 
 all:	$(FILES)
@@ -61,6 +62,12 @@ prearc: prearc.in  ../Makefile.global
 
 uumlist: uumlist.in  ../Makefile.global
 	$(SHELL) ../helpers/subst < uumlist.in > $@
+
+cron.d.hourly.in: cron.d.hourly.in  ../Makefile.global
+	$(SHELL) ../helpers/subst < cron.d.hourly.in > $@
+
+logrotate.d.entry: logrotate.d.entry.in  ../Makefile.global
+	$(SHELL) ../helpers/subst < logrotate.d.entry.in > $@
 
 install: $(FILES)
 	for i in $(FILESKEEP) ; do \

@@ -272,6 +272,11 @@ Online-Programme und Scripte müssen von Hand angepaßt werden.
 Verzögerung für langsame Modem in Online-Teil.
 
 
+--enable-auto-create    Erzeuge Spoolverzeichisse im Betrieb.
+
+Das Gateway erzeugt automatisch die Spoolverzeichnisse für die
+ZConnect-Systeme.
+
 --enable-testing        Verwende neuen Onlinecode.
 
 Neue Funktion in import.c und call.c verwenden.

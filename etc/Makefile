@@ -5,7 +5,7 @@
 include ../Makefile.global
 include ../Makefile.includes
 
-FILES=config approved alias autoeintrag.zconnect myself.zconnect
+FILES=	config approved alias autoeintrag.zconnect myself.zconnect
 
 all: config
 
