@@ -563,7 +563,7 @@ gcc_warn="
 "
 
 if test $SYSTYPE = linux; then
-  echo "Nachsicht für gammelige Includes"
+  echo "Nachsicht für gcc eigene Stringfunktionen"
   gcc_warn=`echo $gcc_warn|sed -e 's/-Wconversion//'`
 fi
 

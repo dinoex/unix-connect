@@ -91,13 +91,18 @@
 
 char *strdup(const char *a)
 {
-    int len = strlen(a);
-    char *p = (char *) malloc(len);
-    if ( p == NULL)
-	return p;
+	int len; 
+	char *p;
 
-    strcpy(p, a);
-    return p;
+	if(!a) return NULL;
+
+	len = strlen(a);
+	p = (char *) malloc(len);
+	if ( p == NULL)
+		return p;
+
+	strcpy(p, a);
+	return p;
 }
 
 #endif
@@ -106,6 +111,7 @@ char *dstrdup(const char *p)
 {
 	char *erg;
 
+	if(!p) return NULL;
 	erg = strdup(p);
 	if (!erg) {
 		out_of_memory(__FILE__);

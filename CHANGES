@@ -4,6 +4,16 @@ Aenderungen an UnixConnect
 
 seit 0.84
 
+- online/xprog.c: (Matthias Andree)
+  Argumente von exec jetzt schreibbar,
+  da lokale Kopie.
+
+- lib/uulog.c: (Matthias Andree)
+  stderr mit Linefeeed.
+
+- lib/strdup.c: (Matthias Andree)
+  jetzt robuster
+
 - lib/uulog.c: (Dirk Meyer)
   filename weiter optimiert, text entsorgt.
   syslog-Optionen verändert

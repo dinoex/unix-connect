@@ -66,21 +66,30 @@
 #include "xprog.h"
 #include "uudebug.h"
 
+#ifdef __GNUC__
+__inline__
+#endif
+static void 
+freearglist(char **arg) 
+{
+	for(;*arg;arg++) dfree(*arg);
+}
+
 /* eine Art system, aber auf execv-Basis und ohne shell
    Warnung: Pfad muss mit angegeben werden! */
 static int runcommand(const char *file, ...)
 {
-	const char *arg[20];
+	char *arg[20];
 	va_list ap;
 	pid_t c_pid;
 	size_t i;
 
 	logcwd("runcommand");
 	i = 0;
-	arg[i++] = file;
+	arg[i++] = dstrdup(file);
 	va_start(ap, file);
 	while((i < sizeof(arg))
-	      && (arg[i] = va_arg(ap, char *))) {
+	      && (arg[i] = dstrdup(va_arg(ap, char *)))) {
 		i++;
 	}
 	va_end(ap);
@@ -88,40 +97,39 @@ static int runcommand(const char *file, ...)
 	switch((c_pid = fork())) {
 	case -1: /* parent, child cannot fork */
 		perror(file);
+		freearglist(arg);
 		return -1;
 	case 0: /* child */
 		fprintf(stderr, "running %s ", file);
 		{
-			const char * const *x;
+			char * const *x;
 			for (x = arg; *x; x++)
 				fprintf(stderr, "%s ", *x);
 			fprintf(stderr, "\n");
 		}
-#ifdef linux
-		(void)execv(file, arg);
-#else
 		(void)execv(file, (char * const *)arg);
-#endif
 		/* hier ist was schiefgelaufen, execv kehrt nicht zurueck */
 		perror(file);
 		exit (-1);
 	default: /* parent */
 		{
 #if defined (NEXTSTEP)
-			union wait stat;
+			union wait estat;
 #else
-			int stat;
+			int estat;
 #endif
-			wait(&stat);
+			wait(&estat);
 
-			if (WIFEXITED(stat)) {
+			freearglist(arg);
+
+			if (WIFEXITED(estat)) {
 #ifdef DIRTY_ZMODEM_HACK
-				if (WEXITSTATUS(stat)==128)
+				if (WEXITSTATUS(estat)==128)
 					return 0;
 #endif
 				fprintf(stderr, "returned %d\n",
-					WEXITSTATUS(stat));
-				return WEXITSTATUS(stat);
+					WEXITSTATUS(estat));
+				return WEXITSTATUS(estat);
 			} else {
 				/* hier ist auch was schiefgelaufen, z. B.
 				   das Kind hat SIGSEGV bekommen */
@@ -131,7 +139,6 @@ static int runcommand(const char *file, ...)
 		}
 		break;
 	}
-
 }
 
 static struct {

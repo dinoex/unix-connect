@@ -167,7 +167,7 @@ newlog(int lchan, const char *format, ...)
 	case XTRACTLOG :
 	case DEBUGLOG :
 	default:
-		fprintf(stderr, "%s", buf);
+		fprintf(stderr, "%s\n", buf);
 		break;
 	}
 	syslog(prio, "%s", buf);
