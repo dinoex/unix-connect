@@ -43,15 +43,6 @@
  *
  */
 
-/*
- * Dirk Meyer, 08.05.96
- * Das ueberfluessige '\r' nach "end" wird nicht mehr an
- * uudecode uebergeben. Die Meldung "uudecode: missing end"
- * verschwindet.
- * ist in uursmtp.c bereits eingebaut.
- *
- */
-#define NO_RETURN_AFTER_END
 
 #include "config.h"
 #include <stdio.h>
@@ -130,17 +121,58 @@ void usage(void)
 	fputs(
 "UUrnews  -  RFC1036 Batch nach ZCONNECT konvertieren\n"
 "Aufrufe:\n"
-"        uurnews (NEWS-Datei) (ZCONNECT-Datei)\n"
+"        uurnews (RNEWS-Datei) (ZCONNECT-Datei)\n"
 "          alter Standard, Eingabedatei wird gelöscht\n"
 "        uurnews -f (FQDN-ZCONNECT-Host)\n"
 "          alter Standard, Eingabe von stdin,\n"
 "          Ausgabedatei wird im Verzeichns des Systems erzeugt.\n"
-"        uurnews -d (NEWS-Datei) (ZCONNECT-Datei)\n"
+"        uurnews -d (RNEWS-Datei) (ZCONNECT-Datei)\n"
 "          Modus mit höchster Sicherheit, oder zum Testen.\n"
 "        uurnews -p [ (FQDN-ZCONNECT-Host) ]\n"
 "          Echte Pipe\n"
 , stderr);
 	exit( EX_USAGE );
+}
+
+void do_version(void);
+void do_version(void)
+{
+	fputs(
+"UUrnews (Unix-Connect) " VERSION "\n"
+"Copyright " COPYRIGHT "\n"
+"Unix-Connect comes with NO WARRANTY,\n"
+"to the extent permitted by law.\n"
+"You may redistribute copies of Unix-Connect\n"
+"under the terms of the GNU General Public License.\n"
+"For more information about these matters,\n"
+"see the files named COPYING.\n"
+, stderr);
+	exit( EX_OK );
+}
+
+void do_help(void);
+void do_help(void)
+{
+	fputs(
+"UUrnews  -  convert RFC1036 news batch to zconnect\n"
+"usage:\n"
+"        uurnews RNEWS-file ZCONNECT-file\n"
+"          old interface, RNEWS-file will be deleted\n"
+"        uurnews -f fqdn-zconnect-host\n"
+"          old interface, RNEWS input will be read from stdin\n"
+"          outfile will be generated in the directory of the host.\n"
+"        uurnews -d RNEWS-file ZCONNECT-file\n"
+"          secure mode, no delete, no directory search.\n"
+"        uurnews -p [ fqdn-zconnect-host ]\n"
+"          full Pipe\n"
+"        uurnews --version\n"
+"          print version and copyright\n"
+"        uurnews --help\n"
+"          print this text\n"
+"\n"
+"Report bugs to dirk.meyer@dinoex.sub.org\n"
+, stderr);
+	exit( EX_OK );
 }
 
 int main(int argc, const char *const *argv)
@@ -169,6 +201,16 @@ int main(int argc, const char *const *argv)
 		if ( *cptr == '-' ) {
 			ch = *(++cptr);
 			switch ( tolower( ch ) ) {
+			case '-':
+				cptr ++;
+				if ( stricmp( cptr, "help" ) == 0 ) {
+					do_help();
+				};
+				if ( stricmp( cptr, "version" ) == 0 ) {
+					do_version();
+				};
+				usage();
+				break;
 			case 'd':
 				if ( ready != 0 )
 					usage();

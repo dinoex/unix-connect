@@ -107,12 +107,53 @@ void usage(void)
 "          Ausgabedatei wird im Verzeichns erzeugt.\n"
 "        uuwnews -f (ZCONNECT-Datei) [Absende-System]\n"
 "          Ergebnis geht nach stdout, Eingabedatei wird gelöscht,\n"
-"        uuwnews -d (ZCONNECT-Datei) (NEWS-Datei) [Absende-System]\n"
+"        uuwnews -d (ZCONNECT-Datei) (RNEWS-Datei) [Absende-System]\n"
 "          Modus mit höchster Sicherheit, oder zum Testen.\n"
 "        uuwnews -p [Absendesystem]\n"
 "          Echte Pipe\n"
 , stderr);
 	exit( EX_USAGE );
+}
+
+void do_version(void);
+void do_version(void)
+{
+	fputs(
+"UUwnews (Unix-Connect) " VERSION "\n"
+"Copyright " COPYRIGHT "\n"
+"Unix-Connect comes with NO WARRANTY,\n"
+"to the extent permitted by law.\n"
+"You may redistribute copies of Unix-Connect\n"
+"under the terms of the GNU General Public License.\n"
+"For more information about these matters,\n"
+"see the files named COPYING.\n"
+, stderr);
+	exit( EX_OK );
+}
+
+void do_help(void);
+void do_help(void)
+{
+	fputs(
+"UUwnews  -  convert from zconnect to RFC1036 news batch\n"
+"usage:\n"
+"        uuwnews ZCONNECT-file RNEWS-dir [ fqdn-zconnect-host ]\n"
+"          old interface, ZCONNECT-file will be deleted\n"
+"          output-file will be created in the specified directory\n"
+"        uuwnews -f ZCONNECT-file [ fqdn-zconnect-host ]\n"
+"          old interface, NEWS output will be written to stdout\n"
+"        uuwnews -d ZCONNECT-file RNEWS-file [ fqdn-zconnect-host ]\n"
+"          secure mode, no delete, no directory search.\n"
+"        uuwnews -p [ fqdn-zconnect-host ]\n"
+"          full Pipe\n"
+"        uuwnews --version\n"
+"          print version and copyright\n"
+"        uuwnews --help\n"
+"          print this text\n"
+"\n"
+"Report bugs to dirk.meyer@dinoex.sub.org\n"
+, stderr);
+	exit( EX_OK );
 }
 
 int main(int argc, const char *const *argv)
@@ -155,6 +196,16 @@ int main(int argc, const char *const *argv)
 		if ( *cptr == '-' ) {
 			ch = *(++cptr);
 			switch ( tolower( ch ) ) {
+			case '-':
+				cptr ++;
+				if ( stricmp( cptr, "help" ) == 0 ) {
+					do_help();
+				};
+				if ( stricmp( cptr, "version" ) == 0 ) {
+					do_version();
+				};
+				usage();
+				break;
 			case 'd':
 				if ( ready != 0 )
 					usage();

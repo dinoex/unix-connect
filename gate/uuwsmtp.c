@@ -104,7 +104,7 @@ void usage(void);
 void usage(void)
 {
 	fputs(
-"UUwsmtp  -  RFC821/822  Batch aus ZCONNECT erzeugen\n"
+"UUwsmtp  -  RFC821/822 Batch aus ZCONNECT erzeugen\n"
 "Aufrufe:\n"
 "        uuwsmtp (ZCONNECT-Datei) (SMTP-Directory) [Absende-System]\n"
 "          alter Standard, Eingabedatei wird gelöscht,\n"
@@ -117,6 +117,47 @@ void usage(void)
 "          Echte Pipe\n"
 , stderr);
 	exit( EX_USAGE );
+}
+
+void do_version(void);
+void do_version(void)
+{
+	fputs(
+"UUwsmtp (Unix-Connect) " VERSION "\n"
+"Copyright " COPYRIGHT "\n"
+"Unix-Connect comes with NO WARRANTY,\n"
+"to the extent permitted by law.\n"
+"You may redistribute copies of Unix-Connect\n"
+"under the terms of the GNU General Public License.\n"
+"For more information about these matters,\n"
+"see the files named COPYING.\n"
+, stderr);
+	exit( EX_OK );
+}
+
+void do_help(void);
+void do_help(void)
+{
+	fputs(
+"UUwsmtp  -  convert from zconnect to RFC821/822 BSMTP mail batch\n"
+"usage:\n"
+"        uuwsmtp ZCONNECT-file BSMTP-dir [ fqdn-zconnect-host ]\n"
+"          old interface, ZCONNECT-file will be deleted\n"
+"          output-file will be created in the specified directory\n"
+"        uuwsmtp -f ZCONNECT-file [ fqdn-zconnect-host ]\n"
+"          old interface, BSMTP output will be written to stdout\n"
+"        uuwsmtp -d ZCONNECT-file BSMTP-file [ fqdn-zconnect-host ]\n"
+"          secure mode, no delete, no directory search.\n"
+"        uuwsmtp -p [ fqdn-zconnect-host ]\n"
+"          full Pipe\n"
+"        uuwsmtp --version\n"
+"          print version and copyright\n"
+"        uuwsmtp --help\n"
+"          print this text\n"
+"\n"
+"Report bugs to dirk.meyer@dinoex.sub.org\n"
+, stderr);
+	exit( EX_OK );
 }
 
 int main(int argc, const char *const *argv)
@@ -160,6 +201,16 @@ int main(int argc, const char *const *argv)
 		if ( *cptr == '-' ) {
 			ch = *(++cptr);
 			switch ( tolower( ch ) ) {
+			case '-':
+				cptr ++;
+				if ( stricmp( cptr, "help" ) == 0 ) {
+					do_help();
+				};
+				if ( stricmp( cptr, "version" ) == 0 ) {
+					do_version();
+				};
+				usage();
+				break;
 			case 'd':
 				if ( ready != 0 )
 					usage();

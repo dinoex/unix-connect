@@ -594,10 +594,12 @@ header_p convheader(header_p hd, FILE *f)
 	if (!pointuser) {
 	    p = find(HD_ZNETZ_CONV, hd);
 	    if (p) {
-		fprintf(f, "X-Gateway: ZCONNECT %s.%s [" MAILER " " VERSION "], NETCALL3.8 %s",
+		fprintf(f, "X-Gateway: ZCONNECT %s.%s ["
+			MAILER " " VERSION "], NETCALL3.8 %s",
 			boxstat.boxname, boxstat.boxdomain, p->text);
 	    } else {
-		fprintf(f, "X-Gateway: ZCONNECT %s.%s [" MAILER " " VERSION "]",
+		fprintf(f, "X-Gateway: ZCONNECT %s.%s ["
+			MAILER " " VERSION "]",
 			boxstat.boxname, boxstat.boxdomain);
 	    }
 	    p = find(HD_GATE, hd);

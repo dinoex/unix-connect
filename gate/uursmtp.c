@@ -146,19 +146,60 @@ void usage(void);
 void usage(void)
 {
 	fputs(
-"UUrsmtp  -  RFC821/822  Batch nach ZCONNECT konvertieren\n"
+"UUrsmtp  -  RFC821/822 Batch nach ZCONNECT konvertieren\n"
 "Aufrufe:\n"
-"        uursmtp (SMTP-Datei) (ZCONNECT-Datei)\n"
+"        uursmtp (BSMTP-Datei) (ZCONNECT-Datei)\n"
 "          alter Standard, Eingabedatei wird gelöscht\n"
 "        uursmtp -f (FQDN-ZCONNECT-Host)\n"
 "          alter Standard, Eingabe von stdin,\n"
 "          Ausgabedatei wird im Verzeichns des Systems erzeugt.\n"
-"        uursmtp -d (SMTP-Datei) (ZCONNECT-Datei)\n"
+"        uursmtp -d (BSMTP-Datei) (ZCONNECT-Datei)\n"
 "          Modus mit höchster Sicherheit, oder zum Testen.\n"
-"        uurSmtp -p [ (FQDN-ZCONNECT-Host) ]\n"
+"        uursmtp -p [ (FQDN-ZCONNECT-Host) ]\n"
 "          Echte Pipe\n"
 , stderr);
 	exit( EX_USAGE );
+}
+
+void do_version(void);
+void do_version(void)
+{
+	fputs(
+"UUrsmtp (Unix-Connect) " VERSION "\n"
+"Copyright " COPYRIGHT "\n"
+"Unix-Connect comes with NO WARRANTY,\n"
+"to the extent permitted by law.\n"
+"You may redistribute copies of Unix-Connect\n"
+"under the terms of the GNU General Public License.\n"
+"For more information about these matters,\n"
+"see the files named COPYING.\n"
+, stderr);
+	exit( EX_OK );
+}
+
+void do_help(void);
+void do_help(void)
+{
+	fputs(
+"UUrsmtp  -  convert RFC821/822 BSMTP mail-batch to zconnect\n"
+"usage:\n"
+"        uursmtp BSMTP-file ZCONNECT-file\n"
+"          old interface, BSMTP-file will be deleted\n"
+"        uursmtp -f FQDN-ZCONNECT-host\n"
+"          old interface, BSMTP input will be read from stdin\n"
+"          outfile will be generated in the directory of the host.\n"
+"        uursmtp -d BSMTP-file ZCONNECT-file\n"
+"          secure mode, no delete, no directory search.\n"
+"        uursmtp -p [ FQDN-ZCONNECT-host ]\n"
+"          full Pipe\n"
+"        uursmtp --version\n"
+"          print version and copyright\n"
+"        uursmtp --help\n"
+"          print this text\n"
+"\n"
+"Report bugs to dirk.meyer@dinoex.sub.org\n"
+, stderr);
+	exit( EX_OK );
 }
 
 int main(int argc, const char *const *argv)
@@ -190,6 +231,16 @@ int main(int argc, const char *const *argv)
 		if ( *cptr == '-' ) {
 			ch = *(++cptr);
 			switch ( tolower( ch ) ) {
+			case '-':
+				cptr ++;
+				if ( stricmp( cptr, "help" ) == 0 ) {
+					do_help();
+				};
+				if ( stricmp( cptr, "version" ) == 0 ) {
+					do_version();
+				};
+				usage();
+				break;
 			case 'd':
 				if ( ready != 0 )
 					usage();

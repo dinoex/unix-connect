@@ -974,12 +974,14 @@ header_p convheader(header_p hd, FILE *f, char *from)
 	  /* Sollte unnötig sein. Wer weiß... */
 	        char *gat=decode_mime_string(p->text);
 		to_pc(gat);
-		fprintf(f, HN_GATE": RFC1036/822 %s.%s [" MAILER " " VERSION "], %s\r\n",
+		fprintf(f, HN_GATE": RFC1036/822 %s.%s [" 
+			MAILER " " VERSION "], %s\r\n",
 		   boxstat.boxname, boxstat.boxdomain, gat);
 		dfree(gat);
 		hd = del_header(HD_X_GATEWAY, hd);
 	}else{
-		fprintf(f, HN_GATE": RFC1036/822 %s.%s [" MAILER " " VERSION "]\r\n",
+		fprintf(f, HN_GATE": RFC1036/822 %s.%s ["
+			MAILER " " VERSION "]\r\n",
 		   boxstat.boxname, boxstat.boxdomain);
 	}
 
