@@ -151,7 +151,6 @@ int main(int argc, const char *const *argv)
 	const char *input_file;
 	const char *output_file;
 	char *dir_name;
-	time_t j;
 	int ready;
 	char ch;
 
@@ -161,10 +160,6 @@ int main(int argc, const char *const *argv)
 	ulibinit();
 	minireadstat();
 	srand(time(NULL));
-
-	/* fuer multipart */
-	j = time(NULL);
-	sprintf(datei, "%08lx", j);
 
 	bigbuffer = malloc(BIGBUFFER);
 	smallbuffer = malloc(SMALLBUFFER);
@@ -325,7 +320,7 @@ int main(int argc, const char *const *argv)
 		strcat(datei, "/");
 		dfree( dir_name );
 		dir_name = dstrdup( datei );
-		fout = open_new_file( name, dir_name );
+		fout = open_new_file( name, dir_name, NULL );
 		dfree( dir_name );
 		output_file = datei;
 	} else {
@@ -335,7 +330,7 @@ int main(int argc, const char *const *argv)
 			fout = stdout;
 		} else {
 			fout = fopen( output_file, "ab");
-		};
+		}
 	}
 	if ( fout == NULL ) {
 		fprintf( stderr,
@@ -344,7 +339,6 @@ int main(int argc, const char *const *argv)
 		exit( EX_CANTCREAT );
 	};
 
-	init_approved();
 	while (!feof(fin))
 		convert(fin, fout);
 
@@ -382,6 +376,7 @@ void convert(FILE *zconnect, FILE *news)
 	int charset, wasmime, eightbit;
 	mime_header_info_struct mime_info;
 
+	init_approved();
 	has_lines = 0;
 	j = time(NULL);
 	sprintf(id, "%08lx", j);

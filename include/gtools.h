@@ -41,9 +41,10 @@
  */
 
 extern char datei[2000];
+extern char baseid[20];
 
 void usage(void);
 void do_version( const char *name );
 void do_help(void);
-FILE *open_new_file( const char *name, const char *dir );
+FILE *open_new_file( const char *name, const char *dir, const char *ext );
 

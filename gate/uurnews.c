@@ -324,7 +324,7 @@ int main(int argc, const char *const *argv)
 #endif
 		strcat(datei, "/");
 		dir_name = dstrdup( datei );
-		fout = open_new_file( name, dir_name );
+		fout = open_new_file( name, dir_name, ".brt" );
 		dfree( dir_name );
 		output_file = datei;
 	} else {
@@ -334,7 +334,7 @@ int main(int argc, const char *const *argv)
 			fout = stdout;
 		} else {
 			fout = fopen( output_file, "ab");
-		};
+		}
 	};
 	if ( fout == NULL ) {
 		fprintf( stderr,

@@ -92,7 +92,6 @@ char *pointsys;		/* Name des Point-Systems */
 
 static char *bigbuffer	= NULL;
 static char *smallbuffer= NULL;
-static char *id;
 
 #ifndef USE_ISO_IN_MAILS
 extern char umlautstr[], convertstr[];
@@ -155,7 +154,6 @@ int main(int argc, const char *const *argv)
 	const char *input_file;
 	const char *output_file;
 	char *dir_name;
-	time_t j;
 	int ready;
 	char ch;
 
@@ -165,11 +163,6 @@ int main(int argc, const char *const *argv)
 	ulibinit();
 	minireadstat();
 	srand(time(NULL));
-
-	/* fuer multipart */
-	j = time(NULL);
-	sprintf(datei, "%08lx", j);
-	id = datei;
 
 	bigbuffer = malloc(BIGBUFFER);
 	smallbuffer = malloc(SMALLBUFFER);
@@ -330,7 +323,7 @@ int main(int argc, const char *const *argv)
 		strcat(datei, "/");
 		dfree( dir_name );
 		dir_name = dstrdup( datei );
-		fout = open_new_file( name, dir_name );
+		fout = open_new_file( name, dir_name, NULL );
 		dfree( dir_name );
 		output_file = datei;
 	} else {
@@ -340,7 +333,7 @@ int main(int argc, const char *const *argv)
 			fout = stdout;
 		} else {
 			fout = fopen( output_file, "ab");
-		};
+		}
 	}
 	if ( fout == NULL ) {
 		fprintf( stderr,
@@ -682,7 +675,7 @@ void convert(FILE *zconnect, FILE *smtp)
 	if (typ) {
 		/* uuencode */
 		if (!file) {
-			sprintf(smallbuffer, "%s.%d", id, ++binno);
+			sprintf(smallbuffer, "%s.%d", baseid, ++binno);
 			file = dstrdup(smallbuffer);
 		}
 		if (multipart) {

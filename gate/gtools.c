@@ -86,6 +86,7 @@
 #include "gtools.h"
 
 char datei[2000];
+char baseid[20];
 
 void do_version( const char *name )
 {
@@ -102,13 +103,16 @@ void do_version( const char *name )
 	exit( EX_OK );
 }
 
-FILE *open_new_file( const char *name, const char *dir )
+FILE *open_new_file( const char *name, const char *dir, const char *ext )
 {
 	time_t j;
 	struct stat st;
 	int fh;
 	int statrc;
 	FILE *fp;
+
+	if ( dir == NULL )
+		return NULL;
 
 	/* Matthias Andree: Pruefen, ob das Spooldirectory existiert */
 	if ((statrc = stat(dir, &st)) || !S_ISDIR(st.st_mode)) {
@@ -124,7 +128,11 @@ FILE *open_new_file( const char *name, const char *dir )
 	errno = 0;
 	j = time(NULL);
 	do {
-		sprintf(datei, "%s%08lx.brt", dir, (long)(j++));
+		sprintf(baseid, "%08lx", (long)(j++));
+		strcpy( datei, dir );
+		strcat( datei, baseid );
+		if ( ext != NULL )
+			strcat( datei, ext );
 		fh = open(datei, O_WRONLY|O_CREAT|O_EXCL,
 				S_IRUSR|S_IWUSR|S_IRGRP);
 		if ( fh >= 0 ) {

@@ -203,9 +203,14 @@ int main(int argc, const char *const *argv)
 	ulibinit();
 	minireadstat();
 	srand(time(NULL));
+
 	bufflen = 100000;
 	smallbuffer = dalloc(bufflen);
 	bigbuffer = dalloc(bufflen * 2);
+	if (!bigbuffer || !smallbuffer) {
+		fputs("Nicht genug Arbeitsspeicher!\n", stderr);
+		exit( EX_TEMPFAIL );
+	}
 
 	name = argv[ 0 ];
 	remove_me = NULL;
@@ -354,7 +359,7 @@ int main(int argc, const char *const *argv)
 #endif
 		strcat(datei, "/");
 		dir_name = dstrdup( datei );
-		fout = open_new_file( name, dir_name );
+		fout = open_new_file( name, dir_name, ".prv" );
 		dfree( dir_name );
 		output_file = datei;
 	} else {
