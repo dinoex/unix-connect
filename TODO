@@ -26,6 +26,9 @@ Was muß noch getan werden?
 
 - News verwerfen, wenn ordnungsgemäße Wandlung nicht möglich.
 
+- generell Fehlerhafte Nachrichten überspringen.
+  ohne das der ganze Puffer verworfen werden muß.
+
 ### Extensions:
 
 - Passworte case-sensitiv pruefen.
@@ -44,6 +47,18 @@ Was muß noch getan werden?
 - WAB: vernünftig behandeln, speziell beim ersetzen von Point-ABS: !!!
 
 - configure nach rz/sz suchen lassen.
+
+- Wenn eine rfc-Mail - einige Mailer machen das anscheinend so, ich habe es
+  bei verschiedenen beobachtet - sowohl den Header In-Reply-To:<Bezugs-ID>
+  als auch den Header Reference:<Bezugs-ID> mitbringen, werden daraus zwei
+  identische BEZ: Bezugs-ID. Ich könnte mir vorstellen, daß einige
+  Pointprogramme dann Probleme mit der Bezugsverkettung bekommen.
+  Reference: hat aber in Mail nichts verloren IMO. Wenn In-Reply-To:
+  dieselbe Message-ID mitbringt wie References, sollte der zusätzliche BEZ
+  unterbleiben, weil er keine zusätzliche Information trägt. Allerdings
+  wäre ein Pointprogramm, das dann Bezüge falsch verkettet, dem Vorwurf
+  ausgesetzt, daß es defekte Nachrichten nicht korrekt handhaben kann,
+  obwohl es das mühelos könnte.
 
 ### Features:
 

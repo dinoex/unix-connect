@@ -4,7 +4,41 @@ Aenderungen an UnixConnect
 
 seit 0.88
 
-- src/uuconv.c:
+- shell/auspack.in, shell/einpack.in: (Dirk Meyer)
+  unrar und unarj eingebaut.
+  zip0 zip1 und zip2 werden auch erkannt.
+
+- shell/einpack.in: (Krischan Jodies)
+  falls Fehler beim Einpacken, auch eine Mail senden.
+
+- shell/auspack.in, shell/einpack.in: (Moritz Both)
+  Fehler beim auspacken/einpacken erkennen
+
+- shell/auspack.in: (Krischan Jodies)
+  ungepackte Daten richtig kopieren, bisher Datenverlust.
+  .nar ducth ".non" ersetzt.
+
+- online/xprog.c: (Krischan Jodies)
+  einige Fehlermeldungen eingebaut.
+
+- online/januslogin.c: (Krischan Jodies)
+  Janus2 robuster, robusterer Login bei Username:
+
+- hdlib/header.list, etc/config.in, include/ministat.h, lib/ministat.c,
+  online/calllib.h, lib/backup.c, online/import.c,
+  online/januslogin.c: (Krischan Jodies)
+  Neues nummeriertes Backup
+
+- mail-and-news/sendmail/zbatchsmtp.in: (Krischan Jodies)
+  Spoolverzeichnisse mit "./", für Systemnamen mit Sonderzeichen am Anfang.
+
+- gate/uuconv.c, gate/uurrnews.c, gate/uursmtp.c:
+  dont_gate entfernt, mime-erkennung vereinheitlicht
+
+- gate/uuwnews.c, gate/uuwsmtp.c: (Dirk Meyer)
+  newlog einheitlich in Englisch
+
+- gate/uuconv.c: (Dirk Meyer)
   Option ENABLE_NOEMPTY_SUBJECT
   Aus einem leeren Subject:-Header den Betreff "-" erzeugen
 
@@ -14,7 +48,7 @@ seit 0.88
 - etc/myself.connect: (Moritz Both)
   Altes Beispiel war fehlerhaft.
 
-- shell/import.in:
+- shell/import.in: (Dirk Meyer)
   exit wenn Verzeichnis nicht existiert.
 
 - shell/prearc.in: (Moritz Both)
