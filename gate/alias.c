@@ -3,7 +3,6 @@
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1993-94  Martin Husemann
  *  Copyright (C) 1995-98  Christopher Creutzig
- *  Copyright (C) 1999     Matthias Andree, parse_alias()
  *  Copyright (C) 1999     Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -95,31 +94,26 @@ void insert(char *znetz, char *uucp, int v)
 	data = p;
 }
 
-static void parse_alias(header_p p, int v)
+static void parse_alias(char *l, int v)
+/*
+	Die Variante von Matthias Andree
+	führte zu Fehlern im Regression-Test
+	=> Verlus von EMP: Zeilen bei Crosspostions.
+*/
 {
-	char *m, *n, *o;
-	const char *sep = " \t";
-	int ok;
+	char *s;
+	char *t;
 
-	ok=0;
-	m = dstrdup(p->text);
-	if(m) {
-		n = strtok(m, sep);
-		if(n) {
-			o = strtok(NULL, sep);
-			if(o) {
-				insert(n, o, v);
-				ok=1;
-			}
-		}
-		free(m);
-	}
-	if(!ok) {
-		fprintf(stderr,
-			__FILE__ ":%d ignored malformatted alias line in %s: \"%s\"\n",
-			__LINE__,
-			aliasliste, p->text);
-	}
+	for (s=l; *s; s++)
+		if (isspace(*s)) break;
+	if (!*s) return;
+	*s = '\0';
+	for (s++ ; *s && isspace(*s); s++)
+		;
+	for (t=s; *t; t++)
+		if (isspace(*t)) break;
+	*t = '\0';
+	insert(l, s, v);
 }
 
 static void init(void)
@@ -146,11 +140,11 @@ static void init(void)
 		}
 		fclose(f);
 		for (p=find(HD_ALIAS, hd); p; p=p->other) {
-			parse_alias(p, ALIAS);
+			parse_alias(p->text, ALIAS);
 		}
 
 		for (p=find(HD_MAP, hd); p; p=p->other) {
-			parse_alias(p, PREFIX);
+			parse_alias(p->text, PREFIX);
 		}
 	}
 }
