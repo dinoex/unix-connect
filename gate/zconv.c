@@ -426,8 +426,8 @@ header_p convheader(header_p hd, FILE *f)
 	      }
 	      dfree(absname);
 	    } else {
-              if (!(strlen(p->text))) {
-                 extern char *pointsys;
+              extern char *pointsys;
+              if ( !(strlen(p->text)) && pointsys ) {
                  fprintf(f, HN_UU_PATH": %s!not-for-mail%s", pointsys, eol);
               } else {
                  s = strchr(p->text, '!');
