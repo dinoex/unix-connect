@@ -4,7 +4,20 @@ Aenderungen an UnixConnect
 
 seit 0.91
 
-- neue Mailingliste eingetragen
+- online/januslogin.c: (Dirk Meyer)
+  void in prototypen ergaenzt.
+  signal jetzt nach POSIX.
+
+- online/call.c, gate/zconv.c: (Dirk Meyer)
+  janus_wait, foldputs_no_eol jetzt static.
+
+- gate/uuwsmtp.c, gate/zconv.c, gate/zconv.h: (Moritz Both)
+  Behandlung von Point-User ersetzung ueberarbeitet.
+
+- gate/zconv.c: (Moritz Both)
+  Variable org_from entfernt, war immer 0.
+
+- neue Mailingliste eingetragen.
 
 seit 0.90
 
