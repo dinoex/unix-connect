@@ -56,7 +56,7 @@ char *str2eda(char *text, int *tz_hour, int *tz_min)
 	char *answer;
 	char buffer[24];
 	
-	answer=dalloc(sizeof(char)*84);
+	answer=dalloc(sizeof(char)*84*10);
 
 	*tz_hour = *tz_min = 0;
 	memset(&t, 0, sizeof t);
@@ -84,18 +84,15 @@ char *str2eda(char *text, int *tz_hour, int *tz_min)
         Wir bilden mit mktime einen Zeitwert, als ob es unsere
         eigene lokale Zeit waere. Dies liefert uns einen Fehler
         um die Differez der Zeitzonen von Absender und Gate.
-
-        Sommer und Winterzeit sollten fast immer gleich gelten,
-        so wird hier der Einfachheit halber immer in Winterzeit
-        gerechnet.
-
+	In der Winterzeit gibt es keine Probleme, aber fuer
+	ein Datum im Sommer muessen wir gegensteuern.
         Wir korregieren den Zeitwert mit der Zeitzone des Absenders.
         Der Restfehler ist nun unsere eigene Zeitzone zu GMT.
 
-        Mit gmtime bilden wir nun die tm-Struktur neu. Da unser
-        Zeitwert aber lokal war ist das Ergebnis um unsere eigene
+        Mit localtime bilden wir nun die tm-Struktur neu. Da unser
+        Zeitwert aber golobal war ist das Ergebnis um unsere eigene
         Zeitzone verschoben. Das Resultat ist die Zeit des Absenders
-        
+
         ueber diese Formel werden die Stunden, Wochentage, Datumsübegänge,
         Schaltjahre und sonstige Probleme einfach geloest.
 
@@ -104,8 +101,12 @@ char *str2eda(char *text, int *tz_hour, int *tz_min)
 
 	t.tm_isdst = 0;
 	dt = mktime(&t);
+#ifndef	PLUS_OLD_MKTIME
+	if ( t.tm_isdst != 0 )
+		dt -= 7200L;
+#endif
 	dt += ( ( ((long)(*tz_hour) * 60L) + (long)(*tz_min)) * 60L );
-	t = *gmtime( &dt );
+	t = *localtime( &dt );
 	t.tm_isdst = 0;
 
 /* und den Wochentag berechnen... */		
