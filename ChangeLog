@@ -4,6 +4,9 @@ Aenderungen an UnixConnect
 
 seit 0.92
 
+- Makefile.in: (Dirk Meyer)
+  chown Gruppe nach ':' start '.'
+
 - include/mime.h, gate/mime.c, gate/uuwnews.c, gate/uuwsmtp.c,
   gate/uurnews.c, gate/uursmtp.c, gate/uuconv.c: (Detlef Würkner)
   Unbekannte Charsets durchreichen.
