@@ -1,11 +1,11 @@
 /* $Id$ */
 /*
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
- *  Copyright (C) 1993-94  Martin Husemann
- *  Copyright (C) 1995-98  Christopher Creutzig
- *  Copyright (C) 1999     Andreas Barth, Option "-p"
- *  Copyright (C) 1999     Matthias Andree, Option "-s"
- *  Copyright (C) 1996-99  Dirk Meyer
+ *  Copyright (C) 1993-1994  Martin Husemann
+ *  Copyright (C) 1995-1998  Christopher Creutzig
+ *  Copyright (C) 1999       Andreas Barth, Option "-p"
+ *  Copyright (C) 1999       Matthias Andree, Option "-s"
+ *  Copyright (C) 1996-2000  Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -613,7 +613,7 @@ convdata(FILE *smtp, FILE *zconnect)
 
 	splitaddr(reverspath, wab_name, wab_host, wab_domain, rna);
 
-	/* Header konvertieren und ausgeben: */
+	/* Header konvertieren und ausgeben */
 	hd = convheader(hd, zconnect, reverspath);
 
 	/* Mimes Content-transfer-encoding decodieren - danach haben wir,
@@ -634,8 +634,8 @@ convdata(FILE *smtp, FILE *zconnect)
 	 * a) eine Mime-Nachricht ist, sie b) gerade eben tatsaechlich deco-
 	 * diert wurde und sie c) keinen Text enthaelt.
 	 */
-	if (ismime && decoded && mime_info.type != cty_text && mime_info.type != cty_none)
 
+	if (ismime && decoded && mime_info.type != cty_text && mime_info.type != cty_none)
 		binaer = 1;
 	else
 		binaer = 0;
@@ -645,7 +645,7 @@ convdata(FILE *smtp, FILE *zconnect)
 	 */
 
 	if (ismime && (				/* MIME-Nachricht */
-	     mime_info.encoding == cte_none ||  /* deren kodierung */
+	     mime_info.encoding == cte_none ||	/* deren kodierung */
 	     decoded				/* aufgeloest wurde */
 	   )
 	   && (
@@ -692,3 +692,4 @@ convdata(FILE *smtp, FILE *zconnect)
 	if (mime_info.filename)
 		free(mime_info.filename);
 }
+

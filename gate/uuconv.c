@@ -1,9 +1,9 @@
 /* $Id$ */
 /*
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
- *  Copyright (C) 1993-94  Martin Husemann
- *  Copyright (C) 1995-98  Christopher Creutzig
- *  Copyright (C) 1996-99  Dirk Meyer
+ *  Copyright (C) 1993-1994  Martin Husemann
+ *  Copyright (C) 1995-1998  Christopher Creutzig
+ *  Copyright (C) 1996-2000  Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -82,9 +82,6 @@ extern char *fqdn;
 char wab_name[MAXLINE] = "", wab_host[MAXLINE] = "", wab_domain[MAXLINE] = "";
 static char sp_name[MAXLINE], sp_host[MAXLINE];
 static char sp_domain[MAXLINE], rna[MAXLINE];
-
-int dont_gate = 0;	/* Flag fuer Pseudo Z3.8 Nachrichten */
-
 
 char *
 date2eda( const char *str, FILE *fout )

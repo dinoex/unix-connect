@@ -1,10 +1,10 @@
 /* $Id$ */
 /*
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
- *  Copyright (C) 1993-94  Martin Husemann
- *  Copyright (C) 1995-98  Christopher Creutzig
- *  Copyright (C) 1999     Andreas Barth, Option "-p"
- *  Copyright (C) 1996-99  Dirk Meyer
+ *  Copyright (C) 1993-1994  Martin Husemann
+ *  Copyright (C) 1995-1998  Christopher Creutzig
+ *  Copyright (C) 1999       Andreas Barth, Option "-p"
+ *  Copyright (C) 1996-2000  Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -74,8 +74,6 @@
 #ifdef APC_A2B
 #include "apc_a2b.h"
 #endif
-
-extern int dont_gate;
 
 /*
  *  Globale Variable fuer die aktuelle Batch-Laenge
@@ -413,48 +411,53 @@ convdata(FILE *news, FILE *zconnect)
 	/* Header konvertieren und ausgeben */
 	hd = convheader(hd, zconnect, NULL);
 
-	/* MIME Content-Transfer-Encoding decodieren */
+	/* Mimes Content-transfer-encoding decodieren - danach haben wir,
+	 * abhaengig vom Content-Type, evtl. Binaerdaten.
+	 */
 	decoded = decode_cte(bigbuffer, &msglen, &eightbit, &mime_info);
 
-	/* Wenn decodiert wurde, diese Headerzeile loeschen */
+	/* decoded != 0 heisst jetzt, wir haben decodierte Daten.
+	 * Wenn ja, Content-Transfer-Encoding loeschen, denn das
+	 * stimmt nicht mehr.
+	 */
+
 	if (decoded)
 		hd = del_header(HD_UU_CONTENT_TRANSFER_ENCODING, hd);
 
-	/* eightbit != 0 heisst, wir haben auch tatsaechlich-Daten.
+	/* eightbit != 0 heisst, wir haben auch tatsaechlich 8-Bit-Daten.
 	 * Eine Nachricht behandeln wir dann als binaer, wenn sie
 	 * a) eine Mime-Nachricht ist, sie b) gerade eben tatsaechlich deco-
 	 * diert wurde und sie c) keinen Text enthaelt.
 	 */
 
 	if (ismime && decoded && mime_info.type != cty_text && mime_info.type != cty_none)
-		binaer=1;
+		binaer = 1;
 	else
-		binaer=0;
+		binaer = 0;
 
-        /* MIME-Headerzeilen durchreichen? Eine schwere Frage.
-         * Wir entscheiden uns so:
-         */
+	/* MIME-Headerzeilen durchreichen? Eine schwere Frage.
+	 * Wir entscheiden uns so:
+	 */
 
-        if (ismime && (                         /* MIME-Nachricht */
-             mime_info.encoding == cte_none ||  /* deren kodierung */
-             decoded                            /* aufgeloest wurde */
-           )
-           && (
-             mime_info.unixconnect_multipart || /* und die text/plain */
-             mime_info.text_plain               /* oder spezial-Multi- */
-           )                                    /* part ist */
-         ) {
-                hd = del_header(HD_UU_MIME_VERSION, hd);
-                hd = del_header(HD_UU_CONTENT_TYPE, hd);
-                hd = del_header(HD_UU_CONTENT_TRANSFER_ENCODING, hd);
-        }
+	if (ismime && (				/* MIME-Nachricht */
+	     mime_info.encoding == cte_none ||	/* deren kodierung */
+	     decoded				/* aufgeloest wurde */
+	   )
+	   && (
+	     mime_info.unixconnect_multipart || /* und die text/plain */
+	     mime_info.text_plain		/* oder spezial-Multi- */
+	   )					/* part ist */
+	 ) {
+		hd = del_header(HD_UU_MIME_VERSION, hd);
+		hd = del_header(HD_UU_CONTENT_TYPE, hd);
+		hd = del_header(HD_UU_CONTENT_TRANSFER_ENCODING, hd);
+	}
 
 #ifndef DISABLE_UUCP_SERVER
 	hd = del_header(HD_UU_XREF, hd);
-	if (!dont_gate)
-	   for (p=hd; p; p=p->next) {
-	     for(;p;t=p, p=p->other) {
-	        char *x=decode_mime_string(p->text);
+	for (p=hd; p; p=p->next) {
+	    for(;p;t=p, p=p->other) {
+		char *x=decode_mime_string(p->text);
 		iso2pc(x);
 #ifndef ENABLE_U_X_HEADER
 		fprintf (zconnect, "U-%s: %s\r\n", p->header, x);
@@ -466,9 +469,9 @@ convdata(FILE *news, FILE *zconnect)
 			fprintf (zconnect, "U-%s: %s\r\n", p->header, x);
 #endif
 		dfree(x);
-	      }
-	     p=t;
-	   }
+	    }
+	    p=t;
+	}
 #endif
 #ifdef DISABLE_FULL_GATE
 /* Artikel, die von Usenet-Seite aus hereinkommen, duerfen nicht wieder
@@ -476,17 +479,17 @@ convdata(FILE *news, FILE *zconnect)
 	fprintf(zconnect, HN_X_DONT_GATE_IT": \r\n");
 #endif
 	free_para(hd);
-        /* Jetzt sind alle Header-Angelegenheiten erledigt bis
-         * auf FILE:, LEN:, TYP:, CHARSET: u. dgl.
-         * Das ist fuer Mail und News ziemlich gleich,
-         * es steht daher in uuconv.c
-         */
 
-        make_body(bigbuffer, (size_t)msglen, &mime_info, binaer,
-                readbuffer, zconnect);
+	/* Jetzt sind alle Header-Angelegenheiten erledigt bis
+	 * auf FILE:, LEN:, TYP:, CHARSET: u. dgl.
+	 * Das ist fuer Mail und News ziemlich gleich,
+	 * es steht daher in uuconv.c
+	 */
 
-        if (mime_info.filename)
-                free(mime_info.filename);
+	make_body(bigbuffer, (size_t)msglen, &mime_info, binaer,
+		readbuffer, zconnect);
 
+	if (mime_info.filename)
+		free(mime_info.filename);
 }
 
