@@ -62,10 +62,10 @@ for SITE in ${LIST}; do
 
     time batcher -b0 -r -v -N ${MAXJOBS} \
 	-p"@BINDIR@/uurnews -f %s" \
-	${SITE} ${BATCHFILE} && \ 
-	 ( 
+	${SITE} ${BATCHFILE} && \
+	 (
 	  # Batchen ok
-	        rm -f ${BATCHFILE} 
+	        rm -f ${BATCHFILE}
 		true
 	 ) || \
 	 (
