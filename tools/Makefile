@@ -42,11 +42,10 @@ PROGS	= zconsplit list-systems
 all:	$(PROGS)
 
 install:	all
-	cp $(PROGS) $(DESTDIR)
-	( cd $(DESTDIR); chown $(USER) $(PROGS) )
+	$(INSTALL_PROGRAM) $(PROGS) $(DESTDIR)
 
 uninstall:
-	-(cd $(DESTDIR); rm -f $(PROGS))
+	-cd $(DESTDIR) && rm -f $(PROGS)
 
 clean:
 	-rm -f $(CLEANFILES) $(PROGS)
@@ -58,9 +57,6 @@ list-systems:	list-systems.o $(LIBS)
 
 zconsplit:	zconsplit.o $(LIBS)
 	$(CC) -o zconsplit zconsplit.o $(LIBS) $(LDFLAGS)
-
-.c.o:	../Makefile.global
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
 
 # automatic depend
 list-systems.o: list-systems.c ../include/config.h ../include/sysdep.h \

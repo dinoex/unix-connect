@@ -76,9 +76,19 @@ PATHADD  = @PATHADD@
 MAIL     = @MAIL@
 NEWS     = @NEWS@
 
+INSTALL = install -c
+INSTALL_PROGRAM = $(INSTALL) -o $(USER) -g $(GROUP)
+INSTALL_DATA = $(INSTALL) -o $(USER) -g $(GROUP) -m 640
+
 # jetzt die Definitionen übernehmen
 CFLAGS += -DDESTDIR=$(DESTDIR) -DBINDIR=$(BINDIR) -DETCDIR=$(ETCDIR)
 CFLAGS += -DCONFIG_FILE=\"$(ETCDIR)/config\"
 APCOBJS  = @APCOBJS@
 CLEANFILES = *.o *.a *.bak *.rej *.orig core *.core
+
+.SUFFIXES:
+.SUFFIXES: .c .o
+
+.c.o:   ../Makefile.global
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
 

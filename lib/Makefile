@@ -61,9 +61,6 @@ strlib.a:	$(STROBJS)
 	ar r strlib.a $(STROBJS)
 	$(RANLIB) strlib.a
 
-.c.o:	../Makefile.global
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
-
 # automatic depend
 hayes.o: hayes.c ../include/config.h ../include/sysdep.h \
  ../include/header.h ../include/crc.h ../hdlib/hd_def.h \

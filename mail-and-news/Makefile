@@ -40,22 +40,22 @@ SUBDIRS = no cnews inn qmail sendmail smail
 
 all:
 	for dir in $(SUBDIRS); do \
-		(cd $$dir; $(MAKE) -$(MAKEFLAGS) all); done
+		(cd $$dir && $(MAKE) -$(MAKEFLAGS) all) done
 
 install:
 	for dir in $(SUBDIRS); do \
-		(cd $$dir; $(MAKE) -$(MAKEFLAGS) install); done
+		(cd $$dir && $(MAKE) -$(MAKEFLAGS) install) done
 
 uninstall:
 	for dir in $(SUBDIRS); do \
-		(cd $$dir; $(MAKE) -$(MAKEFLAGS) uninstall); done
+		(cd $$dir && $(MAKE) -$(MAKEFLAGS) uninstall) done
 
 clean:
 	for dir in $(SUBDIRS); do \
-		(cd $$dir; $(MAKE) -$(MAKEFLAGS) clean); done
+		(cd $$dir && $(MAKE) -$(MAKEFLAGS) clean) done
 
 distclean:
 	for dir in $(SUBDIRS); do \
-		(cd $$dir; $(MAKE) -$(MAKEFLAGS) distclean); done
+		(cd $$dir && $(MAKE) -$(MAKEFLAGS) distclean) done
 
 # eof

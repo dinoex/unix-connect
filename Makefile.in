@@ -46,7 +46,7 @@ SUBDIRS = $(CDIRS) etc shell \
 
 all:
 	for dir in $(SUBDIRS); do \
-		(cd $$dir; $(MAKE) -$(MAKEFLAGS) all); done
+		(cd $$dir && $(MAKE) -$(MAKEFLAGS) all) done
 
 install:
 	if test ! -d $(BINDIR); then \
@@ -57,14 +57,14 @@ install:
 		mkdir $(ETCDIR)/systems; \
 		chown $(USER) $(ETCDIR)/systems; fi
 	for dir in $(SUBDIRS); do \
-		(cd $$dir; $(MAKE) -$(MAKEFLAGS) install); done
+		(cd $$dir && $(MAKE) -$(MAKEFLAGS) install) done
 
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' install
 
 uninstall:
 	for dir in $(SUBDIRS); do \
-		(cd $$dir; $(MAKE) -$(MAKEFLAGS) uninstall); done
+		(cd $$dir && $(MAKE) -$(MAKEFLAGS) uninstall) done
 	@echo ""
 	@echo "If you don't want to install this package again"
 	@echo "then remove the following directorys:"
@@ -75,28 +75,28 @@ uninstall:
 clean:
 	-rm -f $(CLEANFILES)
 	for dir in $(SUBDIRS); do \
-		(cd $$dir; $(MAKE) -$(MAKEFLAGS) clean); done
+		(cd $$dir && $(MAKE) -$(MAKEFLAGS) clean) done
 
 mostlyclean: clean
 
 distclean:
 	for dir in $(SUBDIRS); do \
-		(cd $$dir; $(MAKE) -$(MAKEFLAGS) distclean); done
+		(cd $$dir && $(MAKE) -$(MAKEFLAGS) distclean) done
 	-rm -f $(CLEANFILES)
 	-rm -f Makefile.global Makefile helpers/subst
 	-rm -f config.cache config.log config.status confdefs.h
 	-rm -f include/sysdep.h include/policy.h
 
 maintainer-clean:
-	(cd hdlib; $(MAKE) -$(MAKEFLAGS) maintainer-clean)
+	cd hdlib && $(MAKE) -$(MAKEFLAGS) maintainer-clean
 	$(MAKE) -$(MAKEFLAGS) distclean
 
 newhash:
-	(cd hdlib; $(MAKE) -$(MAKEFLAGS) newhash)
+	cd hdlib && $(MAKE) -$(MAKEFLAGS) newhash
 
 dist:
 	$(MAKE) -$(MAKEFLAGS) distclean
-	(cd helpers; $(MAKE) -$(MAKEFLAGS))
+	cd helpers && $(MAKE) -$(MAKEFLAGS)
 
 depend:	all Makefile.global
 	for dir in $(CDIRS); do (cd $$dir; \
@@ -113,7 +113,10 @@ depend:	all Makefile.global
 		rm -f Makefile.new Makefile.depend ); \
 	done
 
-Makefile: Makefile.in  config.status
+Makefile: Makefile.in config.status
+	CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+Makefile.global: Makefile.global.in config.status
 	CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 # eof

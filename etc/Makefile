@@ -15,7 +15,7 @@ config: config.in ../Makefile.global
 install:
 	for i in $(FILES); do \
 	if test ! -f $(ETCDIR)/$$i; then \
-		install -c -o $(USER) -g $(GROUP) -m 660 $$i $(ETCDIR); \
+		$(INSTALL_DATA) $$i $(ETCDIR); \
 	fi; done
 
 uninstall:

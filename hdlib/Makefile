@@ -54,16 +54,15 @@ install:	all
 uninstall:
 
 clean:
-	-rm -f $(CLEANFILES) header.tmp header.gtmp test.out
+	-rm -f $(CLEANFILES) header.tmp header.gtmp
 	-rm -f uurd.c smtprd.c pkread.c pkwrite.c
-	-rm -f testheader
+	-rm -f testheader test.out
 
 distclean:	clean
 
 maintainer-clean:	distclean
 	-rm -f hd_def.h hd_nam.h hd_nlist.h
-	-rm -f header.gtmp hash.tmp
-	-rm -f testheader hash.c header.gperf
+	-rm -f hash.c header.gperf
 
 newhash:	maintainer-clean hash.c
 
@@ -102,7 +101,7 @@ header.gperf hd_def.h hd_nam.h hd_nlist.h:	header.lst
 testheader:	testheader.o uuheader.a $(LIBS)
 	$(CC) $(CFLAGS) -o testheader testheader.o uuheader.a $(LIBS) $(LDFLAGS)
 
-test:	testheader test.in uuheader.a
+check:	testheader test.in uuheader.a
 	./testheader test.in test.out
 	diff -p test.out test.erg
 
@@ -118,9 +117,6 @@ pkread.o:	../Makefile.global
 
 pkwrite.o:	../Makefile.global
 	$(CC) $(CFLAGS) $(CPPFLAGS) -DDO_CRC -c pkwrite.c
-
-.c.o:	../Makefile.global
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
 
 # automatic depend
 crc.o: crc.c ../include/crc.h ../include/sysdep.h

@@ -4,6 +4,9 @@ $Id$
 Aenderungen an UnixConnect
 seit 0.80
 
+- Makefiles weiter optimiert.
+  install/uninstall jetzt verfügbar
+
 - Code aufgrund von Warnings gesaeubert.
 
 - uursmtp/uurnews schiesst die Datein richtig,

@@ -46,16 +46,10 @@ PROGS	= uurnews uursmtp uuwsmtp uuwnews
 all:	$(PROGS)
 
 install:	all
-	cp uurnews uursmtp uuwsmtp uuwnews $(DESTDIR)
-	chown $(USER) $(DESTDIR)/uursmtp
-	chown $(USER) $(DESTDIR)/uurnews
-	chown $(USER) $(DESTDIR)/uuwnews
-	chown $(USER) $(DESTDIR)/uuwsmtp
-	chmod +s $(DESTDIR)/uursmtp $(DESTDIR)/uurnews
-	chmod +s $(DESTDIR)/uuwsmtp $(DESTDIR)/uuwnews
+	$(INSTALL_PROGRAM) -m 4755 $(PROGS) $(DESTDIR)
 
 uninstall:
-	-(cd $(DESTDIR); rm -f $(PROGS))
+	-cd $(DESTDIR) && rm -f $(PROGS)
 
 clean:
 	-rm -f $(CLEANFILES) $(PROGS)
@@ -77,9 +71,6 @@ uurnews:	uurnews.o uuconv.o mime.o alias.o iso2pc.o $(APCOBJS) $(DATELIB) $(LIBS
 testmime:	testmime.o mime.o $(DATELIB) $(LIBS)
 	$(CC) $(MODELL) -o $@ $@.o mime.o $(DATELIB) $(LIBS) \
 	 -lreadline -ltermcap $(LDFLAGS)
-
-.c.o:	../Makefile.global
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
 
 # automatic depend
 alias.o: alias.c ../include/config.h ../include/sysdep.h \

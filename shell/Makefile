@@ -62,10 +62,10 @@ uumlist: uumlist.in  ../Makefile.global
 	$(SHELL) ../helpers/subst < uumlist.in > $@
 
 install: $(FILES)
-	install -c -o $(USER) -g $(GROUP) -m 775 $(FILES) $(BINDIR)
+	$(INSTALL_PROGRAM) $(FILES) $(BINDIR)
 
 uninstall:
-	-(cd $(DESTDIR); rm -f $(FILES))
+	-cd $(DESTDIR) && rm -f $(FILES)
 
 distclean:	clean
 	-rm -f $(FILES)

@@ -50,11 +50,10 @@ COBJS	= call.o sysmaster.o filemaster.o $(OBJS)
 all:	$(PROGS)
 
 install:	all
-	cp $(PROGS) $(DESTDIR)
-	( cd $(DESTDIR); chown $(USER) $(PROGS) )
+	$(INSTALL_PROGRAM) $(PROGS) $(DESTDIR)
 
 uninstall:
-	-(cd $(DESTDIR); rm -f $(PROGS))
+	-cd $(DESTDIR) && rm -f $(PROGS)
 
 clean:
 	-rm -f $(CLEANFILES) $(PROGS)
@@ -69,9 +68,6 @@ zcall:	$(COBJS) $(LIBS)
 
 januslogin:	januslogin.o xprog.o lockdev.o lock.o import.o $(LIBS)
 	$(CC) -o januslogin januslogin.o xprog.o lockdev.o lock.o import.o $(LIBS) $(LDFLAGS)
-
-.c.o:	../Makefile.global
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
 
 # automatic depend
 action.o: action.c ../include/config.h ../include/sysdep.h zconnect.h \

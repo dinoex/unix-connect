@@ -28,7 +28,9 @@ install:
 
 clean:
 
-distclean:	clean
+distclean:
+
+maintainer-clean:
 	-rm -f subst subst.in ../configure
 
 subst.in: makesubst ../configure.in
@@ -36,6 +38,6 @@ subst.in: makesubst ../configure.in
 	chmod a+x subst.in
 
 ../configure:	../configure.in
-	(cd ..;  autoconf)
+	cd .. && autoconf
 
 # eof

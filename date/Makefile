@@ -49,9 +49,6 @@ clean:
 
 distclean:		clean
 
-.c.o:	../Makefile.global
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
-
 # automatic depend
 datetok.o: datetok.c ../include/config.h ../include/sysdep.h datetok.h
 getindate.o: getindate.c ../include/config.h ../include/sysdep.h \
