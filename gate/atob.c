@@ -47,8 +47,14 @@
 Angepasst an UnixConnect von Moritz Both
  */
 
-/* #include <stdio.h> */
-#include <string.h>
+#include "config.h"
+
+#ifdef HAVE_STRING_H
+# include <string.h>
+#endif
+#ifdef HAVE_STRINGS_H
+# include <strings.h>
+#endif
 
 #define reg register
 

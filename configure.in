@@ -25,6 +25,7 @@ dnl AC_HEADER_STDC
 dnl AC_HEADER_MAJOR
 dnl AC_HEADER_SYS_WAIT
 dnl AC_CHECK_HEADERS(fcntl.h limits.h paths.h sgtty.h strings.h sys/file.h sys/ioctl.h syslog.h termio.h unistd.h)
+AC_CHECK_HEADERS( string.h strings.h unistd.h)
 
 dnl      checks for typedefs, structures and compiler characteristics
 dnl AC_C_CONST
@@ -196,12 +197,12 @@ dnl in den zweiten Teil sollen mal Heuristiken eingebaut werden
 AC_MSG_CHECKING(Mailsystem)
 AC_ARG_WITH(mail,
 [ --with-mail=typ          Welches Mailsystem wird verwendet?],
-[ 
+[
 if test -f "mail-and-news/$withval/RSMTP" ; then
-  	MAIL=$withval 
+  	MAIL=$withval
 else
   if test -f "mail-and-news/$withval/RSMTP.in" ; then
-  	MAIL=$withval 
+  	MAIL=$withval
   else
   	echo "es gibt kein Mailsystem \"$withval\"."
 	AC_MSG_RESULT(Fehler!)
@@ -215,9 +216,9 @@ AC_SUBST(MAIL)
 AC_MSG_CHECKING(Newssystem)
 AC_ARG_WITH(news,
 [ --with-news=typ          Welches Newssystem wird verwendet?],
-[ 
+[
 if test -d "mail-and-news/$withval" ; then
-  	NEWS=$withval 
+  	NEWS=$withval
 else
   	echo "es gibt kein Newssystem \"$withval\"."
 	AC_MSG_RESULT(Fehler!)
@@ -331,7 +332,7 @@ AC_ARG_WITH(domain,
 DOMAIN=$withval;],[
 if hostname | grep '\.' >/dev/null ; then
 	DOMAIN=`hostname | sed 's/^[[^\.]]*\.//'`
-else 
+else
 	if hostname -f | grep '\.' >/dev/null ; then
 		DOMAIN=`hostname -f | sed 's/^[[^\.]]*\.//'`
 	else
@@ -351,10 +352,10 @@ AC_SUBST(FQDN)
 AC_CHECK_PROGS(INEWS,inews,/usr/lib/news/inews,/usr/lib/news /usr/local/lib/news /usr/news /usr/local/news /usr/lib/news/bin)
 
 AC_MSG_CHECKING(various system-dependent things)
-        SYSUNAME="`uname -s | tr 'A-Z' 'a-z'`"
+SYSUNAME="`uname -s | tr 'A-Z' 'a-z'`"
 
-        if test "$SYSUNAME" = "$HOST" ; then
-                cat <<EOF
+if test "$SYSUNAME" = "$HOST" ; then
+  cat <<EOF
 Ah, der beruechtigte AT&T 'uname' Bug...
 Ist dieses System
 
@@ -364,72 +365,72 @@ Ist dieses System
   4) ein anderes System V vor R4.0
 
 EOF
-                while : ; do
-                        readchar
-                        case "$ERG" in
-                         1) SYSUNAME=svr4;      break;;
-                         2) SYSUNAME=isc;       break;;
-                         3) SYSUNAME=sco;       break;;
-                         4) SYSUNAME=sysv;      break;;
-                        esac
-                done
-        fi
+  while : ; do
+          readchar
+          case "$ERG" in
+           1) SYSUNAME=svr4;      break;;
+           2) SYSUNAME=isc;       break;;
+           3) SYSUNAME=sco;       break;;
+           4) SYSUNAME=sysv;      break;;
+          esac
+  done
+fi
 
-        case "$SYSUNAME" in
-                freebsd)
-                        echo "Konfiguriere fuer FreeBSD..."
-                        SYSTYPE=freebsd
-                       CFLAGS="$CFLAGS -O2 -pipe -Wall"
-                ;;
-                netbsd)
-                        echo "Konfiguriere fuer NetBSD..."
-                        SYSTYPE=netbsd
-                       CFLAGS="$CFLAGS -O2 -pipe -Wall"
-                ;;
-                linux)
-                        echo "Konfiguriere fuer Linux..."
-                        SYSTYPE=linux
-                       CFLAGS="$CFLAGS -O2 -pipe -Wall"
-                       PATHADD=$PATHADD:/usr/lib/news/bin:/usr/local/lib/news/bin
-                ;;
-                bsd/386)
-                        echo "Konfiguriere fuer BSDI BSD/386..."
-                        SYSTYPE=bsdi
-                       CFLAGS="$CFLAGS -O2 -pipe -Wall"
-                ;;
-                svr4)
-                        SYSTYPE=svr4
-                       CFLAGS="$CFLAGS -O"
-                ;;
-                sco*)
-                        echo "Konfiguriere fuer SCO UNIX..."
-                        SYSTYPE=sco
-                       LDFLAGS="$LDFLAGS -lPW"
-                ;;
-                isc*)
-                        echo "Konfiguriere fuer Interactive UNIX..."
-                        SYSTYPE=isc
-                       LDFLAGS="$LDFLAGS -cposix -lPW"
-                ;;
-                unix)
-                        echo "Konfiguriere fuer System V..."
-                        SYSTYPE=sysv
-                       LDFLAGS="$LDFLAGS -lPW"
-                ;;
-                sunos)
-                        echo "Konfiguriere fuer SunOS..."
-                        echo "(ohne gcc sehe ich allerdings offen gesagt schwarz!)"
-                        SYSTYPE=sunos
-                       CFLAGS="$CFLAGS -O"
-                        ;;
-                *)
-                        echo "Diesen Systemtyp kenne ich nicht, mal sehen ob POSIX"
-                        echo "klappt..."
-                        SYSTYPE=svr4
-                       CFLAGS="$CFLAGS -O"
-                        ;;
-        esac
-        CPPFLAGS="$CPPFLAGS -I../include -I../hdlib"
+case "$SYSUNAME" in
+freebsd)
+  echo "Konfiguriere fuer FreeBSD..."
+  SYSTYPE=freebsd
+  CFLAGS="$CFLAGS -pipe -Wall"
+  ;;
+netbsd)
+  echo "Konfiguriere fuer NetBSD..."
+  SYSTYPE=netbsd
+  CFLAGS="$CFLAGS -O2 -pipe -Wall"
+  ;;
+linux)
+  echo "Konfiguriere fuer Linux..."
+  SYSTYPE=linux
+  CFLAGS="$CFLAGS -O2 -pipe -Wall"
+  PATHADD=$PATHADD:/usr/lib/news/bin:/usr/local/lib/news/bin
+  ;;
+bsd/386)
+  echo "Konfiguriere fuer BSDI BSD/386..."
+  SYSTYPE=bsdi
+  CFLAGS="$CFLAGS -O2 -pipe -Wall"
+  ;;
+svr4)
+  SYSTYPE=svr4
+  CFLAGS="$CFLAGS -O"
+  ;;
+sco*)
+  echo "Konfiguriere fuer SCO UNIX..."
+  SYSTYPE=sco
+  LDFLAGS="$LDFLAGS -lPW"
+  ;;
+isc*)
+  echo "Konfiguriere fuer Interactive UNIX..."
+  SYSTYPE=isc
+  LDFLAGS="$LDFLAGS -cposix -lPW"
+  ;;
+unix)
+  echo "Konfiguriere fuer System V..."
+  SYSTYPE=sysv
+  LDFLAGS="$LDFLAGS -lPW"
+  ;;
+sunos)
+  echo "Konfiguriere fuer SunOS..."
+  echo "(ohne gcc sehe ich allerdings offen gesagt schwarz!)"
+  SYSTYPE=sunos
+  CFLAGS="$CFLAGS -O"
+  ;;
+*)
+  echo "Diesen Systemtyp kenne ich nicht, mal sehen ob POSIX"
+  echo "klappt..."
+  SYSTYPE=svr4
+  CFLAGS="$CFLAGS -O"
+  ;;
+esac
+CPPFLAGS="$CPPFLAGS -I../include -I../hdlib"
 
 dnl	paranoid ....
 gcc_warn="-W -Wall -Wimplicit -Wreturn-type -Wunused -Wswitch -Wcomment -Wtrigraphs -Wformat -Wchar-subscripts -Wuninitialized -Wparentheses -Wshadow -Wid-clash-30 -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -Wnested-externs -Woverloaded-virtual -Winline -pedantic -Wconversion -Wtraditional -Wenum-clash -Wmissing-declarations -Wimplicit-int -Wimplicit-function-delcaration -Wredundant-decls -Wbad-function-cast -Wno-import -Wno-parentheses"
@@ -451,7 +452,7 @@ if test $ac_cv_prog_gcc = yes; then
 fi
 echo "$gcc_warn_ok"
 if test "$GCC" = yes; then
-	CFLAGS="$CFLAGS $gcc_warn_ok"
+  CFLAGS="$CFLAGS $gcc_warn_ok"
 fi
 
 
@@ -498,6 +499,6 @@ AC_OUTPUT(Makefile Makefile.global helpers/subst)
 dnl AC_OUTPUT(etc/config.in Makefile Makefile.global helpers/subst)
 
 AC_MSG_RESULT([
-*** Konfiguration abgeschlossen. 
+*** Konfiguration abgeschlossen.
 *** Geben Sie \`make' ein, um Unix-Connect zu compilieren.
 ])

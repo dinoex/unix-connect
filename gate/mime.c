@@ -46,13 +46,14 @@
 #include "utility.h"
 
 #include <stddef.h>
-#include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <stdio.h> /* nur fuer sprintf(...) */
-#include <string.h>
 #include <unistd.h>
-#ifdef HAS_STRINGS_H
+#ifdef HAVE_STRING_H
+#include <string.h>
+#endif
+#ifdef HAVE_STRINGS_H
 #include <strings.h>
 #endif
 #ifdef HAS_BSD_DIRECT
@@ -64,7 +65,7 @@
 #endif
 #include <errno.h>
 #include <sys/stat.h>
-#ifndef NO_UNISTD_H
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 #include <sysexits.h>

@@ -25,7 +25,7 @@
 #include "config.h"
 #include <signal.h>
 #include <stdio.h>
-#ifdef HAS_UNISTD_H
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 

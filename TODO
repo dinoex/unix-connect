@@ -59,3 +59,5 @@ Was kann noch getan werden?
 - TCP/IP support auch in zcall,
   evtl. 'ftp' als Transfer-Protokoll integrieren
 
+- PLUS_OLD_MKTIME automatisch erkennen
+

@@ -47,18 +47,20 @@
 
 #define MODEM_DEBUG
 
-# include "config.h"
-# include <stdio.h>
-# include <stdlib.h>
-# ifndef NO_UNISTD_H
-#	include <unistd.h>
-# endif
-# include "header.h"
-# include "hd_def.h"
-# include "hd_nam.h"
-# include "ministat.h"
-# include "hayes.h"
-# include "track.h"
+#include "config.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
+#endif
+
+#include "header.h"
+#include "hd_def.h"
+#include "hd_nam.h"
+#include "ministat.h"
+#include "hayes.h"
+#include "track.h"
 
 /* Sende ein einzelnes Kommando an das Modem (siehe unten) */
 int do_hayes(const char *command, int modem);

@@ -63,7 +63,7 @@
 #ifdef HAS_SYS_FCNTL_H
 #include <sys/fcntl.h>
 #endif
-#ifndef NO_UNISTD_H
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 
@@ -121,8 +121,7 @@ int import_all(char *arcer, char *sysname, int ist_net38)
 		if(lstat(l->name, &st)) {
 			perror(l->name);
 		} else {
-#ifdef linux
-			if (S_ISREG(st.s_mode) && (nlink_t)1==st.st_nlink) {
+			if (S_ISREG(st.st_mode) && (nlink_t)1==st.st_nlink) {
 			    rc = call_auspack(arcer, l->name);
 			    if (!rc) {
 				myret = 0;
@@ -145,8 +144,11 @@ int import_all(char *arcer, char *sysname, int ist_net38)
 					remove(l->name);
 				}
 			    }
+			} else {
+			   fprintf(stderr,
+				"File hat falschen Link count "
+				"oder ist kein regulaeres File!\n");
 			}
-#endif
 		}
 		returncode |= myret;
 		p = l; l = p->next;

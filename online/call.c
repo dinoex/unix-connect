@@ -293,8 +293,8 @@ int main(int argc, char **argv)
 	online_start = 0;
 	fprintf(stderr, "Netcall bei %s [%s]\n", sysname, tty);
 
-	close(fileno(stdin));
-	close(fileno(stdout));
+	fclose(stdin);
+	fclose(stdout);
 	dup(gmodem); dup(gmodem); DMLOG("dup modem 2x to stdin and stdout");
 
 	if (setjmp(timeout)) {

@@ -50,18 +50,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#ifdef HAS_STRING_H
+#ifdef HAVE_STRING_H
 # include <string.h>
 #endif
-#ifdef HAS_STRINGS_H
+#ifdef HAVE_STRINGS_H
 # include <strings.h>
 #endif
-#include "lib.h"
 #ifdef NEED_VALUES_H
 #include <values.h>
 #endif
 #include <errno.h>
-#ifndef NO_UNISTD_H
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 #include <ctype.h>
@@ -84,6 +83,7 @@
 #include "hd_def.h"
 #include "ministat.h"
 #include "mime.h"
+#include "lib.h"
 #include "uuconv.h"
 #include "gtools.h"
 

@@ -30,7 +30,7 @@ INSTALL_DATA = $(INSTALL) -o $(USER) -g $(GROUP) -m 640
 CFLAGS += -DBINDIR=$(BINDIR) -DETCDIR=$(ETCDIR)
 CFLAGS += -DCONFIG_FILE=\"$(ETCDIR)/config\"
 APCOBJS  = @APCOBJS@
-CLEANFILES = *.o *.a *.bak *.rej *.orig core *.core
+CLEANFILES = *.o *.a *.bak *.BAK *.rej *.orig core *.core
 
 .c.o:   ../Makefile.global
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<

@@ -61,8 +61,7 @@ uumlist: uumlist.in  ../Makefile.global
 	$(SHELL) ../helpers/subst < uumlist.in > $@
 
 install: $(FILES)
-	$(INSTALL_PROGRAM) -b $(FILESBACKUP) $(BINDIR)
-	$(INSTALL_PROGRAM) $(FILESNORMAL) $(BINDIR)
+	$(INSTALL_PROGRAM) $(FILES) $(BINDIR)
 
 uninstall:
 	-cd $(BINDIR) && rm -f $(FILES)
