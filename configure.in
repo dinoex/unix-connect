@@ -195,7 +195,7 @@ AC_MSG_CHECKING(Mailsystem)
 AC_ARG_WITH(mail,
 [ --with-mail=typ          Welches Mailsystem wird verwendet?],
 [ 
-if test -d "mail-and-news/$withval" ; then
+if test -f "mail-and-news/$withval/RSMTP" ; then
   	MAIL=$withval 
 else
   	echo "es gibt kein Mailsystem \"$withval\"."
