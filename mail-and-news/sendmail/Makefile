@@ -38,7 +38,7 @@ include ../../Makefile.global
 
 FILES = zbatchsmtp mail.uuconnect
 
-all: RSMTP uconnect.m4 $(FILES)
+all: $(FILES) RSMTP uconnect.m4
 
 install: $(FILES)
 	$(INSTALL_PROGRAM) $(FILES) $(BINDIR)
@@ -50,7 +50,7 @@ clean:
 	-rm -f $(CLEANFILES)
 
 distclean:	clean
-	-rm -f RSMTP uconnect.m4 $(FILES)
+	-rm -f $(FILES) RSMTP uconnect.m4
 
 zbatchsmtp: zbatchsmtp.in
 	$(SHELL) ../../helpers/subst < zbatchsmtp.in > $@

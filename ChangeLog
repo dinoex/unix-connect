@@ -4,6 +4,12 @@ Aenderungen an UnixConnect
 
 seit 0.88
 
+- Makefile.includes: (Dirk Meyer)
+  aufgelöst.
+
+- shell/auspack.in: (Krischan Jodies) 
+  bei unzip Option "-j" einsetzten.
+
 - CHANGES => ChangeLog
 
 - shell/prearc.in: (Krischan Jodies) (Dirk Meyer)

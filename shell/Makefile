@@ -36,7 +36,6 @@
 #
 
 include ../Makefile.global
-include ../Makefile.includes
 
 FILESKEEP = anruf
 FILESFORCE = auspack einpack import prearc uumlist \
@@ -79,6 +78,9 @@ install: $(FILES)
 
 uninstall:
 	-cd $(BINDIR) && rm -f $(FILES)
+
+clean:
+	-rm -f $(CLEANFILES)
 
 distclean:	clean
 	-rm -f $(FILES)

@@ -16,7 +16,7 @@ clean:
 	-rm -f $(CLEANFILES)
 
 distclean:	clean
-	-rm -f README ucpf.pl $(FILES)
+	-rm -f $(FILES) README ucpf.pl
 
 zbatchsmtp: zbatchsmtp.in
 	$(SHELL) ../../helpers/subst < zbatchsmtp.in > $@

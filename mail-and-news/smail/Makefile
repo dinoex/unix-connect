@@ -35,12 +35,23 @@
 #
 
 include ../../Makefile.global
-include ../../Makefile.includes
 
-all: zbatchsmtp
+FILES = zbatchsmtp
 
-distclean:
-	-rm -f zbatchsmtp
+all: $(FILES)
+
+install: $(FILES)
+	$(INSTALL_PROGRAM) $(FILES) $(BINDIR)
+	
+uninstall:
+	-cd $(BINDIR) && rm -f $(FILES)
+
+clean:
+	-rm -f $(CLEANFILES)
+
+distclean:	clean
+	-rm -f $(FILES)
 
 zbatchsmtp: zbatchsmtp.in
 	$(SHELL) ../../helpers/subst < zbatchsmtp.in > zbatchsmtp
+

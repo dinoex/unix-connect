@@ -3,7 +3,6 @@
 # steht unter der GPL
 
 include ../Makefile.global
-include ../Makefile.includes
 
 FILES=	config approved alias autoeintrag.zconnect myself.zconnect \
 	systems.sample zconnecthosts
@@ -21,6 +20,9 @@ install:
 
 uninstall:
 
-distclean:
+clean:
+	-rm -f $(CLEANFILES)
+
+distclean:	clean
 	-rm -f config
 
