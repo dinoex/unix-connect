@@ -190,17 +190,17 @@ int count_8_bit(const char *string)
 char *mime_encode(const char *iso)
 {
 	char *encoded, *enc;
-	const char *p;
+	const unsigned char *p;
 	int len;
-
-	p=iso;
 
 	/*
 	 * falls noetig, wird konvertiert, ansonsten umkopiert:
 	 */
-	if(is_8_bit(p))
+	if(is_8_bit(iso))
 	{
-		len = strlen("=?ISO-8859-1?Q?")+strlen(iso)+2*count_8_bit(iso)+strlen("?=")+2;
+		p=(const unsigned char *)iso;
+		len = strlen("=?ISO-8859-1?Q?")+
+			strlen(iso)+2*count_8_bit(iso)+strlen("?=")+2;
 		encoded = malloc(len * sizeof(char));
 		if(!encoded)
 			return NULL;
@@ -208,7 +208,7 @@ char *mime_encode(const char *iso)
 		strcpy(encoded,"=?ISO-8859-1?Q?");
 		encoded += strlen("=?ISO-8859-1?Q?");
 
-		for(p=iso; *p; p++)
+		for(p=(const unsigned char *)iso; *p; p++)
 		{
 			if((strchr(specialchar,*p)!=0) || (*p > 0x7E))
 			{
