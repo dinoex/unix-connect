@@ -27,7 +27,7 @@
  *  Bugreports, suggestions for improvement, patches, ports to other systems
  *  etc. are welcome. Contact the maintainer by e-mail:
  *  dirk.meyer@dinoex.sub.org or snail-mail:
- *  Dirk Meyer, Im Grund 4, 34317 Habichstwald
+ *  Dirk Meyer, Im Grund 4, 34317 Habichtswald
  *
  *  There is a mailing-list for user-support:
  *   unix-connect@mailinglisten.im-netz.de,
@@ -72,7 +72,18 @@
  */
 /* Determine bits to clear for the various terminal control fields for
    HAS_SYSV_TERMIO and HAS_POSIX_TERMIOS.  */
+/* Matthias Andree:
+   Entruempelt und CRTSCTS-Handling konsistent gemacht */
 
+/* common for SYSV and POSIX */
+#if defined(HAS_SYSV_TERMIO) || defined(HAS_POSIX_TERMIOS)
+#ifdef NEED_CRTSCTS
+#define ISET_CFLAG (CS8 | CREAD | HUPCL | CRTSCTS)
+#else
+#define ISET_CFLAG (CS8 | CREAD | HUPCL)
+#endif
+#endif
+/* specific */
 #ifdef HAS_SYSV_TERMIO
 #define ICLEAR_IFLAG (IGNBRK | BRKINT | IGNPAR | PARMRK | INPCK \
 		      | ISTRIP | INLCR | IGNCR | ICRNL | IUCLC \
@@ -81,34 +92,23 @@
 		      | OFILL | OFDEL | NLDLY | CRDLY | TABDLY | BSDLY \
 		      | VTDLY | FFDLY)
 #define ICLEAR_CFLAG (/* CBAUD | */ CLOCAL | CSIZE | PARENB | PARODD)
-#ifdef NEED_CRTSCTS
-#define ISET_CFLAG (CS8 | CREAD | HUPCL | CRTSCTS)
-#else
-#define ISET_CFLAG (CS8 | CREAD | HUPCL)
-#endif
 #define ICLEAR_LFLAG (ISIG | ICANON | XCASE | ECHO | ECHOE | ECHOK \
 		      | ECHONL | NOFLSH)
 #endif
 #ifdef HAS_POSIX_TERMIOS
+#define ICLEAR_LFLAG (ECHO | ECHOE | ECHOK | ECHONL | ICANON | IEXTEN \
+		      | ISIG | NOFLSH | TOSTOP)
+#define ICLEAR_OFLAG (OPOST)
 #ifdef SCO
 #define ICLEAR_IFLAG (BRKINT | ICRNL | IGNBRK | IGNCR | IGNPAR \
-                      | INLCR | INPCK ISTRIP \
+                      | INLCR | INPCK | ISTRIP \
                       | PARMRK)
-#define ICLEAR_OFLAG (OPOST)
 #define ICLEAR_CFLAG (CLOCAL | CSIZE | CRTSFL | PARENB | PARODD )
-#define ISET_CFLAG (CS8 | CREAD | HUPCL)
-#define ICLEAR_LFLAG (ECHO | ECHOE | ECHOK | ECHONL | ICANON | IEXTEN \
-                      | ISIG | NOFLSH | TOSTOP)
-
 #else /* !SCO */
 #define ICLEAR_IFLAG (BRKINT | ICRNL | IGNBRK | IGNCR | IGNPAR \
 		      | INLCR | INPCK | ISTRIP | IXOFF | IXON \
 		      | PARMRK)
-#define ICLEAR_OFLAG (OPOST)
 #define ICLEAR_CFLAG (CLOCAL | CSIZE | PARENB | PARODD)
-#define ISET_CFLAG (CS8 | CREAD | HUPCL)
-#define ICLEAR_LFLAG (ECHO | ECHOE | ECHOK | ECHONL | ICANON | IEXTEN \
-		      | ISIG | NOFLSH | TOSTOP)
 #endif /* !SCO */
 #endif
 
@@ -153,24 +153,6 @@ set_rawmode(int mfileno)
 
 	if (ioctl(mfileno, TCGETA, &term) != 0)
 		return;
-#endif
-#ifdef HAS_POSIX_TERMIOS
-	struct termios term;
-
-	if (tcgetattr(mfileno, &term) !=0 )
-		return;
-#endif
-#ifdef HAS_BSD_SGTTY
-	struct sgttyb term;
-
-	if (gtty(mfileno, &term) !=0 )
-		return;
-#endif
-
-#ifdef HAS_BSD_SGTTY
-	term.sg_flags = RAW;
-#endif
-#ifdef HAS_SYSV_TERMIO
 	term.c_lflag &= ~ICLEAR_LFLAG;
 	term.c_iflag &= ~ICLEAR_IFLAG;
 	term.c_oflag &= ~ICLEAR_OFLAG;
@@ -181,15 +163,22 @@ set_rawmode(int mfileno)
 	ioctl(mfileno, TCSETAW, &term);
 #endif
 #ifdef HAS_POSIX_TERMIOS
+	struct termios term;
+	if (tcgetattr(mfileno, &term) !=0 )
+		return;
 	cfmakeraw(&term);
 	term.c_cflag |= ISET_CFLAG;
 	term.c_cflag &= ~CLOCAL;
 	tcsetattr(mfileno, TCSADRAIN, &term);
 #endif
 #ifdef HAS_BSD_SGTTY
+	struct sgttyb term;
+	if (gtty(mfileno, &term) !=0 )
+		return;
+	term.sg_flags = RAW;
 	stty(mfileno, &term);
 #endif
-#ifdef	TIOCCAR
+#ifdef TIOCCAR
 	ioctl(mfileno, TIOCCAR, 0);
 #endif
 }
