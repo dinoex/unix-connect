@@ -4,6 +4,13 @@ Aenderungen an UnixConnect
 
 seit 0.87
 
+- Makefile.global.in, configure.in, mail-and-news/cnews/Makefile, 
+  mail-and-news/no/Makefile, mail-and-news/sendmail/Makefile
+  Copyrights
+
+- Makefile.global.in
+  install-mode mit führender "0"
+
 - configure{,.in}: (Matthias Andree)
   sucht nach innshellvars
 
