@@ -28,20 +28,32 @@ ARC=$2
 shift; shift
 
 case "$KENNUNG" in
- "ZIP" )	ARC=`dirname $ARC`/`basename $ARC .zip`
-		zip $ARC.zip $*	;;
+ "ZIP0" )	ARC=`dirname $ARC`/`basename $ARC .zip`
+		zip -k -0 $ARC.zip $*
+		EC=$? ;;
+ "ZIP1" )	ARC=`dirname $ARC`/`basename $ARC .zip`
+		zip -k $ARC.zip $*
+		EC=$? ;;
+ "ZIP*" )	ARC=`dirname $ARC`/`basename $ARC .zip`
+		zip $ARC.zip $*
+		EC=$? ;;
  "ARC" )	ARC=`dirname $ARC`/`basename $ARC .arc`
-		arc a $ARC.arc $* ;;
+		arc a $ARC.arc $*
+		EC=$? ;;
  "ZOO" )	ARC=`dirname $ARC`/`basename $ARC .zoo`
-		zoo ah $ARC.zoo $* ;;
+		zoo ah $ARC.zoo $*
+		EC=$? ;;
  "LZH" )	ARC=`dirname $ARC`/`basename $ARC .lzh`
-		lha aog0 $ARC.lzh $* ;;
+		lha aog0 $ARC.lzh $*
+		EC=$? ;;
  "LHA" )	ARC=`dirname $ARC`/`basename $ARC .lha`
 		mv $ARC.lha $ARC.lzh
 		lha a $ARC.lzh $*
+		EC=$?
 		mv $ARC.lzh $ARC.lha
 		rm -f $ARC.bak	;;
- "NONE")	cat $* >> $ARC.nar ;;
+ "NON*")	cat $* >> $ARC.non
+		EC=$? ;;
  *)		@SENDMAIL@ postmaster << EOF
 Subject: ZCONNECT Warnung: einpack falsch aufgerufen
 
@@ -49,7 +61,17 @@ Achtung:
 
 	Aufruf von 'einpack' mit illegalen Parametern: $KENNUNG $ARC $*
 EOF
+		exit 1
 		;;
 esac
 
-exit 0
+if [ ${EC} -ne 0 ]
+then
+	@SENDMAIL@ postmaster << EOF
+Subject: ZCONNECT WARNUNG: Fehler beim Packen!
+ 
+$ARC konnte nicht korrekt gepackt werden. Exitcode: $OK
+ 
+EOF
+fi
+exit ${EC}

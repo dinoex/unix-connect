@@ -41,34 +41,54 @@ ARC=$2
 shift; shift
 
 case "$KENNUNG" in
- "zip" | \
- "ZIP" )	name=`dirname $ARC`/`basename $ARC .zip`
+ "zip*" | \
+ "ZIP*" )	name=`dirname $ARC`/`basename $ARC .zip`
 		if [ -r $name.zip ]
 		then
 			ARC="$name".zip
 		fi
-		unzip $ARC ;;
+		unzip $ARC
+		EC=$? ;;
  "arc" | \
  "ARC" )	name=`dirname $ARC`/`basename $ARC .arc`
 		if [ -r $name.arc ]
 		then
 			ARC="$name".arc
 		fi
-		arc x $ARC ;;
+		arc x $ARC
+		EC=$? ;;
  "zoo" | \
  "ZOO" )	name=`dirname $ARC`/`basename $ARC .zoo`
 		if [ -r $name.zoo ]
 		then
 			ARC="$name".zoo
 		fi
-		zoo x $ARC ;;
+		zoo x $ARC
+		EC=$? ;;
+ "arj" | \
+ "ARJ" )	name=`dirname $ARC`/`basename $ARC .arj`
+		if [ -r $name.arj ]
+		then
+			ARC="$name".arj
+		fi
+		unarj e $ARC
+		EC=$? ;;
+ "rar" | \
+ "RAR" )	name=`dirname $ARC`/`basename $ARC .rar`
+		if [ -r $name.rar ]
+		then
+			ARC="$name".rar
+		fi
+		unrar e $ARC
+		EC=$? ;;
  "lzh" | \
  "LZH" )	name=`dirname $ARC`/`basename $ARC .lzh`
  		if [ -r $name.lzh ]
 		then
 			ARC="$name".lzh
 		fi
-		lha xi $ARC ;;
+		lha xi $ARC
+		EC=$? ;;
  "lha" | \
  "LHA" )	name=`dirname $ARC`/`basename $ARC .lha`
 		if [ -r $name.lha ]
@@ -84,13 +104,15 @@ case "$KENNUNG" in
 			fi
 		fi
 		lha xi $ARC ;;
- "none" | \
- "NONE")	name=`dirname $ARC`/`basename $ARC .nar`
-		if [ -r $name.nar ]
+		EC=$? ;;
+ "non*" | \
+ "NON*")	name=`dirname $ARC`/`basename $ARC .non`
+		if [ -r $name.non ]
 		then
-			ARC="$name".nar
+			ARC="$name".non
 		fi
-		cp $ARC .		    ;;
+		cp $ARC "$name".kom
+		EC=$? ;;
  *)		@SENDMAIL@ postmaster << EOF
 Subject: ZCONNECT Warnung: auspack falsch aufgerufen
 
@@ -98,7 +120,7 @@ Achtung:
 
 	Aufruf von 'auspack' mit illegalen Parametern: $KENNUNG $ARC $*
 EOF
+		exit 1
 		;;
 esac
-
-exit 0
+exit ${EC}
