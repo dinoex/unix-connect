@@ -102,11 +102,10 @@ static void parse_alias(header_p p, int v)
 	int ok;
 
 	ok=0;
-	if((m = dstrdup(p->text))) { /* strtok schiesst im String herum */
+	if((m = dstrdup(p->text))) {
 		if((n = strtok(m, sep))) {
 			if((o = strtok(NULL, sep))) {
-				/* sauberer ist das nochmalige Umkopieren */
-				insert(dstrdup(n), dstrdup(o), v);
+				insert(n, o, v);
 				ok=1;
 			}
 		}
