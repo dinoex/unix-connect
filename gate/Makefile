@@ -58,6 +58,8 @@ clean:
 
 distclean:	clean
 
+check:	testmime
+
 uursmtp:	uursmtp.o uuconv.o iso2pc.o $(COMMON) $(APCOBJS) $(DATELIB) $(LIBS)
 	$(CC) $(MODELL) -o $@ $@.o uuconv.o iso2pc.o $(COMMON) $(APCOBJS) $(DATELIB) $(LIBS) $(LDFLAGS)
 
@@ -72,7 +74,7 @@ uurnews:	uurnews.o uuconv.o iso2pc.o $(COMMON) $(APCOBJS) $(DATELIB) $(LIBS)
 
 testmime:	testmime.o mime.o $(DATELIB) $(LIBS)
 	$(CC) $(MODELL) -o $@ $@.o mime.o $(DATELIB) $(LIBS) \
-	 -lreadline -ltermcap $(LDFLAGS)
+	-lreadline -ltermcap $(LDFLAGS)
 
 # automatic depend
 alias.o: alias.c ../include/config.h ../include/sysdep.h \
