@@ -1,6 +1,6 @@
 # archiv-name: newsalias
 #
-# Datum der letzten Aenderung: 20.08.1999
+# Datum der letzten Aenderung: 25.12.1999
 #
 # Hinweise zu der Brett- bzw. Newsgroupnamen-Umsetzungsliste für ZConnect/
 # RFC-News-Gateways
@@ -125,6 +125,7 @@ Alias:	/AMNET/C&C++				amnet.c+c++
 Alias:	/AMNET/AUTO&MOTORRAD			amnet.auto+motorrad
 Alias:	/AMNET/JOKES&STORIES			amnet.jokes+stories
 Alias:	/APC/!WICHTIG				apc._wichtig
+Alias:	/AQUARISTIK/!WICHTIG			aquaristik._wichtig
 Alias:	/BINAER/!FILE_INFO			binaer._fileinfo
 Alias:	/BINAER/!KOORDINATION			binaer._koordination
 Alias:	/BINAER/!WICHTIG			binaer._wichtig
@@ -157,6 +158,12 @@ Alias:	/HRNET/ASIA&PACIFIC			hrnet.asia+pacific
 Alias:	/HRNET/EUROPE&MIDEAST			hrnet.europe+mideast
 Alias:	/HRNET/RACISM&XENOPHOBIA		hrnet.racism+xenophobia
 Alias:	/HRNET/REFUGEES&MIGRATION		hrnet.refugees+migration
+Alias:	/IGUANA-NET/!NETZINFOS			iguana-net.netzinfos
+Alias:	/IGUANA-NET/!SYSOPS			iguana-net.sysops
+Alias:	/IGUANA-NET/HALTUNG&ZUCHT		iguana-net.haltung+zucht
+Alias:	/IGUANA-NET/LITERATUR&REISE		iguana-net.literatur+reise
+Alias:	/IGUANA-NET/TIPS&TRICKS			iguana-net.tips+tricks
+Alias:	/IGUANA-NET/VEREINE&VERBAENDE		iguana-net.vereine+verbaende
 Alias:	/JUSOS/WW/!INFO				jusos.ww._info
 Alias:	/JW/!DISKUSSION				jw._diskussion
 Alias:	/JW/!WICHTIG				jw._wichtig
@@ -248,6 +255,7 @@ Alias:	/SPD/ARCHIV/INNEN/KRIMINALIT„T		spd.archiv.innen.kriminalitt
 #
 # Gruppen die in absehbarer Zeit aus dieser Liste entfernt werden:
 Alias:	/FIDO/ORGANISATION/GEWERKSCHAFT.GER	fido.organisation.gewerkschaft.ger
+Alias:	/FIDO/GER/C&C				fido.ger.c+c
 
 #
 # eof
