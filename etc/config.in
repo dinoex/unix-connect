@@ -154,12 +154,12 @@ Gate-Approved-Liste:               @ETCDIR@/approved
 # anderes als %s unter Path-Default ein.
 
 # Alle mit Path-Qualifier angegebenen Domains erhalten "%s" als Zieladresse.
-Path-Qualifier:         .@DOMAIN@
+Path-Qualifier:         .
 
 # Alle uebrigen Domains bilden die Zieladresse folgendermassen:
 Path-Default:           %s
 
 # Ausnahmen sind Ziel-Adressen in einer der folgenden Domains (fuer die
 # gibt es hier "freie" Routings):
-Local-Domain:           @DOMAIN@
+Local-Domain: 
 
