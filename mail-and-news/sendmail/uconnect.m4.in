@@ -1,5 +1,5 @@
 # .../cf/mailer/uconnect.m4
-# enthält den Sendmail-Mailer Muconnect
+# enthaelt den Sendmail-Mailer Muconnect
 #
 PUSHDIVERT(-1)
 

@@ -1,4 +1,4 @@
-# Makefile für das qmail-Subverzeichnis
+# Makefile fuer das qmail-Subverzeichnis
 
 include ../../Makefile.global
 include ../../Makefile.includes

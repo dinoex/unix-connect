@@ -1,4 +1,4 @@
-# Makefile für das sendmail-Subverzeichnis
+# Makefile fuer das sendmail-Subverzeichnis
 
 include ../../Makefile.global
 

@@ -1,4 +1,4 @@
-# Dummy-Makefile für kein Mail- bzw. kein Newssystem zu konfigurieren
+# Dummy-Makefile fuer kein Mail- bzw. kein Newssystem zu konfigurieren
 all:
 
 install:

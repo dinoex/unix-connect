@@ -1,4 +1,4 @@
-# Makefile für das Postfix-Subverzeichnis
+# Makefile fuer das Postfix-Subverzeichnis
 
 include ../../Makefile.global
 

@@ -25,7 +25,7 @@
  *  Bugreports, suggestions for improvement, patches, ports to other systems
  *  etc. are welcome. Contact the maintainer by e-mail:
  *  dirk.meyer@dinoex.sub.org or snail-mail:
- *  Dirk Meyer, Im Grund 4, 34317 Habichstwald
+ *  Dirk Meyer, Im Grund 4, 34317 Habichtswald
  *
  *  There is a mailing-list for user-support:
  *   unix-connect@mailinglisten.im-netz.de,
@@ -38,7 +38,7 @@
  * readonedir.c
  *
  * baut eine verkettete Liste der Dateinamen im Directory
- * l‰ﬂt . und .. aus
+ * laesst . und .. aus
  *
  */
 

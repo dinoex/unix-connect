@@ -1,4 +1,4 @@
-# Makefile für etc bei unix-connect
+# Makefile fuer etc bei unix-connect
 # (c) Andreas Barth <aba@muenchen.pro-bahn.de> 1999
 # steht unter der GPL
 

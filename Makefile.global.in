@@ -30,7 +30,7 @@ INSTALL = @INSTALL@
 INSTALL_PROGRAM = $(INSTALL) -o $(USER) -g $(GROUP) -m 555
 INSTALL_DATA = $(INSTALL) -o $(USER) -g $(GROUP) -m 640
 
-# jetzt die Definitionen übernehmen
+# jetzt die Definitionen uebernehmen
 CFLAGS += -DBINDIR=$(BINDIR) -DETCDIR=$(ETCDIR)
 CFLAGS += -DCONFIG_FILE=\"$(ETCDIR)/config\"
 CFLAGS += -D_PATH_SENDMAIL=\"$(SENDMAIL)\"

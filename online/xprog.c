@@ -28,7 +28,7 @@
  *  Bugreports, suggestions for improvement, patches, ports to other systems
  *  etc. are welcome. Contact the maintainer by e-mail:
  *  dirk.meyer@dinoex.sub.org or snail-mail:
- *  Dirk Meyer, Im Grund 4, 34317 Habichstwald
+ *  Dirk Meyer, Im Grund 4, 34317 Habichtswald
  *
  *  There is a mailing-list for user-support:
  *   unix-connect@mailinglisten.im-netz.de,
@@ -211,8 +211,8 @@ int recvfile(const char *proto, const char *file)
 	int rc;
 
 	rc = dofile(proto, file, 0);
-	/* einige versiffte Müll-ZModems, namentlich das von
-	   Martin Brückner, schicken defektes Filedatum und defekte
+	/* einige versiffte Muell-ZModems, namentlich das von
+	   Martin Brueckner, schicken defektes Filedatum und defekte
 	   Permissions. Das wird hier gefixt. */
 	if (utime(file, NULL))
 		perror(file); /* korrekte Zeit erzeugen */

@@ -1,4 +1,4 @@
-# Makefile für das inn-Subverzeichnis
+# Makefile fuer das inn-Subverzeichnis
 
 include ../../Makefile.global
 include ../../Makefile.includes

@@ -1,4 +1,4 @@
-# Makefile für das smail-Subverzeichnis
+# Makefile fuer das smail-Subverzeichnis
 
 include ../../Makefile.global
 include ../../Makefile.includes
