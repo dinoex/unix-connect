@@ -102,9 +102,12 @@ static void parse_alias(header_p p, int v)
 	int ok;
 
 	ok=0;
-	if((m = dstrdup(p->text))) {
-		if((n = strtok(m, sep))) {
-			if((o = strtok(NULL, sep))) {
+	m = dstrdup(p->text);
+	if(m) {
+		n = strtok(m, sep);
+		if(n) {
+			o = strtok(NULL, sep);
+			if(o) {
 				insert(n, o, v);
 				ok=1;
 			}
