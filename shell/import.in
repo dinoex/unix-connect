@@ -56,7 +56,9 @@ ende() {
 watch_gate() {
 	errfile="$errfile $1"
 	echo "Gaten fehlgeschlagen $1" >>$temp
-	mv $1 @SPOOLDIR@/error/
+	backup="${sys}-`date +%Y%m%d-%H%M%S`-$$-$1"
+	echo "Die Daten finden sie unter $backup" >>$temp
+	mv $1 @SPOOLDIR@/error/$backup
 }
 
 #
