@@ -156,241 +156,239 @@ static int init_done = 0;
 
 void minireadstat(void)
 {
-	/*
-	 *   Die Konfigurationsdatei wird als ein grosser Header einer
-	 *   Nachricht betrachtet. Auf diese Weise koennen die Routinen
-	 *   zum Lesen von Headerdateien auch zum Lesen der Konfigdatei
-	 *   benutzt werden.
-	 */
-	header_p p;
-	FILE *f;
+  /*
+   *   Die Konfigurationsdatei wird als ein grosser Header einer
+   *   Nachricht betrachtet. Auf diese Weise koennen die Routinen
+   *   zum Lesen von Headerdateien auch zum Lesen der Konfigdatei
+   *   benutzt werden.
+   */
+  header_p p;
+  FILE *f;
 
-	/* Guard gegen Doppel-Aufruf */
-	if (init_done)
-		return;
-	init_done = 1;
+  /* Guard gegen Doppel-Aufruf */
+  if (init_done)
+    return;
+  init_done = 1;
 
-	/* Oeffnen der Konfigurationsdatei */
-	logdir = ".";
-	f = fopen(CONFIG_FILE, "r");
-	if (!f) {
-		fprintf(stderr, "FATAL: kann CONFIG Datei \"%s\" nicht lesen\n", CONFIG_FILE);
-		exit(10);
-	}
+  /* Oeffnen der Konfigurationsdatei */
+  logdir = ".";
+  f = fopen(CONFIG_FILE, "r");
+  if (!f) 
+    uufatal("Konfiguration",
+	    "Kann CONFIG Datei \""CONFIG_FILE"\" nicht lesen");
 
-	config = NULL;
-	/* Einlesen und Abspeichern des Config-"headers" */
-	while (!feof(f)) {
-		p = rd_para(f);
-		if (!p) break;
-		config = join_header(p, config);
-	}
-	fclose(f);
+  config = NULL;
+  /* Einlesen und Abspeichern des Config-"headers" */
+  while (!feof(f)) {
+    p = rd_para(f);
+    if (!p) break;
+    config = join_header(p, config);
+  }
+  fclose(f);
 
-	/* Jetzt suche nach den betreffenden Konfigurations-
-	 * parametern und Eintragen derselben in die passenden
-	 * Variablen.
-	 *
-	 * Fehlt der entsprechende Header, so wird ein Default-
-	 * Wert eingetragen.
-	 *
-	 */
+  /* Jetzt suche nach den betreffenden Konfigurations-
+   * parametern und Eintragen derselben in die passenden
+   * Variablen.
+   *
+   * Fehlt der entsprechende Header, so wird ein Default-
+   * Wert eingetragen.
+   *
+   */
 
-	/* Gate-Alias-Liste: */
-	p = find(HD_GATE_ALIAS_LISTE, config);
-	if (p)
-		aliasliste = dstrdup(p->text);
-	else
-		aliasliste = NULL;	/* Alias'ing ist nicht aktiv */
+  /* Gate-Alias-Liste: */
+  p = find(HD_GATE_ALIAS_LISTE, config);
+  if (p)
+    aliasliste = dstrdup(p->text);
+  else
+    aliasliste = NULL;		/* Aliasing ist nicht aktiv */
 
-	/* Gate-Approved-Liste: */
-	p = find(HD_GATE_APPROVED_LISTE, config);
-	if (p)
-		approvedliste = dstrdup(p->text);
-	else
-		approvedliste = NULL;	/* Keine Approved: Header erzeugen */
+  /* Gate-Approved-Liste: */
+  p = find(HD_GATE_APPROVED_LISTE, config);
+  if (p)
+    approvedliste = dstrdup(p->text);
+  else
+    approvedliste = NULL;	/* Keine Approved: Header erzeugen */
 
-	/* Systeme-Dir: */
-	p = find(HD_SYSTEME_DIR, config);
-	if (!p) {
-		fputs("kein "HN_SYSTEME_DIR" Eintrag in der CONFIG-Datei", stderr);
-		exit(10);
-	}
-	systemedir = dstrdup(p->text);
+  /* Systeme-Dir: */
+  p = find(HD_SYSTEME_DIR, config);
+  if (!p || strlen(p->text)==0)
+    uufatal("Konfiguration",
+	    "kein "HN_SYSTEME_DIR" Eintrag in der CONFIG-Datei");
 
-	/* Logbuch-Dir: */
-	p = find(HD_LOGBUCH_DIR, config);
-	if (!p) {
-		fputs("kein "HN_LOGBUCH_DIR" Eintrag in der CONFIG-Datei", stderr);
-		exit(10);
-	}
-	logdir = dstrdup(p->text);
+  systemedir = dstrdup(p->text);
 
-	/* Lock-Dir: */
-	p = find(HD_LOCK_DIR, config);
-	if (!p) {
-		fputs("kein "HN_LOCK_DIR" Eintrag in der CONFIG-Datei", stderr);
-		exit(10);
-	}
-	lockdir = dstrdup(p->text);
+  /* Logbuch-Dir: */
+  p = find(HD_LOGBUCH_DIR, config);
+  if (!p || strlen(p->text)==0)
+    uufatal("Konfiguration",
+	    "kein "HN_LOGBUCH_DIR" Eintrag in der CONFIG-Datei");
 
-	/* Netcall-Dir: */
-	p = find(HD_NETCALL_DIR, config);
-	if (!p) {
-		fputs("kein "HN_NETCALL_DIR" Eintrag in der CONFIG-Datei", stderr);
-		exit(10);
-	}
-	netcalldir = dstrdup(p->text);
+  logdir = dstrdup(p->text);
 
-	/* Fileserver-Dir: */
-	fileserverdir = NULL;
-	p = find(HD_FILESERVER_DIR, config);
-	if (p) 
-		fileserverdir = dstrdup(p->text);
+  /* Lock-Dir: */
+  p = find(HD_LOCK_DIR, config);
+  if (!p || strlen(p->text)==0)
+    uufatal("Konfiguration",
+	    "kein "HN_LOCK_DIR" Eintrag in der CONFIG-Datei");
 
-	/* Backout-Dir: */
-	backoutdir = NULL;
-	p = find(HD_BACKOUT_DIR, config);
-	if (p) 
-		backoutdir = dstrdup(p->text);
+  lockdir = dstrdup(p->text);
 
-	/* Backin-Dir: */
-	backindir = NULL;
-	p = find(HD_BACKIN_DIR, config);
-	if (p) 
-		backindir = dstrdup(p->text);
+  /* Netcall-Dir: */
+  p = find(HD_NETCALL_DIR, config);
+  if (!p || strlen(p->text)==0)
+    uufatal("Konfiguration",
+	    "kein "HN_NETCALL_DIR" Eintrag in der CONFIG-Datei");
 
-	/* Fileserver-Upload-Dir: */
-	fileserveruploads = NULL;
-	p = find(HD_FILESERVER_UPLOAD_DIR, config);
-	if (p) 
-		fileserveruploads = dstrdup(p->text);
+  netcalldir = dstrdup(p->text);
 
-	/* Arc-Kommando: */
-	p = find(HD_ARC_KOMMANDO, config);
-	if (!p) {
-		fputs("kein "HN_ARC_KOMMANDO" Eintrag in der CONFIG-Datei", stderr);
-		exit(10);
-	}
-	einpack = dstrdup(p->text);
+  /* Fileserver-Dir: */
+  fileserverdir = NULL;
+  p = find(HD_FILESERVER_DIR, config);
+  if (p) 
+    fileserverdir = dstrdup(p->text);
 
-	/* Xarc-Kommando: */
-	p = find(HD_XARC_KOMMANDO, config);
-	if (!p) {
-		fputs("kein "HN_XARC_KOMMANDO" Eintrag in der CONFIG-Datei", stderr);
-		exit(10);
-	}
-	auspack = dstrdup(p->text);
+  /* Backout-Dir: */
+  backoutdir = NULL;
+  p = find(HD_BACKOUT_DIR, config);
+  if (p) 
+    backoutdir = dstrdup(p->text);
 
-	/* Import-Kommando: */
-	p = find(HD_IMPORT_KOMMANDO, config);
-	if (!p) {
-		fputs("kein "HN_IMPORT_KOMMANDO" Eintrag in der CONFIG-Datei", stderr);
-		exit(10);
-	}
-	import_prog = dstrdup(p->text);
+  /* Backin-Dir: */
+  backindir = NULL;
+  p = find(HD_BACKIN_DIR, config);
+  if (p) 
+    backindir = dstrdup(p->text);
 
-	/* Who-Am-I: */
-	p = find(HD_WHO_AM_I, config);
-	if (!p) {
-		fputs("kein "HN_WHO_AM_I" Eintrag in der CONFIG-Datei", stderr);
-		exit(10);
-	}
-	myself = dstrdup(p->text);
+  /* Fileserver-Upload-Dir: */
+  fileserveruploads = NULL;
+  p = find(HD_FILESERVER_UPLOAD_DIR, config);
+  if (p) 
+    fileserveruploads = dstrdup(p->text);
 
-	/* Autoeintrag-Defaults: */
-	autoeintrag = NULL;
-	p = find(HD_AUTOEINTRAG_DEFAULTS, config);
-	if (p) 
-		autoeintrag = dstrdup(p->text);
+  /* Arc-Kommando: */
+  p = find(HD_ARC_KOMMANDO, config);
+  if (!p || strlen(p->text)==0)
+    uufatal("Konfiguration",
+	    "kein "HN_ARC_KOMMANDO" Eintrag in der CONFIG-Datei");
 
-	/* Debuglevel: */
-	debuglevel = 0;
-	p = find(HD_DEBUGLEVEL, config);
-	if (p)
-		debuglevel = atoi(p->text);
+  einpack = dstrdup(p->text);
 
-	/* Ortsnetz: */
-	ortsnetz = NULL;
-	p = find(HD_TEL_ORTSNETZ, config);
-	if (p)
-		ortsnetz = dstrdup(p->text);
+  /* Xarc-Kommando: */
+  p = find(HD_XARC_KOMMANDO, config);
+  if (!p || strlen(p->text)==0)
+    uufatal("Konfiguration",
+	    "kein "HN_XARC_KOMMANDO" Eintrag in der CONFIG-Datei");
 
-	/* Fernwahl: */
-	fernwahl = NULL;
-	p = find(HD_TEL_FERNWAHL, config);
-	if (p)
-		fernwahl = dstrdup(p->text);
+  auspack = dstrdup(p->text);
 
-	/* International: */
-	international = NULL;
-	p = find(HD_TEL_INTERNATIONAL, config);
-	if (p)
-		international = dstrdup(p->text);
+  /* Import-Kommando: */
+  p = find(HD_IMPORT_KOMMANDO, config);
+  if (!p || strlen(p->text)==0)
+    uufatal("Konfiguration",
+	    "kein "HN_IMPORT_KOMMANDO" Eintrag in der CONFIG-Datei");
+
+  import_prog = dstrdup(p->text);
+
+  /* Who-Am-I: */
+  p = find(HD_WHO_AM_I, config);
+  if (!p || strlen(p->text)==0)
+    uufatal("Konfiguration",
+	    "kein "HN_WHO_AM_I" Eintrag in der CONFIG-Datei");
+
+  myself = dstrdup(p->text);
+
+  /* Autoeintrag-Defaults: */
+  autoeintrag = NULL;
+  p = find(HD_AUTOEINTRAG_DEFAULTS, config);
+  if (p) 
+    autoeintrag = dstrdup(p->text);
+
+  /* Debuglevel: */
+  debuglevel = 0;
+  p = find(HD_DEBUGLEVEL, config);
+  if (p)
+    debuglevel = atoi(p->text);
+
+  /* Ortsnetz: */
+  ortsnetz = NULL;
+  p = find(HD_TEL_ORTSNETZ, config);
+  if (p)
+    ortsnetz = dstrdup(p->text);
+
+  /* Fernwahl: */
+  fernwahl = NULL;
+  p = find(HD_TEL_FERNWAHL, config);
+  if (p)
+    fernwahl = dstrdup(p->text);
+
+  /* International: */
+  international = NULL;
+  p = find(HD_TEL_INTERNATIONAL, config);
+  if (p)
+    international = dstrdup(p->text);
 
 
-	/*
-	 *  Liste der lokalen Domains:
-	 */
-	local_domains = NULL;
-	for (p = find(HD_LOCAL_DOMAIN, config); p; p = p->other) {
-		list_t new;
+  /*
+   *  Liste der lokalen Domains:
+   */
+  local_domains = NULL;
+  for (p = find(HD_LOCAL_DOMAIN, config); p; p = p->other) {
+    list_t new;
 
-		strlwr(p->text);
-		new = dalloc(sizeof(node_t));
-		new->next = local_domains;
-		new->text = dstrdup(p->text);
-		local_domains = new;
-	}
+    strlwr(p->text);
+    new = dalloc(sizeof(node_t));
+    new->next = local_domains;
+    new->text = dstrdup(p->text);
+    local_domains = new;
+  }
 
-	p = find(HD_PATH_DEFAULT, config);
-	if (p)
-		default_path = dstrdup(p->text);
-	else
-		default_path = dstrdup("%s");
-	p = find(HD_PATH_QUALIFIER, config);
-	if (p)
-		path_qualifier = dstrdup(p->text);
-	else
-		path_qualifier = NULL;
+  p = find(HD_PATH_DEFAULT, config);
+  if (p)
+    default_path = dstrdup(p->text);
+  else
+    default_path = dstrdup("%s");
+  p = find(HD_PATH_QUALIFIER, config);
+  if (p)
+    path_qualifier = dstrdup(p->text);
+  else
+    path_qualifier = NULL;
 
-	/* System-Name: */
-	p = find(HD_SYSTEM_NAME, config);
-	if (!p) {
-		fputs("kein "HN_SYSTEM_NAME" Eintrag in der CONFIG-Datei\n", stderr);
-		exit(10);
-	}
-	boxstat.boxname = dstrdup(p->text);
+  /* System-Name: */
+  p = find(HD_SYSTEM_NAME, config);
+  if (!p || strlen(p->text)==0)
+    uufatal("Konfiguration",
+	    "kein "HN_SYSTEM_NAME" Eintrag in der CONFIG-Datei\n");
+  boxstat.boxname = dstrdup(p->text);
 
-	/* Gate-Domain: */
-	p = find(HD_GATE_DOMAIN, config);
-	if (!p) {
-		fputs("kein "HN_GATE_DOMAIN" Eintrag in der CONFIG-Datei\n", stderr);
-		exit(10);
-	}
-	boxstat.boxdomain = dstrdup(p->text);
+  /* Gate-Domain: */
+  p = find(HD_GATE_DOMAIN, config);
+  if (!p || strlen(p->text)==0)
+    uufatal("Konfiguration", 
+	    "kein "HN_GATE_DOMAIN" Eintrag in der CONFIG-Datei\n");
+  boxstat.boxdomain = dstrdup(p->text);
 
-	/* Zeitzone: */
-	p = find(HD_ZEITZONE, config);
-	if (!p) {
-		fputs("kein "HN_GATE_DOMAIN" Eintrag in der CONFIG-Datei\n", stderr);
-		exit(10);
-	}
-	sscanf(p->text, "%d", &(boxstat.timezone));
+  /* Zeitzone: */
+  p = find(HD_ZEITZONE, config);
+  if (!p || strlen(p->text)==0)
+    uufatal("Konfiguration", 
+	    "kein "HN_ZEITZONE" Eintrag in der CONFIG-Datei\n");
+  if(sscanf(p->text, "%d", &(boxstat.timezone))<1)
+    uufatal("Konfiguration", 
+	    HN_ZEITZONE" Eintrag in der CONFIG-Datei nicht numerisch: %s\n", p->text);
 
-	/* Sommerzeit: */
-	p = find(HD_SOMMERZEIT, config);
-	if (!p) {
-		struct tm *zeit;
-		time_t now;
+  /* Sommerzeit: */
+  p = find(HD_SOMMERZEIT, config);
+  if (!p) {
+    struct tm *zeit;
+    time_t now;
 		
-		boxstat.sommerzeit = 0;
+    boxstat.sommerzeit = 0;
 
-		now = time(NULL);
-		zeit = localtime( &now );
-		if (zeit->tm_isdst != 0)
-			boxstat.sommerzeit = 1;
+    now = time(NULL);
+    zeit = localtime( &now );
+    if (zeit->tm_isdst != 0)
+      boxstat.sommerzeit = 1;
 
-	} else
-		sscanf(p->text, "%d", &(boxstat.sommerzeit));
+  } else
+    sscanf(p->text, "%d", &(boxstat.sommerzeit));
 }
