@@ -56,6 +56,7 @@ zbatchsmtp
 
 cd @ETCDIR@/systems || exit 1
 
+OK=0
 for sys in *
 do
   if [ -d $SPOOL/$sys ]
@@ -95,23 +96,42 @@ do
 				fi
 			done
 			einpack $arc ../../$sys puffer
-			rm -f *
-			chown @USER@ ../../$sys.* 2> /dev/null
+			OK=$?
+			if [ $OK -eq 0 ]
+			then
+				chown @USER@ ../../$sys.* 2> /dev/null
+				rm -f *
+			fi
 		fi
 		if [ $fmt = "JANUS" ]
 		then
 			einpack $arc ../../$sys *
+			OK=$?
 			chown @USER@ ../../$sys.* 2>/dev/null
 		fi
 		if [ $fmt = "ZCONNECT" ]
 		then
 			einpack $arc ../../prv.$sys *.prv *.eil *.neu 2>/dev/null
-			einpack $arc ../../brt.$sys *.brt 2>/dev/null
-			chown @USER@ ../../prv.$sys.* 2>/dev/null
-			chown @USER@ ../../brt.$sys.* 2>/dev/null
+			OK=$?
+			if [ $OK -eq 0 ]
+			then
+				einpack $arc ../../brt.$sys *.brt 2>/dev/null
+				OK=$?
+			fi
+			if [ $OK -eq 0 ]
+			then
+				chown @USER@ ../../brt.$sys.* 2>/dev/null
+				chown @USER@ ../../prv.$sys.* 2>/dev/null
+			fi
 		fi
 		cd ..
-		rm -rf $TMP
+		if [ $OK -ne 0 ]
+		then
+			echo Prearc: Dateien nicht geloescht. System: $sys
+		else
+			rm -rf $TMP
+		fi
+ 	fi
 	fi
 
 	# Ok, dieses System ist fertig - Lock wieder freigeben

@@ -4,6 +4,9 @@ Aenderungen an UnixConnect
 
 seit 0.88
 
+- shell/prearc.in: (Krischan Jodies) (Dirk Meyer)
+  Fehlerbehandlung erweitert.
+
 - include/istring.h, include/idir.h,
   */*.h, */*.c, */Makefile: (Dirk Meyer)
   includes vereinfacht, Copyrights aktualisiert.
