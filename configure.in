@@ -7,8 +7,6 @@ AC_INIT(mail-and-news)
 dnl AC_CONFIG_HEADER(include/config.h)
 dnl AC_DEFINE_UNQUOTED(CONFIG_FILE,$sysconfdir)
 dnl      checks for programs
-(cd helpers; make subst.in)
-
 dnl      checks for libraries
 dnl      checks for header files
 dnl      checks for typedefs
@@ -421,6 +419,6 @@ dnl AC_MSG_RESULT($shell)
 
 dnl AC_OUTPUT(etc/config.in include/config.h Makefile Makefile.global tools/Makefile hdlib/Makefile date/Makefile online/Makefile lib/Makefile shell/Makefile gate/Makefile etc/Makefile)
 
-AC_OUTPUT(etc/config.in Makefile Makefile.global helpers/subst)
+AC_OUTPUT(Makefile Makefile.global helpers/subst)
 
 dnl AC_OUTPUT(etc/config.in Makefile Makefile.global helpers/subst)

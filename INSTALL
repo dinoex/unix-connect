@@ -1,291 +1,244 @@
 INSTALL - Anleitung zur Installation von UNIX-Connect
 =====================================================
 
-[
-	Dies ist nur eine Kurzversion. Die offizielle Dokumentation
-	zur Installation von UNIX-Connect ist im TeXinfo-Format in der Datei
-	docs/uconn.texi zu finden.
+      Dies ist nur eine Kurzversion. Die offizielle Dokumentation
+      zur Installation von UNIX-Connect ist im TeXinfo-Format in der Datei
+      docs/uconn.texi zu finden.
 
-	Derzeit (v0.71) ist allerdings diese Datei bereits aktualisiert,
-	docs/uconn.texi aber noch auf Stand von v0.53...
-]
+      Derzeit (v0.79) ist allerdings diese Datei bereits aktualisiert,
+      docs/uconn.texi aber noch auf Stand von v0.53...
 
-Vor der Installation des Pakets UNIX-Connect muß auf dem Zielsystem
-ein Mail- und Newssystem existieren. Die Anleitung hierzu würde den
-Rahmen dieses Textes bei weitem sprengen, daher sei hier auf die
-entsprechenden HOWTOs für Linux verwiesen (bei den meisten
-Linux-Installationen unter /usr/doc/faq zu finden, ansonsten auf
-sunsite.unc.edu und ftp-Mirror-Servern) sowie auf
-http://bolug.uni-bonn.de/wissen/mailnews.
+      Diese Datei ist neu geschrieben zur Anpassung an das neue
+      configure-Script von Andreas Barth <aba@muenchen.pro-bahn.de>.
+      Der Fileserver und die Erweiterung für die APC Unix software
+      stehen damit vorübergehend nicht zur Verfügung.
 
-Die Hauptarbeit bei der Installation von UNIX-Connect uebernimmt das Script
-'configure'. Es erfragt interaktiv alle wichtigen Details und richtet das
-Installationsverzeichnis und das Spool-Verzeichnis ein. Sie muessen nur
-ein paar Kleinigkeiten darumherum durchfuehren:
+      Datum: 8. August 1999
 
-  1. Benutzer einrichten
-  2. ./configure (als root, da Directories unter /usr/local/lib erzeugt werden)
-  3. make
-  4. make install (als root, da einige Dateien setuid-mbox installiert werden)
-  5. In Smail und das News-System einbinden
-  6. Crontab bearbeiten
-
-Sollten beim "make" Probleme auftreten, werfen Sie einen Blick in das
-lib-Verzeichnis. Dort finden Sie einige ANSI-Routinen, die auf aelteren 
-Systemen fehlen (strftime). Pruefen Sie ansonsten, ob include/sysdep ein
-Link auf die richtige Konfigurationsdatei ist, und ob deren Inhalt stimmt.
+      Unix-Connect ist freie Software und unterliegt der GPL. Näheres
+      in der Datei COPYING.
 
 
-1. Benutzer einrichten
-----------------------
+Folgendes ist zu tun:
 
-Wenn Sie ZCONNECT, JANUS oder Z3.8 Anrufe entgegennehmen koennen moechten,
+1. Nutzer- / Gruppenkennung
+---------------------------
+
+UNIX-Connect benoetigt eine User-ID, unter der die Gateway-Programme
+arbeiten und Daten an das Mail- und News-System weitergeben. Auch die
+Logfiles gehoeren diesem User und sollten nur von ihm lesbar sein.
+
+Eine passende Nutzer- und Gruppenkennung aussuchen und ggf. anlegen
+
+
+
+2. ./configure <parameter>.
+---------------------------
+
+Im Gegensatz zu früher wird hier wirklich _nur_ konfiguriert,
+Dateien oder Verzeichnisse werden nur _im_ Quellcode-Baum
+angelegt.
+
+Die Parameter können sein:
+
+
+--with-path=path         Path innerhalb von UC (Default=PATH).
+
+Welchen Wert die Variable PATH innerhalb von ZC-Programmen hat.
+Im Path müssen beispielsweise sz/rz gefunden werden können.
+
+--with-dir=dir           In welches Unterverzeichnis die Dateien kommen.
+--with-execdir=dir       In welches Verzeichnis die Programme kommen.
+--with-confdir=dir       In welches Verzeichnis die Konfiguration kommt.
+
+
+Defaultmäßig kommen alle Programme nach <libexedir>/<dir>,
+alle Konfigurationsdateien nach <sysconfdir>/<dir>. Der
+Default für <dir> ist zconnect.
+
+Die Änderungen von --with-execdir und --with-confdir überschreiben
+die von --with-dir.
+
+(siehe auch --prefix, --exec-prefix, --libexecdir, --sysconfdir)
+
+
+--with-spooldir=dir      Spooldir.
+
+Wo die Spoolfiles hinkommen. 
+
+Default: /var/spool/zconnect, falls /var/spool existiert,
+sonst /usr/spool/zconnect
+
+
+--with-user=user         Nutzerkennung für Unix-Connect
+--with-group=group       Gruppenkennung für Unix-Connect
+
+Diese beiden Parameter _müssen_ angegeben werden.
+
+
+--with-box=typ           point, gate, server
+
+UNIX-Connect kann sehr vielseitig einsetzen werden. Die häufigsten
+Konfigurationen sind:
+
+   1) Point:    Als persönliches System. Unix-Connect wird als Point 
+                an einer Z-NETZ MailBox eingesetzt. Achtung, in diesem
+                Fall dürfen keine Daten auf der RFC-Seite weitergegeben
+                werden.
+   2) Gateway:  Der Rechner hat nichts mit dem Z-NETZ zu tun,
+                aber andere Systeme moechten von Ihnen Mail/News
+                per ZCONNECT (bzw. JANUS) beziehen.
+   3) MailBox:  Als MailBox im Z-Netz. UNIX-Connect macht Verbindungen zu
+                anderen MailBoxen sowie zu Points.
+
+Wenn Sie unsicher sind, waehlen Sie die (3). Damit wird eine Vollversion
+installiert.
+Für (1) bitte point, für (2) gate und für (3) server verwenden.
+
+
+
+--disable-real-gate       Nachrichten zurückkonvertieren erlauben.
+
+Falls Sie Verbindungen ins Usenet haben, die nicht über ZConnect-Strecken
+laufen, dürfen Sie Nachrichten, die aus dem Usenet stammen, nicht mehr nach
+RFC zurückwandeln, da diese (prinzipbedingt) verändert worden sind.
+
+UNIX/Connect unterbindet die Rückkonvertierung von Usenet-Artikeln, indem
+beim Konvertieren nach ZConnect ein entsprechender Header gesetzt wird,
+damit sie nicht wieder in das Usenet gesendet werden. Mit dieser Option
+kann das Rückkonvertieren wieder ermöglicht werden.
+
+
+
+--with-mail=typ          Welches Mailsystem wird verwendet?
+--with-news=typ          Welches Newssystem wird verwendet?
+
+Es gibt folgende Mailsysteme:
+sendmail, smail und qmail
+
+Es gibt folgende Newssysteme:
+cnews, inn
+
+Wird nichts angegeben, dann wird "no" gewählt. Damit wird nur
+ein Minimal-System installiert. Bitte die READMEs in 
+mail-and-news/<...> beachten.
+
+
+
+--with-apc               APC einkompilieren (meist unnötig).
+
+Hiermit wird eine sehr selten benoetigte Erweiterung fuer
+spezielle Binaermails hereincompiliert (fuer APC Unix software).
+
+
+--enable-bang            Keine Bang-Pfade verwenden.
+
+UNIX-Connect erzeugt Nachrichten im BSMTP-Format. Für die
+Weiterverarbeitung mit UUCP-Programmen sollten die Envelope-Adressen
+in Bang-Notation erzeugt werden, für die Weiterverarbeitung mit qmail
+nicht. Den meisten Programmen ist es egal.
+
+
+--with-dialprae=code      Wählcode (Default=atdt).
+
+Was einem Wählbefehl vorausgestellt werden soll. Im Zweifelsfall auch den
+Rauswahlcode für die Nebenstellenanlage angeben (zB atdp0,).
+
+
+--with-ortswahl=code      Ortsvorwahl (Default=0).
+--with-intwahl=code       Internationale Vorwahl (Default=00).
+
+Eigentlich selbsterklärend.
+
+
+--with-sys=sys           Systemname.
+--with-domain=domain     Domainname.
+
+dito.
+
+
+
+Die Dateien include/policy.h, include/config.h, include/sysdep.h,
+Makefile und Makefile.global können vor dem Übersetzen angeschaut
+und evtl. korregiert werden. Vor dem Installieren sollen die
+Dateien in etc/, insbesondere etc/myself.zconnect und myself.config,
+angepasst werden. Die Dateien in etc werden nur installiert, wenn
+sie noch nicht vorhanden sind.
+
+
+3. Übersetzen
+-------------
+
+make
+
+
+4. Installieren
+---------------
+
+make install
+
+make install
+muß von Root ausgeführt werden.
+
+
+
+5. Points/Systeme anlegen
+-------------------------
+
+Für jedes bekannte System (auch Points) muß eine Datei in 
+zcondir/systems vorhanden sein. Das nähere dazu steht
+in README.systeme.
+
+
+
+6. Login-Accounts einrichten
+----------------------------
+
+Wenn Sie ZCONNECT oder JANUS Anrufe entgegennehmen koennen moechten,
 brauchen Sie einen Login fuer das jeweilige Verfahren:
 
    Login         Verfahren        Bemerkung
  -----------------------------------------------------------------------
-   zerberus      Netcall-3.8      Funktioniert nicht sicher, 
    janus         JANUS            der Login-Prompt muss "Username:" sein.
-                                  (janus und zerberus sind identisch,
-                                  uebertragen aber andere Datenformate)
    zconnect      ZCONNECT-3.1     Login-Prompt muss "ogin" oder "ame"
                                   enthalten (Gross/Kleinschreibung wird
                                   ignoriert)
  -----------------------------------------------------------------------
 
-Zusaetzlich brauchen Sie noch einen Pseudo-User ohne Login-Moeglichkeit.
-Wenn Sie nur selbst anrufen (z.B. als Point) ist dieser letzte der einzig
-noetige User-Eintrag:
+Es müssen login-Möglichkeiten für janus und zconnect geschaffen werden.
+Nach dem Einloggen muß Zugriff auf die Dateien geschaffen werden, sprich
+die Programme müssen unter der User-ID der bei configure angegebenen
+Kennung laufen.
 
-  zconnect                               Die drei Pseudo-Benutzer fuer
-  janus                                  die Online-Uebertragung. Alle
-  zerberus                               mit Gruppe "uucp".
-  mbox                                   Der Besitzer der Logfiles und der
-                                         Netcall-Dateien. Kann z.B. auch
-                                         "uucp" sein. Alle Programme werden
-                                         setuid "mbox" installiert.
+Als Alternative zum Eintrag in die Passwort-Datei kann auch mittels
+mgetty der Login realisiert werden.
 
-Der Benutzer "mbox" wird nur intern verwendet, um Logfiles mit rw-------
-Rechten versehen zu koennen (Datenschutz). Wenn Sie den Namen "mbox" nicht
-verwenden wollen oder koennen, erfragt configure einen anderen Namen.
 
 
-Die entsprechenden Eintraege in /etc/passwd koennen z.B. so aussehen:
+7. In das Mail- und Newssystem einbinden
+----------------------------------------
 
-zerberus:x:1008:1:NETCALL3.8 Datenaustausch:/pub:/usr/local/lib/zconnect/net38login
-janus:x:1008:1:JANUS Datenaustausch:/pub:/usr/local/lib/zconnect/januslogin
-zconnect:x:1008:1:ZCONNECT Datenaustausch:/pub:/usr/local/lib/zconnect/receiver
-mbox:x:207:102:UNIX Connect:/tmp:/noshell
+Bitte in den passenden READMEs in den Unterverzeichnissen von
+mail-and-news nachschauen, wie das beim jeweiligen System geht.
 
-Hier wird eine uid mit drei Logins (zconnect, janus, zerberus) verwendet.
 
 
-2. configure
-------------
+8. Mail und News regelmäßig packen
+----------------------------------
 
-Starten Sie als 'root' das Shell-Script 'configure'. In der Regel wird es
-genuegen, wenn Sie "./configure" eingeben. Sollte Ihr Betriebssystem daraufhin
-nicht /bin/sh zur Interpretation des Scriptes benutzen, starten Sie es 
-stattdessen mit "sh configure".
+Wenn andere Systeme anrufen, so müssen regelmäßig die Daten gepackt
+werden. Dies kann beispielsweise durch Aufruf von <bindir>/prearc
+aus der Root-Crontab erfolgen.
 
+Außerdem sollten hin und wieder die back*-Verzeichnisse aufgeräumt
+werden.
 
-3. make
--------
 
-Nachdem 'configure' die noetigen Makefile's erstellt hat, koennen Sie die
-Sourcen uebersetzen. Dabei sollten keine Probleme auftreten. Wenn Sie gcc 
-einsetzen und als Option '-Wall' aktiviert haben, bekommen Sie zwei 
-Warnungen "array index is of type char". Sie koennen diese Warnungen
-ignorieren, sie entstehen im von 'gperf' generierten Code und sind daher
-ohne Eingriff in 'gperf' nicht trivial beseitigt werden.
+9. Fertig
+---------
 
-Alle anderen Warnungen sollten Sie sehr ernst nehmen und beseitigen - sie
-weisen auf eine ungenuegende Portierung auf Ihr Betriebssystem hin.
+Viel Spaß.
 
 
-4. make install
----------------
 
-Nach der erfolgreichen compilierung aller Programme koennen die Binaries
-mit Hilfe von "make install" (als root) installiert werden. Dabei werden
-auch die Benutzer und Rechte richtig gesetzt; einige Programme laufen
-setuid "mbox".
-
-
-
-5. In Smail und das News-System einbinden
------------------------------------------
-
-Die Integration von UNIX-Connect in das Mail- und Newssystem erfolgt in
-der Richtung ZCONNECT -> Mail/News vollautomatisch: durch die bereits fuer
-UUCP vorhandenen Standardschnittstellen "rnews" und "rsmtp" werden Daten
-direkt eingespeist (eine Pipe aus dem Gateway-Prozess in das entsprechende
-Programm).
-
-In der anderen Richtung ist es etwas komplizierter:
-
- - News
-
-   Im Unterverzeichnis ./mail-and-news/cnews bzw. INN liegen Beispiele fuer die 
-   Integration in das News-System. Falls gewuenscht, kann nach einem
-   News-Batcher-Lauf sofort ein Aufruf von /usr/local/lib/zconnect/prearc
-   erfolgen, indem dieser in das Batcher-Script integriert wird. Aber Vorsicht:
-   prearc muss derzeit als root laufen!
-
- - SMail
-
-   Neben den ueblichen Routing-Eintraegen (fuer Points: smart_path und
-   smart_transport, fuer Systeme in der Regel forcepaths) und der Anbindung
-   des passenden Transports "zconnect" muessen Sie SMail noch den Transport
-   "zconnect" erstmalig beibringen. Fuegen Sie dazu die Datei 
-   mail-and-news/smail/transports in Ihre Datei /usr/lib/smail/transports
-   ein. Der darin beschriebene Transport "zconnect" ermoeglicht smail
-   die Zustellung ueber die Unix-Connect Gateway-Programme.
-   Er erfordert ein eigenes Smail-Spool-Verzeichnis fuer
-   jedes System (z.B. /var/spool/smail/z-outq/bionic.zer.de fuer das
-   System bionic.zer.de). Dieses Verzeichnis muessen Sie manuell anlegen!
-
-   Nachdem der Transport "zconnect" bekannt ist, muessen Sie Smail
-   mitteilen, welche Systeme Daten per ZCONNECT bekommen (es sei denn,
-   Sie sind Point und benutzen die unten beschriebene "smart_path"
-   Methode - in diesem Fall brauchen Sie an dieser Stelle gar nichts
-   tun). Dazu dienen die Dateien im "/usr/lib/smail/methods" Verzeichnis.
-   Hier finden Sie meist eine einzige Datei ("table" oder "paths"), in der 
-   Sie fuer ZCONNECT-Systeme einen Eintrag wie diesen vornehmen:
-
-	bionic.zerberus.de	zconnect
-
-   Dann muessen Sie noch das Routing fuer die ZCONNECT Systeme eintragen.
-   Falls Sie selbst nur Point sein moechten, benutzen Sie am einfachsten
-   das Default-Routing: tragen Sie in /usr/lib/smail/config die folgenden
-   Zeilen ein:
-
-	smart_path=bionic.zerberus.de
-	smart_transport=zconnect
-
-   Wenn Sie selbst noch andere Verbindungen haben oder Internet-System
-   sind, werden Sie das Routing fuer die ZCONNECT-Systeme wahrscheinlich
-   ueber den Forcepaths-Router vornehmen. Welche Paths-Datei dazu benutzt
-   wird, steht im "forcepaths" Eintrag der Datei /usr/lib/smail/routers.
-
-   Wichtig: da ZCONNECT-Adressen immer vollstaendig domainisiert sein 
-   muessen, ist die Path-Datei entsprechend einzurichten:
-
-	hsp.owl.de	bionic.zerberus.de!hsp.owl.de!%s
-
-   Hier sollte auf das zerberus.de bzw. owl.de weder bei bionic noch bei hsp
-   verzichtet werden.  (Ersterers fuehrt zu anderen Aufrufparametern des
-   Gateway-Programms, letzeres liefert Zieladressen ohne Domain, was in
-   ZCONNECT verboten ist).
-
-   Sie koennen das Ergebnis Ihrer Bemuehungen mit dem "pathto"-Befehl 
-   pruefen. "pathto -vdsnt padeluun@bionic.zerberus.de" liefert hier:
-
-	Verfahren   Route-System          Adresse
-	---------------------------------------------------
-	zconnect    bionic.zerberus.de :: padeluun@bionic.zerberus.de
-
-
-
-6. Crontab bearbeiten
----------------------
-
-Etwa einmal pro Stunde (oder auch haeufiger) sollte 
-/usr/local/lib/zconnect/prearc von der root-crontab ausgefuehrt werden.
-
-In Point-Konfigurationen koennen Sie sich dies sparen und stattdessen das
-Script '/usr/local/lib/zconnect/anruf' auf Ihre Verhaeltnisse anpassen
-und zum Anruf beim Server verwenden.
-
-Gelegentlich ;-) sollten die Backin- und Backout-Verzeichnisse aufgerauemt
-werden. Dies kann z.B. einmal pro Nacht geschehen. Eine Moeglichkeit dazu
-ist ein Befehl wie etwa dieser:
-
-find /var/spool/zconnect/backin -mtime +3 -exec rm -f '{}' \;
-
-
-************
-** ANHANG **
-************
-
-
-Die Directories
----------------
-
-Alle Programme und Shell-Scripte liegen im Verzeichnis /usr/local/lib/zconnect
-(in config.h einstellbar). Je nach Installation (z.B. fuer einen Point)
-entfallen einige Dateien oder Directories. 'configure' beruecksichtigt
-das.
-
-
-  /usr/local/lib/zconnect                Binaer- und Konfigurationsverzeichnis
-
-  /usr/local/lib/zconnect/systems        Daten ueber erreichbare Systeme
-
-  /usr/local/lib/zconnect/net            Netzlisten der diversen Gates
-  /usr/local/lib/zconnect/org            ORG-Listen der diversen Gates
- 
-  /var/spool/zconnect                    Spool-Dir fuer die Netcalls (schon
-                                         komprimiert)
-  /var/spool/zconnect/(sys)              Das individuelle Spool-Dir fuer
-                                         die noch nicht komprimierten Daten.
-					 Waehrend des Vorpackens (Script prearc)
-					 werden hier temporaere Unterverzeichnisse
-					 erzeugt.
-  /var/spool/smail/z-outq/(sys)          Spool-Directories fuer smail, siehe
-                                         die Integration in smail.
-
-
-Systeme eintragen
------------------
-
-ZCONNECT traegt neue Systeme beim ersten Anruf automatisch ein.
-
-JANUS und ZNETZ Systeme koennen von Hand eingetragen werden, indem Sie
-
-  1) Ein Directory mit dem Systemnamen (kleingeschrieben) unter 
-     /var/spool/zconnect einrichten (Besistzer: der entsprechende
-     Online-User, also janus oder zerberus). Benutzen Sie immer den
-     vollstaendigen Namen des Systems (also incl. Domain).
-
-  2) Eine Header-Datei mit dem Namen des Systems im Verzeichnis
-     /usr/local/lib/zconnect/systems anlegem. Beispiel fuer eine
-     solche Datei (bi-link.owl.de):
-
-        Sys:            bionic
-        Domain:         zerberus.de
-        Passwd:         sdfsdf
-        ArcerOut:       ARC
-        ArcerIN:        ARC
-        Tel:            1 +49-521-68000
-        Proto:          ZMODEM
-        X-Call:         JANUS
- 
-    Der Wert fuer X-Call: muss eines der drei Netcall-Formate ZNETZ, JANUS
-    oder ZCONNECT sein. Bitte dabei auf Grossschreibung und Tipfehler achten,
-    ansonsten funkioniert "prearc" nicht.
-
-    'configure' erzeugt bei der Installation bereits einen vollstaendigen
-    Eintrag fuer ein System - sie koennen diesen Kopieren und bearbeiten,
-    um weitere einzutragen.
-
- 3) Ein smail-Spool-Verzeichnis in /var/spool/smail/z-outq anlegen.
-
-Wichtig: Systemnamen immer vollstaendig (inclusive Domain) angeben!
-
-Und natuerlich das ganze in die Mail- und Newskonfiguration eintragen
-(sprich: smail auch das Routing fuer das neue System bekannt geben)
-
-
-Points  (wie Sie als MailBox einen Point eintragen)
-------
-
-Ein Point ist ein "ganz normales" System, dessen Absenderadresse aber auf
-den Namen des zugehoerigen lokalen Benutzers gemapt werden. Ein Point ist
-durch mindestens einen "Point-User: <adresse>" Eintrag in seiner
-Systems-Datei beschrieben. Es koennen mehrere Point-User: vorhanden sein,
-jeder dieser Adressen wird dann als Absender akzeptiert, alle anderen
-Absender werden durch den ersten Point-User: ersetzt. Die Adresse sollte
-komplett mit Realname angegeben werden.
-
-
+Andi Barth <aba@muenchen.pro-bahn.de>

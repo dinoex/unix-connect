@@ -68,8 +68,6 @@ clobber:
 
 tidy:	clobber
 	for dir in $(SUBDIRS); do (cd $$dir; $(MAKE) tidy); done
-	-rm -f configure.dat
-	-rm -f .makefile.conf
 	-rm -f Makefile.global Makefile
 	-rm -f config.cache config.log config.status
 	-rm -f include/sysdep.h include/policy.h

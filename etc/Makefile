@@ -6,10 +6,10 @@ include ../Makefile.global
 
 FILES=config approved alias autoeintrag.zconnect myself.zconnect
 
-config: config.in ../Makefile.global
-	sed "s=@ETCDIR@=$(ETCDIR)=; s=@BINDIR@=$(BINDIR)=; s=@SPOOLDIR@=$(SPOOLDIR)=" < config.in > config
-
 all: config
+
+config: config.in ../Makefile.global
+	$(SHELL) ../helpers/subst < config.in > config
 
 install:
 	for i in $(FILES); do \
@@ -22,5 +22,5 @@ clean:
 clobber:
 
 tidy:
-	-rm -f config config.in
+	-rm -f config
 
