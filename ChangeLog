@@ -2,6 +2,19 @@ $Id$
 
 Aenderungen an UnixConnect
 
+seit 0.92
+
+- include/mime.h, gate/mime.c, gate/uuwnews.c, gate/uuwsmtp.c,
+  gate/uurnews.c, gate/uursmtp.c, gate/uuconv.c: (Detlef Würkner)
+  Unbekannte Charsets durchreichen.
+
+- gate/uuwnews.c, gate/uuwsmtp.c: (Detlef Würkner)
+  Content-Type: text/plain; charset=iso-8859-15 wird erkannt.
+
+- gate/mime.c: (Detlef Würkner)
+  Content-Type: text/plain; charset="ISO-8859-7" jetzt erkannt.
+  Content-Type: text/plain; charset=iso-8859-15 wird erkannt.
+
 seit 0.91
 
 - online/januslogin.c: (Dirk Meyer)
