@@ -2,6 +2,13 @@ $Id$
 
 Aenderungen an UnixConnect
 
+seit 0.93
+
+- mail-and-news/postfix/Makefile, mail-and-news/postfix/RSMTP,
+  mail-and-news/postfix/run_as.c: (Matthias Andree)
+  Postfix muss beim rsmtp sein "sendmail -bs" als Benutzer "postfix"
+  (nicht root) laufen haben, sonst funktionieren die Spamfilter nicht.
+
 seit 0.92
 
 - Makefile.in: (Dirk Meyer)
