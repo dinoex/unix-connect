@@ -1,11 +1,11 @@
 /* $Id$ */
 /*
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
- *  Copyright (C) 1993-94  Martin Husemann
- *  Copyright (C) 1995-98  Christopher Creutzig
- *  Copyright (C) 1999     Andreas Barth, Option "-p"
- *  Copyright (C) 1999     Matthias Andree, Option "-s"
- *  Copyright (C) 1996-99  Dirk Meyer
+ *  Copyright (C) 1993-1994  Martin Husemann
+ *  Copyright (C) 1995-1998  Christopher Creutzig
+ *  Copyright (C) 1999       Andreas Barth, Option "-p"
+ *  Copyright (C) 1999       Matthias Andree, Option "-s"
+ *  Copyright (C) 1996-2000  Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -119,25 +119,18 @@ static char *reverspath = NULL;
 static forward_p fwdpaths = NULL;
 extern char wab_name[], wab_host[], wab_domain[];
 
-const char *fqdn = NULL;
-
 void
 usage(void)
 {
 	fputs(
 "UUrsmtp  -  RFC821/822 Batch nach ZCONNECT konvertieren\n"
 "Aufrufe:\n"
-"        uursmtp (BSMTP-Datei) (ZCONNECT-Datei)\n"
+"        uursmtp2 (BSMTP-Datei) (ZCONNECT-Datei)\n"
 "          alter Standard, Eingabedatei wird geloescht\n"
-"        uursmtp -f (FQDN-ZCONNECT-Host)\n"
-"          alter Standard, Eingabe von stdin,\n"
-"          Ausgabedatei wird im Verzeichns des Systems erzeugt.\n"
-"        uursmtp -d (BSMTP-Datei) (ZCONNECT-Datei)\n"
+"        uursmtp2 -d (BSMTP-Datei) (ZCONNECT-Datei)\n"
 "          Modus mit hoechster Sicherheit, oder zum Testen.\n"
-"        uursmtp -p [ (FQDN-ZCONNECT-Host) ]\n"
+"        uursmtp2 -p\n"
 "          Echte Pipe\n"
-"        uursmtp -s (FQDN-ZCONNECT-host) (Absender) (Empfaenger) [...]\n"
-"          Einzelne Nachricht in der Pipe mit Envelope Daten\n"
 , stderr);
 	exit( EX_USAGE );
 }
@@ -148,25 +141,18 @@ do_help(void)
 	fputs(
 "UUrsmtp  -  convert RFC821/822 BSMTP mail-batch to zconnect\n"
 "usage:\n"
-"        uursmtp BSMTP-file ZCONNECT-file\n"
+"        uursmtp2 BSMTP-file ZCONNECT-file\n"
 "          old interface, BSMTP-file will be deleted\n"
-"        uursmtp -f FQDN-ZCONNECT-host\n"
-"          old interface, BSMTP input will be read from stdin\n"
-"          outfile will be generated in the directory of the host.\n"
-"        uursmtp -d BSMTP-file ZCONNECT-file\n"
+"        uursmtp2 -d BSMTP-file ZCONNECT-file\n"
 "          secure mode, no delete, no directory search.\n"
-"        uursmtp -p [ FQDN-ZCONNECT-host ]\n"
-"        uursmtp --pipe\n"
+"        uursmtp2 -p\n"
+"        uursmtp2 --pipe\n"
 "          full Pipe\n"
-"        uursmtp -s [ FQDN-ZCONNECT-host ] Sender To [To ...]\n"
-"        uursmtp --smtp [ FQDN-ZCONNECT-host ] Sender To [To ...]\n"
-"          SMTP input from stdin, envelope in commandline\n"
-"          outfile will be generated in the directory of the host.\n"
-"        uursmtp --output ZCONNECT-file [ --remove ] BSMTP-file\n"
+"        uursmtp2 --output ZCONNECT-file [ --remove ] BSMTP-file\n"
 "          gnu standard\n"
-"        uursmtp --version\n"
+"        uursmtp2 --version\n"
 "          print version and copyright\n"
-"        uursmtp --help\n"
+"        uursmtp2 --help\n"
 "          print this text\n"
 "\n"
 "Report bugs to dirk.meyer@dinoex.sub.org\n"
@@ -183,12 +169,11 @@ main(int argc, const char *const *argv)
 	const char *remove_me;
 	const char *input_file;
 	const char *output_file;
-	char *dir_name;
 	int ready;
 	int smtp;
 	char ch;
 
-	initlog("uursmtp");
+	initlog("uursmtp2");
 	minireadstat();
 	srand( (unsigned) time(NULL));
 
@@ -204,7 +189,6 @@ main(int argc, const char *const *argv)
 	remove_me = NULL;
 	input_file = NULL;
 	output_file = NULL;
-	dir_name = NULL;
 	fin = NULL;
 	fout = NULL;
 	ready = 0;
@@ -229,7 +213,6 @@ main(int argc, const char *const *argv)
 						usage();
 					GET_NEXT_DATA( cptr );
 					output_file = cptr;
-					fqdn = NULL;
 					ready ++;
 					break;
 				};
@@ -250,17 +233,6 @@ main(int argc, const char *const *argv)
 					ready ++;
 					break;
 				};
-				if ( stricmp( cptr, "smtp" ) == 0 ) {
-					if ( ready != 0 )
-						usage();
-					input_file = "-";
-					/* Ein Argument ist Systenmane */
-					GET_NEXT_DATA( cptr );
-					fqdn = cptr;
-					ready ++;
-					smtp ++;
-					break;
-				};
 				usage();
 				break;
 			case 'o':
@@ -268,7 +240,6 @@ main(int argc, const char *const *argv)
 					usage();
 				GET_NEXT_DATA( cptr );
 				output_file = cptr;
-				fqdn = NULL;
 				ready ++;
 				break;
 			case 'd':
@@ -288,31 +259,6 @@ main(int argc, const char *const *argv)
 				input_file = "-";
 				output_file = "-";
 				ready ++;
-				/* Ein Argument ist Systenmane */
-				argv++; argc--; cptr = *argv;
-				if ( cptr != NULL ) {
-					/* Optional */
-					fqdn = cptr;
-				};
-				break;
-			case 'f':
-				if ( ready != 0 )
-					usage();
-				input_file = "-";
-				/* Ein Argument ist Systenmane */
-				GET_NEXT_DATA( cptr );
-				fqdn = cptr;
-				ready ++;
-				break;
-			case 's':
-				if ( ready != 0 )
-					usage();
-				input_file = "-";
-				/* Ein Argument ist Systenmane */
-				GET_NEXT_DATA( cptr );
-				fqdn = cptr;
-				ready ++;
-				smtp ++;
 				break;
 			default:
 				usage();
@@ -340,14 +286,6 @@ main(int argc, const char *const *argv)
 			continue;
 		};
 		/* zweites freies Argument */
-		if ( ( fqdn == NULL )
-		&& ( output_file == NULL ) ) {
-			/* Argument ist Ausgabe-Datei */
-			output_file = cptr;
-			ready ++;
-			continue;
-		};
-		/* weitere Argumente */
 		usage();
 	};
 	if ( ready == 0 )
@@ -365,34 +303,12 @@ main(int argc, const char *const *argv)
 			name, input_file, strerror( errno ) );
 		exit( EX_CANTCREAT );
 	};
-	if ( fqdn != NULL ) {
-#ifdef ENABLE_SPOOLDIR_SHORTNAME
-		char *p, *p1;
-#endif
-
-		strcpy(datei, netcalldir);
-		strcat(datei, "/");
-		strcat(datei, fqdn);
-#ifdef ENABLE_SPOOLDIR_SHORTNAME
-		p = strrchr(datei, '/');
-		if (p) {
-			p1 = strchr(p+1, '.');
-			if (p1) *p1 = '\0';
-		}
-#endif
-		strcat(datei, "/");
-		dir_name = dstrdup( datei );
-		fout = open_new_file( name, dir_name, ".prv" );
-		dfree( dir_name );
-		output_file = datei;
+	if ( output_file == NULL )
+		usage();
+	if ( strcmp( output_file, "-" ) == 0 ) {
+		fout = stdout;
 	} else {
-		if ( output_file == NULL )
-			usage();
-		if ( strcmp( output_file, "-" ) == 0 ) {
-			fout = stdout;
-		} else {
-			fout = fopen( output_file, "ab");
-		}
+		fout = fopen( output_file, "ab");
 	};
 	if ( fout == NULL ) {
 		fprintf( stderr,

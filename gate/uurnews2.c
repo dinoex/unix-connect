@@ -1,10 +1,10 @@
 /* $Id$ */
 /*
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
- *  Copyright (C) 1993-94  Martin Husemann
- *  Copyright (C) 1995-98  Christopher Creutzig
- *  Copyright (C) 1999     Andreas Barth, Option "-p"
- *  Copyright (C) 1996-99  Dirk Meyer
+ *  Copyright (C) 1993-1994  Martin Husemann
+ *  Copyright (C) 1995-1998  Christopher Creutzig
+ *  Copyright (C) 1999       Andreas Barth, Option "-p"
+ *  Copyright (C) 1996-2000  Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -91,7 +91,6 @@ static char *bigbuffer	= NULL;
 static char *readbuffer	= NULL;
 size_t buffsize = 0;	/* gegenwaertig allokierte Buffer-Groesse */
 
-const char *fqdn = NULL;
 int main_is_mail = 0;	/* Nein, wir sind nicht fuer PM EMP:s zustaendig */
 
 void
@@ -100,14 +99,14 @@ usage(void)
 	fputs(
 "UUrnews  -  RFC1036 Batch nach ZCONNECT konvertieren\n"
 "Aufrufe:\n"
-"        uurnews (RNEWS-Datei) (ZCONNECT-Datei)\n"
+"        uurnews2 (RNEWS-Datei) (ZCONNECT-Datei)\n"
 "          alter Standard, Eingabedatei wird geloescht\n"
-"        uurnews -f (FQDN-ZCONNECT-Host)\n"
+"        uurnews2 -f (FQDN-ZCONNECT-Host)\n"
 "          alter Standard, Eingabe von stdin,\n"
 "          Ausgabedatei wird im Verzeichns des Systems erzeugt.\n"
-"        uurnews -d (RNEWS-Datei) (ZCONNECT-Datei)\n"
+"        uurnews2 -d (RNEWS-Datei) (ZCONNECT-Datei)\n"
 "          Modus mit hoechster Sicherheit, oder zum Testen.\n"
-"        uurnews -p [ (FQDN-ZCONNECT-Host) ]\n"
+"        uurnews2 -p [ (FQDN-ZCONNECT-Host) ]\n"
 "          Echte Pipe\n"
 , stderr);
 	exit( EX_USAGE );
@@ -119,21 +118,18 @@ do_help(void)
 	fputs(
 "UUrnews  -  convert RFC1036 news batch to zconnect\n"
 "usage:\n"
-"        uurnews RNEWS-file ZCONNECT-file\n"
+"        uurnews2 RNEWS-file ZCONNECT-file\n"
 "          old interface, RNEWS-file will be deleted\n"
-"        uurnews -f fqdn-zconnect-host\n"
-"          old interface, RNEWS input will be read from stdin\n"
-"          outfile will be generated in the directory of the host.\n"
-"        uurnews -d RNEWS-file ZCONNECT-file\n"
+"        uurnews2 -d RNEWS-file ZCONNECT-file\n"
 "          secure mode, no delete, no directory search.\n"
-"        uurnews -p [ fqdn-zconnect-host ]\n"
-"        uurnews --pipe\n"
+"        uurnews2 -p\n"
+"        uurnews2 --pipe\n"
 "          full Pipe\n"
-"        uurnews --output ZCONNECT-file [ --remove ] RNEWS-file\n"
+"        uurnews2 --output ZCONNECT-file [ --remove ] RNEWS-file\n"
 "          gnu standard\n"
-"        uurnews --version\n"
+"        uurnews2 --version\n"
 "          print version and copyright\n"
-"        uurnews --help\n"
+"        uurnews2 --help\n"
 "          print this text\n"
 "\n"
 "Report bugs to dirk.meyer@dinoex.sub.org\n"
@@ -150,11 +146,10 @@ main(int argc, const char *const *argv)
 	const char *remove_me;
 	const char *input_file;
 	const char *output_file;
-	char *dir_name;
 	int ready;
 	char ch;
 
-	initlog("uurnews");
+	initlog("uurnews2");
 	minireadstat();
 	srand( (unsigned) time(NULL));
 
@@ -162,7 +157,6 @@ main(int argc, const char *const *argv)
 	remove_me = NULL;
 	input_file = NULL;
 	output_file = NULL;
-	dir_name = NULL;
 	fin = NULL;
 	fout = NULL;
 	ready = 0;
@@ -232,21 +226,6 @@ main(int argc, const char *const *argv)
 				input_file = "-";
 				output_file = "-";
 				ready ++;
-				/* Ein Argument ist Systenmane */
-				argv++; argc--; cptr = *argv;
-				if ( cptr != NULL ) {
-					/* Optional */
-					fqdn = cptr;
-				};
-				break;
-			case 'f':
-				if ( ready != 0 )
-					usage();
-				input_file = "-";
-				/* Ein Argument ist Systenmane */
-				GET_NEXT_DATA( cptr );
-				fqdn = cptr;
-				ready ++;
 				break;
 			default:
 				usage();
@@ -263,14 +242,6 @@ main(int argc, const char *const *argv)
 			continue;
 		};
 		/* zweites freies Argument */
-		if ( ( fqdn == NULL )
-		&& ( output_file == NULL ) ) {
-			/* Argument ist Ausgabe-Datei */
-			output_file = cptr;
-			ready ++;
-			continue;
-		};
-		/* weitere Argumente */
 		usage();
 	};
 	if ( ready == 0 )
@@ -288,34 +259,12 @@ main(int argc, const char *const *argv)
 			name, input_file, strerror( errno ) );
 		exit( EX_CANTCREAT );
 	};
-	if ( fqdn != NULL ) {
-#ifdef ENABLE_SPOOLDIR_SHORTNAME
-		char *p, *p1;
-#endif
-
-		strcpy(datei, netcalldir);
-		strcat(datei, "/");
-		strcat(datei, fqdn);
-#ifdef ENABLE_SPOOLDIR_SHORTNAME
-		p = strrchr(datei, '/');
-		if (p) {
-			p1 = strchr(p+1, '.');
-			if (p1) *p1 = '\0';
-		}
-#endif
-		strcat(datei, "/");
-		dir_name = dstrdup( datei );
-		fout = open_new_file( name, dir_name, ".brt" );
-		dfree( dir_name );
-		output_file = datei;
+	if ( output_file == NULL )
+		usage();
+	if ( strcmp( output_file, "-" ) == 0 ) {
+		fout = stdout;
 	} else {
-		if ( output_file == NULL )
-			usage();
-		if ( strcmp( output_file, "-" ) == 0 ) {
-			fout = stdout;
-		} else {
-			fout = fopen( output_file, "ab");
-		}
+		fout = fopen( output_file, "ab");
 	};
 	if ( fout == NULL ) {
 		fprintf( stderr,
