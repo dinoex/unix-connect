@@ -1,0 +1,117 @@
+.TH uuwsmtp 1 "Mon Jan 20 1997" "UNIX/Connect" "UNIX/Connect"
+.SH NAME
+uuwsmtp \- convert mail from ZConnect to RFC822 bsmtp
+.SH SYNOPSIS
+.B uuwsmtp
+.I file.prv smtpdir
+.LP
+.B uuwsmtp \-d
+.I file.prv file.smtp
+.LP
+.B uuwsmtp \-f
+.I file.prv
+.RI [system]
+.SH DESCRIPTION
+.B uuwsmtp
+is a program used to convert
+.I ZConnect
+mail (i.e.,
+.I personal
+messages) to
+.I batched SMTP
+format understood by common UNIX-mailers such as
+.IR sendmail(8) 
+or
+.IR smail(8) .
+The file
+.I file.prv
+is supposed to be in
+.I ZConnect3.1
+format. If you don't know what that is, this is probably not for you.
+.PP
+The
+first method of invoking
+.B uuwsmtp
+is used to spool messages directly into a spool directory. 
+.B uuwsmtp
+will generate unique filenames in there. Those filenames are not specified
+and you should not implement anything relying on certain types of names.
+.PP
+The second method (using the
+.B \-d
+switch) is used to specify input and output files. Since its primary use is
+for automated testing of the gate, the input file will not be deleted.
+.PP
+The third method (with the
+.B \-f
+flag) is the most commonly used. With this mode,
+.B uuwsmtp
+will read the messages in ZCONNECT format from the given file and send them
+out in bSMTP format on standard output. This way, you can easily pipe the
+output into programs like
+.IR smail .
+.PP
+The input file to
+.B uuwsmtp
+will be deleted unless you use the
+.B \-d
+switch!
+
+.SH FILES
+.I [UNIX/Connect-Dir]/config
+
+.SH BUGS
+Less than Microsoft Windows(tm) :-)
+.PP
+The date-conversion routines are still a bit buggy: When converting
+ZC->RFC->ZC, you will always end up with an
+.BR EDA: -Header
+with a
+.B W
+for wintertime in it.
+
+.SH AUTHORS
+Various. The first versions have been written by Martin Husemann, by now the
+package is maintained by Christopher Creutzig. Large parts of the code have
+been contributed by Moritz Both. Dirk Meyer and Detlev Wuerkner have sent in
+a lot of improvements and bug fixes. This man page has been written by
+Christopher Creutzig.
+
+.SH CONTACTS
+The maintainer can be reached as
+.I christopher@nescio.foebud.org
+or via snail-mail at
+.IR "Christopher Creutzig, Im Samtfelde 19, 33098 Paderborn, Germany" .
+.PP
+For general discussions, please use the mailinglist
+.IR unix-connect@mailinglisten.Im-Netz.de .
+To join this list, please ask for instructions by sending a mail with
+subject
+.I Help
+to
+.IR unix-connect-request@mailinglisten.Im-Netz.de .
+I encourage everybody using UNIX/Connect to join this list.
+The mailing list is archived, please have instructions sent to your for
+further information.
+
+.SH FTP
+UNIX/Connect is distributed via 
+.I ftp.owl.de
+in the directory
+.IR /pub/unix-connect .
+
+.SH "SEE ALSO"
+.BR zconsplit (1),
+.BR uuwnews (1),
+.BR uursmtp (1),
+.BR uurnews (1),
+.BR anruf (1),
+.BR auspack (1),
+.BR einpack (1),
+.BR import (1),
+.BR januslogin (8),
+.BR list-systems (8),
+.BR prearc (1),
+.BR receiver (8),
+.BR zbatchsmtp (1),
+.BR zcall (1)

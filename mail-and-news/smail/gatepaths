@@ -1,0 +1,23 @@
+#
+#  Path-Datei fuer smail
+#
+.zer.de	%s
+.zer.sub.org	bi-link.owl.de!%s
+zer.de		bi-link.owl.de!bi-link.owl.de!%s
+bi-link.owl.de	bi-link.owl.de!bi-link.owl.de!%s
+bi-link		bi-link.owl.de!bi-link.owl.de!%s
+echo.owl.de	bi-link.owl.de!echo.owl.de!%s
+echo		bi-link.owl.de!echo.owl.de!%s
+amtrash.zer.de	bi-link.owl.de!amtrash.zer.de!%s
+bionic.zer.de	bi-link.owl.de!bionic.zer.de!%s
+filelink.zer.de	bi-link.owl.de!filelink.zer.de!%s
+hsp.zer.de	bi-link.owl.de!hsp.zer.de!%s
+sps-hh.zer.de	bi-link.owl.de!sps-hh.zer.de!%s
+torlink.zer.de	bi-link.owl.de!torlink.zer.de!%s
+roderick.zer.de	bi-link.owl.de!roderick.zer.de!%s
+mc-byte.zer.de	bi-link.owl.de!mc-byte.zer.de!%s
+waikiki.zer.de	bi-link.owl.de!waikiki.zer.de!%s
+hot.zer.de	bi-link.owl.de!hot.zer.de!%s
+bht-box.zer.de	bi-link.owl.de!bht-box.zer.de!%s
+bdb.zer.de	bi-link.owl.de!bdb.zer.sub.org!%s
+s-link.zer.de	bi-link.owl.de!s-link.zer.sub.org!%s

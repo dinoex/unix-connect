@@ -1,0 +1,38 @@
+Folgenden Personen möchte ich speziell für ihre Hilfe bei der Erstellung
+dieser Software danken, ohne sie wäre es nicht möglich gewesen.
+
+Ich danke
+
+-  Matthias Jung (MJ) und Wolfgang Mexner (WO) für Alphatests, Debugging
+   der Header-Library und die Mitarbeit am ZCONNECT Standard
+
+-  Hacko Schröder für die ursprünglichen Entwurfsarbeiten
+
+-  Kosta Kostis für die ISO <-> PC Zeichensatzkonvertierung
+
+-  Henry Spencer (Internet Datumsparser aus C-News)
+
+-  Ian L. Taylor (UUCP Lockfiles und einige ioctl's in "rawtty.c")
+
+-  Kristian Koentopp (KK) für Aufräumarbeiten an den Sourcen und
+   viele technische Hinweise
+
+-  Gert Döring für mgetty im allgemeinen und die Integration vieler meiner
+   Z3.8-Sonderwünsche in sein Programm. Mgetty ist ein absolutes MUSS für
+   MailBox-Betrieb unter Unix!
+
+-  Dem Team der slink, speziell Nil Goroll, für die Pflege der Bananensoftware
+
+-  Rena und padeluun für die schier unendliche Geduld, mit der sie meine
+   Testversuche (und die damit verbundenen Beinahekatastrophen in der
+   BIONIC) ertragen haben
+
+-  Meiner Frau und meiner Tochter für die Geduld, mit der sie meinen 
+   chronischen Zeitmangel ertragen haben
+
+sowie alle UNIX-Connect Benutzern für die zahlreichen Fehlermeldungen,
+Hinweise und Verbesserungsvorschläge.
+
+
+
+Martin Husemann

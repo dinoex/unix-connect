@@ -1,0 +1,128 @@
+/* $Id$ */
+/*
+ *  hash.epilogue:
+ *
+ *    Wird hinter die Ausgabe von "gperf" gehaengt und vervollstaendigt
+ *    die Lookup-Funktionen.
+ *
+ * ------------------------------------------------------------------------
+ * Letzte Aenderung: martin@sisyphos.owl.de, Thu Apr 15 13:33:46 1993
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include "header.h"
+#include "uulog.h"
+#include "hd_nam.h"
+#include "lib.h"
+
+const char *headers[] = {
+#include "hd_nlist.h"
+NULL
+};
+
+extern char * strupr(char *);
+static int nextNewCode = TOTAL_KEYWORDS +23;
+typedef struct newHeaderRecstruct
+{
+	unsigned code;
+	char * header;
+	struct newHeaderRecstruct * next;
+} newHeaderRec;
+
+static newHeaderRec * unknownHeaders = NULL;
+
+unsigned identify(const char *name)
+{
+	static char hname[1000];
+	struct predefd *p;
+	newHeaderRec *n;
+
+	strncpy(hname, name, sizeof hname);
+	strupr(hname);
+
+	p = (struct predefd *)predefd_header(hname, strlen(hname));
+
+	if (p) 
+		return p->code;
+
+	/* Der Header war nicht vordefiniert, also in der lokalen
+	 * Liste suchen
+	 */
+	for (n=unknownHeaders; n; n=n->next)
+		if (strcmp(n->header, hname) == 0)
+			return n->code;
+
+	/* Ein unbekannter Header wurde gefunden. Er bekommt einen
+	 * neuen Code und wird in der Liste vermerkt.
+	 */
+	n = (newHeaderRec*)dalloc(sizeof(newHeaderRec));
+	n->next = unknownHeaders;
+	unknownHeaders = n;
+	n->code = nextNewCode++;
+	n->header = dstrdup(hname);
+
+	return n->code;
+}
+
+header_p internal_add_header(char *inhalt, int code, header_p ptr, const char *header_name)
+{
+	header_p p, last, new;
+
+	/* Einfuegestelle suchen */
+	last = NULL;
+	for (p = ptr; p && (p->code < code); p = p->next)
+		last = p;
+
+	new = (header_p)dalloc(sizeof(header_t));
+	new->text	 = dstrdup(inhalt);
+	if (!new->text) out_of_memory(__FILE__);
+	new->header	 = code <= TOTAL_KEYWORDS ? (char *)headers[code] : dstrdup(header_name);
+	new->code	 = code;
+	new->other	 = NULL;
+	new->next	 = NULL;
+
+	if (p && (p->code == code)) {
+		/* Identischer Header, per other verketten */
+		/*
+		 *  MH: um die Reihenfolge beim Einlesen zu erhalten
+		 *      wird jetzt am Ende der other-> angehaengt. 
+		 */
+		for ( ; p->other; p = p->other)
+			;
+		p->other = new;
+		new->next = p->next;
+	} else if (!last) {
+		/* Am Anfang einfuegen */
+		new->next = ptr;
+		ptr = new;
+	} else if (!p) {
+		/* Am Ende anhaengen */
+		last->next = new;
+		p=last->other;   /* WO: Die Next-Ptr der identischen Header */
+		while (p) {      /* muessen auch verkettet werden */
+		   p->next=new;
+		   p=p->other;
+		}
+	} else {
+		/* Neuer Header, zwischen last und p einfuegen */
+		last->next = new;
+		new->next = p;
+		p=last->other;   /* WO: Die Next-Ptr der identischen Header */
+		while (p) {      /* muessen auch verkettet werden */
+		   p->next=new;
+		   p=p->other;
+		}
+	}
+
+	return ptr;
+}
+
+header_p add_header(char *inhalt, int code, header_p ptr)
+{
+	if (code > TOTAL_KEYWORDS+1)
+		return NULL;
+
+        return internal_add_header(inhalt, code, ptr, headers[code]);
+}
+

@@ -1,0 +1,32 @@
+- JANUS: Bei Abbruch Datenverlust.
+
+- Backout
+
+- Januslogin: offene Dateien?
+
+- MIME-Verpackung eines langen Headers ohne Whitespace (z.B. PGP-KEY)
+
+- Sommerzeit vom System bekommen
+
+- Passworte case-sensitiv pruefen.
+
+- flock() verwenden.
+
+- VIA <-> Received ?
+
+- Header auf ungueltige Zeichen pruefen
+
+- lange Nachrichten splitten (MIME) (?)
+
+- ERR: in Body (?)
+
+- Umlautwandelung einstellbar: RFC1522/aeoeue (Kompilieroption)
+
+- Duerfen Path:-Header umgebrochen werden?
+
+- Wenn in der config kein Name gesetzt ist: gethostname() verwenden füer
+  Gate-Zeile.
+
+- Kein Date:-Header (legal) führt zu Nachricht ohne EDA (illegal).
+
+- News verwerfen, wenn ordnungsgemäße Wandlung nicht möglich.

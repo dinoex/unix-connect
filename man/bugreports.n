@@ -1,0 +1,104 @@
+.TH bugreports n "Wed Feb 12 1997" "UNIX/Connect" "UNIX/Connect"
+.SH NAME
+bugreports \- How to report bugs
+.SH SYNOPSIS
+depends on your local setup, especially your mailer agent
+.SH DESCRIPTION
+All programs have bugs. (Bug has been reported to be a registered trademark
+by some US-American company, but that hasn't been verified yet.) Usually,
+with free software, you will have an E-Mail-address of a maintainer, the
+programmer or someone else mentioned in connection with bug reports. In most
+cases, it is
+.B not
+a good idea to inform (only) the person you got the program from, since that
+is likely to be just some overworked ftp-admin who will just trash your
+mail.
+.PP
+Since most authors have a fairly strong interest in getting their programs
+bug-less (bug-free would be nice, but I don't believe in it), it is a good
+idea to write bug-reports. The sad experience, however, is that most
+intended bug reports require a lot of interrogation just to find out what
+the user is trying to do.
+.PP
+A bug report should
+.B not
+consist of
+.PP 0.8i
+.I """xyz ain't working. Why?"""
+.PP
+.I """I can't compile 
+.RI foo """.
+.PP
+.I """When I start
+.RI bar ,
+.I I keep getting error messages."
+.PP
+All of these are presumably correct, but won't help the programmer. A
+better, albeit still improvable, bug report, would be
+.PP 0.8i
+.I """When invoking
+make
+.I in the top-level directory, I get error messages in the file
+gnarf.c
+.I for lines 125, 176 and 189."
+.TP
+Points still missing here:
+.RS
+.sp
+o The operating system used.
+.TP 0.2i
+o The version of the operating system used.
+.TP 0.2i
+o The version of gnarf.c. (Usually found at the top of the file. If missing,
+send the creation date and size of the file.)
+.TP 0.2i
+o The compiler and version used.
+.TP 0.2i
+o The exact error messages. If you are using
+.IR bash ,
+you can get them with
+.I make >makelog 2>&1
+or by using a tool like
+.IR script .
+
+
+.RE
+To give an example, suppose you've got problems with
+.I UNIX/Connect
+in that it truncates mail converted from RFC to ZConnect. There is not much
+point in sending the truncated ZC-buffers to the maintainer, since the
+effect can't be reproduced from them. But you do know that
+.I uursmtp
+must be the buggy program and where it is invoked. In an
+.I smail
+setup, this is the scriptfile
+.IR zbatchsmtp ,
+and this we will take as an example:
+.PP
+In this script, there is a place with
+.PP
+.I ... ) | uursmtp ...
+.PP
+Which is where the mails are actually piped into the program. Since these
+are needed for a proper bug report, we will log them. Change the above
+mentioned place into
+.PP
+.I ... ) | tee --append /var/spool/zconnect/biglog | uursmtp ...
+.PP
+and you will get a complete log of all the mails sent through the gate. You
+can use other setups without the
+.I --append
+part, backing up the last 25 buffers etc., but the main point is: You can
+provide the maintainer with an example of a buffer which is correct, but
+which
+.I UNIX/Connect
+does not handle correctly. The same aplies for news, although it is much
+easier there. Just grab the articles from your local database.
+
+.SH AUTHOR
+Christopher Creutzig.
+
+.SH CONTACTS
+.I christopher@nescio.foebud.org
+or via snail-mail at
+.IR "Christopher Creutzig, Im Samtfelde 19, 33098 Paderborn, Germany" .

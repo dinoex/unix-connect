@@ -1,0 +1,38 @@
+#
+#       Konfiguration fuer smail:
+#
+#	In der Datei "/usr/lib/smail/transports" ist dieser Abschnitt 
+#	unterzubringen...
+#
+#	ZCONNECT : der Relay (Format-Converter) nach ZCONNECT
+#	werden nach /var/spool/smail/z-outq/$host geschrieben und von
+#	dort per Cron-Job eingesammelt und konvertiert. Der Cronjob
+#	ist "zbatchsmtp", er wird (sicherheitshalber) von "prearc"
+#	gestartet, braucht also gar nicht unbedingt einen extra
+#	Cron-Eintrag zu bekommen.
+#
+#	Alternative dazu: driver=pipe, bsmtp; cmd=uursmtp -f {lc:$host}
+#	Das ist einfacher, kann aber zu Race-Conditions fuehren...
+#	Auserdem gehen die Daten sowiso erst beim Prearc in den Netcall,
+#	es bringt als nichts, sie vorher im Netcall-Spool-Dir zu haben.
+#
+#	Die hier eingestellten Optionen sind eigentlich naheliegend
+#	(driver=appendfile, crlf, hbbsmtp, cmd, log_output).
+#	Einleuchtend sind "-max_addrs", um alle Adressen auf einmal
+#	zu bearbeiten und "-max_chars", da ZCONNECT keine Laengenbegrenzung
+#	bei Adressen hat (und in dieser Implementierung auch keine drin sind).
+#
+#	Extrem wichtig ist "from". Es darf nicht gesetzt sein!
+#
+zconnect:
+	driver=appendfile,		# in das Warteschlangen-Verzeichnis
+	inet,				# Adressen immer inclusive Domain
+	crlf,				# use CR/LF as line terminator (see RFC821)
+	-max_addrs,			# include all host's recipient addresses in one message
+	-max_chars,			# don't limit total size of recipient addresses
+	hbsmtp;				# ohne Pro- und Epilog
+
+	dir=/usr/spool/smail/z-outq/${lc:host},
+	user=root,	# files will be owned by this user
+	mode=0600,	# and unreadable by other users
+

@@ -1,0 +1,1087 @@
+\input ger-texinfo                @c Hey Emacs, this is -*-texinfo-*- mode!
+@c %**start of header           
+@setfilename unix-connect.info
+@settitle UNIX--Connect
+@setchapternewpage on
+@iftex
+@afourpaper
+@hyphenation{ver-schie-de-ne be-schrie-ben}
+@end iftex
+@c %**end of header
+
+@ignore
+$Id$
+---------------------------------------------------------------------->
+Dies ist der Quelltext der Dokumentation zu UNIX-Connect.
+
+Sie können darauf mit dem Programm "makeinfo" eine info-Datei erstellen,
+und diese z.B. mit Emacs oder xinfo anschauen. Oder Sie können mit 
+Hilfe von TeX einen Ausdruck erstellen.
+
+Bitte eine TeX-Version mit deutscher Trenntabelle benutzen!!!
+
+Falls Ihr Emacs nicht mit den deutschen Umlauten zurecht kommt, fügen
+Sie folgendes in Ihre ~/.emacs Datei ein:
+
+        (require 'disp-table)
+        (standard-display-8bit 0 255)
+
+Eine PostScript-Version dieser Dokumentation finden Sie per anonymous
+ftp auf ftp.owl.de in der Datei /pub/unix-connect/unix-connect.ps.
+----------------------------------------------------------------------<
+@end ignore
+
+@ifinfo
+Diese Datei dokumentiert UNIX--Connect, die ZCONNECT--Anbindung für UNIX.
+
+Copyright @copyright{} 1993-94 Martin Husemann,
+Copyright @copyright{} 1995-96 Christopher Creutzig.
+
+ZCONNECT @copyright{} 1992 ZERBERUS GmbH, Friedland.
+
+Sie sind berechtigt, wörtliche Kopien dieses Dokumentes zu erstellen und
+zu verteilen, sofern die Copyright-Hinweise sowie diese
+Vervielfältigungs-Erlaubnis unverändert mitkopiert werden.
+
+@ignore
+Sie sind berechtigt, diese Datei mit TeX zu verarbeiten und das Ergebnis
+auszudrucken, vorausgesetzt das entstehende Dokument enthält eine 
+Kopiererlaunis wie diese, in der nur dieser Absatz entfernt ist (da er
+für die gedruckte Version irrelevant ist).
+@end ignore
+
+Sie sind berechtigt, veränderte Versionen dieser Dokumentation zu erstellen
+und zu verbreiten, unter der Bedingung, daß die Abschnitte ``Copying'' und
+``GNU General Public License'' exakt wie im Original enthalten sind und 
+weiterhin vorausgesetzt, daß das gesamte entstehende Werk mit gleichen
+Nutzungs- und Vervielfältigungsrechten versehen ist, wie dieses.
+
+Sie sind berechtigt, diese Anleitung in andere Sprachen zu übersetzen 
+und gemäß den oben genannten Bedingungen für modifizierte
+Versionen zu verbreiten. Darüber hinaus kann die Nutzungs- und
+Vervielfältigungsbedingung auch in einer von der Free Software
+Foundation genehmigten Übersetzung angegeben werden.
+@end ifinfo
+
+@titlepage
+@title UNIX--Connect
+@subtitle Die ZCONNECT--Anbindung für UNIX Systeme
+@subtitle Version 0.74 vom @today
+@author Martin Husemann, Christopher Creutzig
+
+@page
+@vskip 0pt plus 1filll
+Copyright @copyright{} 1993-94 Martin Husemann,@*
+Copyright @copyright{} 1995-96 Christopher Creutzig,@*
+ZCONNECT @copyright{} 1992 ZERBERUS GmbH, Friedland.
+
+Diese Datei dokumentiert UNIX--Connect, die ZCONNECT--Anbindung für UNIX.
+
+Sie sind berechtigt, wörtliche Kopien dieses Dokumentes zu erstellen und
+zu verteilen, sofern die Copyright-Hinweise sowie diese
+Vervielfältigungs-Erlaubnis unverändert mitkopiert werden.
+
+Sie sind berechtigt, veränderte Versionen dieser Dokumentation zu erstellen
+und zu verbreiten, unter der Bedingung, daß die Abschnitte ``Copying'' und
+``GNU General Public License'' exakt wie im Original enthalten sind und 
+weiterhin vorausgesetzt, daß das gesamte entstehende Werk mit gleichen
+Nutzungs- und Vervielfältigungsrechten versehen ist, wie dieses.
+
+Sie sind berechtigt, diese Anleitung in andere Sprachen zu übersetzen 
+und gemäß den oben genannten Bedingungen für modifizierte
+Versionen zu verbreiten. Darüberhinaus kann die Nutzungs- und
+Vervielfältigungsbedingung auch in einer von der Free Software Foundation
+genehmigten Übersetzung angegeben werden.
+@end titlepage
+
+@ifinfo
+@node Top, Copying, (dir), (dir)
+@top UNIX--Connect
+
+Eine ZCONNECT-Anbindung für UNIX-Systeme.
+
+@menu
+* Copying::             die GNU General Public License
+@end menu
+
+@end ifinfo
+
+@node Copying
+@unnumbered Copying
+
+This package is covered by the GNU Public License.  @footnote{Eine
+deutsche Version diese Lizenzbestimmungen finden Sie in der Datei
+@file{docs/lizenz.deutsch}. Auf eine Übersetzung wurde hier verzichtet,
+da Sie den Inhalt der GPL wahrscheinlich bereits kennen...} See the file
+@file{COPYING} for details.  If you would like to do something with this
+package that you feel is reasonable, but you feel is prohibited by the
+license, contact me to see if we can work it out.
+
+Here is some propaganda from the Free Software Foundation.  If you find
+this stuff offensive or annoying, remember that you probably did not
+spend any money to get this code.  I did not write this code to make
+life easier for developers of ZCONNECT packages, I wrote it to help end
+users, and I believe that these are the most appropriate conditions for
+distribution.
+
+All the programs, scripts and documents relating to UNIX--Connect are
+@dfn{free}; this means that everyone is free to use them and free to
+redistribute them on a free basis.  The UNIX--Connect related programs are
+not in the public domain; they are copyrighted and there are
+restrictions on their distribution, but these restrictions are designed
+to permit everything that a good cooperating citizen would want to do.
+What is not allowed is to try to prevent others from further sharing any
+version of these programs that they might get from you.
+
+Specifically, we want to make sure that you have the right to give away
+copies of the programs that relate to UNIX--Connect, that you receive
+source code or else can get it if you want it, that you can change these
+programs or use pieces of them in new free programs, and that you know
+you can do these things.
+
+To make sure that everyone has such rights, we have to forbid you to
+deprive anyone else of these rights.  For example, if you distribute
+copies of the UNIX--Connect related programs, you must give the recipients
+all the rights that you have.  You must make sure that they, too,
+receive or can get the source code.  And you must tell them their
+rights.
+
+Also, for our own protection, we must make certain that everyone finds
+out that there is no warranty for the programs that relate to UNIX--Connect.
+If these programs are modified by someone else and passed on, we
+want their recipients to know that what they have is not what we
+distributed, so that any problems introduced by others will not reflect
+on our reputation.
+
+The precise conditions of the licenses for the programs currently being
+distributed that relate to UNIX--Connect are found in the General Public
+Licenses that accompany them.
+
+@unnumbered UNIX--Connect
+
+UNIX--Connect ist eine Implementierung für des Datenaustauschverfahrens
+ZCONNECT. Ähnlich wie UUCP bietet ZCONNECT die Möglichkeit, News und Mail
+auszutauschen sowie Dateien zu transportieren.
+
+Die häufigsten Anwendungen von UNIX--Connect sind:
+
+@enumerate
+@item
+Sie möchten News und Mail bekommen und versenden; Ihr Server beherrscht aber
+leider kein UUCP. In Z--NETZ Notation ist Ihr System dann ein ``Point''.
+
+@item
+Sie bieten News und Mail an, und wollen auch Systeme versorgen können, 
+die kein UUCP beherrschen. In Z--NETZ Notation ist Ihr System ein
+``Gateway''.
+@end enumerate
+
+Wenn Sie Systembetreiber eines UUCP Systems sind, ist nach erfolgreicher
+Erstinstallation von UNIX--Connect der Anschluß eines ZCONNECT Systems nicht
+aufwendiger als der eines UUCP Systems.
+
+Wenn Sie bereits Point-User einer ZCONNECT MailBox sind, bietet UNIX--Connect
+Ihnen die Möglichkeit, XPoint (oder andere Point--Software) und DOS völlig
+zu verlassen und Ihren Point unter Linux (oder ähnlichem) zu betreiben.
+
+Sie benötigen dazu neben UNIX--Connect noch einen Mail-Transport-Agent
+(z.B. Smail) und einen News-Transport-Agent (CNews, INN oder BNews).
+Weiterhin ist ein Datentransport-Programm, in der Regel ZModem (z.B. rz/sz
+von Omen Technologies Inc.), sowie ein Packer (z.B. zip/unzip) notwendig.
+Als Benutzeroberfläche verwenden Sie die Standard-Tools, die Sie auch für
+andere News/Mail verwenden, z.B. ELM und NN.
+
+Alle diese Dinge finden Sie fertig installiert in jedem Linux-System, so daß
+Sie in diesem Fall nur UNIX--Connect brauchen, um Ihren Point in Betrieb
+zu nehmen.
+
+Genaugenommen kann UNIX--Connect nicht nur ZCONNECT, vielmehr beherrscht es
+alle beiden im Z--NETZ üblichen Verfahren:
+
+@itemize @bullet
+
+@item JANUS
+Das Migrationsverfahren: es werden ``echte'' ZCONNECT Daten ausgetauscht,
+aber die Übertragung erfolgt noch nach Z3.8 Verfahren.
+
+@item ZCONNECT
+Die einzig empfehlenswerte Methode.
+@end itemize
+
+Aufgrund schwerwiegender Design-Fehler in der Z3.8 Datenübertragungsmethode
+kann nicht jedes UNIX System diese Methode sicher verwenden. Faustregel: je
+langsamer das UNIX System und je schneller die Übertragungsgeschwindigkeit,
+desto häufiger klappt es nicht. Außerdem muß für dieses Verfahren der
+Login--Prompt auf ``Username:'' geändert werden --- was sicher auf
+eingeführten UUCP-Servern Schwierigkeiten bereiten wird.
+
+
+@chapter ``GateBau''--Konformität
+
+UNIX--Connect beachtet die Regelungen der ``GateBau'' von 1990 bis 1993 zum
+großen Teil nicht mehr, da diese heutzutage einfach nicht mehr sinnvoll
+sind. Insbesondere ist die Netcall3.8-Unterstützung gestrichen worden, es
+werden keine ``Kurznamen'' mehr erzeugt und es werden auch keine ``Macros''
+mehr ausgewertet oder gar aus @file{/Z-NETZ/ALT/MACROS} ausgelesen.
+
+@chapter Module
+
+Das Paket besteht aus mehreren Teilen:
+
+@itemize @bullet
+ @item 
+   @emph{Kommunikationsprogramme}
+   zum Annehmen von JANUS-- oder ZCONNECT Netcalls sowie zum Anrufen
+   anderer Systeme mit diesen Verfahren,
+
+ @item
+   @emph{ZCONNECT Tools}
+   um ZCONNECT Netcalls zu bearbeiten,
+
+ @item
+   @emph{RFC Gateway/Relay}
+   um ZCONNECT nach RFC oder umgekehrt zu wandeln,
+@end itemize
+
+sowie einigen Shell-Skripten, die die einzelnen Module in das Mail &
+Newssystem integrieren.
+
+
+
+@section Aufgaben der Teilprogramme
+
+UNIX--Connect ist (wie sollte man es von einem Mail/News etc Paket für
+Unix anders erwarten) eine Sammlung aus vielen kleinen Hilfsprogrammen.
+
+Die folgenden Abschnitte stellen die einzelnen Programme, gegliedert nach
+Funktionsbereichen, kurz vor.
+
+
+@subsection Datenaustausch
+
+Um mit anderen MailBoxen oder Points zu kommunizieren, benötigt das
+System Kommunikationsprogramme. UNIX-Connect enthält gleich mehrere davon:
+
+@subsubsection @file{receiver}
+nimmt Anrufe mit dem Verfahren ZCONNECT entgegen. Dieses Programm
+wird als Login-Shell fuer den Benutzer @code{zconnect} eingesetzt.
+
+@subsubsection @file{januslogin}
+nimmt Anrufe mit dem Verfahren @code{JANUS} entgegen. Dazu gehört der
+Benutzer @file{janus}.
+
+@subsubsection @file{zcall}
+ruft ein anderes System an. Es beherscht alle beiden oben genannten Verfahren
+und wählt (entsprechend den Systemdaten des anzurufenden Systems) das 
+richtige Verfahren aus.
+
+
+@subsection Gateway
+
+UNIX--Connect enthält keinen ZCONNECT-Router. Alle ``ernsthaften''
+Arbeiten werden den Standard-UNIX-Hilfsmitteln (wie z.B. Smail und C-News)
+überlassen. ZCONNECT Daten werden zur Weiterverarbeitung nach RFC konvertiert
+und nach erfolgtem Routing/Newsbatching gegebenenfalls wieder zurück in das
+ZCONNECT-Format gewandelt.
+
+Die Wandlungsprogramme haben ihre Namen aus der Sicht des ZCONNECT-Systems
+bekommen, was die Benennung zunächst etwas verwirrend macht.
+
+@subsubsection @file{uursmtp}
+liest einen SMTP-Batch ein und erzeugt daraus einen ZCONNECT-Puffer.
+
+@subsubsection @file{uuwsmtp}
+erzeugt einen SMTP-Batch aus einem ZCONNECT-Puffer.
+
+@subsubsection @file{uurnews}
+liste einen rnews-Batch und wandelt ihn in ZCONNECT um.
+
+@subsubsection @file{uuwnews}
+erzeugt einen rnews-Batch aus einer ZCONNECT-Datei.
+
+
+@subsection Hilfsprogramme
+
+@subsubsection @file{zconsplit}
+
+ZCONNECT-Archive bestehen in der Regel aus Mail-Dateien mit der Endung 
+@file{.prv} und News-Dateien mit der Endung @file{.brt}. Dementsprechend
+werden sie auch vom Shell-Skript @file{import} behandelt.
+
+Unter bestimmten Umständen sind aber Mails-- und News vermischt in 
+einer Datei:
+
+@enumerate
+@item Die Gegenseite ist eine alte XPoint-Version oder eine alte ZERBERUS 
+Version. Diese beiden Programme haben das JANUS-Datenformat urspruenglich
+falsch implementiert.
+
+@item Die Datei ist eine Datei mit der Endung @file{.kom}, diese Dateien
+enthalten nach ZCONNECT-Standard Nachrichten, die sowohl öffentliche als
+auch private Empfänger haben.
+
+@item Die Gegenseite verwendet ZERBERUS bis einschließlich Version 5.3,
+dieses Programm erzeugt (illegalerweise) Dateien mit der Endung @file{.prv},
+die Nachrichten mit öffentlichen und privaten Empfängern enthalten.
+@end enumerate
+
+In diesen Faellen müssen die Daten durch @file{zconsplit} vorsortiert
+werden. Es liest eine Misch--Datei und erzeugt daraus entsprechenden
+Mail-- und News--Dateien.
+
+Das mitgelieferte Skript @file{import} bearbeitet alle Dateien mit
+@file{zconsplit}, der Zusatzaufwand ist minimal.
+
+@subsection Shell-Skripte
+
+An allen kritischen Stellen, an denen lokale Politik in den Gesamtablauf
+eingreift, benutzt UNIX--Connect Shell-Skripte als Interface, da sie leicht
+(ohne neu-compilation) an aktuelle Änderungen angepasst werden können.
+
+@subsubsection @file{auspack}
+
+Auspack bekommt ein Archiv, den ZCONNECT-Code fuer das Arc--Verfahren und
+``weiß'', wie es das Archiv nach dem gegebenen Verfahren auspacken kann.
+Auspack wird von @file{import} und den Online--Programmen aufgerufen.
+
+@subsubsection @file{einpack}
+
+Einpack ist das Gegenstück zu @file{auspack}. Es bekommt zusätzlich noch
+eine Liste von einzupackenden Dateien und erstellt daraus das Archiv.
+Einpack wird ausschliesslich von @file{prearc} aufgerufen, die 
+Online--Programme packen niemals selbst.
+
+@subsubsection @file{import}
+
+Import bearbeitet alle bei einem Netcall empfangenen Dateien. Es wird
+von den Online--Programmen in einem eigenen Directory aufgerufen und
+liest alle dort vorgefundenen Dateien ein. Es bekommt als Zusatzinformation
+noch den Namen des einliefernden Systems (das ist fuer Points wichtig),
+und die Kennung des verwendeten Online--Verfahrens.
+
+Es teilt die vorgefundenen Dateien in Mail-- und News--Dateien.
+
+Schliesslich konvertiert es alle Dateien und schickt das Ergebnis (je nach
+Dateityp) in das Mail-System oder @file{rnews}.
+
+@subsubsection @file{prearc}
+
+@file{Prearc} ist der aufwendigste Teil von UNIX--Connect. Es verursacht
+hohen CPU-- und IO--Aufwand. Es kann daher sinnvoll sein, @file{prearc} nur
+zu wenigen, bestimmten Uhrzeiten aus der Crontab zu aktivieren. Wenn Ihr
+System keine Anrufe entgegennimmt, sondern nur bei anderen Systemen anruft,
+reicht es völlig aus, wenn @file{prearc} direkt vor dem Anruf gestartet
+wird. Für Points liegt ein Beispielskript @file{anruf} bei, was den
+täglichen Netcall durchführt.
+
+@file{Prearc} sammelt für alle ZCONNECT-- oder JANUS--Systeme alle 
+bereitstehenden Daten ein (dazu ruft es zunächst @file{zbatchsmtp}
+auf) und ruft dann @file{einpack} auf, um daraus ein Archiv zu erstellen.
+
+@subsubsection @file{zbatchsmtp}
+
+Da ZCONNECT ein Store & Forward Verfahren ist, ist es nicht nötig, alle
+Mails sofort durch die Gateway-Programme zu schicken, da sie sowiso nicht
+weiter befördert würden.
+
+UNIX--Connect verwendet daher das von smail auch beim ``echten''
+@file{batch_smtp} verwendet Spool-Verfahren: die Mails werden mit
+@file{hbsmtp} (also ohne @file{HELO} und @file{QUIT}) in ein temporaeres
+Verzeichnis geschrieben (z.B. @file{/var/spool/smail/z-outq}) und von dort
+mit diesem Shell-Skript eingesammelt, mit @file{HELO} und @file{QUIT}
+versehen und dann gemeinsam durch @file{uursmtp} geschickt.
+
+
+@chapter Die Konfigurationsdateien
+
+@section @file{config}
+
+Die Haupt--Konfigurationsdatei (bei mir @file{/usr/local/lib/zconnect/config})
+enthaelt verschiedene Arten von Einstellungen. Das Format ist das innerhalb
+von UNIX--Connect verwendete Standard--Header--Format: Zeilen mit @file{#}
+am Anfang werden ignoriert. Alle Eintraege bestehen aus einem Schluesselwort
+gefolgt von einem @file{:} und beliebig viel Zwischenraum.
+
+Es gibt keine Möglichkeit, die Zeilen am Ende fortzustzen.
+
+@menu
+* Beschreibung des lokalen Systems::  
+* Files und Directories::       
+* Konfiguration der ZCONNECT Online-Routinen::  
+* Konfiguration der Gateway-Routinen::  
+* Absenderabhaengiges Routing::  
+* Routlimits::                  
+@end menu
+
+@subsection Beschreibung des lokalen Systems
+
+Das Gateway braucht einen gültigen Systemnamen inklusive Domain. Da die
+Programme den namen des Gates teilweise ohne Domain benötigen (und ich zu
+faul war, ihn zu extrahieren), sieht der Eintrag wie folgt aus:
+
+@example
+System-Name:                       nescio
+Gate-Domain:                       zerberus.de
+@end example
+
+Eine ZCONNECT Beschreibung des eigenen Systems, zum Beispiel welche
+Arcer und welche Protokolle verfügbar sind, stehen in der folgenden
+Datei:
+
+@example
+Who-Am-I:                          /usr/local/lib/zconnect/myself.zconnect
+@end example
+
+Eigentlich sollte der Gateway die System-Zeitzone abfragen. Auch das fällt
+in die Kategorie ``steht auf der todo-Liste''. Inzwischen wird die
+Sommerzeit in Deutschland ja genauso bestimmt wie in den USA, so daß
+UNIX--Connect die Zeitzone des Systems abfragen kann.
+
+Zur Zeit wird die Zeitzone in ZCONNECT Notation angegeben, also die Anzahl
+der Stunden, die wir vor GMT sind. Sommerzeit ist entweder ``1'' oder ``0''
+und dient nur der Information, es geht nicht in die Zeitumrechnung ein.
+
+In Deutschland ist dies der Eintrag während der Sommerzeit:
+
+@example
+Zeitzone:                          2
+Sommerzeit:                        1 
+@end example
+
+und im Winter sähe es so aus:
+
+@example
+Zeitzone:                          1
+Sommerzeit:                        0 
+@end example
+
+UNIX--Connect kann (eigentlich selbstverständlich) Logfiles anlegen, die das
+Debugging erleichtern. Dafür brauchen wir einen Eintrag mit dem debug-Level
+(von 0 bis 2):
+
+@example
+Debuglevel:                        0
+@end example
+
+@subsection Files und Directories
+
+Wir brauchen ein Directory (muß existieren) fuer diverse Logbücher:
+
+@example
+Logbuch-Dir:                       /usr/local/lib/zconnect/logfiles
+@end example
+
+Weiterhin ein Verzeichnis für globale Lockfiles:
+
+@example
+Lock-Dir:                          /var/spool/zconnect/locks
+@end example
+
+Und ein Spool-Directory fuer die Netcalls:
+
+@example
+Netcall-Dir:                       /var/spool/zconnect
+@end example
+
+Ein- und ausgehende Netcalls können als Sicherheitskopie gespeichert werden.
+Die Kopien sollen in diesem Verzeichnis landen:
+
+@example
+Backout-Dir:                       /var/spool/zconnect/backout
+Backin-Dir:                        /var/spool/zconnect/backin
+@end example
+
+Sowie ein Directory fuer die Daten der einzelnen Systeme:
+
+@example
+Systeme-Dir:                       /usr/local/lib/zconnect/systems
+@end example
+
+Das Directory, unter dem die Filserver-Dateien liegen (dort MUSS es
+ein Unterverzeichnis ``INFO'' geben, in dem die Standard-Info-Texte
+stehen). Der Index liegt dort unter INFO/INHALT
+
+@example
+Fileserver-Dir:                   /pub
+Fileserver-Upload-Dir:            /pub/upload
+@end example
+
+Falls keine Filerequests erwünscht sind (oder keine Uploads), kann der
+entsprechende Eintrag in der @file{config}--Datei entfallen.
+
+
+@subsection Konfiguration der ZCONNECT Online-Routinen
+
+Sollen fremde System automatisch eingetragen werden?
+Wenn ja: diese Datei anlegen (wie eine Datei in .../systems) und dort
+die relevanten Default-Angaben reinschreiben
+
+@example
+Autoeintrag-Defaults:             /usr/local/lib/zconnect/autoeintrag.zconnect
+@end example
+
+
+Ein Kommando zum Einpacken (ARCen) und eines zum Auspacken:
+
+@example
+Arc-Kommando:                      /usr/local/lib/zconnect/einpack
+Xarc-Kommando:                     /usr/local/lib/zconnect/auspack
+@end example
+
+Ein Kommando zum Einlesen der empfangenen Dateien:
+
+@example
+Import-Kommando:                   /usr/local/lib/zconnect/import
+Inews-Kommando:                    /usr/lib/news/inews -h
+@end example
+
+Schließlich noch, falls abgehend telefoniert werden soll, die 
+Befehle für das Modem:
+
+@example
+Modem-Dial:                        ATDT%s
+Modem-Dialog:                      AT
+Modem-Dialog:                      ATZ
+Modem-Dialog:                      AT+FCLASS=0
+Modem-Dialog:                      ATX7
+@end example
+
+Und die Angaben, wie aus einer internationalen Telefonnummer der passende
+Wählstring ``gebastelt'' werden soll:
+
+@example
+Ortsnetz:                          +49-5254
+Fernwahl:                          0
+International:                     00
+@end example
+
+
+@subsection Konfiguration der Gateway-Routinen
+
+Manche Bretter müssen beim Gating umbenannt werden (z.B. /CL/!WICHTIG
+<-> cl.wichtig). Diese Bretter bzw. Newsgroups stehen in der folgenden
+Datei:
+
+@example
+Gate-Alias-Liste:                  /usr/local/lib/zconnect/alias
+@end example
+
+``Offene'' Bretter, die in moderierte Newsgroups gegatet werden, können
+automatisch mit einem Approved: Header versehen werden. Die Liste dazu
+steht in:
+
+@example
+Gate-Approved-Liste:               /usr/local/lib/zconnect/approved
+@end example
+
+
+@subsection Absenderabhängiges Routing
+
+Da Mails mit Absender ``.sub.org'' (u.a.) nicht über WIN-Leitungen
+transportiert werden sollen, dies aber mit herkömmlichen Routing-Mechanismen
+nicht/schwer realisierbar ist (Matthias Urlichs nach ZMailer 
+Patch fragen), wird im Gateway für solche Adressen gleich ein anderer
+Ziel-Pfad erzeugt.
+Der Gateway schreibt Adressen immer als (domain)!(user). Dieser Teil ist
+im folgenden ``%s'', darumherum kann beliebiges angehängt werden. Ich verwende
+hier eine sehr einfache Unterscheidung: Absender mit .de werden ``normal''
+geroutet, alle anderen gehen Umwege.
+
+Alle mit Path-Qualifier angegebenen Domains erhalten ``%s'' als Zieladresse.
+Alle uebrigen Domains bilden die Zieladresse ueber den Path--Default:
+
+@example
+Path-Qualifier:         .de
+Path-Default:           fiction!flatlin!smurf.sub.org!%s
+@end example
+
+Ausnahmen sind Ziel-Adressen in einer der folgenden Domains (fuer die
+gibt es hier ``freie'' Routings):
+
+@example
+Local-Domain:           .zer.de
+Local-Domain:           .owl.de
+Local-Domain:           .fh-lippe.de
+Local-Domain:           .han.de
+Local-Domain:           .hanse.de
+Local-Domain:           .gun.de
+Local-Domain:           .sub.org
+@end example
+
+
+@section @file{myself.zconnect}
+
+Diese Datei beschreibt das eigene System. Sie entspricht auf der
+Gegenseite einer System-Datei (siehe unten). Auch das Format ist 
+identisch (und in @file{zconnect.doc} naeher beschrieben).
+
+Hier meine tatsaechlich eingesetzte Datei:
+
+@example
+Sys:		nescio
+Domain:		zerberus.de
+Post:		Christopher Creutzig, Im Samtfelde 19, 33098 Paderborn
+Telefon:	+49-5251-71873
+Tel:		+49-5251-71873
+Sysop:		root
+Maps:		ROOT;christopher;postmaster
+Port:		1
+ARC:		1 ZIP NONE
+Prot:		1 ZMODEM YMODEM XMODEM
+Mailformat:	1 ZCONNECT JANUS UUCP
+ISO2:		1 V.32bis V.32 V.22bis V.22 V.21
+ISO3:		1 V.42bis V.42 MNP5 MNP
+@end example
+
+Die meisten (rein technischen) Informationen sind selbsterklärend 
+oder können vernachlässigt werden. Nur ein paar Bemerkungen:
+
+@table @samp
+@item Port
+UNIX--Connect benutzt als einzige Port-Nummer
+die 1 (Achtung: das ist hardcoded!). 
+Dies wird in künftigen Versionen aufgeschlüsselt
+werden, so daß dann konkrete Modems beschrieben
+werden können.
+@item Maps
+Die hier gelisteten Benutzer dürfen an andere
+Systeme Control-Nachrichten an ``maps''
+verschicken (um Bretter zu bestellen etc.).
+Bedauerlicherweise gibt es mit Zerberus einige Probleme, die noch nicht
+geklärt werden konnten, die aber mit Groß/Klein-Schreibung zu tun haben
+dürften.
+@item Telefon
+Voice--Nummer
+@item Tel
+Modem--Nummer (diese beiden sind bei mir identisch, da ich eine
+Fax-/Modemweiche verwende)
+@item Domain
+Eine Liste aller Domains, unter denen dieses
+System erreichbar ist.
+@end table
+
+
+@section Dateien in @file{systems}
+
+Jede Gegenstelle wird durch eine eigene Datei in 
+@file{/usr/local/lib/zconnect/systems} beschrieben. Die 
+Kommunikationsprogramme entnehmen dieser Datei zum einen
+die zum Anrufen nötigen Daten, zum anderen sind hier Informationen
+ueber Komprimierungsmethoden und Point-User untergebracht.
+
+@example
+Sys:		bionic
+Domain:		zerberus.de
+Passwd:		********
+ArcerOut:	ZIP
+ArcerIn:	ZIP
+Tel:		1 +49-521-68000
+Proto:		ZMODEM
+X-Call:		ZCONNECT
+@end example
+
+Die meisten dieser Daten werden von der Gegenstelle automatisch während
+der ZCONNECT-Kommunikation geliefert. Eine Erläuterung der einzelnen
+Einträge finden Sie in der beiliegenden Datei @file{zconnect.doc}.
+
+Falls Sie eine neue Datei von Hand anlegen (oder ein JANUS--System
+eintragen), benötigen Sie minimal die folgenden Daten:
+
+@table @samp
+@item X-Call
+Eines der Schlüsselwoerter @file{ZCONNECT} oder @file{JANUS}.
+Bitte hierbei auf Schreibweis achten,
+da ansonsten @file{prearc} nicht funktioniert.
+@item Sys
+Der Name des Systems (ohne Domain).
+@item Passwd
+Das mit diesem System vereinbarte Passwort. UNIX--Connect prüft
+Case-Insensitiv, das muß noch korrigiert werden.
+@item ArcerOut
+Der von uns beim Packen verwendete Arcer.
+@item ArcerIn
+Der von der Gegenstelle beim Packen verwendete Arcer.
+@item Proto
+Das Übertragungsprotokoll (z.B. ZMODEM).
+@end table
+
+@section ZCONNECT Autoeintrag
+
+Wenn Sie in Ihrer Konfigurations--Datei (siehe oben) einen entsprechenden
+Eintrag haben, können Sie eine Standard--System--Datei erstellen, die
+genau wie die gerade beschriebenen System--Dateien aussieht. In dieser
+Datei (bei mir zum Beispiel @file{/usr/local/lib/zconnect/autoeintrag})
+stehen die Defaults, die für neue Systeme gelten, bis diese ihre eigenen
+Daten geliefert haben. Fehlt diese Datei oder der zugehörige 
+@file{config}--Eintrag, wird der Anruf von fremden Systemen abgelehnt.
+
+
+@chapter Integration in die Mail-- und News--Systeme
+
+Im folgenden moechte ich anhand des Beispiels meiner Installation
+den exakten Weg beschreiben, den eine Nachricht geht, wenn sie mit
+UNIX--Connect in Berührung kommt.
+
+@menu
+* Von @code{smail} nach ZCONNECT::  
+* Von @code{inews} nach ZCONNECT::  
+* Von ZCONNECT nach @code{smail} oder @code{rnews}::  
+@end menu
+
+@section Von @code{smail} nach ZCONNECT
+
+Angenommen, ich schreibe mit ELM eine Nachricht an
+@file{padeluun@@bionic.zerberus.de}. Elm erstellt die Nachricht und piped
+sie in smail. Smail schlaegt in seinen Routing-Tabellen die Zieladresse nach
+und findet sie in der Datei @file{gatepaths}, assoziiert mit dem Transport
+@file{zconnect}. Der ist so konfiguriert, daß er die Nachricht mittels
+@file{append}-Treiber an das Verzeichnis mit dem Namen
+@file{/var/spool/smail/z-outq} anhängt (sprich: in diesem Verzeichnis eine
+neue Datei mit der Nachricht anlegt).
+
+Dort lagert die Nachricht (noch im @file{hbsmtp}-Format) bis
+zum nächsten @file{prearc} oder @file{zbatchsmtp} (ersteres ruft letzteres
+auf). Nun wird sie, um die fehlenden SMTP-Kommandos ergänzt, zusammen mit
+allen anderen wartenden Nachrichten als grosser SMTP-Batch in 
+@file{uursmtp} geschickt. Dieses Programm wandelt das ganze in ZCONNECT-Format
+um und erzeugt eine neue Datei im Verzeichnis
+@file{/var/spool/zconnect/bionic.zerberus.de}. Als Name fuer diese Datei
+wird die aktuelle Uhrzeit (Sekunden seit dem 1. Januar 1970) als Hex-Zahl
+plus die Endung @file{.prv} verwendet.
+
+Diese Konvertierung fand im Rahmen eines @file{prearc} Aufrufes statt,
+daher geht es jetzt noch weiter. Im ZCONNECT--Spool--Verzeichnis liegen
+jetzt eventuell viele @file{.brt} Dateien (siehe unten) und eventuell
+auch mehrere @file{.prv} Dateien. Alle diese Dateien verschiebt @file{prearc}
+jetzt in ein temporäres Unterverzeichnis (@file{prearc.xxxx}, wobei xxx die
+Prozessnummer des @file{prearc} ist), um weitere Zugriffe auf diese Dateien
+zu vermeiden. Dann werden alle @file{.prv}--Dateien in ein Archiv gepackt,
+alle @file{.brt}--Dateien in ein anderes.
+
+Anschliessend löscht @file{prearc} das temporäre Verzeichnis mitsamt
+Inhalt. Zurück bleiben zwei Dateien: @file{prv.bionic.zerberus.de.zip} mit den
+Mails und @file{brt.bionic.zerberus.de.zip} mit den News.
+
+
+@section Von @code{inews} nach ZCONNECT
+
+Ähnlich verläuft der Weg einer öffentlichen Nachricht vom Posten in
+NN bis in den BIONIC-Netcall. NN piped die Nachricht in inews (ueber
+einige Umwege), dieses lagert die Datei zwischen. Crongesteuert wird
+die Nachricht dann in das Newssystem uebernommen und wartet schließlich
+in einer Verteilwarteschlange auf den Transport an alle Systeme, die diese
+Newsgroup bestellt haben. Der entsprechende Cronjob (bei C--News ist das
+@file{sendbatches}) findet zu jedem Zielsystem die Batch-Parameter
+(bei mir in @file{/usr/share/news/batchparams}) und ordnet der bionic
+den Transport @file{zconnect} zu. Dazu gehört das Shell-Skript 
+@file{viazconnect}, das den Newsbatch ueber die Standard-Eingabe erhält,
+in einer temporären Datei zwischenlagert und mittels @file{uurnews}
+konvertiert. Dabei entsteht eine neue Datei im ZCONNECT--Spool--Verzeichnis.
+
+Beim naechsten @file{prearc} wird diese Datei, wie oben beschrieben, 
+weiterverarbeitet.
+
+
+@section Von ZCONNECT nach @code{smail} oder @code{rnews}
+
+Nachdem eines der Kommunikationsprogramme Daten empfangen hat, hinterlässt
+es diese in einem eigenen temporären Verzeichnis (bereits ausgepackt) und
+ruft dort @file{import} auf. Dieses teilt die Daten zunächst in News und
+Mail auf und schickt dann die Mails nach der Konvertierung mit
+@file{uuwsmtp} in das Mail-System (den genauen Aufruf finden Sie im Skript
+@file{import}), die News nach Konvertierung mit @file{uuwnews} nach
+@file{rnews}.
+
+
+@chapter Per JANUS angerufen werden
+
+Vorweg: es ist nicht einfach. Unter den Z-NETZ Gurus ist es
+immer noch umstritten, ob ein UNIX--System ueberhaupt zuverlässig per
+JANUS angerufen werden kann. Ich persönlich habe mit den
+UNIX--Connect Routinen gute Erfahrungen gemacht; ich habe aber auch
+früher schon erlebt, daß es einfach nicht geht. Andere Leute stellen immer
+wieder fest, daß es nicht funktioniert.
+
+Ob es sich bei den Problemen um prinzipielle oder philosophische handelt,
+ist an dieser Stelle irrelevant. Die Netcall-3.8/JANUS Überertragungsmethode
+enthält einen schweren Entwurfs-Fehler: nach dem Senden eines Archivs
+vom Anrufer zum Empfänger wird direkt ein Archiv in die Gegenrichtung
+gesendet, ohne die Systeme zwischenzeitlich neu zu synchronisieren. Übrigens
+geschieht dies bei älteren ZERBERUS-Versionen auch bei einem
+ZCONNECT-Netcall.
+
+Auf theoretischer Ebene ist dieser Fehler offensichtlich, ob er sich
+bei Ihnen in der Praxis zeigt, können Sie nur herausfinden, indem Sie
+es ausprobieren.
+
+Vorraussetzung fuer ein JANUS-Login ist die Umstellung Ihres 
+Login--Prompts auf ``Username:''. Dies ist für die meisten UUCP--Server
+bereits ein Knock-Out Kriterium.
+
+Wie Sie dies bewerkstelligen, haengt stark von Ihrem System ab. Einige
+Hinweise:
+
+@itemize @bullet
+
+@item	Schreiben Sie ``Username:'' an das Ende Ihrer Begrüssungsmeldung (die
+	Sie meist in @file{/etc/issue} finden).
+@item	Tragen Sie in @file{/etc/gettydefs} für die verwendeten Line--Settings
+	den Prompt ein. Das kann zum Beispiel so aussehen:
+
+@example
+Modem# B38400 HUPCL OPOST ONLCR TAB3 BRKINT IGNPAR 
+IXON IXANY ECHO ECHOE ECHOK ICANON ISIG CS8 CREAD # 
+B38400 HUPCL CS8 OPOST ONLCR CREAD BRKINT ICRNL IXON 
+IXANY ISIG ICANON ECHO ECHOK ECHOE #\nUsername: #Modem
+@end example
+
+	(Alles in einer Zeile)
+
+@item	Wenn Sie einen Port--Monitor statt @file{getty} für die 
+	Modem--Überwachung einsetzen (z.B. SVR4), können Sie mit
+	einem Service--Configuration--Skript (siehe @file{doconfig(3n)})
+	die Umgebungsvariable ``TTYPROMPT'' setzen.
+
+@item	Wenn Sie als Port--Monitor @file{ttymon} benutzen, können Sie
+	die @file{-p} Option einsetzen, allerdings werden Sie damit 
+	wahrscheinlich keinen ``:'' im Prompt konfigurieren können.
+
+@end itemize
+
+
+@chapter Installation des Gesamtsystems
+
+Die Installation des UNIX--Connect verläuft (hoffentlich auch bei
+Ihnen) vollautomatisch. Wenn Sie die ``Einführung in UNIX--Connect''
+gelesen haben, können Sie schrittweise die Ersteinrichtung vornehmen.
+Anschliessend ist dann noch die Integration in Ihr Mail-- und News--System
+vorzunehmen, die Sie aber schon schrittweise testen und beobachten
+können.
+
+
+@menu
+* Ersteinrichtung::             
+* Das fertig installierte System::  
+* Crontab::                     
+* Mail::                        
+* News::                        
+* Systeme eintragen::           
+* POINTS::                      
+@end menu
+
+@section Ersteinrichtung
+
+@enumerate
+
+@item Benutzer einrichten
+
+UNIX--Connect benoetigt drei Benutzerkennungen:
+
+@table @samp
+@item zconnect
+mit der Shell @file{/usr/local/lib/zconnect/receiver}
+@item janus
+mit der Shell @file{/usr/local/lib/zconnect/januslogin}
+@item mbox
+ohne Shell (nicht einlogbar)
+@end table
+
+Der Benutzer ``mbox'' wird nur intern verwendet, um Logfiles mit restriktiven
+Rechten versehen zu koennen (Datenschutz). Wenn Sie den Namen ``mbox'' nicht
+verwenden wollen oder können, erfragt @file{cofigure} einen anderen Namen.
+
+Die entsprechenden Eintraege in /etc/passwd können z.B. so aussehen:
+
+@example
+janus:x:1008:1:JANUS:/pub:/usr/local/lib/zconnect/januslogin
+zconnect:x:1008:1:ZCONNECT:/pub:/usr/local/lib/zconnect/receiver
+@end example
+
+Hier wird eine uid mit zwei Logins verwendet.
+
+@item ./configure
+
+Fuehren Sie dies als root aus, da Directories unter /usr/local/lib 
+erzeugt werden müssen. Falls Sie das erste mal installieren, wird
+configure Sie fragen, welchen Benutzernamen Sie für @file{mbox}
+benutzen möchten. Ansonsten laeuft die Konfiguration (theoretisch)
+vollständig automatisch ab. Als Ergebnis werden in verschiedenen
+Unterverzeichnissen @file{Makefile}s erzeugt.
+
+@item Alle Dateien in /usr/local/lib/zconnect/ editieren.
+
+Sie koennen das auch später machen---es ist jetzt nur besonders
+einfach, da zu diesem Zeitpunkt dort nur die wichtigen Dateien liegen,
+die alle bearbeitet werden müssen. Ansonsten richten Sie sich nach 
+dem Kapitel ``Die Konfigurationsdateien''.
+
+@item make
+
+Dies wird (hoffentlich ohne Probleme) alle Binaries erstellen. Sollten
+einzelne Funktionen fehlen, schauen Sie in das @file{lib}--Verzeichnis.
+Dort sind einige PD--Pakete zum Ersatz häufig fehlender Funktionen.
+
+Sollten Sie die Fehlermeldung ``gperf: command not found'' erhalten, machen
+Sie sich zunächst keine großen Gedanken. Im Prinzip brauchen Sie gperf nur
+dann, wenn Sie UNIX--Connect neue Header beibringen möchten. Es sollte sich
+auch ohne kompilieren, installieren und benutzen lassen. Eleganter wäre es
+natürlich, wenn Sie gperf installieren würden...
+
+@item make install 
+
+Dieser Schritt muß wieder als root ausgeführt werden, da einige Dateien 
+setuid @file{mbox} installiert werden.
+
+@item Spool-Directories für mindestens ein System anlegen.
+
+z.B. @file{/var/spool/zconnect/hsp.owl.de},
+@file{/var/spool/smail/z-outq/hsp.owl.de}. Details siehe unten.
+
+@item Testen...
+
+@end enumerate
+
+
+
+@section Das fertig installierte System
+
+Das fertig installierte System sieht so aus:
+
+@itemize @bullet
+  @item @file{/usr/local/lib/zconnect}        
+	Binaer- und Konfigurationsverzeichnis
+  @item @file{/usr/local/lib/zconnect/systems} 
+	Daten über erreichbare Systeme
+  @item @file{/var/spool/zconnect}
+	Spool-Dir für die Netcalls (schon komprimiert)
+  @item @file{/var/spool/zconnect/(sys)}
+	Das individuelle Spool-Dir fuer
+	die noch nicht komprimierten Daten.
+	Während des Vorpackens (Skript @file{prearc})
+	werden hier temporäre Unterverzeichnisse
+	erzeugt.
+  @item @file{/var/spool/smail/z-outq/(sys)}
+	Spool-Directories für smail, siehe die Integration in smail.
+@end itemize
+
+@section Crontab
+
+Etwa einmal pro Stunde (oder auch häufiger) sollte 
+@file{prearc} von der root-crontab ausgeführt werden, wenn Sie von anderen
+Systemen angerufen werden.
+
+Hier ein Auszug aus meiner Crontab:
+
+@example
+#
+#  ZCONNECT Prearc:
+#
+52 *	1-31 *	0-6	/usr/local/lib/zconnect/prearc
+#
+#  ZCONNECT Polls:
+#
+38 21,7	1-31 *	0-6	/usr/local/lib/zconnect/zcall bionic.zerberus.de modem
+08 14	1-31 *	0-6	/usr/local/lib/zconnect/zcall bionic.zerberus.de modem
+@end example
+
+@section Mail
+
+Im Unterverzeichnis @file{./mail-and-news/smail} liegen Beispiele für die
+Integration in Smail. Wichtig: da ZCONNECT-Adressen immer vollständig
+domainisiert sein muessen, ist die Path-Datei (hier: gatepaths) entsprechend
+einzurichten:
+
+@example
+link-goe.zerberus.de	bionic.zerberus.de!link-goe.zerberus.de!%s
+mpg-goe.zerberus.de	bionic.zerberus.de!mpg-goe.zerberus.de!%s
+@end example
+
+Hier sollte auf das zerberus.de weder bei bionic noch bei link-goe
+verzichtet werden. (Ersterers führt zu anderen Aufrufparametern des
+Gateway-Programms, letzeres liefert Zieladressen ohne Domain, was in
+ZCONNECT verboten ist.) Diese Datei kann auch mit @file{list-systems -p}
+erzeugt werden, meist ist aber manuelle Nacharbeit nötig.
+
+Bitte beachten Sie: Nachrichten für die mpg-goe werden von der bionic über
+die link-goe geroutet, das darf im Gateway aber nicht eingetragen werden,
+denn ansonsten würde smail eine Bang-Pfad-Adressierung erzeugen, die in
+ZCONNECT illegal ist.
+
+@section News
+
+Im Unterverzeichnis @file{./mail-and-news/cnews} liegen Beispiele für die 
+Integration in das News-System. Falls gewünscht, kann nach einem
+News-Batcher-Lauf sofort ein Aufruf von @file{prearc}
+erfolgen, indem dieser in das Batcher-Skript integriert wird. Aber Vorsicht:
+prearc muß derzeit als root laufen!
+
+
+@section Systeme eintragen
+
+ZCONNECT trägt neue Systeme beim ersten Anruf automatisch ein, sofern
+die Autoeintrags-Datei vorhanden ist (siehe Konfigurationsdateien).
+
+JANUS--Systeme können von Hand eingetragen werden, indem
+
+@enumerate
+@item Ein Directory mit dem Systemnamen (kleingeschrieben) unter 
+      @file{/var/spool/zconnect} eingerichtet wird (Besitzer: der 
+      entsprechende Online-User, also @file{janus} oder @file{zerberus})
+
+@item Eine Header-Datei mit dem Namen des Systems im Verzeichnis, das
+      in der Konfigurationsdatei unter @samp{Systeme-Dir} steht, angelegt wird. 
+      Die Beschreibung dieser Datei find Sie unter ``Konfigurationsdateien''.
+      Der Wert fuer X-Call: muss eines der beiden Netcall-Formate JANUS
+      oder ZCONNECT sein. Bitte dabei auf Großschreibung und Tippfehler
+      achten, ansonsten funkioniert @file{prearc} nicht.
+
+@item Ein smail-Spool-Verzeichnis in @file{/var/spool/smail/z-outq}
+      angelegt wird.
+@end enumerate
+
+Und natürlich das neue System auch in die Mail- und Newskonfiguration 
+eingetragen wird...
+
+
+@section POINTS
+
+Ein Point ist ein ``ganz normales'' System, dessen Absenderadresse aber auf
+den Namen des zugehörigen lokalen Benutzers gemapt werden. Ein Point ist
+durch mindestens einen @samp{Point-User: <adresse>} Eintrag in seiner
+Systems-Datei beschrieben. Es können mehrere @samp{Point-User:} vorhanden
+sein, jede dieser Adressen wird dann als Absender akzeptiert, alle anderen
+Absender werden durch den ersten @samp{Point-User:} ersetzt. 
+Die Adresse sollte komplett mit Realname angegeben werden, also z.B.:
+@samp{Point-User: m.husemann@@bi-link.owl.de (Martin Husemann)}.
+
+
+@chapter UNIX--Connect als Point
+
+Wenn Sie UNIX--Connect als POINT an einer MailBox einsetzen möchten, z.B.
+um mit Ihrem Linux-System und NN/ELM Ihren alten Cross-Point zu ersetzen,
+geben Sie das bei der Konfiguration von UNIX--Connect auf die entsprechende
+Frage hin an. Diese Variante erspart Ihnen einige Arbeit, sie erhalten
+mit der Erstinstallation direkt ein fertig konfiguriertes System---lediglich
+die Einbindung in smail sowie das News-System müssen Sie noch manuell
+vornehmen.
+
+Fragen Sie beim Betreiber Ihres Servers nach: hat dieser Sie als ``Point''
+eingetragen, werden alle von Ihnen erzeugten Absenderangaben durch die
+Adresse Ihres Accounts auf dem Serversystem ersetzt --- in diesem Fall 
+können Sie auf jeden Fall die Installationsvariante ``Point'' benutzen. Es
+gibt auch Systeme, die die eigentlich sinnvollere Variante anwenden, nur
+Nachrichten mit dem entsprechenden Absender zu akzeptieren. Wenn Sie damit
+absolut nicht klarkommen oder eine einfache, fertige Lösung haben, schreiben
+Sie mir bitte.
+
+
+@strong{Achtung:}
+        In der Point-Installation dürfen Sie @strong{auf keinen Fall}
+        Newsgroups mit Brettern aus dem ZCONNECT-Bereich vernetzen
+        und beide Formate weitergeben! Wenn Sie Newsgroups im RFC-Format
+        von Ihrem Server erhalten, geben Sie nur diese weiter. Wenn Sie
+        Bretter im ZCONNECT-Format erhalten, geben Sie nur diese weiter.
+
+
+@c Kein Inhaltsverzeichnis jetzt - 'ger-texinfo' kann das noch nicht.
+@bye

@@ -1,0 +1,29 @@
+# .../cf/mailer/uconnect.m4
+# enthält den Sendmail-Mailer Muconnect
+#
+PUSHDIVERT(-1)
+
+ifdef(`UCONNECT_MAILER_PATH',,
+        `define(`UCONNECT_MAILER_PATH',
+/usr/local/lib/zconnect/mail.uuconnect)')
+ifdef(`UCONNECT_MAILER_MAX',,
+        `define(`UCONNECT_MAILER_MAX', 1000000)')
+POPDIVERT
+########################################
+###   UCONNECT Mailer specification  ###
+########################################
+
+Muconnect,	P=UCONNECT_MAILER_PATH,
+		F=0, # no MX lookup for destination
+		F=DFMx, # Need Date,From,Message-Id,Full-Name
+		F=m, # Multiple receipients
+		F=u, # Preserve uppercase for username
+		F=S, # Assume specified uid and gid
+		F=n, # Don't use Unix-Style From in header
+		F=C, # Add domainame to all local Users
+		F=X, # Add extra dots in Body (BSMTP)
+		S=11/31, R=21, E=\r\n, M=UCONNECT_MAILER_MAX,
+		T=X-UUCP/X-UUCP/X-Unix,
+		U=news:news,
+		A=mail.uconnect $h $f $u
+

@@ -1,0 +1,60 @@
+README zu UNIX-Connect v0.76b1
+==============================
+
+Letzte Aenderung: christopher@nescio.zerberus.de
+
+$Id$
+ 
+------------------------------------------------------------------------------
+ACHTUNG:
+
+     Dies ist eine Beta-Version!
+
+------------------------------------------------------------------------------
+
+UNIX-Connect kann sehr vielseitig eingesetzt werden. Entwickelt wurde
+es, um ein Unix-System als Server im Z-NETZ (im alten Sinne) einsetzen
+zu können. Nebeneffekt ist die Gateway-Funktion. Gerade die Gateway-Routinen
+sind relativ gut portabel (ANSI-C ohne wesentliche UNIX-Einflüsse), und daher
+bereits auf anderen Computertypen realisiert worden. Bei den Online-Routinen
+ist das schwieriger, aber nicht unmöglich. Man sollte allerdings über Kentnisse
+der UNIX-I/O Strukturen verfügen.
+
+UNIX-Connect kann auch als Point benutzt werden - also um am heimischen
+Linux-System die Nachrichten aus der Z-NETZ MailBox vor Ort im ELM oder NN
+zu lesen. Dieser Einsatzmöglichkeit widmet die Dokumentation ein eigenes 
+Kapitel, da hierbei sehr viele Konfigurationsprobleme von vornherein 
+vermieden werden können.
+
+UNIX-Connect ist nicht (wie der Name vielleicht sugerriert) auf ZCONNECT
+beschränkt - es kann auch JANUS Netcalls sowohl selbst durchführen
+als auch empfangen.
+
+Die Dokumentation finden Sie im texinfo-Format in der Datei
+unix-connect.texinfo. Sie sollten diesen Text auf jeden  Fall lesen - ohne
+ihn wird es Ihnen kaum möglich sein, eine lauffähige Installation
+herzustellen.
+
+Die Installation des Paketes ist in INSTALL beschrieben, aktueller ist aber
+auf jeden Fall die texinfo-Doku, die auch die Installation beschreibt.
+
+Eine Übersicht, welche Dateien und Directories im Source-Verzeichnis zu
+finden sind, befindet sich in der Datei ROADMAP.
+
+Weiterhin existiert eine Mailingliste für den UNIX-connect-Support, auf der
+Hilfestellungen gegeben, Fehler gemeldet, Patches verschickt, neue Versionen
+angekündigt und die weitere Programmentwicklung besprochen werden. Die
+Adresse der Mailingliste ist unix-connect@mailinglisten.im-netz.de, für An-
+und Abmeldungen schreiben Sie bitte an 
+unix-connect-request@mailinglisten.im-netz.de.
+
+
+Viel Erfolg mit diesem Programmpaket wünschen
+
+
+Martin Husemann
+Christopher Creutzig
+
+
+
+

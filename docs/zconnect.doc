@@ -1,0 +1,3291 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                       ZCONNECT(R)
+
+       Das Datenaustauschformat für MailBox-Netze
+
+                       Version 3.0
+
+                   vom 3. August 1992
+
+
+
+      Felix Heine, Martin Husemann, Matthias Jung,
+     Wolfgang Mexner, padeluun, Hartmut Schröder und
+                      Rena Tangens
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Herausgeber:     ZERBERUS Gesellschaft  für Kommunikation mbH,
+                 Marktstraße 18, D-4800 Bielefeld,    
+                 Tel.: +49-521-65566, Fax: +49-521-61172
+
+ISBN 3-9802182-2-8
+
+ZERBERUS(R)  ist   ein  eingetragenes   Warenzeichen  von Wolfgang Mexner.   
+ZCONNECT(R)  ist   ein  eingetragenes   Warenzeichen  der ZERBERUS GmbH.
+MS-DOS ist  ein eingetragenes  Warenzeichen der MicroSoft GmbH,    
+UNIX ein eingetragenes Warenzeichen der AT&T Inc. und USL Inc.
+RSA ist  ein  eingetragenes  Warenzeichen  der  RSA  Data Security Inc.
+
+Inhaltsverzeichnis
+
+
+    Einleitung............................................3
+
+         Danke............................................3
+
+         COPYRIGHT........................................4
+
+    Die Datenübertragung..................................5
+
+         ZCONNECT implementieren..........................5
+
+         Gesamtablauf.....................................5
+
+         Login............................................9
+
+         Grundlagen des ZCONNECT-Protokolls..............10
+
+               Aufbau eines Blocks.......................11
+
+               Protokollablauf...........................13
+
+         Header für Systeminformationen..................14
+
+         Header zur Verbindungssteuerung.................19
+
+    Das Datenformat......................................21
+
+         Vor dem Transport...............................21
+
+         Nach dem Transport..............................22
+
+         Inhalt..........................................22
+
+         Header..........................................25
+
+         Adressen........................................26
+
+         Brettnamen......................................27
+
+         Weiterleiten....................................28
+
+         Automatisches Weiterleiten (Mailing-Listen,
+         Netzwerk-Verteiler).............................29
+
+         Beispiel........................................31
+
+         Die möglichen HEADER-INFORMATIONEN..............32
+
+         Weitere Headerzeilen............................38
+
+    Umwandlungen.........................................39
+
+         Konvertierung vom ZNETZ-Format nach ZCONNECT....39
+
+         Konvertierung vom ZCONNECT in das ZNETZ-Format..39
+
+    ANHANG...............................................42
+         Message-ID Konvertierung........................42
+
+         Zeitzonen.......................................46
+
+         INDEX...........................................47
+
+Einleitung
+
+Der  ZCONNECT-Standard   beschreibt  den  Datenaustausch  zwischen
+verschiedenen Systemen  in einem  MailBox-Netzwerk. Die  Verfahren
+wurden entworfen  und ausgewählt  mit Blick  auf  mögliche  Erwei-
+terbarkeit ohne  Änderungen in darauf basierender Software und der
+möglichst  einfachen  Konvertierbarkeit  in  andere  Datenformate.
+Hierbei  wurden  speziell  das  alte  Z-NETZ  Format  und  das
+InterNet/UseNet     Datenformat     (s. RFC821/822/1036)
+berücksichtigt.
+
+Ergebnis ist nun ein hinreichend einfaches, aber gleichzeitig sehr
+mächtiges Verfahren. Da ZCONNECT auf den Erfahrungen der genannten
+Protokolle aufsetzt,  aber komplett  neu entworfen  wurde,  konnte
+eine sehr  viel kompaktere  und schlichtere  Struktur bei gleicher
+Leistungsfähigkeit erreicht werden.
+
+Wir beschreiben  die unterschiedlichen  Protokollebenen [ohne  auf
+das ISO-Referenzmodell zurückzugreifen ;-] in drei Kapiteln.
+
+Zunächst erläutert  wird die eigentliche Datenübertragung (Online-
+Phase). Im  zweiten Kapitel stellen wir die übertragenen Daten und
+damit  das  Nachrichten-Format  vor.  Schließlich  finden  Sie  im
+letzten Kapitel  eine Beschreibung der nötigen Konvertierungen, um
+ZCONNECT-Nachrichten in  das alte  Z-NETZ Format  umzuwandeln.  Im
+Anhang schließlich  finden Sie eine Routine, die ZCONNECT Message-
+ID's  in  Z-NETZ  Message-ID's  umwandelt  sowie  eine  Zeitzonen-
+Tabelle.
+
+Hinweis: In  der deutschen  Sprache gibt  es  leider  noch  keinen
+neutralen Ausdruck für Personen, der beide Geschlechter umfaßt. Da
+wir den  Text nicht durch beständige Nennung beider Formen unnötig
+kompliziert machen  wollten, verwenden wir in dieser Dokumentation
+ausschließlich die weibliche Form. Selbstverständlich sind mit den
+Bezeichnungen           Absenderin,           Empfängerin,
+Systembetreiberin etc.  die entsprechenden männlichen Personen
+mitgemeint.
+
+
+
+
+
+Danke
+
+Wir   danken    dem   FoeBuD e.V.    für   ein    Dauertestsystem,
+microtrend GmbH  für   die  großzügige  technische  Unterstützung,
+Peter Mandrella,  Marc   Zimmermann  und   allen  anderen   POINT-
+Programmiererinnen  sowie   Frank  Scheizel  für  viele  Tips  und
+Anregungen, Christian  Mock für die Zusendung der Zeitzonentabelle
+(zusammengestellt von  Gary Dixon)  und allen,  die uns bei diesem
+harten Stück Arbeit unterstützt haben.
+
+
+
+
+
+
+
+                           - Seite 4 -
+
+COPYRIGHT
+
+Alle Rechte  liegen  bei  den  Autorinnen.  Dieses  Dokument  darf
+beliebig  vervielfältigt  und  unverändert  weitergegeben  werden.
+ZCONNECT  darf   unverändert   in   allen   (auch   kommerziellen)
+Applikationen lizenzfrei  implementiert werden. In diesem Fall muß
+in der  jeweiligen Dokumentation  und im  jeweiligen  Programm  an
+gleicher  Stelle,  wie  die  Nennung  der  Programmautorinnen  der
+Hinweis:   "(c) <jahreszahlen>    für   ZCONNECT:   ZERBERUS GmbH,
+Friedland (FRG). ZCONNECT  ist ein  eingetragenes Warenzeichen der
+ZERBERUS GmbH,    Friedland (FRG)"     beziehungsweise    eine
+Übersetzung  in   der  Landessprache   des  jeweiligen   Programms
+erscheinen. Werden  in einem Programm keine Autorinnen oder Rechte
+genannt, muß der Hinweis an angemessener Stelle erfolgen.
+
+
+
+Die Dokumentation kann im  Buchhandel  unter  der  internationalen
+Bestellnummer ISBN 3-9802182-3-6 oder via BTX  über  die  Bestell-
+seiten des FOEBUD# oder direkt bei der ZERBERUS GmbH bestellt wer-
+den (Vorkasse, Scheck oder bar). Die Doku ist  im  Format DIN A 4,
+gebunden, mit einer Diskette versehen und kostet 30 DM.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                           - Seite 5 -
+
+Die Datenübertragung
+
+
+
+
+
+ZCONNECT implementieren
+
+Sie können  ab etwa  Ende 1992  einen Auszug  aus  einem  C-Source
+kostenlos  erhalten,   der   das   hier   beschriebene   Protokoll
+implementiert. Auf  der Basis dieses Quelltextes werden Sie sicher
+schnell zu  einer eigenen  Version gelangen  und insbesondere  die
+kostenintensive und mühselige Online-Testphase verkürzen.
+
+Aber auch  wenn Sie  nicht in  "C" arbeiten,  werden Sie mit wenig
+Aufwand die  Übertragungsphase realisieren  können. Sie  benötigen
+dazu:
+
+    -    Eine 16-bit CRC Routine nach dem X-MODEM Polynom,
+
+    -    Eine Verwaltung für "Header" (siehe unten),
+
+    -    Dateitransportprotokolle (z.B. Z-MODEM), die Sie aber
+         auch als externe Programme aufrufen können.
+
+
+In der  folgenden Beschreibung  werden Texte  gelegentlich  in  C-
+Notation angegeben. Hier ein kurze Erläuterung:
+
+    \r            Return, <CR>, Dezimal 13, Hex. 0D
+
+    \n            Newline, <LF>, Dezimal 10, Hex. 0A
+
+
+Die Anführungsstriche  ( "  ) gehören nicht zu den Texten, sondern
+dienen nur deren Begrenzung.
+
+
+
+
+
+Gesamtablauf
+
+Grobskizze eines kompletten Verbindungsaufbaus:
+
+    -    Login (einmalig)
+
+    -    Austausch der Systeminformationen (einmalig)
+
+    -    Austausch von Daten (mehrmals hintereinander)
+
+    -    Logoff (einmalig)
+
+
+Eine etwas feinere Skizze des Verbindungsaufbaus für die Anruferin
+(ohne Fehlerkorrektur):
+
+Vorbereitungsphase (noch offline)
+
+    -    Auswahl der anzuwählenden MailBox
+
+
+                           - Seite 6 -
+
+    -    Falls Daten für die MailBox vorhanden sind, diese packen
+
+    -    Verbindung zur anderen MailBox herstellen
+
+
+Loginphase (Online)
+
+    <-   Warten auf Username
+
+    ->   Usernamen "zconnect" eingeben
+
+    <-   Warten auf Passwort
+
+    ->   Passwort "0zconnec" eingeben
+
+    <-   Warten auf "BEGIN"
+
+
+Austausch der Systeminformationen
+
+    ->   Senden der eigenen Systeminformationen
+
+    <-   Empfangen der Systeminformationen des anderen
+
+    *    Ermitteln der Gemeinsamkeiten
+
+    ->   Senden der  endgültigen Verbindungsdaten,  die für  diese
+         Verbindung gelten
+
+    <-   Empfangen der Bestätigung der endgültigen Daten
+
+
+Datenaustausch
+
+    ->   Senden  der   Anforderung  (z.B.  "Mails  holen",  "Mails
+         senden" oder "Mails holen und senden")
+
+    <-   Empfangen der  Bestätigung (z.B.  Meldung, wieviel  kB an
+         Mails bereitliegen)
+
+    ->   Senden der  endgültigen Anforderung  (z.B. ich  will alle
+         Mails haben)
+
+    <-   Empfangen der Bestätigung des Kommandos
+
+    <-   Gegebenenfalls warten, bis Mails bereitgestellt sind
+
+    <-   Umschalten  auf   Filetransferprotokoll,   Daten   holen,
+         zurückschalten auf ZCONNECT
+
+
+Weiterer Datenaustausch
+
+    ->   Senden der nächsten Anforderung (z.B. Mails senden)
+
+    <-   Empfangen der Bestätigung
+
+    ->   Senden, ob Anforderung auch ausgeführt werden soll
+
+    <-   Empfangen der Bestätigung der Kommandos
+
+
+                           - Seite 7 -
+
+    ->   Umschalten  auf   Filetransferprotokoll,  Daten   senden,
+         zurückschalten auf ZCONNECT
+
+
+Logoff
+
+    ->   Senden der Logoffanforderung
+
+    <-   Empfangen der Bestätigung der Logoffanforderung
+
+    ->   Senden der endgültigen Logoffanforderung
+
+    <-   Empfangen Bestätigung Logoff
+
+
+Nacharbeiten (Offline)
+
+    -    Merken der  neuesten Parameter  der  Box,  die  angerufen
+         wurde
+
+    -    Files und Mails löschen, die nicht mehr gebraucht werden
+
+    -    Verarbeiten (Einsortieren der empfangenen Mails)
+
+
+Eine etwas  feinere Skizze  des Anrufes für die angerufene MailBox
+(ohne Fehlerkorrektur):
+
+    <-   Verbindung wird hergestellt (Online)
+
+    ->   Loginmeldung  senden  (kurz,  da  sie  nicht  abgebrochen
+         wird!)
+
+    ->   Senden "Username:"
+
+    <-   Empfangen des Usernamens "zconnect"
+
+    ->   Senden "Passwort:"
+
+    <-   Empfangen des Passwortes "0zconnec"
+
+    -    ZCONNECT Übertragungsmodul aktivieren
+
+
+Das ZCONNECT-Übertragungsmodul macht nun folgendes:
+
+    ->   Senden drei mal "BEGIN\r\n" mit je einer Sekunde Pause
+
+
+Austausch Systeminformationen
+
+    <-   Empfangen der Systeminformationen des anderen
+
+    ->   Senden der eigenen Systeminformationen
+
+    <-   Empfangen der endgültigen Verbindungsdaten
+
+    ->   Senden der Empfangsbestätigung
+
+
+
+
+                           - Seite 8 -
+
+Datenaustausch
+
+    <-   Empfangen der Anforderung (z.B. wieviele Mails sind da)
+
+    *    Überprüfen und schätzen, wie lange das Packen dauern wird
+
+    ->   Senden der  Bestätigung (mit  der Information,  wie lange
+         das Packen voraussichtlich dauern wird)
+
+    <-   Empfangen der  Bestätigung des Kommandos und der Meldung,
+         was die Gegenstelle abholen möchte
+
+    ->   Senden der Bestätigung
+
+    ->   Senden "Warten, bis Packen beendet" (optional)
+
+    *    Packen der Nachrichten
+
+    ->   Senden "Packen beendet" (optional)
+
+    ->   Umschalten  auf   Filetransferprotokoll,   Daten   senden
+         und/oder empfangen, zurückschalten auf ZCONNECT
+
+
+Weiterer Datenaustausch
+
+    <-   Empfangen der  Aufforderung (z.B.  Anruferin  will  Mails
+         übertragen)
+
+    ->   Senden der Bestätigung
+
+    <-   Empfangen  der   Bestätigung  der   Kommandos  (was   nun
+         tatsächlich übertragen werden soll)
+
+    ->   Senden der Anforderungsbestätigung
+
+    <-   Umschalten  auf   Filetransferprotokoll,   Daten   holen,
+         zurückschalten auf ZCONNECT
+
+
+Logoff
+
+    <-   Empfangen der Logoffanforderung
+
+    ->   Senden der Bestätigung der Logoffanforderung
+
+    <-   Empfangen endgültige Logoffanforderung
+
+    ->   Senden Bestätigung Logoff
+
+    *    Gegebenenfalls Umschalten der Protokollrichtung
+
+
+Nacharbeit (Offline)
+
+    -    Merken der neuesten Parameter der Box, die angerufen hat
+
+    -    Files und Mails löschen, die nicht mehr gebraucht werden
+
+    -    Verarbeiten (Einsortieren der empfangenen Mails)
+
+
+                           - Seite 9 -
+
+
+
+
+Login
+
+Wir haben  das Login-Verfahren  festgeschrieben [im Gegensatz z.B.
+zu   UUCP],    damit    alle    ZCONNECT-MailBoxen    weltweit
+Datenaustausch selbständig  durchführen können  -  auch  wenn  die
+Systeme noch nie vorher miteinander kommuniziert haben.
+
+Dabei geht das Login-Verfahren von drei Bedingungen aus:
+
+    1.   Der Einlogname  ist immer identisch, ebenso das Passwort.
+         Dadurch ist  es möglich,  ZCONNECT als  Benutzerin in ein
+         System einzutragen,  das ansonsten keinen Eingriff in die
+         Einlogprozedur erlaubt (z.B. VMS oder UNIX), dann
+         aber, sobald  das allgemeine ZCONNECT-Login gelungen ist,
+         nochmal Systemname und Passwort abzufragen.
+
+    2.   Manche Systeme  erlauben kein  Login ohne Passwortabfrage
+         oder  erzwingen  bestimmte  [kryptische]  Passworte.  Wir
+         haben daher  Login UND  Passwort definiert,  nicht wie im
+         alten Verfahren nur das Login.
+
+    3.   Nicht  immer   kann  die  Formulierung  der  Login-  oder
+         Passwortabfrage konfiguriert werden, auch ein Abbruch der
+         Titelmeldung vor dem Login ist nicht systemunabhängig
+         definierbar. Daher  hat die  Anruferin auf  eine Vielzahl
+         von Schlüsselwörtern  zu reagieren  und anschließend noch
+         eine Pause  abzuwarten (damit  das Schlüsselwort  zur Not
+         auch in die Titelmeldung geschrieben werden kann).
+
+
+Die  Senderin   wartet  solange,  bis  die  Empfängerin  in  ihrer
+Loginmeldung einen  der folgenden  Strings sendet: "ogin", "OGIN",
+"ame", "AME"  und eine Übertragungspause von einer Sekunde gefolgt
+ist. Sendet  die Angerufene gar nichts, schickt die Anruferin nach
+30 Sekunden  "\r" (nur  "\r", kein  "\n", da  dieses  auf  einigen
+Betriebssystemen Probleme  beim Einloggen  verursachen kann  [z.B.
+OS-9]) und wartet wiederum auf die Einloganforderung.
+
+Bei  erkannter  Login-Anforderung  sendet  die  Anruferin  den
+Benutzernamen "zconnect\r".
+
+Erhält sie  darauf innerhalb von 30 Sekunden keine Antwort, sendet
+sie "\r"  und wartet wieder auf einen der o.g. Strings. Es sollten
+mindestens drei Versuche gestartet werden, bevor bei Mißerfolg die
+Verbindung abgebrochen wird.
+
+Die Empfängerin  antwortet bei  Erhalt  des  Antwortstrings  durch
+Senden der  Passwortabfrage, in  der einer der Strings "word",
+"WORD", "wort" oder "WORT" enthalten sein muß.
+
+Die Senderin  schickt darauf  das Passwort  "0zconnec\r". Wird
+innerhalb von  30 Sekunden  nicht geantwortet, sendet sie "\r" und
+wartet nun erneut auf die Passwortabfrage oder die Login-Frage.
+
+
+
+
+                           - Seite 10 -
+
+Nach dem  Erhalt des  "0zconnec\r"  startet  die  Empfängerin  die
+ZCONNECT-Übertragung. Dazu sendet sie dreimal den String "BEGIN\r"
+mit jeweils  einer Sekunde  Pause dazwischen.  Dieses signalisiert
+der Anruferin, daß das Login gelungen ist und der Tranfer beginnen
+kann.
+
+Nach Erhalt  des Strings  "BEGIN\r" geht auch die Anruferin in den
+Transfermodus.
+
+
+
+
+
+Grundlagen des ZCONNECT-Protokolls
+
+Eins der  Hauptprobleme  eines  geregelten  Filetansfers  zwischen
+Systemen mit wechselnden Anforderungen ist eine möglichst flexible
+Definition   des    Datenübermittlungsprotokolls.    Beim    alten
+ZERBERUS-Netcallprotokoll  (das  im  Hitchhikers  Guide  to
+Zerberus Netcalls'  von Patrick Schaaf dokumentiert wurde und vom
+ZERBERUS MailBox  Programm bis  Version 4.0 sowie von den diversen
+ZERBERUS-netcallkompatiblen Programmen  verwendet  wurde)  war  es
+nicht möglich,  mehr als ein Mailfile auszutauschen oder gar Files
+zu requesten.
+
+Leider  kann   man  sich   ein  flexibleres  Protokoll  nur  durch
+gestiegene Komplexität  erkaufen. Wir  haben zwar  versucht, es so
+einfach wie möglich zu machen, nur wurde der höheren Flexiblilität
+gegenüber der Einfachheit der Vorzug gegeben.
+
+Anforderungen:
+
+    -    Flexibel,  d.h.   die  Protokollinformationsdaten  müssen
+         erweitert  werden   können  -  ohne  wiederum  ein  neues
+         Protokoll definieren zu müssen
+
+    -    Verschiedene Übertragungsprotokolle. Die Daten müssen mit
+         verschiedenen Protokollen  (z.B. ZModem, BiModem,
+         ftp)  übertragen   werden  können   -  ohne  daß  die
+         Systembetreuung dies jeweils einstellen muß.
+
+    -    Neue  Anforderungen   automatisch  mit   der   Gegenseite
+         absprechen. Sollte  z.B. das Arcformat gewechselt werden,
+         müssen beide  automatisch auf das neu eingestellte Format
+         gehen -  oder sich auf dasselbe Format einigen (falls das
+         Gewünschte bei  der Gegenseite nicht verfügbar ist), ohne
+         daß die  Sysstembetreuung es  einstellen muß und ohne daß
+         deshalb ein Netcall mißglückt.
+
+    -    Die Anruferin  wählt aus,  was sie haben will. Diejenige,
+         die die  Leitungskosten trägt,  sagt auch,  was  wie  wie
+         haben will  und was  nicht, z.B. Eilmails abliefern, aber
+         die  öffentlichen  Nachrichten  bis  zum  nächsten  Anruf
+         liegenlassen (und in der Zwischenzeit preArcen).
+
+    -    Teilweise korrekt  übertragene Daten  müssen  soweit  wie
+         möglich akzeptiert werden. Beim nächsten Anruf werden nur
+         die fehlerhaften Daten wiederholt.
+
+
+
+
+                           - Seite 11 -
+
+    -    Das Protokoll  selber muß  so ausgelegt sein, daß es auch
+         auf Verbindungwegen  funktioniert, die  nicht  vollkommen
+         datentransparent sind.  Bestes Beispiel  ist das  normale
+         Datex-P Profil. Bedingung: es gelten nur: CR und alle
+         ASCII-Zeichen von hex 20 bis  hex 7E
+
+
+Nach dem  Login werden Informationen nach einem relativ einfachen,
+aber flexiblen  Verfahren  ausgetauscht.  Das  Protokoll  hat  ein
+gleichbleibendes Grundmuster:
+
+Es werden  ABWECHSELND Blöcke  untereinander ausgetauscht  bis
+ein anderes  Protokoll (zum Dateitransfer) aufgerufen wird. Danach
+geht der gegenseitige Austausch von Blöcken weiter. Ein Block wird
+von der  anderen Station  positiv bestätigt (der Anwort-Block kann
+natürlich wiederum  neue Information  enthalten)  oder  abgelehnt.
+Falls keine  Bestätigung empfangen  wird, wird derselbe Block nach
+einer Timeoutzeit  von 30 Sekunden noch einmal gesendet und wieder
+auf die Bestätigung gewartet.
+
+Die Blöcke sind durchlaufend numeriert, damit keine Verwechslungen
+auftreten können.
+
+
+
+
+
+Aufbau eines Blocks
+
+Das gesamte  ZCONNECT-Online-Protokoll basiert  auf dem  Austausch
+von Blöcken.  Es handelt  sich dabei  um Datenpakete variabler
+Länge -  maximal ist  ein  Block  (einschließlich  der  Blockende-
+Zeichen)  32  kByte  groß.  Jeder  Block  ist  in  mehrere  Zeilen
+unterteilt, die  durch ein  "\r" (CR)  getrennt werden.  In  jeder
+Zeile befindet  sich ein  Header (wie  auch in den ZCONNECT-Daten,
+siehe unten),  also eine alphanumerische Kennung gefolgt von einem
+Doppelpunkt ":"  sowie der Nutzinformation bis zum Zeilenende. (Im
+Gegensatz zum  Nachrichtenformat sind  hier keine Leerzeichen oder
+Tabulatoren zwischen dem ":" und dem Inhalt erlaubt.)
+
+In einem Block sind nur folgende ASCII-Zeichen zugelassen:
+
+    -    Hex. 20 (dezimal 32) bis Hex. 7E (dez 127) einschließlich
+
+    -    CR, Hex. 0d (dezimal 13)
+
+
+Alle anderen  Zeichen werden  als nicht  übertragen gewertet, also
+von der Empfängerin ignoriert.
+
+Das Zeichen CR gilt als Zeilentrenner.
+
+Zwei direkt aufeinander folgende CR's markieren das Block-Ende.
+
+    \r   Zeilentrenner
+
+    \r\r Blockende
+
+
+
+
+
+                           - Seite 12 -
+
+Es empfielt sich aus Sicherheitsgründen, auch vor dem Block-Anfang
+zwei Zeilentrenner  zu senden, da einzelne Zeilentrenner vor einem
+Block ignoriert werden.
+
+Header dürfen  mehrfach in  einem Block  auftreten  (also  mehrere
+Zeilen mit derselben Kennung), wenn das sinnvoll ist.
+
+Über jeden Block wird eine Prüfsumme auf Basis eines 16-Bit
+CRC nach  X-MODEM Polynom errechnet. Diese Prüfsumme wird dann im
+Block selber  mitgesendet. Dies  geschieht auf einer Zeile mit der
+Kennung   "CRC".   Die   Prüfsumme   wird   in   großgeschriebenen
+Hexadezimalzahlen (vierstellig  mit führenden  Nullen)  angegeben.
+Diese Zeile  sowie alle "\r" gehen nicht mit in die Prüfsumme ein.
+Der CRC  muß daher  nicht an  einer bestimmten  Position in  Block
+stehen. Der  CRC muß  auch bei gesicherten Verbindungen übertragen
+werden.
+
+Weiterhin erhält  jeder Block  eine eindeutige  Kennung, die seine
+Verwendung/Bedeutung im Protokollablauf definiert. Diese Zeile hat
+die Kennung  "STATUS". Als  Daten  in  dieser  Zeile  gibt  es
+derzeit:
+
+    BLKn          Datenblock (n von 1 bis 4, je nach Phase des
+         Protokolls)
+
+    ACKn          Empfangsbestätigungen auf den entsprechenden
+         BLKn (daher auch n von 1 bis 4)
+
+    NAK0          negative  Empfangsbestätigung:   der   Block
+         wurde empfangen,  ist aber  ungültig (z.B.  falscher  CRC
+         durch Übertragungsfehler)
+
+    TMEn          Umschaltungsblock    für    Erhaltung    der
+         Übertragungsrichtung (n von 1 bis 4)
+
+    EOTn          Protokollübergänge  und  Abschlußzeichen  (n
+         von 1 bis 4)
+
+    BEGn          Bestätigungen, daß  das Datenpacken  beendet
+         wurde (n von 5 bis 6)
+
+    EOTn Empfangsbestätigung      auf       empfangene       BEGs,
+         Protokollübergänge und Abschlußzeichen (n von 5 bis 6)
+
+
+Hier ein Beispiel für einen gültigen Block (Das "\r" am Zeilenende
+steht für das <CR> als Zeilentrennung):
+
+SYS:BI-LINK\r
+SYSOP:Postmaster\r
+TEL:1 +49-521-19304\r
+PROTO:ZMODEM\r
+PASSWD:GUEST\r
+STATUS:BLK1\r
+CRC:F32C\r
+\r
+
+    Hinweis: der angegebene CRC-Wert ist falsch, der Block ist als
+             BLK1 auch  nicht komplett,  er  dient  hier  nur  als
+             Beispiel für den Block-Aufbau.
+
+
+                           - Seite 13 -
+
+Protokollablauf
+
+Die  Senderin   fordert  Information  durch  einen  BLK1  an.  Die
+Empfängerin bestätigt  den korrekten  Empfang durch  Senden  eines
+ACK1  eine   falsche  Prüfsumme  wird  durch  Senden  eines  NAK0
+angezeigt. In  einem solchen Fall muß der BLK1 wiederholt gesendet
+werden.
+
+Ein richtig empfangener ACK1 auf der Senderseite wird durch Senden
+eines  TME1  bestätigt,  um  die  Gegenseitigkeit  des  Protokolls
+beizubehalten. Ein TME wird nicht durch ein ACK bestätigt, sondern
+durch Senden eines BLK (BLK2 in diesem Fall). Ab jetzt läuft alles
+wie vorher, nur mit vertauschten Rollen.
+
+Es passiert also abwechselnd ein Austausch von BLK, ACK, TME, BLK,
+ACK u.s.w.  bis zu  ACK4, danach  kann  mit  einem  TME4  von  der
+Empfängerin die Fortsetzung des Protokolls gefordert werden. Durch
+Senden von  3*EOT4 (mit  einer Sendepause von mindestens 1 Sekunde
+dazwischen) wird  der Beginn  eines anderen Übertragungsprotokolls
+(z.B. ZMODEM  um eine Datei zu übertragen) oder des "Warten auf
+Aktion" markiert.
+
+Danach gehen  beide wieder  auf das  ZCONNECT-Protokoll. Wenn  die
+Übertragung fehlerhaft  gewesen sein  sollte, wird vom erkennenden
+System ein  NAK1 gesendet.  Sind die  Daten korrekt  gesendet oder
+empfangen worden,  wird ein  BLK1 gesendet sobald dieses mit ACK1
+bestätigt wurde, gelten die Daten als ordnungsgemäß übertragen. Im
+Fall eines  danach erfolgenden  Netcallabbruchs werden  die  Daten
+nicht noch einmal übertragen.
+
+Zu  beachten  ist,  daß  EOT4  nur  ein  Abschlußzeichen  für  die
+Synchronisation der  Wartezeit ist.  Die Information,  ob  und
+welches Übertragungsprotokoll  gestartet werden  soll, wurde schon
+vorher in BLK4 und/oder BLK3 übertragen.
+
+Das Warten  auf Aktionen  vor der Fileübertragung ist optional und
+ergibt sich  aus dem  vorhergegangenen Informationsaustausch  über
+die Fileübertragung.  Warten auf  Aktionen kann  einzeln für  eine
+Richtung aber  auch für  beide Richtungen  gleichzeitig  aktiviert
+werden.
+
+Wenn z.B.  die Senderin  warten soll,  damit die  Empfängerin Zeit
+hat, ihr  Mailarchiv zu  packen (nur  die seit  dem letzten Packen
+hinzugekommenen Daten  im ZCONNECT  werden Daten immer vorgepackt
+gespeichert und  neue adaptiv  gepackt), stellt  die Senderin nach
+dem Senden  des letzten  EOT4  einfach  die  Übertragung  ein  und
+komprimiert ihr  Archiv.  Wenn  sie  fertig  ist,  zeigt  sie  der
+Senderin dies  durch  Senden  eines  BEG5  (vorher  Empfangspuffer
+löschen) an.  Diese zeigt  durch 3*Senden  eines EOT5  an, daß sie
+verstanden hat.  Dies kann für eine Richtung gelten oder für beide
+Richtungen. Wenn  beide alles  verstanden  haben  und  nicht  noch
+selber  komprimieren   (oder  anderes)   müssen,  setzen  sie  das
+Protokoll fort.
+
+Nun  können   beide  mit  dem  eigentlichen  Übertragen  (externes
+Fileprotokoll) beginnen.  Wenn ein beidseitiger Datenaustausch
+vereinbart wurde  (PUT: und  GET:  im  gleichen  Block)  und  KEIN
+bidirektionales Protokoll verwendet wird, sendet hier zunächst
+die Anruferin,  direkt danach  sendet  die  Angerufene.  Wenn  die
+
+
+
+                           - Seite 14 -
+
+Angerufene den  biderektionalen Transport ablehnt (WAIT:N), bietet
+die Anruferin beide Richtungen einzeln an.
+
+Schaubilder:
+
+ZCONNECT beim Austausch der Steuerinformationen:
+
+Send.: BLK1       TME1    ACK2    BLK3    TME3    ACK4    BLK1
+                                                            u.s.w.
+Empf.:        ACK1    BLK2    TME2    ACK3    BLK4    TME3 ACK1
+
+
+ZCONNECT mit Packen und externem Übertragungsprotokoll:
+
+Send.: ACK4           -Packen- EOT5-EOT5-EOT5              BEG6 ZMODEM
+Empf.:    BLK4        EOT4-EOT4-EOT4         -Packen-      BEG5 EOT6-EOT6-
+EOT6 ZMODEM
+
+
+
+
+
+
+Header für Systeminformationen
+
+Nachfolgend werden  die Kennungen  erläutert, die  in  der  ersten
+Phase (BLK1 bis ACK4) übermittelt werden, um Daten über die beiden
+Systeme auszutauschen.
+
+Bei  einigen  Headern  MUSS  in  der  Datenzeile  eine  Portnummer
+angegeben werden.  Dazu wird  die Portnummer,  gefolgt  von  einem
+Leerzeichen, am  Anfang der  Nutzinformation angegeben.  Sind  die
+Informationen auf  alle Ports  anwendbar, wird  0  als  Portnummer
+angegeben.
+
+    ARC  +Portnummer, Pflicht 
+             Mögliche Datenkompressionen. Definiert sind bisher:
+             
+             "ARC"           = ARC/PAK (Endung ".arc")
+             "ARJ"           = ARJ (Endung ".arj")    
+             "LHARC"         = LH1/2 (Endung ".lzh")  
+             "LHA"           = LH1-5 (Endung ".lha")  
+             "ZOO"           = ZOO (Endung ".zoo")    
+             "ZIP"           = ZIP (Endung ".zip")    
+             "ZIP2"          = ZIP V2.0 (Endung ".zi2")    
+             "COMPRESS"      = COMPRESS (Endung ".Z") 
+             "TAR-COMPRESS"  = TAR und COMPRESS  
+                               (Endung ".tar.Z" oder  
+                               ".tz"(MSDOS))
+             "NONE"          = Keine Komprimierung    
+                               (Endung .non)
+             
+             Auch  hier   werden  Alternativen  durch  Leerzeichen
+             getrennt hintereinandergestellt.  Die Reihenfolge ist
+             dabei relevant:  die bevorzugten Packer stehen vorne.
+             Üblicherweise   werden   Packer   auf   allen   Ports
+             gleichartig verfügbar  sein, sodaß nur ein ARC-Header
+             mit Portnummer  0 gesendet  wird.  In  Ausnahmefällen
+             (verschiedene Hard/Software  auf verschiedenen Ports)
+             kann dies aber auch anders sein.
+
+
+                           - Seite 15 -
+
+    CRYPT                +Portnummer, optional    
+             Hiermit sind  alle Verschlüsselungsprogramme, die für
+             die Mailkodierung verwendet werden können, gemeint.
+             
+             "DES"           = DES 56Bit DoD-Standard 
+                               (lowtech)    
+             "PGP"           = RSA Public-Key-Verschlüsselung   
+                               (hightech)   
+             
+             Sind  mehrere   Crypt-Möglichkeiten  vorhanden,  gilt
+             sinngemäß das unter ARC Gesagte.
+
+    DOMAIN               optional  
+             Internet-Domains des  Systems. Falls  mehrere gültige
+             Domains   vorhanden    sind,   werden   diese   durch
+             Leerzeichen getrennt aufgeführt.    
+             Beispiel: "zer.de comlink.de zer.sub.org"
+
+    ISO2 + Portnummer, Pflicht
+             Mögliche Verbindungsarten:
+             
+             "V.21"          = 300 Bps CCITT
+             "V.22"          = 1200 Bps CCITT    
+             "V.22bis"       = 2400 Bps CCITT    
+             "V.32"          = 9600 Bps CCITT    
+             "V.32bis"       = 14400 Bps CCITT   
+             "PEP"           = 15000 Bps PEP-Modus    
+             "HST"           = 14400 Bps HST-Modus    
+             "V110"          = ISDN-Protokoll    
+             "BUNDLE"        = ISDN-Protokoll    
+             "X.75SLP"       = ISDN-B-Kanal Protokoll 
+             "HDLC"          = ISDN-B-Kanal Protokoll 
+             "BITTRANSP"     = ISDN-B-Kanal Protokoll 
+             "SNA-SDLC"      = ISDN-B-Kanal Protokoll 
+             "X.75BTX"       = ISDN-B-Kanal Protokoll 
+             "X.25"          = Datex-P 
+             
+             Sind mehrere  Verbindungsarten möglich,  werden diese
+             durch      je      ein      Leerzeichen      getrennt
+             hintereinandergestellt. Für  jeden TEL-Header muß ein
+             zugehöriger ISO2-Header gesendet werden, es sei denn,
+             alle Ports  haben gleiche  Fähigkeiten: dann wird ein
+             ISO2-Header mit Portnummer 0 gesendet.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                           - Seite 16 -
+
+    ISO3 +Portnummer, optional, default: Transparent   
+             Angabe der Fehlerkorrekturmöglichkeit und Möglichkeit
+             für Datenkorrektur auf dem Verbindungsweg.    
+             
+             "MNP"           = bis Level 4 (nur Fehlerkorrektur)
+             "MNP5"          = Level 5 und größer
+                               (Mit Datenkomprimierung)    
+             "V.42"          = Fehlerkorrektur   
+             "V.42bis"       = Datenkompression  
+             "T70NL"         = ISDN-B-Kanal Protokoll 
+             "ISO8208"       = ISDN-B-Kanal Protokoll 
+             "T90"           = ISDN-B-Kanal Protokoll 
+             "TRANSPARENT"   = Kein Ebene 3 Protokoll 
+             
+             Falls mehrere  Alternativen  bestehen,  werden  diese
+             durch      je      ein      Leerzeichen      getrennt
+             hintereinandergestellt.  Wurden   mehrere  TEL-Header
+             gesendet  sind   auch  entsprechende  ISO3-Header  zu
+             senden (vergleiche auch ISO2).
+
+    KOORDINATEN          
+             optional,       
+             Standort in  geographischer Länge  und Breite. Format
+             wie in folgendem Beispiel: "53 11 N / 10 44 E". Diese
+             Daten erfahren Sie in jedem handelsüblichen Atlas (im
+             Register  den  Stadt-Namen  suchen)  oder  bei  Ihrer
+             Stadtverwaltung.
+
+    MAILFORMAT           
+             +Portnummer, optional, Default: nur ZCONNECT  
+             Hier sind alle Mailformate aufgeführt, die das System
+             versteht. Folgende Einträge sind zur Zeit bekannt: 
+             
+             ZCONNECT        das im folgenden beschriebene 
+                             Datenformat    
+             ZNETZ       das alte ZERBERUS-Format 
+             RFC1036     oft nur "UUCP" genannt, das   
+                             News-Format wie es z.B. in    
+                             UUCP-Systemen verwendet wird. 
+             FTS0001     FidoNet   
+             MausTausch  Die Schnittstelle zum MausNet 
+             X400        ISO/OSI Standard    
+             
+             Mehrere Möglichkeiten  werden wie unter ARC erläutert
+             dargestellt.
+
+    MAPS Mapsnutzung, optional
+             Namen weiterer  Userinnen, die Maps benutzen dürfen -
+             zusätzlich zur  Systembetreuung, die bereits im SYSOP
+             Header benannt  wird. Hier  werden die  Benutzernamen
+             von Cosysops  aufgeführt (einer  pro Header), die für
+             dieses System auch Maps-Bestellungen abgeben dürfen.
+
+
+
+
+
+
+
+
+
+
+                           - Seite 17 -
+
+    PASSWD               Pflicht   
+             Passwort,  das   benötigt  wird,  um  die  Verbindung
+             aufrechtzuerhalten. Wird zwischen den beiden Systemen
+             zum ersten  Mal eine  Verbindung aufgebaut  und wurde
+             noch kein  Passwort ausgetauscht, so ist als Passwort
+             "GUEST"  zu  übermitteln.  Daraufhin  sendet  das
+             angerufene   System    in   seinem    nächsten    In-
+             formationsblock  ein   neues  Passwort,  das  ab  der
+             nächsten Verbindung gültig ist.
+             
+             Das Passwort ist maximal 10 Zeichen lang.
+
+    PORT Pflicht         
+             Portnummer,    auf     der    sich    die    aktuelle
+             Anruferin/Angerufene befindet.  Falls ein  System nur
+             einen Port  hat, gibt es "1" als Portnummer an. Falls
+             bei diesem System die Portnummer keine Bedeutung hat,
+             (z.B. weil  alle  Ports  die  gleichen  Möglichkeiten
+             haben oder  weil Anrufe  von einem besetzten Port auf
+             den nächsten  freien weitergeschaltet werden) gibt es
+             eine "0" an.
+
+    POST optional        
+             Vollständige Postadresse  des Systems,  falls  jemand
+             einen Brief per Post schicken möchte.
+
+    PROTO                +Portnummer, Pflicht
+             Alle Übertragungsprotokolle,  die für die Übertragung
+             von Daten  benutzt werden  können (nicht  alle können
+             bei jedem  Modem und/oder  Anschluß  genutzt  werden,
+             z.B. BiModem nicht im PEP-Modus).   
+             
+             "XMODEM"        = Xmodem  
+             "YMODEM"        = Ymodem  
+             "ZMODEM"        = Zmodem  
+             "SEALINK"       = Sealink (für lange
+                               Übertragungswege) 
+             "KERMIT-B"      = Kermit im Binärmodus   
+             "BIMODEM"       = BiModem (bidirektional,
+                               gefährlich)  
+             "HSLINK"        = HighSpeedLink (bidirektional)
+             "HMODEM"        = Hmodem (bidirektional) 
+             "ACOPY"         = Acopy (ISDN Protokoll)
+             
+             Mehrere Möglichkeiten werden durch je ein Leerzeichen
+             getrennt hintereinandergestellt. Hier gilt im übrigen
+             sinngemäß das unter ARC Gesagte (s.o.).
+
+    SERNR                Default: "0", optional   
+             Seriennummer der  verwendeten Software.  Jedes System
+             kann bei  der Auslieferung eine ID erhalten, die kein
+             anderes  System   hat.  Sollten  zwei  gleiche  Seri-
+             ennummern miteinander  versuchen zu komunzieren, wird
+             der Versuch  abgebrochen. Sendet  eines  der  Systeme
+             diesen Header nicht, wird weiter kommuniziert.
+
+
+
+
+
+
+
+                           - Seite 18 -
+
+    SYS  Pflicht.        
+             Systemname des  Systems. Der  Systemname "GUEST"  ist
+             reserviert für Points oder Systeme, die normalerweise
+             keine  Verbindung   mit  dem  System  haben  und/oder
+             wünschen, sondern  nur mal  eben ein  paar Daten oder
+             Programme aus den öffentlichen Brettern holen wollen.
+             Sowohl Anruferin  als auch  angerufenes System müssen
+             diesen Header genau einmal senden, ansonsten wird die
+             Verbindung abgebrochen.  Die Anruferin  prüft, ob das
+             System,  das  sie  mit  dieser  Verbindung  erreichen
+             wollte, sich  mit ebendiesem  Namen meldet. Geschieht
+             das nicht, wird ebenfalls abgebrochen.
+
+    SYSOP                Pflicht.  
+             Name der  Userin in der Box, an die Fragen zum System
+             u.s.w. geschrieben  werden können, z.B. "Postmaster",
+             "Zentrale" oder "Sysop".
+
+    TEL  + Portnummer, Pflicht
+             Nummer des Telefonanschlusses. Die Telefonnummer wird
+             nach internationaler  Notation angegeben, also zuerst
+             ein Pluszeichen,  dann der  Ländercode (z.B.  49  für
+             BRD), ein  Bindestrich,  die  Vorwahl  ohne  führende
+             Null,   noch    ein   Bindestrich    und   dann   die
+             Anschlußnummer. Beispiel: 
+             
+             TEL:1 +49-521-19304\n
+             TEL:2 +49-521-19300\n
+             
+             Für Datex-P  oder Telex  werden die  Nummern nach den
+             dort allgemein  gültigen Formen  angegeben. Es müssen
+             nicht alle  Telefonnummern angegeben werden (z.B. bei
+             installierter  Sammelschaltung),  allerdings  sollten
+             alle   Telefonnummern,   unter   denen   Modems   mit
+             unterschiedlichen  Fähigkeiten  (z.B.  PEP  und  HST)
+             erreicht werden können, angegeben werden.
+
+    TELEFON:             
+             optional
+             Die  Voice-Telefonnumer,   Format  wie   unter   TEL:
+             beschrieben.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                           - Seite 19 -
+
+Header zur Verbindungssteuerung
+
+Nachdem die Systeminformationen ausgetauscht und bestätigt wurden,
+beginnt der Datenaustausch. Hier werden folgende Header verwendet:
+
+    ARCERIN              
+             Optional        
+             Der Packer,  mit dem  die Daten  bei der  Übertragung
+             gepackt  sein   sollen.  Dieser  wird  nur  dann  von
+             ARCEROUT   abweichen,    falls   ARCEROUT   auf   dem
+             empfangenden System  nicht extrahiert werden kann. In
+             diesem Fall fordert das betroffene System mit ARCERIN
+             die  Gegenstelle  zum  Umpacken  auf.  Der  Wert  für
+             ARCERIN  wird  aus  dem  ARC-Header  der  Gegenstelle
+             ermittelt, so  daß dieser  Packer auf  jeden Fall für
+             beide verfügbar ist.
+
+    ARCEROUT             
+             Pflicht         
+             Der Packer,  mit  dem  die  Daten  zur  Zeit  gepackt
+             vorliegen. Kodierung wie bei ARC.
+
+    DELETE               optional  
+             Mails löschen (z.B. weil es zu viele sind)    
+             
+             P               Persönliche Mails   
+             B               Brettnachrichten (öffentliche Mails)   
+             
+             sollen gelöscht  werden. Dies wird vom anderen System
+             ignoriert, falls  es sich  um Mails handelt, die über
+             dieses System  an ein anderes geroutet werden sollen;
+             Routmails (PMs) dürfen niemals gelöscht werden.
+
+    EXECUTE              
+             Pflicht,        
+             Soll  ein   Befehl  von   der   angerufenen   MailBox
+             tatsächlich ausgeführt werden oder nicht.
+             
+             N               Nein 
+             J               Ja   
+             L               Ja, nach dem Logoff
+
+    FILEREQ              optional  
+             File  von   Empfängerin  laden.   Hier  werden  UNIX-
+             Pfadnamen [also  / statt  \, genau  wie bei ZERBERUS-
+             Brettern]  verwendet.  Der  Dateiname  "/INHALT"  ist
+             reserviert für  die Gesamtübersicht aller verfügbaren
+             Dateien. Es  gibt KEINE(!)  Regeln für  Dateinamen in
+             diesem Zusammenhang, die Empfängerin(!) muß auf alles
+             vorbereitet sein (z.B. Leerzeichen und Sonderzeichen)
+             und entsprechend ihren lokalen Konventionen wandeln.
+
+    FILESEND             
+             optional        
+             File bei  der Empfängerin  speichern. Die Empfängerin
+             entfernt   evtl.    den   Directory-Namen   aus   dem
+             angegebenen Namen oder verbietet die Übertragung. Für
+             Dateinamen gilt  das unter FILEREQ Gesagte.
+
+
+
+
+                           - Seite 20 -
+
+    GET  optional,       
+             Die  anrufende   MailBox   möchte   Daten   von   der
+             angerufenen abholen. 
+             
+             P               Persönliche Mails sollen 
+                             abgeholt werden.    
+             E               nur Eilmails abholen
+             B               Brettnachrichten sollen  
+                             abgeholt werden.    
+             F               Fehlermails abholen 
+             
+             Diese Anforderung  kann von  der angerufenen  MailBox
+             mit einem "WAIT:N" Header abgelehnt werden (s.u.).
+
+    LOGOFF               optional  
+             Hiermit kann  bei Unverträglichkeiten  oder  falschem
+             Passwort eine Verbindungstrennung angekündigt werden,
+             die erfolgen  wird,  nachdem  der  letzte  Infoheader
+             ausgetauscht wurde.  Als Parameter wird der Grund der
+             Verbindungstrennung    als     Klartext-Fehlermeldung
+             übergeben.  Beispiele:   "Falsches   Passwort"   oder
+             "Seriennummern identisch".
+
+    PUT  Daten abliefern, optional,
+             Format wie  GET. Die  anrufenden MailBox möchte Daten
+             zur angerufenen  übertragen. Diese  Anforderung  kann
+             von der angerufenen MailBox mit einem "WAIT:N" Header
+             abgelehnt werden (s.u.).
+
+    WAIT Bereitstellungszeit, optional  
+             Zeit  in   Sekunden,  die   wahrscheinlich  für   das
+             Bereitstellen der  Daten  (z.B.  wegen  des  Packens)
+             gebraucht wird.  Wenn dort  ein "N"  steht können die
+             Daten nicht  bereitgestellt (bzw.  jetzt  übertragen)
+             werden,  z.B.   weil  ein   Bidirektionaler  Transfer
+             angefordert wurde  (sowohl PUT  als auch GET Header),
+             dies  von  der  angerufenen  ZCONNECT-Implementierung
+             aber nicht  unterstützt wird. Steht hier eine 0, sind
+             alle Daten sofort verfügbar.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                           - Seite 21 -
+
+Das Datenformat
+
+In diesem  Kapitel  möchten  wir  nun  beschreiben,  was  mit  den
+komplett transportierten  Daten passiert  und wie  diese aussehen.
+Betrachten wir  aber zunächst,  wie der  gesamte  Mechanismus  zu-
+sammenarbeitet:
+
+
+
+
+
+Vor dem Transport
+
+In einem  Server-System sammeln  sich im Betrieb ständig Daten für
+die angeschlossenen  Systeme. Je nach Philosophie der eingesetzten
+Software werden  diese Nachrichten zwischengelagert (gespoolt)
+oder nur  für den  Transport vorgemerkt.  Persönliche  Nachrichten
+werden in der Regel zwischengelagert, da sie in der Server-Mailbox
+selbst nicht einsortiert werden.
+
+In regelmäßigen  Abständen  (z.B.  alle  10  Minuten,  alle  halbe
+Stunde, jede  Stunde oder  - was aber nur bei Endsystemen sinnvoll
+ist -  einmal täglich  kurz vor 18:00 Uhr) werden diese Daten dann
+zum Transport  freigegeben. Das  dafür zuständige Programm sammelt
+entweder  alle  entsprechend  markierten  Daten  aus  der  lokalen
+Datenbasis oder arbeitet das Zwischenlager (den Spool-Bereich)
+ab.
+
+Dabei enstehen  dann Netcall-Dateien  für alle  angeschlossene
+Systeme, getrennt  nach Privatmails  und öffentlichen Nachrichten.
+Diese Netcalldateien  werden nach  ihrer Fertigstellung sofort mit
+dem für  das System  zuletzt eingestellten  Packer an  das bereits
+bereitliegende Netcall-Archiv angefügt.
+
+Dabei werden  Dateinamen benutzt,  die NUR  aus folgenden  Zeichen
+bestehen: die  Ziffern von  0 bis 9 sowie den Großbuchstaben A bis
+Z. Es  sind maximal  acht Zeichen  gefolgt von einem Punkt "." und
+weiteren drei  Zeichen erlaubt. Dies garantiert, daß die ZCONNECT-
+Archive auf  allen Betriebssystemen  ausgepackt werden  können und
+beim Auspacken  nicht Namenskollisionen entstehen (z.B. könnte ein
+UNIX-System die  Dateien "ArZk01" und "ARZK01" einpacken, die dann
+auf einem DOS-System den gleichen Namen hätten).
+
+Eine mögliche  Implementierung der  Namensgebung für die einzelnen
+Datenpakete im  Archiv  ist  folgende:  beim  Zusammenstellen  der
+Datenpakete wird  die Zeit  im Standard-UNIX-format (Sekunden seit
+1970) ermittelt.  Diese wird  dann in  eine  maximal  achtstellige
+Hexadezimalzahl konvertiert  und als  Dateiname für  das  neue
+Datenpaket benutzt.
+
+
+
+
+
+
+
+
+
+
+
+
+
+                           - Seite 22 -
+
+Nach dem Transport
+
+Angenommen,  wir   haben  von  einem  anderen  Netzwerksystem  per
+ZCONNECT Daten  empfangen. In  der Regel befinden sich diese Daten
+alle gemeinsam  in einem komprimierten Archiv. Der dazu verwendete
+Packer wird von ZCONNECT selbständig aktiviert, um die empfangenen
+Daten zu  entpacken. Anschließend  finden wir  ein  vorher  leeres
+Verzeichnis auf  unserer Festplatte,  in dem sich alle empfangenen
+Dateien befinden. Minimal befindet sich hier überhaupt keine Datei
+(das andere  System hatte  keine Daten für uns), meist werden aber
+eine oder  mehrere Dateien  zum  Einsortieren  bereitstehen.  Jede
+dieser Dateien  kann aus  mehreren Nachrichten  bestehen. Die ein-
+zelnen  Nachrichten   stehen  direkt,   also  ohne   Trennzeichen,
+hintereinander. Üblicherweise  befinden sich  in einer Datei nicht
+gleichzeitig öffentliche  und private Nachrichten dies ist jedoch
+nicht zwingend,  jede Software  muß daher  in der  Lage sein, auch
+gemischte Datenpakete einzulesen.
+
+Jede Nachricht besteht aus zwei Teilen: dem HEADER und dem INHALT.
+
+Wir werden diese beiden Teile getrennt diskutieren.
+
+
+
+
+
+Inhalt
+
+Der INHALT kann dabei aus beliebigen Zeichen bestehen, er MUSS von
+jeder  Software   unverändert  weitergegeben   werden.   Ausnahme:
+Gateways  dürfen   im  Falle   von  Textnachrichten   den   Inhalt
+untersuchen       und       gegebenenfalls       Umlaut-       und
+Sonderzeichenkonvertierungen vornehmen.
+
+Der Inhalt  von Textnachrichten  DARF weder  von der  Software
+noch  von  der  Systembetreiberin  eingesehen  bzw.  interpretiert
+werden.  Ausnahmen   hiervon  sind   nur  in  technisch  bedingten
+Notfällen (z.B. bei unzustellbaren Nachrichten) erlaubt, in diesem
+Fall  muß   die  Empfängerin   von  der  Kenntnisnahme  durch  die
+Systembetreiberin informiert  werden. Es  ist also  nicht erlaubt,
+Textzeilen zum Steuern des Nachrichtenflusses zu mißbrauchen, z.B.
+ein "To:  ...." in der ersten Zeile der Nachricht zur Adressierung
+zu verwenden.  Alle  Informationen,  die  für  den  Transport  der
+Nachricht nötig sind und die durch den Transport entstehen ("Diese
+Nachricht wurde  am xx.xx.xx um xx:xx Uhr von der geilsten MailBox
+in xxxx weitergeleitet"), sind im HEADER unterzubringen.
+
+Nachrichten  gelten   als  Textnachricht,   wenn  im   HEADER  die
+Information "TYP:" nicht enthalten ist. In diesem Fall besteht der
+INHALT aus  lesbaren Zeilen, die durch die Zeichenkombination <CR>
+<LF> (in  dieser Reihenfolge)  voneinander getrennt  sind. Am Ende
+des Textes steht kein CTRL-Z als Datei-Ende-Zeichen (gehört zu den
+verbotenen Zeichen in Textnachrichten, siehe unten).
+
+Nur Textnachrichten  können von  Userinnen  gelesen  werden,  alle
+anderen Dateitypen  erfordern bestimmte Anzeigeprogramme (Viewer),
+die in  der Regel  nicht online  benutzt werden  können (z.B.  für
+Tondateien oder  Grafiken). Die  MailBox-Software konvertiert  den
+unten  definierten   Standard-Zeichensatz  in   den  vom  User
+benötigten Zeichensatz.
+
+
+                           - Seite 23 -
+
+In Textnachrichten  sind folgende Zeichen erlaubt: <TAB> <CR> <LF>
+sowie die folgenden Zeichen:
+
+ IBM  ISO  Zeichen    IBM    ISO    Zeichen
+  32   32              80     80       P
+  33   33     !        81     81       Q
+  34   34     "        82     82       R
+  35   35     #        83     83       S
+  36   36     $        84     84       T
+  37   37     %        85     85       U
+  38   38     &        86     86       V
+  39   39     '        87     87       W
+  40   40     (        88     88       X
+  41   41     )        89     89       Y
+  42   42     *        90     90       Z
+  43   43     +        91     91       [
+  44   44     ,        92     92       \
+  45   45     -        93     93       ]
+  46   46     .        94     94       ^
+  47   47     /        95     95       _
+  48   48     0        96     96       `
+  49   49     1        97     97       a
+  50   50     2        98     98       b
+  51   51     3        99     99       c
+  52   52     4       100    100       d
+  53   53     5       101    101       e
+  54   54     6       102    102       f
+  55   55     7       103    103       g
+  56   56     8       104    104       h
+  57   57     9       105    105       i
+  58   58     :       106    106       j
+  59   59     ;       107    107       k
+  60   60     <       108    108       l
+  61   61     =       109    109       m
+  62   62     >       110    110       n
+  63   63     ?       111    111       o
+  64   64     @       112    112       p
+  65   65     A       113    113       q
+  66   66     B       114    114       r
+  67   67     C       115    115       s
+  68   68     D       116    116       t
+  69   69     E       117    117       u
+  70   70     F       118    118       v
+  71   71     G       119    119       w
+  72   72     H       120    120       x
+  73   73     I       121    121       y
+  74   74     J       122    122       z
+  75   75     K       123    123       {
+  76   76     L       124    124       |
+  77   77     M       125    125       }
+  78   78     N       126    126       ~
+  79   79     O       127    127       
+
+
+
+
+
+
+
+
+
+
+                           - Seite 24 -
+
+ IBM  ISO  Zeichen    IBM    ISO    Zeichen
+ 128  199     Ç       183    192       +
+ 129  252     ü       184    169       +
+ 130  233     é       189    162       +
+ 131  226     â       190    165       +
+ 132  228     ä       198    227       +
+ 133  224     à       199    195       |
+ 134  229     å       207    164       -
+ 135  231     ç       208    240       +
+ 136  234     ê       209    208       -
+ 137  235     ë       210    202       +
+ 138  232     è       211    203       +
+ 139  239     ï       212    200       +
+ 140  238     î       214    205       +
+ 141  236     ì       215    206       +
+ 142  196     Ä       216    207       +
+ 143  197     Å       221    166       +
+ 144  201     É       222    204       +
+ 145  230     æ       224    211        
+ 146  198     Æ       225    223       ß
+ 147  244     ô       226    212        
+ 148  246     ö       227    210        
+ 149  242     ò       228    245        
+ 150  251     û       229    213        
+ 151  249     ù       230    181       µ
+ 152  255     ÿ       231    222        
+ 153  214     Ö       232    254        
+ 154  220     Ü       233    218        
+ 155  248     ¢       234    219        
+ 156  163     £       235    217        
+ 157  216     ¥       236    253        
+ 160  225     á       237    221        
+ 161  237     í       238    175        
+ 162  243     ó       239    180        
+ 163  250     ú       240    173        
+ 164  241     ñ       241    177       ±
+ 165  209     Ñ       243    190        
+ 166  170     ª       244    182        
+ 167  186     º       245    167        
+ 168  191     ¿       246    247       ÷
+ 169  174             247    184        
+ 170  172     ¬       248    176       °
+ 171  189     ½       249    168       ·
+ 172  188     ¼       250    183       ·
+ 173  161     ¡       251    185        
+ 174  171     «       252    179        
+ 175  187     »       253    178       ²
+ 181  193     +       253    178       ²
+ 182  194     |
+
+
+Diese   Zeichen    werden   gemäß   dem   IBM-PC   Zeichensatz
+interpretiert.  Das   Zeichen  mit   dem   Code   255   wird   bei
+Konvertierungen in  ein Leerzeichen gewandelt. Obige Tabelle zeigt
+in  der  Spalte  "Zeichen"  die  gewünschte  Darstellung  auf  dem
+Bildschirm, in  der Spalte  "ISO" den  dafür nötigen  Code im ISO-
+Zeichensatz  und  in  der  Spalte  "IBM"  den  in  Textnachrichten
+verwendeten Code.
+
+
+
+
+                           - Seite 25 -
+
+Header
+
+Vor dem  Nachrichten-INHALT steht  der HEADER. Er ist vergleichbar
+mit   dem    Briefumschlag   der   herkömmlichen   Post.   Die
+Informationen des  HEADERs dürfen (und müssen sogar) zum Transport
+der Nachricht interpretiert und teilweise sogar verändert werden.
+
+Der HEADER  besteht aus beliebig vielen INFORMATIONEN, gefolgt
+von einer  Leerzeile (also  der Zeichenfolge <CR> <LF> <CR> <LF>).
+Die einzelnen INFORMATIONEN sind durch die Zeichenkombination <CR>
+<LF> getrennt.
+
+Jede INFORMATION  besteht aus  einer KENNUNG gefolgt von einem
+Doppelpunkt ":"  und optional  einem oder  mehreren <Space>-  oder
+<TAB>-Zeichen.     Anschließend      folgt     der     eigentliche
+Informationsinhalt bis  zum Ende  der Zeile (<CR> <LF>). Die Länge
+der Zeile  ist nicht  begrenzt, sie  darf von keiner Software beim
+Transport der Nachricht beschränkt werden.
+
+Innerhalb des  Informationsinhaltes sind alle Zeichencodes von 32-
+255 erlaubt.  Bei Informationsinhalten  mit  Text-Charakter  (z.B.
+Betreff-Zeile) gelten die gleichen Zeichensatz-Einschränkungen wie
+für den INHALT von Standard-Textnachrichten.
+
+Die Kennung  einer INFORMATION  ist maximal  100 Zeichen lang. Sie
+besteht ausschließlich  aus den  Buchstaben A-Z,  den Ziffern  0-9
+sowie dem  Bindestrich "-".  Umlaute sind hier nicht erlaubt. Eine
+KENNUNG kann  in Groß-  oder Kleinschreibung  oder auch beliebigen
+Kombinationen  angegeben   werden,  die  Analyse  ist  immer  ohne
+Berücksichtigung der Groß-/Kleinschreibung vorzunehmen.
+
+Im  HEADER   können  INFORMATIONEN   in   beliebiger   Reihenfolge
+auftreten.  Einzelne   KENNUNGEN  können   dabei   auch   mehrfach
+auftreten, bei anderen (z.B. MID, der Message-ID) ist das unsinnig
+und in diesem Fall explizit verboten.
+
+Einige  HEADER   sind  Pflicht,  das  heißt,  ohne  sie  wird  die
+Nachricht,  wenn  möglich,  zurückgeschickt.  Das  gilt  auch  für
+Nachrichten, bei  denen Header  mehrfach auftreten, die nur einmal
+erlaubt sind.
+
+Dabei werden jedoch folgende Regeln beachtet:
+
+    -    Ist ein ERR Header vorhanden, handelt es sich bereits
+         um eine zurückgeschickte Mail. Diese wird auf keinen Fall
+         zurückgeschickt, sie  sollte direkt gelöscht werden, kann
+         aber   alternativ    auch    an    die    Systembetreuung
+         weitergereicht werden.
+
+    -    Ist (mindestens)  ein EB  Header  vorhanden  und  ist
+         dessen Adresse  anders als die Absenderadresse, geht eine
+         negative  Empfangsbestätigung   ("Nachricht   nicht   zu-
+         stellbar. Grund: ....") sowie ein ERR Header an die in EB
+         angegebene Adresse(n).
+
+    -    Ansonsten geht die Nachricht an die in ABS angegebene
+         Adresse zurück. Falls auch kein ABS Header vorhanden ist,
+         wird die Nachricht gelöscht.
+
+
+
+
+                           - Seite 26 -
+
+Beim Zurückschicken  wird die  Fehlermeldung in  einen ERR  Header
+geschrieben und die Nachricht SAMT INHALT zurückgeschickt!
+
+
+
+
+
+Adressen
+
+(siehe auch RFC-822)
+Netzadressen haben folgende Form:
+
+<lokaler-Teil>@<System-Name>.<Domain> (Vor- Nachname)
+
+
+
+Hinter der  eigentlichen  Adresse  (bis  einschließlich  <Domain>)
+steht getrennt  durch genau ein Leerzeichen in runden Klammern "("
+")" der  zur Adresse gehörende Realname. Dieser Teil ist optional,
+wenn kein  Realname angegeben  wird, endet  die  Adresse  mit  der
+Domain.
+
+Der System-Name  und die  Domain werden  ohne Rücksicht  auf Groß-
+/Kleinschreibung interpretiert.  Ein System  wird eindeutig  durch
+eine Kombination  aus Systemname  und  Domain  beschrieben  (d.h.:
+BIONIC.zer.de  ist  weltweit  eindeutig),  ein  System  kann  aber
+mehrere Namen und Domains besitzen (z.B. BIONIC.comlink.de).
+
+Beim  Weiterleiten  von  Nachrichten  genügt  es  nicht,  nur  den
+Systemnamen zu  identifizieren. Beispielsweise  gibt es  im Z-NETZ
+ein System  namens "SOL".  Schreibt nun eine Benutzerin der BIONIC
+eine Mail  an "joe@sol.edu",  so ist damit natürlich nicht die SOL
+im Z-Netz  gemeint, sondern  die in  Californien. An die SOL im Z-
+NETZ   dürfen    also   nur    Nachrichten   mit    Adressen   wie
+"...@sol.ccc.de", "...@sol.zer" und Nachrichten ohne Domain-Angabe
+"...@sol" geschickt werden.
+
+Die Domain ".ZER" ist eine Pseudo-Domain, sie wird automatisch
+angenommen, wenn  in einer  Adresse die  Domain fehlt.  Mit ".ZER"
+sind alle Systeme gemeint, die dem lokalen System bekannt sind. In
+Absenderangaben darf  ".ZER" aber  nur benutzt  werden,  wenn  die
+Nachricht  ursprünglich   per  ZNETZ-Verfahren   transportiert
+wurde, sodaß die Domain des Absendesystems nicht bekannt ist. Alle
+ZCONNECT-Systeme erzeugen  eine gültige Internet-Domain in der
+Absenderangabe.
+
+Empfängerangaben werden komplett an das Zielsystem weitergereicht,
+sie kommen  also z.B.  als "terra@sol.ccc.de"  auf der  SOL an. So
+kann die  SOL entscheiden,  ob sie  selbst gemeint ist oder nicht,
+und  gegebenenfalls  die  Nachricht  für  "joe@sol.edu"  über  den
+nächsten für  ".edu" zuständigen  Gateway (hier:  die SOL  selbst)
+weiterleiten.
+
+Ist ein Empfängersystem dem lokalen System nicht bekannt (z.B. die
+sol.edu der  BIONIC), so  leitet das  System die  Nachricht an den
+Domain-Server der  angegebenen Domain (hier: .edu) weiter. Ist
+die Domain  selbst nicht  bekannt (z.B.  .cs.ucb.edu)  testet  das
+System  den  Teil  der  Domain  nach  dem  nächsten  Punkt  (hier:
+.ucb.edu) und  gegebenfalls die  Teile nach  weiteren Punkten, bis
+eine bekannte Domain gefunden wird (hier: .edu).
+
+
+                           - Seite 27 -
+
+In den  einzelnen Teilen  einer  Adresse  gelten  unterschiedliche
+Beschränkungen des Zeichensatzes:
+
+    -    Systemname und Domain:   
+         Hier sind nur die Buchstaben 'A' bis 'Z', die Ziffern '0'
+         bis '9' sowie der Bindestrich '-' erlaubt.
+
+    -    lokaler Teil:  
+         Hier sind  alle Zeichen  mit Codes von 33 '!' bis 124 '|'
+         erlaubt,  ausgenommen   die  Zeichen   '@<>/\()[]{}'`",'.
+         Zeichen über  126, also auch die Umlaute, sind hier nicht
+         gestattet. Die  Zeichen '!'  und '%'  sind erlaubt,  aber
+         reserviert und  dürfen daher  nicht im Namen einer Userin
+         auftreten.
+
+    -    Realname:    
+         Hier sind alle ASCII-Zeichen von Leerzeichen (32) bis '~'
+         (126)  erlaubt,   lediglich  die   runden  Klammern  sind
+         natürlich ausgenommen.
+
+
+
+
+
+Brettnamen
+
+Die andere  Form der Adressierung ist ein Brettname: hier wird die
+Nachricht nicht  an eine einzelne Empfängerin auf einem bestimmten
+System geschickt,  sondern an  alle Leserinnen  eines öffentlichen
+Brettes.
+
+Öffentliche   Nachrichten    enthalten   kein   '@'   in   der
+Empfängerangabe (und  keinen  Realnamen).  Es  ist  möglich,  eine
+Nachricht  gleichzeitig  an  eine  bestimmte  Person  und  an  ein
+öffentliches Brett zu schicken.
+
+Für Brettnamen gelten folgende Regeln:
+
+    -    Erlaubt sind  die großen  Buchstaben von 'A' bis 'Z', die
+         Ziffern '0'  bis '9',  sowie '/',  '_', '!', '+' und '-'.
+         Auch hier sind Umlaute nicht erlaubt.
+
+    -    Der Schrägstrich  '/' dient  zum Trennen  von Brettern in
+         Hierachieebenen. Ein  Brettname beginnt  immer mit  einem
+         '/', zwischen  zwei '/'  muß immer mindestens ein anderes
+         Zeichen stehen. Ein Brettname endet nie mit einem '/'.
+
+
+Der Unterschied  zwischen einer  öffentlichen Nachricht (Empfänger
+ist ein Brett) und einer persönlichen Nachricht besteht darin, daß
+öffentliche  Nachrichten  in  der  Regel  kostenlos  transportiert
+werden (also  die Autorin nicht von der Systembetreiberin Gebühren
+berechnet bekommt), während persönliche Nachrichten auf Wunsch und
+auf Kosten der Absenderin versandt werden.
+
+Eine denkbare  Ausnahme hiervon ist z.B. ein Support-Brett, in dem
+Benutzerinnen von der  Support-Anbieterin Gebühren für das Stellen
+von Fragen berechnet werden.
+
+
+
+
+                           - Seite 28 -
+
+Eine persönliche Nachricht kann als Empfängerangabe auch ein Brett
+auf einem  anderen System  besitzen (/EIN/BRETT@IRGENDWO.do.main).
+Sie  wird   dennoch  als  persönliche  Nachricht  abgerechnet.  Im
+Zielsystem wird  diese Nachricht zunächst zensiert und muß von
+der Systembetreiberin  freigeschaltet werden  - falls  das  System
+einen derartigen  Mechanismus  unterstützt.  Alternativ  kann  die
+Nachricht auch  der Systembetreiberin  zugestellt werden,  die sie
+dann manuell  in das  gewünschte Brett transportiert. Ist sie dazu
+nicht bereit,  schickt sie  die Nachricht mit einer entsprechenden
+Fehlermeldung an den Absender zurück.
+
+Dieser   Mechanismus    ist   notwendig,    da    ansonsten    die
+Schreibberechtigung in das gewünschte Brett nicht kontrolliert
+werden kann.
+
+
+
+
+
+Weiterleiten
+
+Beim   Weiterleiten   darf   die   Originalnachricht   keinesfalls
+bearbeitet werden.  Es  ist  lediglich  erlaubt,  einen  Kommentar
+(mithilfe des  KOM Headers)  voranzustellen - die Nachricht selbst
+muß unverändert  bleiben. Wird  eine Nachricht  manuell  oder  von
+einem Verteiler  weitergeleitet, gibt  es zwei  Möglichkeiten: Die
+Absenderangabe wird  ausgetauscht  oder  die  Absenderangabe  wird
+nicht ausgetauscht.  In BEIDEN  Fällen  werden  folgende  Aktionen
+vorgenommen:
+
+    -    Die Nachricht bekommt eine neue Message ID.
+
+    -    Der Routweg im ROT Header wird gelöscht.
+
+    -    Die ursprüngliche  Empfängerin der  Nachricht (kann  auch
+         ein Brettname  sein) wird  in den OEM Header kopiert,
+         falls der  OEM Header  noch  nicht  existiert.  Ansonsten
+         bleibt der OEM Header unverändert.
+
+    -    Wird an  mehrere Empfängerinnen  weitergeleitet, muß  der
+         KOP-Header  (Kopienempfänger)   entsprechend  gesetzt
+         werden. Im  KOP Header  sollten  im  Idealfall  sämtliche
+         Empfängerinnen, die  diese Nachricht  irgendwann erhalten
+         haben, aufgeführt sein.
+
+    -    Ein eventuell vorhandener ERR Header wird gelöscht.
+
+
+
+Die weitere Behandlung ist unterschiedlich.
+
+Falls die Absenderangabe beim Weiterleiten AUSGETAUSCHT wird, wird
+weiterverfahren wie folgt:
+
+    -    Die Weiterleitende wird als Absenderin eingetragen.
+
+    -    Der WAB Header wird gelöscht.
+
+
+
+
+
+                           - Seite 29 -
+
+    -    Die Absenderin  der Originalnachricht wird in den OAB
+         Header kopiert, falls noch kein OAB Header vorhanden ist.
+         Ansonsten wird der OAB Header nicht verändert.
+
+
+
+Falls dagegen  die Absenderangabe  beim  Weiterleiten  BEIBEHALTEN
+wird, wird weiterverfahren wie folgt:
+
+    -    Die Weiterleitende  wird in  den WAB  Header eingetragen,
+         ein evtl. vorhandener WAB Header wird zuvor gelöscht.
+
+
+
+Es gibt keine Möglichkeit, eine Nachricht weiterzuleiten, ohne die
+Message-ID zu  ändern. Falls eine Systembetreiberin eine Nachricht
+in ein  anderes Brett  verschieben möchte, kann sie dies mit einem
+entsprechenden Befehl  tun (im  ZERBERUS z.B.  "#copy"). Dies  ist
+aber eine  auf die  lokale Box  beschränkte Aktion,  bei  der  nur
+folgendes geschieht:
+
+    -    Das Brett,  in das  diese Nachricht verschoben wird, wird
+         als EMP Header eingetragen
+
+    -    Message-ID und Absenderangabe bleiben erhalten
+
+    -    Der Routestring (ROT Header) bleibt erhalten
+
+
+Diese  verschobene   Nachricht  kann  nicht  mehr  über  das  Netz
+transportiert werden,  da sie  die gleiche Message-ID behalten hat
+und daher  von allen anderen Systemen (korrekterweise!) als Rekur-
+sion erkannt würde.
+
+
+
+
+
+Automatisches Weiterleiten (Mailing-Listen, Netzwerk-
+Verteiler)
+
+Eine MailBox  oder auch eine externe Software kann die Möglichkeit
+bieten, über das Netz an einen automatischen Verteiler Nachrichten
+zu schicken.  Dieser Verteiler  verschickt jede  Nachricht an alle
+eingetragenen Benutzerinnen dieses Verteilers.
+
+Dieses Verfahren  ähnelt einem  öffentlichen Brett, allerdings ist
+nicht erforderlich,  daß alle  Systeme, über  die die  Nachrichten
+transportiert  werden,  das  Brett  führen.  Demgegenüber  steigen
+natürlich die  Kosten für  eine solche  Nachrichten-Verteilung, da
+alle Nachrichten,  sowohl bis zum Verteiler als auch vom Verteiler
+zu den Benutzerinnen als PM verschickt werden.
+
+Beim  Eintreffen   einer  Nachricht  in  einem  solchen  Verteiler
+geschieht folgendes:
+
+    -    Die  Absenderin   der   Originalnachricht   erhält   eine
+         Empfangsbestätigung -  falls sie  diese angefordert hatte
+         (EB Header)
+
+
+
+                           - Seite 30 -
+
+    -    Alle Benutzerinnen  des Verteilers  werden ermittelt  und
+         als Empfängerinnen eingetragen
+
+    -    Die eingetragenen  Kopienempfängerinnen bleiben erhalten!
+         Es  wird   keine  Kopienempfängerin   hinzugefügt,   dies
+         geschieht erst beim Routen der Nachricht.
+
+    -    Die Adresse  des Verteilers  wird in  den OEM  Header
+         eingesetzt.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                           - Seite 31 -
+
+Beispiel
+
+Beispiel für  eine ZCONNECT-Nachricht (vom Martin Husemann auf dem
+Point  MARTIN  der  BIONIC  an  Martin  Husemann  auf  dem  System
+"sisyphus.owl.de"):
+
+EDA:  19920607140703S+2
+BET:  Dies ist ein Routingtest
+MID:  70.54215@MARTIN.BIONIC.zer.de
+ABS:  M.Husemann@BIONIC.zer.de (Martin Husemann)
+MAILER:   ZERBERUS V5.0 R3.1
+ROT:  BIONIC.zer.de
+EB:
+EMP:  M.Husemann@sisyphus.owl.de
+LEN:  103
+PRIO: 0
+
+Hallo Martin,
+falls Du das hier über BI-LINK bekommst, stimmt das Routing.
+
+Gruß, Martin
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                           - Seite 32 -
+
+Die möglichen HEADER-INFORMATIONEN
+
+    ABS           Absenderin, Pflicht, nur einmal 
+         Die Adresse,  über die  die  Absenderin  erreichbar  ist,
+         komplett  mit   Absendersystem,  Domainangabe  und  evtl.
+         Realname.
+
+    ANTWORT-AN:   
+         optional,    
+         Eine private  Antwort an  die Absenderin ist nicht an die
+         ABS-Adresse zu  schicken, sondern an die hier angegebene.
+         Dies ermöglicht  Benutzerinnen mehrerer  MailBoxen,  alle
+         Antworten an  die "Hauptadresse" schicken zu lassen. Auch
+         bei  automatisch   generierten  Nachrichten   (Absenderin
+         "Mailer-Daemon")  kann   so  eine  Ansprechpartnerin  für
+         Rückfragen angegeben werden.
+
+    BET           Betreff, Pflicht, nur einmal
+
+    BEZ           Bezug, optional, mehrfach  
+         Wenn  diese   Nachricht  eine  Antwort  auf  eine  ältere
+         Nachricht  ist,   gibt  der   Bezug  die  Message-ID  der
+         Originalnachricht an.
+
+    DDA           Dateidatum, optional, nur einmal
+         Gibt das  Datum der  letzten Änderung einer Datei an. Das
+         Format des Datums ist unter EDA beschrieben.
+
+    DISKUSSION-IN 
+         optional,    
+         Gibt die  Empfängerin an,  die bei öffentlichen Antworten
+         benutzt werden  soll. Dies  ist immer dann sinnvoll, wenn
+         eine Nachricht  in mehrere  Bretter geschickt  wird,  die
+         darauf folgende  Diskussion aber auf ein Brett beschränkt
+         werden    soll.     Es    können    aber    auch    reine
+         Informationsbretter von Diskussionsbeiträgen freigehalten
+         werden,   indem   die   Antworten   auf   ein   passendes
+         Diskussions-Brett dirigiert werden.
+
+    EB            optional, auch mehrfach    
+         Ist dieser  Header vorhanden,  verschickt das Zielsystem,
+         sobald  die   Nachricht  von  ihm  empfangen  wird,  eine
+         Empfangsbestätigung  an   die  Absenderin.   Benutzt  die
+         Empfängerin einen  Point und ist dieser auch mit ZCONNECT
+         angeschlossen, wird  die Empfangsbestätigung  nicht  beim
+         Empfang in der MailBox ausgelöst, sondern erst vom Point.
+         In  allen  anderen  Fällen  wird  beim  Einsortieren  der
+         Nachricht  in   die  MailBox   sofort   die   Bestätigung
+         verschickt. Bestätigt  wird der  Empfang, nicht das Lesen
+         der Nachricht (Datenschutz!). 
+         
+         Der EB Header kann auch eine Adresse enthalten, in diesem
+         Fall  geht   die   Empfangsbestätigung   nicht   an   die
+         Absenderin,  sondern  an  die  angegebene  Adresse.  Sind
+         mehrere EB Header vorhanden, erhält jede dort aufgeführte
+         Adresse eine Bestätigung.
+         
+         In der  Bestätigung ist  im BEZ Header die Message-ID der
+         bestätigten Nachricht anzugeben. Weiterhin ist ein Header
+         STAT:EB zu setzen.
+
+
+                           - Seite 33 -
+
+    EDA           Datum, Pflicht, nur einmal 
+         Das    Erstellungsdatum     wird    dabei    im    Format
+         JJJJMMTThhmmss[S/W](+/-offset) angegeben,  wobei S oder W
+         für  Sommer  bzw.  Winterzeit  steht,  (offset)  ist  die
+         Zeitzone als Unterschied in Stunden zur GMT. 
+         Dabei  wird   die  Zeit  immer  als  GMT  angegeben,  die
+         Zeitzone/Sommerzeit ermöglicht  lediglich  das  Umrechnen
+         dieser universellen  Zeit auf  die lokale  Zeit  der  Ab-
+         senderin.    
+         In Deutschland  gelten die  Zeitzonen MET  und im  Sommer
+         MEST. Diese  würden durch  die Zusätze  "W+1" bzw.  "S+2"
+         dargestellt  Durch  die  Darstellung  als  GMT  sind  die
+         JJJJMMTThhmmss Angaben  auch während  der Umstellung  von
+         Sommer- auf Winterzeit und umgekehrt kontinuierlich.   
+         
+         Falls die  lokale Uhrzeit  nicht um  ganze Stundenbeträge
+         von GMT  abweicht, wird  dem Offset  einen  Minutenangabe
+         zugefügt.   Beispiel:    "W-9:30"   für    die   Zentral-
+         Australische-Zeitzone.   
+         
+         Siehe auch Anhang "Zeitzonen".
+
+    EMP           Empfänger, Pflicht, mehrfach    
+         Die Netzadresse der Empfängerin(nen).   
+         Tritt  diese   INFORMATION  mehrfach   auf,  muß   dieses
+         Nachricht an  JEDE dieser  Empfängerinnen  weitergeleitet
+         werden.  Geschieht   dies  nicht   über  ein  gemeinsames
+         Routesystem, sind Kopien der Nachricht anzufertigen.   
+         
+         Bei diesem  Kopiervorgang bekommen  die einzelnen  Kopien
+         nur noch  die EMP  Header, an die diese Kopie weitergehen
+         soll, alle  übrigen (die über ein anderes System erreicht
+         werden sollen)  werden als  Kopienempfänger (KOP  Header)
+         eingetragen. 
+         
+         Enthält eine  der EMP-Angaben keinen "@", handelt es sich
+         um eine  öffentliche Nachricht.  Eine Nachricht  kann  in
+         mehrere öffentliche  Bretter geschickt  werden, indem für
+         jedes  Brett   eine  EMP-Information   eingesetzt   wird.
+         Physikalisch wird  natürlich nur eine Kopie der Nachricht
+         weitergereicht. Hier  wird also  - im  Gegensatz  zu  den
+         privaten Nachrichten - niemals kopiert. 
+         Hat ein  System nicht alle der in EMP Headern angegebenen
+         Bretter  bestellt,   müssen  dennoch   alle  EMP   Header
+         weitergegeben werden!  Das gleiche  gilt,  wenn  auf  dem
+         lokalen System nicht jedes Brett, das in einem EMP Header
+         aufgeführt wird, existiert.   
+         
+         Ein EMP Header darf auch einen Realnamen enthalten.
+
+    ERR           Error, optional, nur einmal
+         Falls dieser  Header vorhanden  ist, wurde  die Nachricht
+         von einem Programm automatisch zurückgeschickt - entweder
+         weil  die   Nachricht  fehlerhaft  oder  die  Empfängerin
+         unbekannt war.  Der ERR  Header enthält die Fehlermeldung
+         im Klartext.
+
+
+
+
+
+
+                           - Seite 34 -
+
+    ERSETZT       
+         optional,    
+         Gibt die  Message-ID der  Nachricht an,  die  von  dieser
+         ersetzt wird.  Damit kann  dafür gesorgt  werden, das von
+         einer regelmäßig  veröffentlichten Information  immer nur
+         die   aktuelle    in   einer   MailBox   vorhanden   ist.
+         Anwendungsbeispiele:   Serverstruktur,    MailBox-Listen,
+         ZMAPs, FAQs etc.
+
+    FILE          Filename, optional, nur einmal  
+         Gibt den  Dateinamen (ohne Directory!) der Datei an - zum
+         Beispiel für Binärnachrichten oder Grafiken. 
+         ACHTUNG: je nach Betriebssystem des Absende-Systems, kann
+         dieser   Dateiname   beliebig   lang   sein   und   evtl.
+         Sonderzeichen, Leerzeichen sowie natürlich mehrere Punkte
+         enthalten! Jede Software, die diesen Header auswertet, um
+         diese Nachricht  zu speichern,  sollte darauf vorbereitet
+         sein und  entweder den  Namen entsprechend  kürzen  sowie
+         ungültige Zeichen durch Ersatzdarstellungen ersetzen oder
+         bei ungültigen Namen einen eigenen Namen generieren.
+
+    KOM           Kommentarlänge, optional, nur einmal 
+         Länge   des   Kommentars   in   Byte.   Wird   z.B.   für
+         Binärnachrichten, denen ein ASCII-Kommentar vorangestellt
+         ist, gebraucht.  Nach dem  Header folgt  der Kommentar in
+         der angegebenen  Länge, dann  erst  die  Binärdaten.  Die
+         Binärdatenlänge ist  also LEN  minus KOM.  Ein  Kommentar
+         kann  aber   auch  bei   allen  anderen  Nachrichtentypen
+         vorangestellt werden.    
+         Für den Inhalt des Kommentars gelten IMMER die Regeln für
+         Standard-Textnachrichten, auch  wenn er  einem  Text  mit
+         alternativem   Zeichensatz   (und   entsprechender   TYP-
+         Information) vorangestellt ist.
+
+    KOP           Kopienempfängerin, optional, mehrfach
+         Falls eine Nachricht an mehrere Personen geschickt wurde,
+         kann  diese   Information  die   übrigen   Empfängerinnen
+         auflisten. Gibt  es mehrere  Kopienempfängerinnen,  tritt
+         diese   Information    mehrfach   mit    jeweils    einer
+         Empfängeradresse  auf   (je  eine   KOP-Information   pro
+         Empfängerin).  
+         ACHTUNG: diese  Information dient  nur der  Dokumentation
+         für die  Empfängerinnen, sie  wird NICHT  zum Steuern der
+         Nachrichtenweiterleitung  verwendet.   Falls  eine   KOP:
+         Angabe gemacht wird, aber keine entsprechende EMP: Angabe
+         vorhanden ist,  wird die  routende  Software  sich  NICHT
+         bemühen, dieser KOP-Adressatin eine Kopie zuzusenden. Die
+         Software  wird   vielmehr  davon   ausgehen,  daß   diese
+         Adressatin ihre  Kopie bereits über einen anderen Routweg
+         erhalten hat (bzw. erhalten wird).
+
+    LDA           Löschdatum, optional, nur einmal
+         Ein Datum,  ab dem  diese Nachricht  automatisch gelöscht
+         werden soll/kann.  Kann   für Veranstaltungshinweise oder
+         andere Nachrichten  mit "Verfallsdatum"  (z.B. die urgent
+         actions von amnesty international) verwendet werden.
+
+
+
+
+
+
+                           - Seite 35 -
+
+    LEN           Länge, Pflicht, nur einmal 
+         Die Länge  des INHALTS (alles, was hinter dem Header noch
+         zu dieser Nachricht gehört) in Byte. Auch die Länge 0 ist
+         erlaubt.
+
+    MAILER        
+         Mailer, optional, nur einmal  
+         Gibt  den   Namen  des  (von  der  Absenderin,  bzw.  vom
+         konvertierenden Gateway)  verwendeten  Mailers  an  (pure
+         Werbung, aber immerhin für Userinnen unsichtbar :-)    
+         Dient der  Fehlererkennung im  Netzwerk. Hier sollte eine
+         eindeutige  Kennung   der  Software   incl.  Versions   /
+         Releasenummer stehen.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                           - Seite 36 -
+
+    MID           Message-ID, Pflicht, nur einmal 
+         Die  Message-ID   muß  wie  eine  gültige  Adresse  (ohne
+         Realname) aussehen  (siehe oben)  und darf  innerhalb von
+         zwei Jahren weltweit nicht wiederholt werden. Dazu MÜSSEN
+         Message-IDs eine Domain enthalten, falls dem System keine
+         Internet-Domain  zugeordnet   ist,  muß   hier  zumindest
+         ".zer.sub.org"   eingetragen    werden.   POINTS   werden
+         besonders behandelt:  die MailBox benutzt nur den lokalen
+         Teil der  vom Point gelieferten ID (also alles vor dem @)
+         und hängt  einen Klammeraffen  '@'  und  den  Pointnamen,
+         gefolgt von  einem Punkt  und dem  MailBox-Namen, gefolgt
+         von der  MailBox-Domain an.  So ist die Eindeutigkeit von
+         Point-Message-IDs weltweit garantiert.  
+         Beispiel: der  Point "BIONIC01" sendet eine Nachricht mit
+         der Message-ID 
+         
+         "aH24.8281@BIONIC01.zer.de".  
+         
+         Daraus wird auf der BIONIC die Message-ID    
+         
+         "aH24.8281@BIONIC01.BIONIC.zer.de".
+         
+         Points dürfen  auch nur  den lokalen  Teil der ID liefern
+         (also von sich aus den @, Systemname und Domain entfallen
+         lassen). Points  können auf eine Message-ID notfalls auch
+         völlig verzichten,  in diesem  Fall muß  die MailBox eine
+         eigene erzeugen.    
+         Die  Message-ID   dient  zur  eindeutigen  Identifikation
+         dieser Nachricht.  Sollte innerhalb  von zwei Jahren eine
+         Nachricht  mit  einer  gleichen  Message-ID  noch  einmal
+         auftreten, ist  dies eine "Rekursion", d.h. die Nachricht
+         ist über  einen Umweg noch einmal zur MailBox gelangt und
+         kann deshalb  gelöscht werden.  Sie darf  auf keinen Fall
+         weitergeleitet werden.   
+         Eine praktische  Implementationsmöglichkeit ist  es z.B.,
+         alle Message-IDs  für  90  Tage  aufzubewahren  und  alle
+         eingehenden Nachrichten  gegen diese Datenbank zu prüfen.
+         Eingehende Nachrichten,  die  älter  als  90  Tage  sind,
+         können bedenkenlos  entsorgt werden,  ohne die Message-ID
+         zu testen.   
+         Der  Rekursionstest   anhand  der  Message-ID  (und  zwar
+         AUSSCHLIESSLICH anhand  dieser) muß  von  jeder  Software
+         durchgeführt werden!  Öffentliche  Nachrichten,  die  als
+         Rekursion erkannt  wurden,  dürfen  nicht  weitergeroutet
+         werden.      
+         
+         Persönliche  Nachrichten   werden  nicht   auf  Rekursion
+         geprüft, lediglich  das  Zielsystem  der  Nachricht  darf
+         doppelte persönliche Nachrichten ausfiltern. 
+         
+         In  Message-IDs   sind  die  Zeichen  '<',  '>'  und  '/'
+         verboten.
+
+    OAB           Original-Absenderin, optional, nur einmal 
+         Falls  eine   Nachricht  manuell   oder   per   Verteiler
+         weitergeleitet  wurde,  steht  hier,  wer  die  Nachricht
+         original verschickt hat.
+
+
+
+
+
+                           - Seite 37 -
+
+    OEM           Original-Empfängerin, optional, mehrfach  
+         Falls  eine   Nachricht  manuell   oder   per   Verteiler
+         weitergeleitet  wurde,   steht  hier   die   ursprünglich
+         angegebene Empfängerin.
+
+    ORG           Organisation, optional, nur einmal   
+         Eine  kurze,   einzeilige  Beschreibung  der  hinter  der
+         Absenderin   stehenden    Organisation,   z.B.   "Borland
+         Deutschland GmbH,  Starnberg, F.R.G.".  Wird eine  solche
+         Information eingesetzt  und die  Nachricht gibt NICHT die
+         offizielle  Meinung  der  Organisation  wieder,  wird  im
+         Nachspann (Signatur)  der Nachricht  meist der "Standard-
+         Disclaimer"  eingefügt:  "Meine  Meinung  ist  NUR  meine
+         Meinung. Sie  wird von meiner Arbeitgeberin weder geteilt
+         noch bezahlt."
+
+    POST          Post-Adresse, optional, nur einmal   
+         Wenn die  Absenderin einer  Nachricht  auch  über  andere
+         Medien, z.B.  per Post,  erreichbar sein möchte, kann sie
+         in diesem Header ihre postalische Anschrift unterbringen.
+         Die  einzelnen  Anschriftenzeilen  werden  hintereinander
+         geschrieben und jeweils durch Semikola ";" getrennt.
+
+    PRIO          Priorität, optional, nur einmal 
+         (ohne diesen Header gilt Priorität 0)   
+         Gibt die  Dringlichkeit der  Zustellung an. Zur Zeit sind
+         folgende Dringlichkeiten definiert:
+         0            = normal (per Routing)
+         10           = direkt    
+         20           =    Eilmail    (direkt    mit    sofortiger
+         Auslieferung)
+
+    ROT           Routeweg, Pflicht, nur einmal   
+         Jedes System  trägt sich  hier ein, wenn es die Nachricht
+         empfängt.  Z-Netz   Systeme  werden   hier   mit   Domain
+         eingetragen (".zer.sub.org",  falls keine  andere bekannt
+         ist). Eine  Nachricht (auch  eine PM) darf niemals an ein
+         System weitergereicht  werden,  dessen  Name  bereits  im
+         Routeweg steht.
+         
+         Falls eine  PM über ein System zugestellt werden muß, das
+         bereits im  Routeweg steht,  sollte diese  Nachricht  dem
+         Sysop vorgelegt  werden (Achtung:  Datenschutz!  Nur  die
+         Header, nicht der Nachrichteninhalt darf sichtbar sein!),
+         da offenbar ein Ping-Pong-Routing besteht.   
+         
+         Als erstes System trägt sich hier das Absender-System ein
+         (damit  auch  dieses  die  Nachricht  nicht  noch  einmal
+         bekommt). Erreicht  die  Nachricht  das  nächste  System,
+         setzt dieses  seinen eigenen Namen (incl. Domain) gefolgt
+         von einem '!' vor den alten Inhalt dieser Information. 
+         Dazu  ein  Beispiel:  auf  der  BIONIC.zer.de  wird  eine
+         Nachricht  erzeugt:  "ROT: BIONIC.zer.de".  Nun  erreicht
+         diese        Nachricht         die        BI-LINK.owl.de:
+         "ROT: BI-LINK.owl.de!BIONIC.zer.de".
+
+
+
+
+
+
+
+                           - Seite 38 -
+
+    SPERRFRIST    
+         Gültig ab, optional, nur einmal    
+         Ein Datum  im Format wie EDA. Vor diesem Datum wird diese
+         Nachricht  NICHT   angezeigt.  Damit   kann   z.B.   eine
+         Sperrfrist bei Pressemeldungen eingehalten werden.
+
+    STAT          Nachrichtenstatus, optional, mehrfach
+         Beschreibt, was  die Nachricht  ist: Falls  dieser Header
+         fehlt, handelt  es sich  um eine  normale Mail.  Wenn der
+         Header vorhanden ist, gibt es folgenden Einträge: 
+         
+         DES      Nachricht ist mit DES 
+                      (Data Encryption Standard) 
+                      verschlüsselt.   
+         PGP      Nachricht ist mit PGP 
+                      (Pretty Good Privacy, 
+                      einer RSA Implementation)  
+                      verschlüsselt.   
+         EB       Nachricht ist eine automatisch  
+                      verschickte Empfangsbestätigung.
+         CTL      Nachricht ist eine    
+                      Kontrollnachricht, die - auch wenn   
+                      sie defekt ist - nicht
+                      zurückgeschickt werden darf.
+
+    TELEFON       
+         Telefonnummer, optional, nur einmal
+         Hier   kann    die   Absenderin   ihre   Telefonnummer(n)
+         unterbringen. Es  wird  die  internationale  Schreibweise
+         verwendet, mit vorangestelltem "V" für Voice, "F" für Fax
+         oder "B"  für MailBox  (BBS). Bei  Voice-Nummern wird ein
+         "Q" nachgestellt,  wenn  ein  Anrufbeantworter  vorhanden
+         ist. Alle  Nummern  werden  durch  ";"  oder  Leerzeichen
+         getrennt.  Beispiel:   "V+49-521-561345Q  F+49-521-561785
+         B+49-521-193004". Bei  kombinierten  Nummern  werden  die
+         Kennbuchstaben hintereinandergestellt: VF+49-521-562342Q.
+
+    TYP              Typ, optional, nur einmal    
+         Nähere Beschreibung  des Dateityps.  Definiert, um welche
+         Art von  Binärdatei es sich handelt (z.B. TIFF, GIF, PCX,
+         ...). Alle unbekannten TYP Informationen werden als reine
+         Binärnachricht aufgefaßt. Definiert sind die Typkennungen  
+         
+         BIN         allgemeine Binärnachricht    
+         TRANSPARENT Textnachricht ohne Umlautwandlung 
+         
+         Beim Inhalt des TYP Headers wird nicht zwischen Groß- und
+         Kleinschreibung unterschieden.
+         
+         Falls kein  TYP-Header vorhanden  ist, handelt es sich um
+         eine Textnachricht.
+
+    ZNETZ-ABS     
+         optional, nur einmal
+         Siehe unten,  Absenderangabe  bei  Konvertierung  in  das
+         ZNETZ-Format.  Diese  Information  kann  nur  einmal  pro
+         HEADER auftreten.
+
+
+
+
+
+                           - Seite 39 -
+
+    ZNETZ-TEXT    
+         optional, mehrfach  
+         Textheader bei Konvertierung in das ZNETZ-Format (s.u.)
+
+
+
+
+
+Weitere Headerzeilen
+
+Neue Headerzeilen können jederzeit definiert werden. JEDE Software
+muß ihr  unbekannte Zeilen  UNVERÄNDERT  weitergeben.  Für  lokale
+Erweiterungen wird  garantiert, daß  niemals eine  Headerzeile mit
+"X-"  beginnen   wird.  Sie   können  also   gefahrlos  eigene
+Headerzeilen wie z.B. "X-Euromail-Version: 22.5" erzeugen.
+
+Headerzeilen,  die   mit  "U-"   beginnen,  sind  UUCP-Header,
+entsprechen     also      RFC822/1036     bzw.      entsprechenden
+Nachfolgestandards. UUCP  oder Internet-Gateways  können auf diese
+Weise Informationen,  für die  es im  ZCONNECT zur Zeit noch keine
+Entsprechung gibt,  1:1 durchreichen.  Beispiel: "U-Date:  Thu, 12
+Jan 1987 PDST" entspricht der RFC-1036 Header-Zeile "Date: Thu, 12
+Jan 1987 PDST". (Wobei in diesem Fall die Information gleichwertig
+mit dem  EDA Header  transportiert werden kann, aber es ist ja nur
+ein Beispiel...)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                           - Seite 40 -
+
+Umwandlungen
+
+
+
+
+
+Konvertierung vom ZNETZ-Format nach ZCONNECT
+
+Eine Konvertierung  in dieser  Richtung ist  nur von  POINTS  oder
+ENDSYSTEMEN (also Systemen ohne weitere Server) erlaubt.
+
+Die Umwandlung  ist "straight-forward": aus den im starren-Record-
+Format vorliegenden  HEADER-Daten werden die nötigen Informationen
+gewonnen   und   anschließend   der   ZCONNECT-HEADER   aufgebaut.
+Informationen aus  dem Text  der Nachricht werden NICHT verwendet.
+Dabei sind  Adressen zu  konvertieren. Im  Routeweg sind  bekannte
+Domains oder  ".zer.sub.org" zu  ergänzen und  die Reihenfolge der
+Einträge ist  zu invertieren.  Die  Datumsangabe  wird  mit  "00"-
+Sekunden und  der lokalen  Zeitzone/Sommerzeit ergänzt  und in GMT
+umgerechnet.   Die   Message-ID   wird   IMMER   um   die   Domain
+".zer.sub.org" ergänzt,  auch wenn für das betreffende System eine
+andere Domain bekannt ist (siehe GateBau-91).
+
+Falls  die   Betreffzeile  mit   einem  "#"   beginnt,  wird  eine
+Empfangsbestätigung angefordert.
+
+
+
+
+
+Konvertierung vom ZCONNECT in das ZNETZ-Format
+
+Diese Konvertierung  führt unvermeidbar  zu  Datenverlust  in  den
+Headerinformationen.  Da   aber   eine   Rückkonvertierung   nicht
+vorkommen kann  (s.o.), wird  dieser in  Kauf  genommen.  Der  Re-
+kursionstest und  die Antworten-Funktion  muß aber  auch für diese
+konvertierten Nachrichten gewährleistet sein.
+
+Die Regeln für die Konvertierung sind einfach:
+
+    -    Bei allen Adressen wird der Realname entfernt.
+
+    ABS:          Domainangaben  werden   entfernt  und  durch
+         ".ZER" ersetzt.
+         Ist  im   ZCONNECT-HEADER  die  INFORMATION  "ZNETZ-ABS:"
+         vorhanden, wird  die Absenderangabe ignoriert und die als
+         "ZNETZ-ABS" angebene  Adresse (z.B.  mit  Gateway-Macros)
+         benutzt.     
+         Falls kein  "ZNETZ-ABS" vorhanden  ist und die Adresse zu
+         lang für  das ZNETZ-Format  ist, wird  sie auf 40 Zeichen
+         abgeschnitten. In  diesem Fall  ist die  Antwort-Funktion
+         nicht gewährleistet.
+         Die Absenderangabe wird in Großbuchstaben konvertiert.
+
+    BET:          Die  Betreffzeile   wird  auf   40   Zeichen
+         gekürzt.  Falls   eine  Empfangsbestätigung   angefordert
+         wurde, wird  dem Betreff (vor der Kürzung auf 40 Zeichen)
+         ein "#" vorangestellt.
+
+
+
+
+                           - Seite 41 -
+
+    TYP:          Falls vorhanden,  wird  eine  Binärnachricht
+         erzeugt. In  diesem Fall  dürfen keine  ZNETZ-TEXT Header
+         vorhanden sein.  Hierbei  entfällt  auch  der  Message-ID
+         Text-Header.
+
+    EDA:          Zeitzone,  Sommer-/Winterzeit,   Jahrhundert
+         und Sekunden  werden entfernt,  Datum und Uhrzeit von GMT
+         in die lokale Zeitzone des Absendesystems umgerechnet.
+
+    EMP:          Domainangaben  werden   entfernt  und  durch
+         ".ZER" ersetzt. Ist die Empfängerin lokale Benutzerin des
+         nächsten Routesystems, wird der Systemname und die Domain
+         (incl. @) aus der Adresse entfernt.
+         Falls die  Adresse zu lang für das ZNETZ-Format ist, wird
+         die Nachricht  zurückgeschickt oder  der  Systembetreuung
+         vorgelegt (denn die Adresse war falsch!)
+
+    LEN:          Falls ein  Kommentar vorangestellt ist (KOM-
+         Information) wird  dieser dem  Text vorangestellt und die
+         Länge   entsprechend    korrigiert.   Die    Länge   wird
+         entsprechend der  hinzugefügten "Message-ID: <...>"-Zeile
+         korrigiert. Bei  Binärmails wird  die KOM  Info entfernt.
+         Wenn die Länge=0 ist, wird eine Nachricht mit der Länge 2
+         Bytes und dem Inhalt <CR><LF> erzeugt.
+
+    MID:          Die Message-ID  wird  gemäß  der  im  Anhang
+         abgedruckten Konvertierungsroutine  (entspricht  GateBau-
+         91) umgewandelt.  Die im  Anhang dokumentierte Konvertie-
+         rungsroutine liefert  den lokalen  Teil  der  Message-ID.
+         Daran wird  "@" und  der Boxname  der Absenderin angefügt
+         (falls  ein   ZNETZ-ABS  vorhanden   ist,   wird   dieser
+         benutzt!).  Bei   Text-Nachrichten  wird   die  Original-
+         Message-ID in  spitzen Klammern  dem Text  vorangestellt:
+         "Message-ID:   <....>".  
+         Diese Konvertierung  sowie der Textheader entfallen aber,
+         wenn die Message-ID die Domain ".zer.sub.org" enthält und
+         nach deren Abschneiden 19 oder weniger Zeichen lang ist.
+
+    ROT:          Im Routestring  werden  alle  Domain-Angaben
+         entfernt. Die  Reihenfolge der  Einträge wird  umgekehrt.
+         Anschließend werden  - falls erforderlich - VORNE solange
+         Systemnamen incl.  "!" entfernt,  bis der String unter 80
+         Zeichen lang  ist. Diese  Kürzung kann durch voranstellen
+         von "..!"  dokumentiert werden  (dadurch  darf  aber  die
+         Länge 80 Zeichen nicht überschritten werden).
+
+Sind im  ZCONNECT-Header  "ZNETZ-TEXT:"  Informationen  enthalten,
+werden diese  am Anfang der Nachricht in den Text geschrieben, die
+Nachrichtenlänge wird entsprechend korrigiert. Sind mehrere ZNETZ-
+TEXT Header vorhanden, werden sie alle eingefügt.
+
+Beispiel "ZNETZ-TEXT: X-Gateway:  UI BI-LINK v1.00". Hier wird die
+Gateway-Kennung  nur   bei  Konvertierung   in  das   ZNETZ-Format
+eingesetzt, da im ZCONNECT-Format eine equivalente Information als
+
+"MAILER: BI-LINK UUCP Gateway V1.00"
+
+transportiert werden kann.
+
+
+
+
+                           - Seite 42 -
+
+Hierbei trägt jeder Gateway die Verantwortung, durch entsprechende
+"ZNETZ-" Informationen die ordnungsgemäße Konvertierbarkeit seiner
+Nachrichten in  das ZNETZ Format zu gewährleisten. Nur der Gateway
+hat alle dafür nötigen Informationen (z.B. die Macrotabellen).
+
+Zum anderen  werden sicher  immer mehr  Gateways  dazu  übergehen,
+diese Informationen nicht mehr zu erzeugen. Mit dem Aussterben des
+ZNETZ-Formats werden  diese Header  auch  nicht  mehr  unterstützt
+werden.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                           - Seite 43 -
+
+ANHANG
+
+
+
+
+
+Message-ID Konvertierung
+
+/*----------------------------- msgid.c -----------------------*/
+/*
+ *  MsgID.c
+ *
+ *  ID-Konvertierung für die Wandlung ZCONNECT -> Z-NETZ
+ */
+
+
+# include <stdio.h>
+# ifndef OSK
+# include <stdlib.h>
+# endif
+# include <string.h>
+# include "crc.h"
+
+static char sextet[] =  "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+              "abcdefghijklmnopqrstuvwxyz"
+              "0123456789+/";
+
+# define SEXT_MASK 0x003fl      /* 6 Bit */
+# define LOW28_MASK0x0fffffffl   /* 28 Bit */
+# define LOW2_MASK 0x00000003l   /* 2 Bit */
+
+void
+convert_id(char *zerb_id, char *zconnect_id)
+{
+     unsigned char *p;
+     unsigned long crc, crc2;
+
+     if (*zconnect_id == '<')
+          zconnect_id++;
+     crc2 = crc = 0xffffffffl;
+     for (p=zconnect_id; *p; p++) {
+          if (*p == '@' || *p == '>') break;
+          crc = UPDC32(*p, crc);
+     }
+     crc = ~crc;
+
+     if (*p != '@')
+          crc2 = 0;
+     else {
+          for (p++; *p; p++) {
+              if (*p == '>') break;
+              crc2 = UPDC32(*p, crc2);
+          }
+          crc2 = (~crc2) & LOW28_MASK;
+     }
+
+#ifdef DEBUG
+     printf ("\nMessage-ID:\t%s\nlinker CRC:\t%08lx\nrechter CRC:\t%08lx\n",
+          zconnect_id, crc, crc2);
+
+
+                           - Seite 44 -
+
+#endif
+
+     zerb_id[9] = sextet[(int)(crc2 & SEXT_MASK)]; crc2 >>= 6;
+     zerb_id[8] = sextet[(int)(crc2 & SEXT_MASK)]; crc2 >>= 6;
+     zerb_id[7] = sextet[(int)(crc2 & SEXT_MASK)]; crc2 >>= 6;
+     zerb_id[6] = sextet[(int)(crc2 & SEXT_MASK)]; crc2 >>= 6;
+
+     crc2 |= (crc & LOW2_MASK) << 4;
+     zerb_id[5] = sextet[(int)(crc2 & SEXT_MASK)]; crc >>= 2;
+
+     zerb_id[4] = sextet[(int)(crc & SEXT_MASK)]; crc >>= 6;
+     zerb_id[3] = sextet[(int)(crc & SEXT_MASK)]; crc >>= 6;
+     zerb_id[2] = sextet[(int)(crc & SEXT_MASK)]; crc >>= 6;
+     zerb_id[1] = sextet[(int)(crc & SEXT_MASK)]; crc >>= 6;
+     zerb_id[0] = sextet[(int)(crc & SEXT_MASK)];
+
+     strcpy(zerb_id+10, "@" host);
+}
+
+#ifdef TEST_ID_MAIN
+
+main()
+{
+     char msgid[200], z_id[30], datum[80];
+
+     printf ("Test Message-ID Erzeugung:\n");
+     printf ("Bitte ZCONNECT-Id eingeben:\t"); gets(msgid);
+     convert_id(z_id, msgid);
+     printf ("Zerberus-ID:\t%s\n", z_id);
+
+     return 0;
+}
+#endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                           - Seite 45 -
+
+/*
+ *  crc.h
+ *
+ *  Aus den Z-MODEM Sourcen, (C) Chuck Forresberg
+ */
+
+typedef unsigned long ULONG;
+
+/* First, the polynomial itself and its table of feedback terms.  The  */
+/* polynomial is						       */
+/* X^32+X^26+X^23+X^22+X^16+X^12+X^11+X^10+X^8+X^7+X^5+X^4+X^2+X^1+X^0 */
+/* Note that we take it "backwards" and put the highest-order term in  */
+/* the lowest-order bit.  The X^32 term is "implied"; the LSB is the   */
+/* X^31 term, etc.  The X^0 term (usually shown as "+1") results in    */
+/* the MSB being 1.						       */
+
+/* Note that the usual hardware shift register implementation, which   */
+/* is what we're using (we're merely optimizing it by doing eight-bit  */
+/* chunks at a time) shifts bits into the lowest-order term.  In our   */
+/* implementation, that means shifting towards the right.  Why do we   */
+/* do it this way?  Because the calculated CRC must be transmitted in  */
+/* order from highest-order term to lowest-order term.	UARTs transmit */
+/* characters in order from LSB to MSB.  By storing the CRC this way,  */
+/* we hand it to the UART in the order low-byte to high-byte; the UART */
+/* sends each low-bit to hight-bit; and the result is transmission bit */
+/* by bit from highest- to lowest-order term without requiring any bit */
+/* shuffling on our part.  Reception works similarly.		       */
+
+/* The feedback terms table consists of 256, 32-bit entries.  Notes:   */
+/*								       */
+/*     The table can be generated at runtime if desired; code to do so */
+/*     is shown later.	It might not be obvious, but the feedback      */
+/*     terms simply represent the results of eight shift/xor opera-    */
+/*     tions for all combinations of data and CRC register values.     */
+/*								       */
+/*     The values must be right-shifted by eight bits by the "updcrc"  */
+/*     logic; the shift must be unsigned (bring in zeroes).  On some   */
+/*     hardware you could probably optimize the shift in assembler by  */
+/*     using byte-swap instructions.				       */
+
+ULONG crc_32_tab[] = { /* CRC polynomial 0xedb88320 */
+	0x00000000L, 0x77073096L, 0xee0e612cL, 0x990951baL,
+	0x076dc419L, 0x706af48fL, 0xe963a535L, 0x9e6495a3L,
+	0x0edb8832L, 0x79dcb8a4L, 0xe0d5e91eL, 0x97d2d988L,
+	0x09b64c2bL, 0x7eb17cbdL, 0xe7b82d07L, 0x90bf1d91L,
+	0x1db71064L, 0x6ab020f2L, 0xf3b97148L, 0x84be41deL,
+	0x1adad47dL, 0x6ddde4ebL, 0xf4d4b551L, 0x83d385c7L,
+	0x136c9856L, 0x646ba8c0L, 0xfd62f97aL, 0x8a65c9ecL,
+	0x14015c4fL, 0x63066cd9L, 0xfa0f3d63L, 0x8d080df5L,
+	0x3b6e20c8L, 0x4c69105eL, 0xd56041e4L, 0xa2677172L,
+	0x3c03e4d1L, 0x4b04d447L, 0xd20d85fdL, 0xa50ab56bL,
+	0x35b5a8faL, 0x42b2986cL, 0xdbbbc9d6L, 0xacbcf940L,
+	0x32d86ce3L, 0x45df5c75L, 0xdcd60dcfL, 0xabd13d59L,
+	0x26d930acL, 0x51de003aL, 0xc8d75180L, 0xbfd06116L,
+	0x21b4f4b5L, 0x56b3c423L, 0xcfba9599L, 0xb8bda50fL,
+	0x2802b89eL, 0x5f058808L, 0xc60cd9b2L, 0xb10be924L,
+	0x2f6f7c87L, 0x58684c11L, 0xc1611dabL, 0xb6662d3dL,
+	0x76dc4190L, 0x01db7106L, 0x98d220bcL, 0xefd5102aL,
+	0x71b18589L, 0x06b6b51fL, 0x9fbfe4a5L, 0xe8b8d433L,
+	0x7807c9a2L, 0x0f00f934L, 0x9609a88eL, 0xe10e9818L,
+                           - Seite 46 -
+
+	0x7f6a0dbbL, 0x086d3d2dL, 0x91646c97L, 0xe6635c01L,
+	0x6b6b51f4L, 0x1c6c6162L, 0x856530d8L, 0xf262004eL,
+	0x6c0695edL, 0x1b01a57bL, 0x8208f4c1L, 0xf50fc457L,
+	0x65b0d9c6L, 0x12b7e950L, 0x8bbeb8eaL, 0xfcb9887cL,
+	0x62dd1ddfL, 0x15da2d49L, 0x8cd37cf3L, 0xfbd44c65L,
+	0x4db26158L, 0x3ab551ceL, 0xa3bc0074L, 0xd4bb30e2L,
+	0x4adfa541L, 0x3dd895d7L, 0xa4d1c46dL, 0xd3d6f4fbL,
+	0x4369e96aL, 0x346ed9fcL, 0xad678846L, 0xda60b8d0L,
+	0x44042d73L, 0x33031de5L, 0xaa0a4c5fL, 0xdd0d7cc9L,
+	0x5005713cL, 0x270241aaL, 0xbe0b1010L, 0xc90c2086L,
+	0x5768b525L, 0x206f85b3L, 0xb966d409L, 0xce61e49fL,
+	0x5edef90eL, 0x29d9c998L, 0xb0d09822L, 0xc7d7a8b4L,
+	0x59b33d17L, 0x2eb40d81L, 0xb7bd5c3bL, 0xc0ba6cadL,
+	0xedb88320L, 0x9abfb3b6L, 0x03b6e20cL, 0x74b1d29aL,
+	0xead54739L, 0x9dd277afL, 0x04db2615L, 0x73dc1683L,
+	0xe3630b12L, 0x94643b84L, 0x0d6d6a3eL, 0x7a6a5aa8L,
+	0xe40ecf0bL, 0x9309ff9dL, 0x0a00ae27L, 0x7d079eb1L,
+	0xf00f9344L, 0x8708a3d2L, 0x1e01f268L, 0x6906c2feL,
+	0xf762575dL, 0x806567cbL, 0x196c3671L, 0x6e6b06e7L,
+	0xfed41b76L, 0x89d32be0L, 0x10da7a5aL, 0x67dd4accL,
+	0xf9b9df6fL, 0x8ebeeff9L, 0x17b7be43L, 0x60b08ed5L,
+	0xd6d6a3e8L, 0xa1d1937eL, 0x38d8c2c4L, 0x4fdff252L,
+	0xd1bb67f1L, 0xa6bc5767L, 0x3fb506ddL, 0x48b2364bL,
+	0xd80d2bdaL, 0xaf0a1b4cL, 0x36034af6L, 0x41047a60L,
+	0xdf60efc3L, 0xa867df55L, 0x316e8eefL, 0x4669be79L,
+	0xcb61b38cL, 0xbc66831aL, 0x256fd2a0L, 0x5268e236L,
+	0xcc0c7795L, 0xbb0b4703L, 0x220216b9L, 0x5505262fL,
+	0xc5ba3bbeL, 0xb2bd0b28L, 0x2bb45a92L, 0x5cb36a04L,
+	0xc2d7ffa7L, 0xb5d0cf31L, 0x2cd99e8bL, 0x5bdeae1dL,
+	0x9b64c2b0L, 0xec63f226L, 0x756aa39cL, 0x026d930aL,
+	0x9c0906a9L, 0xeb0e363fL, 0x72076785L, 0x05005713L,
+	0x95bf4a82L, 0xe2b87a14L, 0x7bb12baeL, 0x0cb61b38L,
+	0x92d28e9bL, 0xe5d5be0dL, 0x7cdcefb7L, 0x0bdbdf21L,
+	0x86d3d2d4L, 0xf1d4e242L, 0x68ddb3f8L, 0x1fda836eL,
+	0x81be16cdL, 0xf6b9265bL, 0x6fb077e1L, 0x18b74777L,
+	0x88085ae6L, 0xff0f6a70L, 0x66063bcaL, 0x11010b5cL,
+	0x8f659effL, 0xf862ae69L, 0x616bffd3L, 0x166ccf45L,
+	0xa00ae278L, 0xd70dd2eeL, 0x4e048354L, 0x3903b3c2L,
+	0xa7672661L, 0xd06016f7L, 0x4969474dL, 0x3e6e77dbL,
+	0xaed16a4aL, 0xd9d65adcL, 0x40df0b66L, 0x37d83bf0L,
+	0xa9bcae53L, 0xdebb9ec5L, 0x47b2cf7fL, 0x30b5ffe9L,
+	0xbdbdf21cL, 0xcabac28aL, 0x53b39330L, 0x24b4a3a6L,
+	0xbad03605L, 0xcdd70693L, 0x54de5729L, 0x23d967bfL,
+	0xb3667a2eL, 0xc4614ab8L, 0x5d681b02L, 0x2a6f2b94L,
+	0xb40bbe37L, 0xc30c8ea1L, 0x5a05df1bL, 0x2d02ef8dL
+};
+
+
+#define UPDC32(octet, crc) \
+(crc_32_tab[(unsigned)((((ULONG)crc) ^ ((ULONG)octet)) & 0xff)] ^ (((ULONG)crc) >> 8))
+
+                           - Seite 47 -
+
+   
+ *** Diese Seite wurde absichtlich freigelassen
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                           - Seite 48 -
+
+Zeitzonen
+
+Im folgenden  haben wir  die gebräuchlichsten  Zeitzonen und  ihre
+Kodierung für ZCONNECT aufgeführt.
+
+Zone      W/S  Diff.    Name                          
+NT        W   -11:00    Nome Time
+AHST      W   -10:00    Alaska-Hawaii Standard Time
+YST       W    -9:00    Yukon Standard Time
+PST       W    -8:00    Pacific Standard Time
+MST       W    -7:00    Mountain Standard Time
+PDT       S    -7:00    Pacific Daylight Time
+CST       W    -6:00    Central Standard Time
+MDT       S    -6:00    Mountain Daylight Time
+EST       W    -5:00    Eastern Standard Time
+CDT       S    -5:00    Central Daylight Time
+AST       W    -4:00    Atlantic Standard Time
+EDT       S    -4:00    Eastern Daylight Time
+NST       W    -3:30    Newfoundland Standard Time
+GST       W    -3:00    Greenland  Standard Time
+ADT       S    -3:00    Atlantic Daylight Time
+AT        W    -2:00    Azores Time
+WAT       W    -1:00    West Africa Time
+UT        W    +0:00    Universal Time
+Z         W    +0:00    Universal Time
+GMT       W    +0:00    Greenwich Mean Time
+BST       S    +1:00    British Summer Time
+CET       W    +1:00    Central European Time
+MET       W    +1:00    Middle European Time
+MEWT      W    +1:00    Middle European Winter Time
+SWT       W    +1:00    Swedish Winter Time
+FWT       W    +1:00    French Winter Time
+HFH       W    +1:00    Heure Francais d'Hiver
+MEST      S    +2:00    Middle Europe Summer Time
+EET       W    +2:00    Eastern European Time
+SST       S    +2:00    Swedish Summer Time
+FST       S    +2:00    French Summer Time
+HFE       S    +2:00    Heure Francais d'Ete
+BT        W    +3:00    Bagdad Time
+ZP4       W    +4:00    GMT +4  hours.
+ZP5       W    +5:00    GMT +5  hours.
+IST       W    +5:30    Indian Standard Time
+ZP6       W    +6:00    GMT +6  hours.
+WAST      W    +7:00    West Australian Standard Time
+JT        W    +7:30    Java Time
+WADT      S    +8:00    West Australian Daylight Time
+CCT       W    +8:00    China Coast Time
+JST       W    +9:00    Japan Standard Time
+CAST      W    +9:30    Central Australian Standard Time
+SAST      W    +9:30    South Australian Standard Time
+EAST      W   +10:00    East Australian Standard Time
+CADT      S   +10:30    Central Australian Daylight Time
+SADT      S   +10:30    South Australian Daylight Time
+EADT      S   +11:00    East Australian Daylight Time
+NZT       W   +12:00    New Zealand Time
+NZST      W   +12:00    New Zealand Standard Time
+NZDT      S   +13:00    New Zealand Daylight Time
+
+
+
+
+
+                           - Seite 49 -
+
+INDEX
+
+
+<CR>                                                             5
+<LF>                                                             5
+\n                                                               5
+\r                                                               5
+16-Bit CRC                                                      12
+ABS                                                 26, 31, 32, 39
+Absenderin                                                       3
+ACK                                                             12
+Adressen                                                        26
+ANTWORT-AN                                                      32
+ARC                                                             14
+ARCERIN                                                         19
+ARCEROUT                                                        19
+BEG                                                             12
+BEGIN                                                            6
+Beidseitiger Datenaustausch                                     13
+Benutzernamen                                                   10
+BET                                                     31, 32, 39
+BEZ                                                             32
+Bidirektionales Protokoll                                       13
+BiModem                                                         10
+BIN                                                             37
+BLK                                                             12
+Blöcke                                                          11
+Brettnamen                                                      27
+Briefumschlag                                                   25
+CRC                                                          5, 12
+CRYPT                                                           15
+CTL                                                             37
+Dateiname                                                       21
+Datenaustausch                                                   6
+Datenpakete                                                     11
+Datex-P                                                         11
+DDA                                                             32
+DELETE                                                          19
+DES                                                             37
+DISKUSSION-IN                                                   32
+DOMAIN                                                      15, 26
+Domain-Server                                                   27
+EB                                              25, 29, 31, 32, 37
+EDA                                                     31, 33, 40
+EMP                                                 29, 31, 33, 40
+Empfängerin                                                      3
+EOT                                                             12
+ERR                                                     25, 28, 33
+ERSETZT                                                         34
+EXECUTE                                                         19
+Fehlerkorrektur                                                  5
+FILE                                                            34
+FILEREQ                                                         19
+FILESEND                                                        19
+Ftp                                                             10
+FTS0001                                                         16
+Gesamtablauf                                                     5
+GET                                                             20
+GUEST                                                           17
+
+
+                           - Seite 50 -
+
+Header                                                          25
+Hitchhikers Guide to Zerberus Netcalls                          10
+INFORMATIONEN                                                   25
+Inhalt                                                          22
+Internet-Domain                                                 26
+ISO-Referenzmodell                                               3
+ISO2                                                            15
+ISO3                                                            16
+KENNUNG                                                         25
+KOM                                                             34
+KOORDINATEN                                                     16
+KOP                                                         28, 34
+LDA                                                             34
+LEN                                                     31, 34, 40
+Login                                                            5
+Login-Anforderung                                               10
+Loginphase                                                       6
+Logoff                                                    5, 7, 20
+MAILER                                                      31, 35
+MAILFORMAT                                                      16
+Mailing-Listen                                                  29
+MAPS                                                            16
+MausTausch                                                      16
+MID                                                     31, 35, 40
+NAK                                                             12
+Netcall-Dateien                                                 21
+Netzadressen                                                    26
+OAB                                                         28, 35
+OEM                                                     28, 30, 36
+Öffentliche Nachrichten                                         27
+ORG                                                             36
+PASSWD                                                      12, 17
+Passwort                                                     6, 10
+Passwortabfrage                                                 10
+PGP                                                             37
+PORT                                                            17
+POST                                                        17, 36
+PreArcen                                                        11
+PRIO                                                        31, 36
+PROTO                                                       12, 17
+Protokollablauf                                                 13
+Prüfsumme                                                       12
+PUT                                                             20
+RFC-822                                                         26
+RFC1036                                                         16
+RFC821                                                           3
+ROT                                             28, 29, 31, 36, 40
+Schreibberechtigung                                             28
+SERNR                                                           17
+SPERRFRIST                                                      36
+Spool                                                           21
+Standard-Zeichensatz                                            22
+STAT                                                            37
+STATUS                                                          12
+Synchronisation                                                 13
+SYS                                                         12, 18
+SYSOP                                                       12, 18
+Systembetreiberin                                                3
+Systeminformationen                                           5, 6
+TEL                                                         12, 18
+
+
+                           - Seite 51 -
+
+TELEFON                                                     18, 37
+Textnachrichten                                                 22
+Titelmeldung                                                     9
+TME                                                             12
+TRANSPARENT                                                     37
+TYP                                                         37, 39
+U-                                                              38
+UNIX                                                             9
+UseNet                                                           3
+Username                                                         6
+UUCP                                                             9
+VMS                                                              9
+Vorbereitungsphase                                               6
+WAB                                                             28
+WAIT                                                            20
+Warten auf Aktion                                               13
+Weiterleiten                                                    28
+X-                                                              38
+X-MODEM                                                          5
+X400                                                            16
+Z-MODEM                                                          5
+Z-NETZ                                                           3
+Zeichensatz                                                     24
+Zensiert                                                        28
+ZER                                                             26
+ZERBERUS                                                     4, 10
+ZModem                                                          10
+ZNETZ                                                       16, 26
+ZNETZ-ABS                                                       37
+ZNETZ-TEXT                                                      37
+Zwischenlager                                                   21
+.Ende Index.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                           - Seite 52 -
+
+

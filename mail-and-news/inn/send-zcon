@@ -1,0 +1,102 @@
+#! /bin/sh
+##  $Revision$
+##  SH script to send ZCONNECT batches out.
+
+##  =()<. @<_PATH_SHELLVARS>@>()=
+. /usr/lib/news/innshellvars
+
+PROGNAME=`basename $0`
+LOCK=${LOCKS}/LOCK.${PROGNAME}
+LOG=${MOST_LOGS}/${PROGNAME}.log
+
+MAXJOBS=200
+
+##  Start logging.
+test ! -f ${LOG} && touch ${LOG}
+chmod 0660 ${LOG}
+exec >>${LOG} 2>&1
+echo "${PROGNAME}: [$$] begin `date`"
+cd ${BATCH}
+
+##  Anyone else there?
+trap 'rm -f ${LOCK} ; exit 1' 1 2 3 15
+shlock -p $$ -f ${LOCK} || {
+    echo "${PROGNAME}: [$$] locked by [`cat ${LOCK}`]"
+    exit 0
+}
+
+##  Who are we sending to?
+if [ -n "$1" ] ; then
+    LIST="$*"
+else
+    LIST=""
+    case `date +%H` in
+    01|04|07|21|23)
+	LIST="kurz-ai aoa clsib21 leafusa metasoft"
+	;;
+    06|12|15|17|20)
+	LIST="esca"
+	;;
+    esac
+fi
+
+case ${HAVE_UUSTAT} in
+DONT)
+    TEMP=${TMPDIR}/uuq$$
+    uuq -h |tr -d : >${TEMP}
+    ;;
+esac
+
+##  Do the work...
+for SITE in ${LIST}; do
+
+    ##  See if any data is ready for host.
+    BATCHFILE=${SITE}.zcon
+    if [ -f ${SITE}.work ] ; then
+	cat ${SITE}.work >>${BATCHFILE}
+	rm -f ${SITE}.work
+    fi
+    mv ${SITE} ${SITE}.work
+    ctlinnd -s -t30 flush ${SITE} || continue
+    cat ${SITE}.work >>${BATCHFILE}
+    rm -f ${SITE}.work
+    if [ ! -s ${BATCHFILE} ] ; then
+	echo "${PROGNAME}: [$$] no articles for ${SITE}"
+	rm -f ${BATCHFILE}
+	continue
+    fi
+
+    time batcher -b0 -r -v -N ${MAXJOBS} \
+	-p"/usr/local/lib/zconnect/uurnews -f %s" \
+	${SITE} ${BATCHFILE} || \
+	 (
+	  # Fehler beim Batchen
+		ERROR=$?
+       		mv --backup --version-control numbered \
+		 ${BATCHFILE} ${SITE}.error
+		mail -s "Error beim News-Batchen" postmaster <<EOM
+Subject: Error beim News-Batchen
+From: news
+
+Beim Batchen fuer ${SITE} ist ein Fehler aufgetreten.
+Rückgabewert von 'batcher' war $ERROR.
+
+Folgende fehlerhaften Eingangspuffer liegen momentan in `pwd`:
+`ls -al ${SITE}.error*`
+
+EOM
+	)
+
+    echo "${PROGNAME}: [$$] end ${SITE}"
+done
+
+case ${HAVE_UUSTAT} in
+DONT)
+    rm -f ${TEMP}
+    ;;
+esac
+
+##  Remove the lock file.
+rm -f ${LOCK}
+
+echo "${PROGNAME}: [$$] end `date`"

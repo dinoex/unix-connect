@@ -1,0 +1,22 @@
+Ich moechte nur darauf hinweisen, dass diese Programme der GNU General
+Public License unterliegen.
+
+Sie sind nicht und waren niemals in der Public Domain.
+
+(C)opyright 1992-94 Martin Husemann, martin@euterpe.owl.de
+Copyright (C) 1995-96 Christopher Creutzig, christopher@nescio.zerberus.de
+
+Die Wahl DIESER Lizenz erfolgte absichtlich, insbesondere wurde explizit
+nicht die GNU General Public Library License gewaehlt:
+
+* Es ist erlaubt, diese Programme oder Teile davon in anderen Programmen    *
+* einzusetzen, sofern diese Programme wieder im Source-Code frei verfuegbar *
+* sind. Naeheres finden Sie in der Datei COPYING.                           *
+*                                                                           *
+* Diese Quelltexte wurde veroeffentlicht, um als Referenz- und Nachschlage- *
+* material bei einer ZCONNECT Implementierung zu dienen. Nicht mehr und     *
+* nicht weniger.                                                            *
+*                                                                           *
+* Es ist nicht erlaubt, diese Routinen in ein Programm einzubinden, das     *
+* komerziell vertrieben wird, oder dessen Source-Code nicht frei verfuegbar *
+* ist.                                                                      *

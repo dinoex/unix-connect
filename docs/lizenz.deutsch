@@ -1,0 +1,189 @@
+Free Software				voice: ++49-69-6312083
+Association of Germany			data: ++49-69-6312934
+c/o Michaela Merz			email: fsag@@eurom.fsag.incom.de
+Heimatring 19				fsag, 2:247/14 fidonet
+60596 Frankfurt/Main
+Germany      
+
+
+Wir ueber uns:
+
+Die Free Software Association of Germany (FSAG) versteht sich als
+Organisation "freier" Software-Autoren. Die FSAG entwickelt, portiert
+und supported freie Software fuer zahlreiche Betriebssysteme.
+Weiterhin unterstuetzt die FSAG die Entwicklung freier Soft-
+wareprojekte in Europa.
+
+Was verstehen wir unter "freier Software"?
+
+Wenn wir von "freier" Software sprechen, beziehen wir uns auf den
+Begriff "Freiheit" nicht auf "Kostenlos". Speziell bedeutet das, dass
+der Anwender beliebige Kopien anfertigen, verschenken oder verkaufen
+darf. Das der Quellcode eines "freien" Programmes zur Verfuegung
+steht oder angefordert werden kann, dass somit Aenderungen und/oder
+Anpassungen programmiert werden koennen oder das Teile der Quellcodes
+in neuen "freien" Software Produkten verwendet werden koennen.
+
+Niemand darf die oben genannten Rechte einschraenken. Das bedeutet,
+dass Anwender, Programmierer oder Haendler eine besondere Ver-
+pflichtung eingehen:
+
+Wenn man ein "freies" Softwareprogramm weitergibt (unabhaengig ob
+kostenlos oder gegen Gebuehr) muss der neue Besitzer von seinen
+Rechten an dieser Software informiert werden. Es muss sichergestellt
+werden, dass auch der neue Besitzer Zugang zu den Quellcodes hat oder
+bekommt - er hat die selben Rechte wie jeder Nutzer freier Software.
+
+Wir sichern diese Rechte auf zwei Wegen:
+
+a) Durch ein Copyright auf die Software und b) durch diesen
+Informationstext der jedem das Recht einraeumt, diese Software zu
+kopieren, anzupassen, zu verkaufen oder zu verschenken.
+
+Ausserdem muessen wir sicherstellen, dass alle An- und Verwender
+freier Software verstehen, dass es keine Garantien auf freie Software
+gibt. Wenn die Software von jemandem modifiziert oder geaendert wird,
+muss darauf hingewiesen werden - Anwender modifizierter freier
+Software muessen wissen, dass es sich bei dem geaenderten Programm
+nicht mehr um das Original handelt - und das auftretende Probleme
+nicht den Ruf des Originalautors schaedigen.
+
+Im folgenden nun der genaue Wortlaut unserer Lizenzbestimmungen:
+
+_Lizenzvertrag zur Verwendung freier Softwareprodukte der FSAG_
+
+Dieser Lizenzvertrag gilt in Verbindung mit allen Programmen oder
+anderen Arbeiten welche einen Hinweis enthalten, dass die Arbeit oder
+das Programm unter der DFSL (Deutsche Free Software Lizenz)
+verbreitet wurde. Die Terminologie "Programm" bezieht sich im
+Folgenden auf alle Computerprogramme oder Arbeiten, die unter diesen
+Bedingungen verbreitet wurden. Der Begriff "programmbasierende
+Taetigkeit" bezieht sich entweder auf das gesamte Programm oder Teile
+davon, mit oder ohne Aenderungen am Programm. Es wird jeder
+Lizenznehmer als "LN" benannt. Die FSAG hat das Recht, den
+Lizenzvertrag zu aendern, aufzuheben oder zu widerrufen. Dieses gilt
+im Gesamten oder fuer einzelne Personen, Firmen oder fuer
+Organisationen.
+
+2)
+
+Dem LN ist es gestattet, den Programm-Quellcode wie erhalten zu
+kopieren oder weiter zu vertreiben, unabhaengig vom Verbrei-
+tungsmedium. Voraussetzung ist:
+
+Weder der Hinweis auf die DFSL noch irgendwelche Copyright-
+Informationen duerfen entfernt werden. Es muessen alle Hinweise auf
+die fehlende Garantie intakt bleiben. Ausserdem muessen jeder
+Programmkopie diese Lizenzinformation beigefuegt werden.
+
+Es ist dem LN gestattet eine Gebuehr fuer den Kopiervorgang zu
+erheben. Es ist weiterhin gestattet, Wartungsvertraege oder
+Anpassungen an Programmen anzubieten, durchzufuehren und zu berech-
+nen.
+
+3)
+
+Dem LN ist es gestattet, den Programm-Quellcode zu veraendern
+(Ausnahmen siehe (2) und den veraenderten Quellcode nach den
+Bestimmungen des Absatzes (2) weiterzugeben. Voraussetzung ist:
+
+Die modifierten Programmteile muessen einen deutlichen Hinweis
+enthalten, dass sie modifiziert wurden. Das Programm oder ein neues
+Produkt, welches Teile des Programms enthaelt, muessen unter der DFSL
+verbreitet werden.
+
+Wenn es sich um ein interaktiv bedienbares Programm handelt, muss
+beim Programmstart auf dem einfachsten und ueblichsten Weg folgende
+Meldungen ausgegeben werden:
+
+- das Copyright der FSAG oder des jeweiligen Autors, 
+- ein Hinweis auf die DFSL,
+- ein Hinweis auf fehlende Garantie; oder, falls der LN eine Garantie
+ gewaehrleistet, entsprechender Hinweis, 
+- ein Hinweis wie und wo der Anwender die DFSL lesen kann.
+
+Dem Lizenznehmer ist es gestattet, Programme oder Teile des
+Programmes unter den Bedingungen des Absatzes (2) in Objekt- oder
+ausfuehrbarer Form zu kopieren oder/und unter den Bedingungen der
+Absaetze (1) und (2) weiter zu vertreiben. Voraussetzung ist:
+
+- Der Quellcode des Programms wird unter den Bedingungen der Absaetze
+(1) und (2) in maschinenlesbarer Form mit ausgeliefert, oder
+
+- es wird eine schriftliche Erklaerung, gueltig fuer mindestens 3
+Jahre, beigefuegt, wonach sich der LN verpflichtet, kostenlos oder
+gegen eine minimale Gebuehr den Quellcode des Programmes in
+maschinenlesbarer Form auf einem gaengigen Medium zur Verfuegung zu
+stellen, oder
+
+- es werden die gleichen Information beigefuegt, die auch der LN mit
+dem Programm erhielt. Diese Alternative ist nur bei nicht-
+kommerziellem Vertrieb gestattet wenn der LN selber nicht ueber den
+Quellcode des Programms verfuegt.
+
+Unter dem Begriff Quellcode bezeichnen wir die Form eines Programmes,
+in der ueblicherweise Aenderungen vorgenommen werden. Fuer ein aus-
+fuerbares Programm bedeutet Quellcode, alle Quellcodes fuer alle
+Programmodule oder -Teile. Ausgenommen davon sind Standard-
+bibliotheken, die ueblicheweise auf dem Betriebssystem verfuegbar
+sind, auf dem das Programm laeuft. Entsprechendes gilt fuer Header-
+und Definitions-Dateien.
+
+4)
+
+Ohne die Anerkennung dieser Lizenzbestimmung ist es verboten,
+Programme oder Teile der Programme zu kopieren, anzubieten, zu
+verkaufen oder zu verteilen. Entprechendes gilt fuer Unterlizenzen.
+Jeder Versuch der Zuwiderhandlung gegen die Lizenzbestimmung fuehrt
+automatisch zum Verlust aller Rechte an dem Programm.
+
+5)
+
+Wenn das Programm oder Teile davon kopiert, weitergegeben oder
+modifiziert werden, wird damit automatisch die DFSL mit allen
+Bedingungen und Einschraenkungen anerkannt.
+
+6)
+
+Mit jeder weitergegeben Kopie des Programmes oder Teilen des
+Programmes erhaelt der neue Empfaenger automatisch die Erlaubnis des
+Original-Lizenzgebers, das Programm im Sinne dieser Lizenz
+weiterzugeben oder zu veraendern.
+
+7)
+
+Die Free Software Association of Germany kann von Zeit zu Zeit
+geanderte Versionen der Deutschen Free Software Lizenz (DFSL)
+herausgeben. Diese neuen Lizenzbestimmungen werden dem Sinn nach
+gleich bleiben, koennen aber im Detail Unterschiede aufweisen, um
+neue Probleme zu beruecksichtigen.
+Jede Version der DFSL hat eine Versionsnummer. Wenn das Programm eine
+Linzens Versionsnummer angibt und den Zusatz "jede neuere Version"
+hat der Lizenznehmer die Wahl zwischen der explizit angegeben
+DFSL-Version oder jeder neueren Version der Lizenzbestimmungen wenn
+sie durch die Free Software Association of Germany veroeffentlicht
+wurde.
+
+8)
+
+Wenn der LN Teile des Programms in Projekten verwenden will, deren
+Lizenzbestimmungen nicht mit der DFSL uebereinstimmen, steht es dem
+Lizenznehmer frei, den Autor um Erlaubnis zu fragen. Ist das Programm
+durch ein Copyright der Free Software Association of Germany
+geschuetzt, kann die Free Software Association um Erlaubnis gebeten
+werden. Wir machen u.U. Ausnahmen von der DFSL. Unsere Entscheidung
+richtet sich nach zwei Prinzipien: Der Sicherstellung des freien
+Status aller Derivate unserer freien Software und die Foerderung des
+Teilens und Wiederverwendens von Software im Allgemeinen.
+
+9)
+
+Falls diese Lizenzbestimmungen in Teilen oder im Gesamten nicht an-
+erkannt werden, wird keine Lizenzvereinbarung wirksam. In diesem Fall
+darf weder das Programm noch Teile davon kopiert, modifiziert oder
+weitergegeben werden.
+
+
+Frankfurt am Main, Dezember 1992
+
+Free Software Association of Germany

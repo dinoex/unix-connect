@@ -1,0 +1,64 @@
+#!/bin/sh
+
+# $Id$
+#
+#  Liste alle Macros, die ORG und die NET Liste
+#
+
+
+DESTDIR=@DESTDIR@
+FQDN=@FQDN@
+INEWS=/usr/local/bin/inews
+
+MSG=/tmp/uumlist.$$
+
+MACROID=`grep -i '^gate-macro-id:' $DESTDIR/config | awk '{print $2}'`
+MACROS=`grep -i '^gate-macro-datenbank:' $DESTDIR/config | awk '{print $2}'`
+NETDIR=`grep -i '^gate-net-dir:' $DESTDIR/config | awk '{print $2}'`
+ORGDIR=`grep -i '^gate-org-dir:' $DESTDIR/config | awk '{print $2}'`
+
+ID=`date +%m%d%H%M%S`
+ZSYS=`echo $FQDN | sed -e 's/\..*/.zer.sub.org/'`
+
+cat > $MSG <<EOF
+Newsgroups: zer.t-netz.macros
+From: $MACROID@$FQDN
+Message-ID: a$ID@$ZSYS
+Subject: DIR \$$MACROID
+X-Dont-Gate-It: NO-NO
+
+EOF
+
+grep '^$'$MACROID $MACROS >> $MSG
+
+$INEWS -h < $MSG
+
+cat > $MSG <<EOF
+Newsgroups: zer.t-netz.macros
+From: $MACROID@$FQDN
+Message-ID: b$ID@$ZSYS
+Subject: ORG \$$MACROID
+X-Dont-Gate-It: NO-NO
+
+EOF
+
+cat $ORGDIR/$MACROID >> $MSG
+
+$INEWS -h < $MSG
+
+cat > $MSG <<EOF
+Newsgroups: zer.t-netz.macros
+From: $MACROID@$FQDN
+Message-ID: c$ID@$ZSYS
+Subject: NET \$$MACROID
+X-Dont-Gate-It: NO-NO
+
+EOF
+
+cat $NETDIR/$MACROID >> $MSG
+
+$INEWS -h < $MSG
+
+rm -f $MSG
+
+exit 0

@@ -1,0 +1,58 @@
+Stand	: Fri Feb 25 01:14:45 1994
+Version	: v0.70
+
+------------------------------------------------------------------------
+martin@euterpe.owl.de, Fri Feb 25 01:15:11 1994
+
+	'configure' auf neues Namens-Schema angepasst und stark
+	erweitert. 'INSTALL' angepasst.
+
+------------------------------------------------------------------------
+martin@euterpe.owl.de, Wed Feb 23 07:55:28 1994
+
+	Umstellung auf neues Namens-Schema unter /var/spool/zconnect
+	begonnen. Logfiles liegen jetzt unter /var/spool/zconnect/logfiles.
+
+	Alle Systemnamen müssen jetzt überall und immer mit vollständiger
+	Domain angegeben werden, Beispiele:
+
+		/usr/local/lib/systems/bionic.zer.de
+		/var/spool/zconnect/bionic.zer.de
+		/var/spool/smail/z-outq/bionic.zer.de
+
+	Auch im Newssystem muß das System voll qualifiziert werden,
+	also z.B. im C-News 'sys' File:
+
+		bionic.zer.de:all.all/all:f:
+
+	Oder im INN 'newsfeeds' File:
+
+		bionic.zer.de\
+			:!*,t-netz.*,owl.*,!junk,!control/!local\
+			:Tf,Wfb:
+
+
+------------------------------------------------------------------------
+martin@euterpe.owl.de, Sun Feb 20 21:49:55 1994
+
+	Alte Changes gelöscht, sie sind nicht mehr aussagekräfig.
+	Backin (Backup eingehender Netcalls) implementiert.
+	Linux <stdin> und <stdout> Problem für Hintergrundprozesse 
+	behoben.
+
+------------------------------------------------------------------------
+christopher@nescio.zerberus.de, Tue Nov 22 16:10:00 1995
+
+	- MIME ist teilweise implementiert, bisher besteht die Moeglichkeit,
+	  Nachrichten in Richtung RFC zu kodieren, das Dekodieren in der
+	  anderen Richtung fehlt noch.
+
+	- Netcall3.8 wird nicht mehr unterstuetzt, weder direkt noch durch
+	  entsprechende Header oder Macros.
+
+	- Der ZConnect-Online-Teil kennt jetzt auch BEG5.
+
+	- Vieles(!) mehr. Genug, damit keine diffs veroeffentlicht werden,
+	  sondern nur das Komplettpaket.
+
+@EOF v0.74a@

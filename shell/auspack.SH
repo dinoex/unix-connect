@@ -1,0 +1,85 @@
+#! /bin/sh
+# $Id$
+#
+#   auspack     generisches Ent-Archivierungs-Kommando fuer ZCONNECT
+#
+#   Aufruf:     auspack (Kennung) (Archiv) 
+#
+#   Funktion:   Extrahiert alle Dateien (ohne Directory) aus dem angegebenen
+#               Archiv in das aktuelle Verzeichnis.
+#
+#               (Kennung)   der ZCONNECT-Code fuer den verwendeten Arcer,
+#                           also z.B. ZIP ARC ZOO LHA NONE
+#               (Archiv)    die gepackte Datei mit oder ohne Kennung
+#
+#   Es sollte keine Meldungen ausgegeben werden. Directories werden nicht
+#   mit ausgepackt.
+#
+
+if [ "x$2" = "x" ] 
+then
+	echo "Aufruf:  $0 (Kennung) (Archiv)" >&2
+	exit 1
+fi
+
+KENNUNG=$1
+ARC=$2
+
+shift; shift
+
+case "$KENNUNG" in
+ "zip" | \
+ "ZIP" )	name=`dirname $ARC`/`basename $ARC .zip`
+		if [ -r $name.zip ]
+		then
+			ARC="$name".zip
+		fi
+		unzip $ARC	> /dev/null 2>&1 ;;
+ "arc" | \
+ "ARC" )	name=`dirname $ARC`/`basename $ARC .arc`
+		if [ -r $name.arc ]
+		then
+			ARC="$name".arc
+		fi
+		arc x $ARC	> /dev/null 2>&1 ;;
+ "zoo" | \
+ "ZOO" )	name=`dirname $ARC`/`basename $ARC .zoo`
+		if [ -r $name.zoo ]
+		then
+			ARC="$name".zoo
+		fi
+		zoo x $ARC	> /dev/null 2>&1 ;;
+ "lha" | \
+ "LHA" )	name=`dirname $ARC`/`basename $ARC .lha`
+		if [ -r $name.lha ]
+		then
+			ARC="$name".lha
+		fi
+		if [ ! -r $ARC ] 
+		then
+			name=`dirname $ARC`/`basename $ARC .lha`
+			if [ -r $name.lzh ]
+			then
+				ARC="$name".lzh
+			fi
+		fi
+		lha xi $ARC	> /dev/null 2>&1 ;;
+ "none" | \
+ "NONE")	name=`dirname $ARC`/`basename $ARC .nar`
+		if [ -r $name.nar ]
+		then
+			ARC="$name".nar
+		fi
+		cp $ARC .		    ;;
+ *)		mail postmaster << EOF
+ZCONNECT Warnung
+
+Achtung:
+
+	Aufruf von 'auspack' mit illegalen Parametern: $KENNUNG $ARC $*
+EOF
+		;;
+esac
+
+exit 0
+

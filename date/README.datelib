@@ -1,0 +1,14 @@
+Die Dateien in diesem Verzeichnis sind aus C-News.
+
+Entsprechende Copyrights by Henry Spencer et.al.
+
+Ich habe sie nur minimal modifiziert: parsedate liefert nun die Zeit
+gleich in GMT und die Zeitzone zur Information (wie in ZCONNECT, im Internet
+ist die Zeit lokale Zeit und die Zeitzone wird zur Umrechnung in GMT noch
+gebraucht).
+
+Dann noch ein paar ANSI Prototypen...
+
+
+Martin Husemann
+Wed Jan 13 22:18:47 1993

@@ -1,0 +1,143 @@
+
+$Id$
+
+Aenderungen an UnixConnect
+
+seit 0.76
+
+- neue Compile-Option: RCPT_WITH_BANG. Beeinflußt, ob im
+  Envelope-Header Bang- oder @-Notation verwendet wird.
+
+- neue Routine decode_mime_string dekodiert RFC2047-kodierte Strings
+  Testprogramm gate/testmime liegt bei.
+
+- Header mit Textcharakter werden bei ZC->RFC nach RFC2047
+  und beim RFC->ZC auch zurück gewandelt.
+
+- Für Mail ohne Message-ID wird eine erzeugt.
+
+- KOP wird nur nach CC/BCC gewandelt, wenn der entsprechende Header
+  noch nicht existiert. (Bislang: Nur, wenn CC noch nicht existiert.)
+
+- Interessanter Nebeneffekt: Beim regression test sind ein paar
+  Nachrichten aufgefallen, die von den vorherigen Versionen
+  weggeschmissen wurden.
+
+- Bugfixes
+
+
+seit 0.75b4
+
+- Alias-Erkennung Case-Insensitiv.
+
+- Fehler beim uuencode deoden wird bei Bedarf zurückgegeben.
+
+- Fehlerhafte uuencodete Nachrichten führen nicht zum Abbruch, sondern
+  werden durchgereicht.
+
+- Bei Cancel-Nachrichten wird die gecancelte Nachricht bei der Wandlung nach
+  ZC in den BEZ mit eingetragen, wenn sie noch nicht drinstand. Ist nach ZC
+  Doku vorgeschrieben.
+
+- uursmtp.c: Logging korrigiert.
+
+- Nachrichten mit STAT:CTL bekommen einen leeren Envelope-Absender
+
+- Bei Mail werden keine Lines:/Path:-Header erzeugt.
+
+- "Message-ID" wird jetzt wie im so1036 geschrieben.
+
+- FreeBSD: Änderungen von Dirk Meyer eingespielt.
+
+- Automatische Erkennung Sommer/Winterzeit, wenn nicht in der config
+  gesetzt.
+
+
+seit 0.75b3
+
+- uudecode bekommt einen festen Dateinamen vorgesetzt. Damit braucht das
+  Programm nicht mehr nach der dekodierten Datei zu suchen und uudecode
+  kommt nicht auf den Gedanke, eine falsche Datei zu überschreiben. Evtl.
+  kann auch noch das Erzeugen eines temp-Directories herausfliegen.
+
+- Beim Dekodieren von UNIX/Connect-Multipart-Nachrichten wird die korrekte
+  Länge in den Header eingetragen.
+
+- Nachrichten am Dateiende mit falschem LEN-Header werden jetzt wenigstens
+  soweit wie möglich konvertiert und nicht abgeschnitten.
+
+- Beim uuencode wird nicht mehr der Text "SP_MULTIPART_BOUNDARY" angehängt,
+  sondern das Boundary
+
+- Der ZC-Vertreter landet nicht im Envelope-Absender.
+
+- Falsche Newsgroup-Namen werden tatsächlich nur ausgegeben, wenn ihr Header
+  auch geschrieben wird.
+
+- Es wird nur noch ein Envelope-From ausgegeben.
+
+- Header, die nur einmal auftreten dürfen, werden nur einmal ausgegeben.
+
+- RFC-Header werden nach RFC822 umbrochen. Dafür gibt es neue Routinen in
+  zconv.c
+
+- In call.c fehlte im Teil, der ge-fork()-t wurde, ein _exit(0).
+
+seit 0.75b2
+
+- neue Kompilier-Option: LOG_ERRORS_IN_HEADERS (default: ja). Hiermit werden
+  Parse-Fehler in X-Headern vermerkt.
+
+- ZC-Brettnamen werden etwas intensiver geprüft.
+
+- printbretter komplett neu (Dirk)
+
+- einige Pointer-Bugs korrigiert, führten zum Absturz
+
+- einige Speicherlöcher im Zusammenhang mit MIME beseitigt.
+
+- EB mehrfach.
+
+- zbatchsmtp: Datenloch gestopft, Dateien werden nur noch gelöscht, wenn
+  uursmtp nicht fehlgeschlagen ist.
+
+seit 0.75b1
+
+- Hinweise auf Modem-Locking in PROBLEMS eingefügt.
+
+- Schreibfehler aus alias.c korrigiert.
+
+- in uuconv.c Adressparsing verbessert.
+
+- convaddr hat jetzt einen Parameter, wieviele Adressen gewandelt werden
+  sollen. Vorher gab es Ärger mit doppelten WAB und ABS-Headern.
+
+- Ein mit '"' geklammerter Lokalteil der Adresse ohne Leerzeichen wird
+  davon befreit. Auf ZC-Seite wird das als etwas anderes angesehen.
+
+- Einige Header werden auf doppeltes Auftreten in X-ZC- geprüft.
+
+- verbesserte Datumsroutinen
+
+- verbesserte sendmail-Einbindung
+
+- kleinere Bugfixes
+
+seit 0.75
+
+- An etlichen Stellen malloc gegen dalloc und strdup und str2dup gegen
+  dstrdup ausgetauscht, Fehler in str2dup behoben, sollte trotzdem
+  herausfliegen (doppelte Funktionalität).
+
+- Etliche Patches der Liste eingefügt. (Dirk Meyer, TetiSoft)
+
+- Resent-From: wird in WAB: gewandelt.
+
+- Im export.log wird die Zeit mitgeloggt.
+
+- uuwnews und uuwsmtp kennen jetzt eine weitere Option "-d", mit der
+  Ein- und Ausgabedatei explizit angegeben werden können. Hauptsächlich
+  für automatisiertes Testen sinnvoll. Die Eingabedatei wird nicht gelöscht.
+
+- man-pages für uuwsmtp und uuwnews. Weitere werden folgen.
+

@@ -1,0 +1,164 @@
+#!/usr/bin/perl -w
+
+# BSMTP for qmail by Olaf Titz <olaf@bigred.inka.de>, Feb.97, public domain
+# $Id$
+
+# maildir2bsmtp [-h holdtime] [-s maxsize] dir prefix [command]
+# take messages from maildir "dir", make BSMTP out of them
+# Remove "prefix" prefix from every recipient address
+# keep delivered messages in 'cur' subdir for "holdtime" seconds (0: forever)
+# if "command" is given, pipe into this command
+# if "maxsize" is given, start a new command when this size was exceeded
+
+# ccr 19.3.98: Rename messages differently if command returns non-zero
+#              and send mail to postmaster. Do not delete those messages.
+#              Do not follow the header of an empty message directly
+#              with the final ., but rather emit a blank line as required.
+
+require "getopts.pl";
+$opt_h=86400; # one day
+&Getopts("h:s:");
+umask(0077);
+$ctl="/var/qmail/control";
+
+$maildir=shift || &fatal('required "dir" parameter missing');
+chdir $maildir || &fatal("cannot chdir to `$maildir'");
+$prefix=shift  || &fatal('required "prefix" parameter missing');
+$comm=shift;
+
+opendir(D, "new") || &fatal("cannot read `new' subdir");
+while (defined($_=readdir(D))) {
+    /^[0-9]/ && push(@f, $_);
+}
+closedir(D);
+if ($#f<0) {
+    &cleanup(0);
+}
+#@files=sort {$a<=>$b} @f; # this puts oldest message first
+@files=sort { $a cmp $b } @f;
+
+if (open(H, "$ctl/helohost") || open(H, "$ctl/me")) {
+    $helo=<H>; close H;
+}
+$helo=~s/[^\040-\177].*$//;
+$helo="UNKNOWN" unless $helo;
+
+my @files_done;
+
+while ($#files>=0) {
+    @files_done=();
+    if ($comm) {
+	open(STDOUT, "|$comm") || &fatal("cannot invoke `$comm'");
+    }
+    select STDOUT; $|=1;
+    print "HELO $helo\n";
+    $bsiz=0;
+  File: while ($f=shift(@files)) {
+      if (open(F, "new/$f")) {
+	  my $has_body=0;
+	  $_=<F>; 
+	  if (!/^Return-Path:\s*\<([^>]*)\>/i) {
+	      &badmsg($f, "no/bad Return-Path line"); next;
+	  }
+	  $fr=$1;
+	  $_=<F>; chop;
+	  if (!/^Delivered-To:\s*(.*)$/i) {
+	      &badmsg($f, "no/bad Delivered-To line"); next;
+	  }
+	  $_=$1; s/^$prefix//o;
+	  print "MAIL FROM:<$fr>\nRCPT TO:<$_>\nDATA\n";
+	  while (<F>) {
+	      s/^\./../;
+	      $has_body = 1 if (/^$/); 
+	      print;
+	  };
+	  print "\n" unless $has_body;
+	  print ".\n";
+	  $bsiz+=(-s F);
+	  close F;
+	  push @files_done, $f;
+#	  if (!rename("new/$f", "cur/$f:batched")) {
+#	      print STDERR "cannot move `$f', will re-deliver\n";
+#	  }
+	  last File if ($opt_s && ($bsiz>$opt_s));
+      } else {
+	  print STDERR "message `$f' vanished\n";
+      }
+  }
+    print "QUIT\n";
+    if (defined($comm)) {
+	close STDOUT;
+	if ($? > 0) { # indicating error condition
+	    my $err=$? >> 8;
+	    my $sig=$? & 255;
+	    print STDERR <<"EOM";
+Command \'$comm\' returned errorcode $err (signal $sig).
+The messages in question will be saved to
+\'$maildir/cur/*:batch-error\'.
+You can respool them by moving them from there back to
+$maildir/new/.
+EOM
+            foreach $f (@files_done) {
+		if (!rename("new/$f", "cur/$f:batch-error")) {
+		    print STDERR "cannot move `$f', will re-deliver\n";
+		}
+	    }
+	} else {
+	    foreach $f (@files_done) {
+		if (!rename("new/$f", "cur/$f:batched")) {
+		    print STDERR "cannot move `$f', will re-deliver\n";
+		}
+	    }
+	}
+    } else {
+	foreach $f (@files_done) {
+	    if (!rename("new/$f", "cur/$f:batched")) {
+		print STDERR "cannot move `$f', will re-deliver\n";
+	    }
+	}
+    }
+}
+&cleanup(0);
+exit 0;
+
+sub badmsg # filename, explanation
+{
+    local($f,$m)=@_;
+    print STDERR "message `$f': $m\n";
+    if (!rename("new/$f", "cur/$f:BAD")) {
+	print STDERR "cannot move `$f' - something is wrong\n";
+    }
+}
+
+sub cleandir # dirname, suffix, time
+{
+    local($d,$s,$t)=@_;
+    if (!opendir(D, $d)) {
+	print STDERR "cannot read `$d' subdir\n";
+	return;
+    }
+    while (defined($_=readdir(D))) {
+	next unless /^[0-9].*$s$/;
+	if (@S=stat("$d/$_")) {
+	    unlink("$d/$_") if ($S[9]+$t<$^T);
+	} else {
+	    print STDERR "cannot stat `$f'\n";
+	}
+    }
+    closedir(D);
+}
+
+sub cleanup # exitstatus
+{
+    local($e)=@_;
+    &cleandir("tmp", "", 129600); # 36h - maildir spec
+    &cleandir("cur", ":batched", $opt_h) if ($opt_h);
+    exit $e;
+}
+
+sub fatal # message
+{
+    local($_)=@_;
+    print STDERR "$_\n";
+    exit 111;
+}

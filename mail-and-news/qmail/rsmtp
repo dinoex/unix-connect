@@ -1,0 +1,171 @@
+#!/usr/bin/perl
+
+# RSMTP for qmail by Olaf Titz <olaf@bigred.inka.de>, Jan.97, public domain
+# $Id$
+
+# Take BSMTP on standard input and feed it into qmail-queue.
+# Attempt to generate a bounce message on error.
+# If invoked as r[cgfz]smtp, call gzip for unpacking.
+
+$version="$0-qm-ot 0.4"; $version=~s:^.*/::g;
+$ENV{"PATH"} = "/bin:/usr/bin:/var/qmail/bin";
+if (open(F, "/var/qmail/control/me")) {
+    $me=<F>; close F;
+}
+$me=~s/[^\040-\177].*$//;
+$me="UNKNOWN" unless $me; # Should not happen
+unless (($i,$j,$uidsend)=getpwnam("qmails")) { $uidsend=32766; }
+unless (($i,$j,$uidsmtp)=getpwnam("qmaild")) { $uidsmtp=32766; }
+@Month=("Jan", "Feb", "Mar", "Apr", "May", "Jun",
+	"Jul", "Aug", "Sep", "Oct", "Nov", "Dec");
+
+if ($0=~/r[cgfz]smtp/) {
+    while (1) {
+	$zippid=open(ZIP, "gzip -cdf |");
+	last if defined($zippid);
+	sleep 30;
+    }
+    open(STDIN, "<&ZIP");
+}
+
+sub qmailopen # helo, proto, uid, to
+{
+    local($helo, $proto, $uid, @t)=@_;
+    pipe(XCTL, CTL) || die "can't pipe"; # XX error handling?
+    while (1) {
+	$pid=open(QMAIL, "|-");
+	last if defined($pid);
+	sleep 30;
+    }
+    if (!$pid) {
+	open(STDOUT, "<&XCTL"); # yes, it uses stdout as input
+	close CTL; close XCTL; close STDERR;
+	($<,$>)=($uid,$uid);
+	exec "qmail-queue";
+	exit 126;
+    }
+    close XCTL;
+    @d=gmtime;
+    printf QMAIL
+	# really got this 822-conformant... ugh
+	"Received: from $helo by $me with $proto ($version) for %s%s; ".
+	    "%d %s %d %02d:%02d:%02d -0000\n",
+	    $t[0], $#t==0 ? "" : " (and ".join(",", @t[1..$#t]).")",
+	    $d[3], @Month[$d[4]], $d[5]+1900, $d[2], $d[1], $d[0];
+}
+
+sub qmailfinish # from, to...
+{
+    local($snd, @rcp)=@_;
+    printf CTL "F%s%c", $snd, 0;
+    foreach (@rcp) {
+	printf CTL "T%s%c", $_, 0;
+    }
+    printf CTL "%c", 0;
+    close CTL; close QMAIL;
+    return ($?>>8);
+}
+
+sub addr
+{
+    local($_)=@_;
+    /\<([^>]*)\>/ && do {
+        $_=$1;
+    };
+    s/[^\040-\177].*$//; # XX
+    return $_;
+}
+
+sub procdata
+{
+    while (<STDIN>) {
+	s=\r\n=\n=;
+	if ($_ eq ".\n") {
+	    return 1;
+	}
+	s=^\.\.=.=;
+	print QMAIL;
+    }
+    return 0;
+}
+
+sub err
+{
+    local($e)=@_;
+    $t=($from || "postmaster");
+    $helo || ($helo="(UNKNOWN)");
+    &qmailopen($me, "QSBMF", $uidsend, $t);
+    print QMAIL <<"_END";
+From: MAILER-DAEMON\@$me
+To: $t
+Subject: Failed mail
+
+Hi. This is the rsmtp mail receiver at $me.
+While processing mail sent by $helo, the following error occurred:
+$e
+Therefore I could not deliver mail to the following address(es):
+
+_END
+    foreach $_ (@rcpt) {
+	printf QMAIL "<$_>:\nBSMTP protocol error\n";
+    }
+    print QMAIL <<"_END";
+
+--- Below is the original message, if it could be recovered.
+
+_END
+    &procdata;
+    &qmailfinish("", $t);
+    exit 1;
+}
+
+sub dodata
+{
+    &err("Missing HELO") unless defined($helo);
+    &err("Missing MAIL") unless defined($from);
+    &err("Missing RCPT") unless ($#rcpt>=0);
+    &qmailopen($helo, "BSMTP", $uidsmtp, @rcpt);
+    &procdata ||
+	print QMAIL <<"_END";
+
+-- Note from the mail delivery system --
+The message apparently arrived truncated at $me
+See the header Received lines matching this name for tracking down the error
+_END
+}
+
+while (<STDIN>) {
+    s=\r\n=\n=;
+    /^HELO\s*(.*)$/i && do {
+	$helo=$1;
+	undef $from;
+	undef @rcpt;
+	next;
+    };
+    /^MAIL\s+FROM:?\s*(.*)$/i && do {
+	$from=&addr($1);
+	next;
+    };
+    /^RCPT\s+TO:?\s*(.*)$/i && do {
+	push(@rcpt, &addr($1));
+	next;
+    };
+    /^DATA/i && do {
+	&dodata;
+	if ($x=&qmailfinish($from, @rcpt)) {
+	    exit $x;
+	}
+	undef @rcpt;
+	next;
+    };
+    /^QUIT/i && do {
+	last;
+    };
+}
+$s=($helo)?0:128;
+
+if ($zippid) {
+    close ZIP;
+    $s+=($?>>8);
+}
+exit $s;

@@ -1,0 +1,19 @@
+#! /bin/sh
+# News nach ZCONNECT konvertieren und dann ins Netcall-Dir packen.
+#
+#  eigentlich macht man das so:
+#
+# /usr/local/lib/zconnect/uurnews -f $1
+#
+#  Aber mein ESIX 4.0.4 hat da einen hartnaeckigen Bug in der clib: wenn
+#  grosse Datenbloecke aus einer Pipe gelesen werden, kommt fread 
+#  durcheinander.
+#
+cat >/tmp/via.$1.$$
+/usr/local/lib/zconnect/uurnews -f $1 < /tmp/via.$1.$$
+if [ $? = 0 ]
+then
+	rm -f /tmp/via.$1.$$
+else
+	exit $?
+fi

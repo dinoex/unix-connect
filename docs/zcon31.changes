@@ -1,0 +1,609 @@
+ZCONNECT Update auf 3.1 Proposal
+================================
+
+    Letzte Aenderung: martin@bi-link.owl.de, Mon Aug  2 07:01:20 1993
+    
+    Aenderungen gegenueber der Vorversion sind am linken Rand durch
+    folgende Zeichen markiert:  
+    
+    +   Ist neu hinzugekommen
+    !   Wurde geandert
+    >   Ist ein externer Vorschlag, der gegebenenfalls noch umformuliert
+        wird.    
+
+    *** NEWSFLASH ****** NEWSFLASH ****** NEWSFLASH ****** NEWSFLASH ***
+ 
+!   Drei ganz aktuelle Entwicklungen konnten nicht mehr rechtzeitig in
+    diese Veröffentlichung übernommen werden:
+ 
+     (a)  Offizielles File-Listen Format (siehe FILEREQ: weiter unten),
+          hier gibt es einen ersten Vorschlag, der noch diskutiert
+          wird. Auf jeden Fall wird eine konkrete Festlegung erfolgen.
++         Der bisher in der Liste der /INFO/*'s fehlende INHALT wurde
++         inzwischen ergänzt.
+ 
+     (b)  Sicherere Identifizierung in der Login-Phase:
+          Das Standard-Identifikations-Verfahren in der Online-Phase
+          (Systeminfo-Austausch BLK1 und BLK2) läßt viele Wünsche
+          offen. Es wird mehrere optionale Header geben, die zusätzlich
+          zum bisherigen Klarschrift-Passwort-Header geschickt werden
+          können und zu einer gesicherten Identifikation dienen. Ebenfalls
+          wird es eine Rückruf-Möglichkeit geben bzw. bei den Übertragungs-
+          medien ISDN, DATEX-P oder IP (bzw. allen, die soetwas bieten)
+          die Anruferidentifikation (also z.B. ISDN-Anschluß, von dem
+          der Anruf kommt oder IP Nummer der Gegenseite) dafür zu nutzen.
+ 
++    (c)  Crypt für PM's: die Crypt-bezogenen Header des Datenformates
++         sind auch in der Online-Phase beim Dateiaustausch
++         erlaubt. Sie geben an, daß die in dieser Übertragung versandte
++         Netcall-Datei mit den entsprechenden Parametern verschlüsselt
++         ist. Sie gelten nur für eine Datei - ab dem nächsten BLK1 muß
++         eine etwaige Verschlüsselung neu angegeben werden.
+
+    *** NEWSFLASH ****** NEWSFLASH ****** NEWSFLASH ****** NEWSFLASH ***
+       
+    
+    Vorwort
+    -------
+    
+    Der folgende Text stellt alle Aenderungen zusammen, die fuer die ZCONNECT
+    Dokumentation 3.1 vorgesehen sind. Dieser Text wird ab sofort in 15 taegigem
+    Abstand automatisch gepostet. Hinweise und Aenderungswuensche sollten 
+    umgehend in /T-NETZ/SUPPORT/ZCONNECT gemeldet werden (nicht per PM!). 
+    
+    Aktualisierungen an diesem Text werden staendig vorgenommen. Leider ist es
+    vorraussichtlich bis ca. Mitte 1993 nicht moeglich, eine abschliessende
+    redaktionelle Bearbeitung der ZCONNECT Dokumentation vorzunehmen. Daher muss
+    die vorliegende Version mit den hier dokumentierten Ergaenzungen fuer einige
+    Zeit genuegen.
+    
+    Die Ueberzeugung das dies aussreicht gruendet sich auf zwei Tatsachen:
+    
+      1. Die Dokumentation der Online-Phase ist knapp und laesst auch wichtige
+         Details aus, sie beschreibt aber nirgends etwas falsches. Da der 
+         angekuendigte C Quelltext dazu quasi veroeffentlichungsreif ist, sollte
+         eine Implementation mit wenig Aufwand moeglich sein.
+         
+      2. Eine Vielzahl von Programmierern hat bereits in der Betatestphase 
+         gezeigt, das ZCONNECT Tools einfach erstellt werden koennen. Nachdem
+         nun Testserver flaechendeckend zur Verfuegung stehen, sollte es kein
+         Problem mehr sein, Tools in der Praxis zu entwickeln. Zumal die 
+         Testserver selbst inzwischen (weitgehend) fehlerfrei ZCONNECT 
+         implementieren ;-)
+    
+    
+    Inhalt
+    ------
+    
+     1. Irrtümer in der ZCONNECT 3.0 Dokumentation
+     
+     2. Änderungen gegenüber der 3.0 Dokumentation
+     
+     3. Erweiterungen
+     
+     4. Klarstellungen zu schwierigen/missverständlichen Details
+     
+     5. JANUS
+    
+     6. ANHANG: Beispiele fuer ZCONNECT Online-Kommunikation
+    
+    
+    
+     1. Irrtümer in der ZCONNECT 3.0 Dokumentation
+     ---------------------------------------------
+    
+       - Der WAB: Header fehlt in der alphabetischen Liste der Header.
+         WAB steht fuer Weiterleitungs-Absender. Optional, nur einmal. 
+         Der WAB: darf immer angegeben werden und ist gegebenenfalls mit
+         dem ABS: identisch.
+    
+         Treten bei der Zustellung der Nachricht Fehler auf, wird davon der WAB
+         informiert, nicht der ABS.
+    
+         Nachrichten von Mailing-Listen (Netzwerk-Verteiler) enthalten in der
+         Regel die Adresse des Listen-Betreuers als WAB, waehrend der ABS: aus
+         der Mail an den Verteiler uebernommen wird. Dadurch gehen Antworten an
+         den urspruenglichen Autor, Fehlermeldungen ueber falsche Eintraege im
+         Verteiler aber an dessen Verwalter. 
+         
+         Dies wird in der RFC Welt als "Envelope-Adresse" bezeichnet. (EMP: und
+         WAB: sind die Envelope-Adressen fuer ZCONNECT)
+         
+         Bei der Wandlung ZCONNECT -> Netcall-3.8 wird der WAB: als Absender
+         angegeben, soweit vorhanden.
+    
+       - In der Online-Phase hat der "EXECUTE:" Header folgende Parameter:
+    
+         N   Nein
+         Y   Yes/Ja
+         L   Later: Ja, aber nicht jetzt (z.B. wenn die Bereitstellungszeit zu
+             lang ist). Dies wird von den meisten Implementationen wie "N"
+             behandelt werden.
+    
+    
+     2. Aenderungen gegenueber der 3.0 Dokumentation
+     ---------------------------------------------
+    
+       - bei der Wandlung Z3.8 -> ZCONNECT wird eine Text-Zeile 
+         "Message-Id: <...>" erkannt, geprueft und bei korrektem Verhaeltnis 
+         zur "echten" Message-Id aus dem Text geloescht und als Message-ID
+         weiterverwendet. 
+    
+       - Immer wenn dies geschieht, bekommt die Nachricht einen Header 
+         "STAT: ZNETZ". Dadurch koennen Gateways das Routen von durch den
+         Netcall-3.8 Transport verstuemmelten Nachrichten vermeiden (z.B.
+         ein RFC Gateway wird eine aus dem UseNet stammende Brettnachricht
+         nicht weiterleiten, wenn sie mit "STAT: ZNETZ" bei ihm eintrifft.)
+    
+       - Bei der Wandlung Z38 -> ZCONNECT wird ein Header erzeugt, der den Ort
+         der Wandlung dokumentiert: ZNETZ-Conv: bi-link.owl.de [ZERBERUS v....].
+         Dieser Header wird NICHT erzeugt, wenn eine Message-ID Uebernahme
+         statgefunden hat (sprich: es ist entweder ein ZNETZ-Conv: Header oder
+         ein "STAT: ZNETZ" vorhanden, niemals beide gleichzeitig).
+    
+       - Die Entscheidung, ob bei ZCONNECT -> Z38 die CRC-Wandlung durchgeführt
+         wird, ist jetzt unabhängig von der Laenge der ID. Sie wird nur 
+         vorgenommen, wenn kein ZNETZ-Conv: Header vorhanden ist. Dies
+         bedeutet, das die Nachricht ursprünglich im Netcall-3.8 Format
+         erzeugt wurde und daher auch eine entsprechende Message-ID hat,
+         die nicht durch CRC/Base64 Kodierung verändert werden darf.
+    
+       - Aenderung beim Weiterleiten einer Mail:
+         Da die Message-Id-Zeile beim Weiterleiten ausgetauscht wird, muss 
+         selbstverständlich auch eine evtl. vorhandene ZNETZ-Conv-Headerzeile 
+         entfernt werden.
+         
+       - Beim Ersetzen der Message-Id eines Points wird der Pointname, der 
+         Boxname und die Boxdomain immer in Kleinbuchstaben eingesetzt.
+    
+       - Die Reihenfolge identischer Header (z.B. mehrere BEZ: Header) muss
+         beim Routen einer Nachricht erhalten bleiben.
+    
+       - Wenn BEZ: Header direkte und indirekte Bezuege angeben, folgen auf 
+         Header mit direkten Bezuegen keine mit indirekten mehr. Es müssen 
+         keine indirekten Bezuege erzeugt werden.
+    
+       - Dateinamen in ZCONNECT-Archiven (auch JANUS!):
+         Dateinamen der folgenden Form haben spezielle Bedeutungen (wenn ein
+         Betriebssystem gross- und Kleinschreibung in Dateinamen zulaesst, wird
+         immer die kleingeschriebene Variante verwendet):
+    
+         Muster    Inhalt
+         ---------------------------------------------------------------------
+          *.prv
+          *.PRV    ausschliesslich PM's. (PRV = privat)
+          *.brt
+          *.BRT    ausschliesslich oeffentliche (brt = Brett) Nachrichten
+          *.eil
+          *.EIL    ausschlisslich PM's. (EIL wird fuer Eilmails verwendet)
+    
+         Alle anderen Dateinamen (z.B. PUFFER) können PM's und öffentliche 
+         Nachrichten gemischt enthalten (was aber nur für POINT's sinnvoll 
+         ist).
+
+!        Es müssen aber selbstverständlich alle übertragenen Dateien auch
+!        einsortiert werden; also z.B. auch "test.zco", obwohl das 
+!        Absendesystem ansonsten *.prv und *.brt Dateien erzeugt.
+    
+       - Dateinamen von ZCONNECT-Archiven (bei JANUS immer CALLER.* bzw. 
+         CALLED.*):
+         Die Namen der uebertragenen Archive unterliegen den gleichen 
+         Einschraenkungen wie die in diesen Archiven zugelassenen Namen (siehe
+         ZCONNECT Doku). Auch hierbei wird immer die kleingeschriebene Variante
+         benutzt, wenn ein Betriebssystem zwischen gross- und kleinschreibung
+         bei Dateinamen unterscheidet.
+    
+         Zusatzbedingung: nach dem Punkt folgt IMMER das Packerkuerzel aus der
+         ZCONNECT-Online-Phase (Beispiel:  0f23ad79.arc  ist auf jeden Fall mit
+         dem Packer ARC gepackt worden).
+    
+     
+     3. Erweiterungen
+     ----------------
+
++     -  Neue Online-Header: FILE-CRC: und RETRANSMIT:
++        Der Header FILE-CRC: ist optional und kann in jeder BLK3/4 Phase
++        nach Abschluß des Systemdatenaustauschs genau einmal gesendet werden.
++        Falls er gesendet wird, gibt er (in Hex) den 32-bit CRC (nach CCITT/
++        Z-MODEM Polynom) der in BLK4 zu übertragenden Datei an. Falls dieser
++        Header gesendet wurde, sollte die Gegenseite den CRC der empfangenen
++        Datei prüfen und bei Unstimmigkeiten LOGOFF: oder RETRANSMIT: 
++        anfordern (z.B. 2 mal RETRANSMIT:, dann LOGOFF:)
++
++        Der Header RETRANSMIT: ist optional und kann in dem BLK1 oder
++        BLK2 Paket genau einmal gesendet werden, daß direkt auf eine
++        Dateiübertragung folgt (mit anderen Worten: dessen gültiger 
++        ACK/TME für die Gegenseite die Bestätigung der erfolgreichen
++        Datenübertragung wäre). Er erklärt die letze Übertragung als
++        gescheitert und fordert eine erneute Übertragung an. Die Gegenseite
++        darf diese Datei daraufhin nicht löschen. Sie muß sie aber nicht
++        unbedingt sofort noch einmal übertragen - dies kann nach Abschluß
++        aller schon (lokal) geplanten Dateiübertragungen geschehen oder
++        sogar erst im nächsten Netcall. RETRANSMIT: gibt wie LOGOFF: den
++        Grund für die nochmalige Übertragung im Klartext an, z.B.
++
++             RETRANSMIT: CRC failed
++
++        RETRANSMIT: kann auch aus beliebigen anderen Gründen angefordert
++        werden. Allerdings ist dabei Vorsicht geboten. Beispiel für
++        einen klaren Mißbrauch:
++
++             RETRANSMIT: out of disk space
++
++        In diesem Fall wäre ein schlichter Abbruch der Verbindung
++        zu empfehlen - die Datei gilt auch dann als nicht korrekt übertragen
++        und würde in einem der nächsten Netcalls wieder bereitstehen.
+
+    
+      -  Der STAT: Header hat einen zusaetzlichen Wert: AUTO
+         Dies bedeutet, das die Nachricht ein FAQ oder aehnliches ist, und
+         regelmaessig wieder gepostet werden wird.
+    
+         STAT: AUTO
+    
+             Gibt an, das es sich bei dieser Nachricht um eine regelmaessig 
+             aktualisierte Information handelt. Welche kann aus dem FILE: Header
+             und dem EMP: Header entnommen werden, der BET: Header ist hier 
+             nicht(!) auszuwerten (weil da z.B. "Ausgabe vom xx.xx.xx" drin
+             stehen kann).
+    
+             Diese Nachricht kann von entsprechenden Hilfsprogrammen erkannt und
+             automatisch (je nach Konfiguration) in einen FileServer, ein 
+             lokales Brett oder ein spezielles Exclude-Verzeichnis uebernommen
+             werden.
+    
+         Eine Konfiguration wuerde dann z.B. besagen:
+    
+         - Wenn im Brett /Z-NETZ/WICHTIG! eine Auto-Nachricht ankommt und
+         - diese Nachricht den FILE: Header "PM-LISTE" enthaelt, handelt es
+           sich um die aktuelle Netzliste des PM-Netzes, die wir im Postfach des
+           INFO Accounts unter dem Betreff "Netzliste Z-PM-Netz" haben moechten.
+           Also: automatisch dahin weiterleiten und einen "Ersetzt:" Header
+           passend einbauen.
+    
+      -  Neuer Header "CRYPT: (crypter)" Die Nachricht ist dann mit dem 
+         angegebenen Verfahren verschluesselt. Bisher definierter Werte
+         fuer (crypter) [wie immer case-insensitiv]:
+    
+!          PGP2.1     Pretty Good Privacy (neuere Versionen entsprechend)
+           QPC        QuickPoint Crypt
+   
+         Optional. Nur einmal.
+    
+      -  Neuer Header: "Public-Key:". Gibt einen oeffentlichen Schluessel
+         in Base64 Notation an.
+    
+         Optional. Nur einmal. (Achtung: PGP public key blocks lassen sich
+         nicht direkt verwenden, da sie Zeilenenden enthalten, die in der
+         Pruefsumme mit beruecksichtigt sind. Es moege mal wer der sich mit
+         sowas auskennt einen vernuenftigen Vorschlag dazu machen...)
+    
+         Optional. Nur einmal.
+    
+      -  Neuer Header: "VER: (adresse)". Gibt die Adresse an, von der diese
+         Mail per Vertreter automatisch weitergeleitet wurde.
+    
+         Optional. Nur einmal.
+    
+      -  Neuer Header: "O-ROT:". Gibt den Routeweg (ROT: Header) bis zum letzten
+         Weiterleiter an (da beim weiterleiten der Routeweg geloescht werden 
+         muss).
+    
+         Optional. Nur einmal.
+
++     -  Neuer Header: "O-EDA:". Gibt bei weitergeleiteten Nachrichten das
++        ursprüngliche Erstellungsdatum (Header EDA:) an.
+    
+      -  Neuer Header: "TRACE: (adresse)". Jedes System, das eine so 
+         gekennzeichnete Nachricht empfaengt (bzw. weiterleitet) sendet eine
+         Trace-Meldung an die angegebene Adresse. Die Trace-Meldung enthaelt
+         (u.a.) die folgenden Header:
+    
+            BEZ: (orig-id)
+            BET: Trace-Info (orig-id)
+            STAT: CTL
+            STAT: TRACE
+
+         Der Inhalt ist eine Liste, an welche Systeme diese Nachricht mit
+         welchen EMP: Headern weitergeleitet wurde. Um den Inhalt sprach-
+         unabhaengig parsbar zu machen, werden alle Systemnamen in < >
+         gesetzt. Fuer jedes Routesystem gibt es einen Abschnitt bestehend
+         aus der Identifikation dieses Systems (also <name> ) gefolgt von
+         einer Liste der zu diesem System geschickten EMP: Header. Die
+         EMP: Liste enthaelt einen EMP: pro Zeile und beginnt mit einem
+         Leerzeichen oder Tabulator. Sobald eine Zeile wieder direkt am
+         Zeilenanfang beginnt, ist dies die naechste Routsystem-Zeile.
+
+         Beispiel fuer eine Antwort-Mail:
+ 
+         An <bionic.owl.de> gingen folgende EMP: Header:
+            <sysop@link-goe.central.de>
+            <padeluun@bionic.zer.de>
+            <ghostwriter@hot.zer.de>
+         An <hsp.zer.de> gingen folgende EMP: Header:
+            <h.schulze@hsp.zer.de>
+         An <bht-box.zer.de> gingen folgende EMP: Header:
+            <sysop@bht-box.zer.de>
+   
+         Optional. Nur einmal.
+
+         (Anmerkung: der Header ist optional, d.h. er muss nicht in jeder
+         Nachricht vorhanden sein ;-], die Unterstuetzung dieses Headers
+         ist aber Pflicht!)
+
+	 Sollte nicht jeder Point/User erzeugen koennen...
+    
+      -  Neuer Header: "Stichwort:". Listet einzelne Stichworte zum Inhalt
+         der Nachricht. Jeder "Stichwort:" Header enthaelt nur einen 
+         Suchbegriff.
+    
+         Optional. Mehrfach.
+    
+      -  Neuer Header: "Zusammenfassung:". Einzeilige Beschreibung des Inhaltes.
+    
+         Optional. Nur einmal.
+    
+      -  In der Online-Phase kann ein Point beim ersten Anruf in einer MailBox
+         den System-Namen weglassen und stattdessen "Point-User:" und den Namen
+         eines im angerufenen System eingetragenen Users senden, das Passwort 
+         ist dann das User-Passwort. Die angerufene MailBox traegt daraufhin 
+         fuer diesen User einen Point ein, generiert dafuer einen Namen und 
+         sendet diesen im Antwort-Paket zurueck. In der MailBox wird alles 
+         noetige veranlasst, damit dieser User kuenftig Daten ueber den neuen 
+         Point bezieht.
+    
+     - Erweiterung des FILEREQ: Headers: 
+       
+       FILEREQ:(Datei) (Datum im EDA: Format)
+       
+       Wenn hier ein Datum (durch Space getrennt) angegeben wird, liefert der
+       Fileserver die Information nur, wenn die vorhandene Datei neuer als das
+       angegebene Datum ist.
+       
+       Eine vorlaeufige Liste der definierten Infos:
+       
+       KENNUNG        |   Erlaeuterung (bitte ergaenzen!)
+       ---------------+----------------------------------------------
+       /INFO/LOGIN    |   Begrüssungstext beim Login
+       /INFO/MOTD     |   Bulletin (Message of the Day)
+       /INFO/Q-USAGE  |   Kurzanleitung der Box (Quick Usage)
+       /INFO/V-USAGE  |   Großanleitung der Box (Verbose Usage)
+       /INFO/HINTS    |   Bedienungshinweise (Hints & Twinkles)
+       /INFO/INTRO    |   Kurzanleitung für Gäste und NeuUser
+       /INFO/NETWORKS |   Verfügbare Netze und deren "Ziele"
+       /INFO/SYSTEM   |   Selbstdarstellung der Box
+       /INFO/TIMES    |   Login Zeiten
+       /INFO/COSTS    |   Benutzergebühren etc
+       /INFO/KNIGGE   |   Nettikette(n)
++      /INFO/INHALT   |   Das Inhaltsverzeichnis des Fileservers.
+       
+       Es sind bewusst keine Brettlisten aufgeführt, da dies besser ueber
+       Maps behandelt werden.
+
++      Der reservierte Dateiname "/INHALT" aus der 3.0er Doku wird 
++      durch "/INFO/INHALT" ersetzt. Die alte Version sollte weiterhin
++      als Synonym funktionieren.
+       
+     - Neuer Online-Phasen Header: FORMAT: (Kennung)
+       Optional, nur einmal. Default: ZCONNECT.
+       Dieser Header tritt nur zusammen mit einem PUT: Header auf. Die 
+       Kennung gibt an, in welcher Form die Mails/News vorliegen.
+!
+!      Dieser Header ist nur gültig in der Datenphase der Online-
+!      Kommunikation. Es dürfen nur Formate angegeben werden, die
+!      von der Gegenseite im MAILFORMAT: Header aufgeführt wurden.
+!      Die Gegenseite kann (selbstverständlich) die Übertragung
+!      ablehnen - es gibt aber keine Möglichkeit, der anderen Seite
+!      ein anderes Datenformat vorzuschreiben oder eine Umkodierung
+!      anzufordern. Zwei ZCONNECT Systeme werden niemals vollautomatisch
+!      ein anderes Datenformat als ZCONNECT zur Kommunikation untereinander
+!      wählen - dazu ist immer ein manueller Eingriff nötig.
+!
+!      Die Kennung ist dabei kodiert wie bei MAILFORMAT:
+!      Hiermit können sich z.B. zwei UNIX-Systeme RFC-1036 Datenpakete 
+!      oder Fido-Systeme FTS-Pakete übermitteln.
+       
+     - Datenformat, Header "BET:" (Betreff):
+       Bei Antworten auf andere Nachrichten wird dem Originalbetreff
+       ein "Re: " vorangestellt, es sei denn, dort steht bereits "Re: ".
+       Es gibt also nur "Re: xxx", niemals aber "Re: Re: xxx". Die
+       Verschachtelungstiefe der Antworten ist aus den BEZ: Headern
+       zu entnehmen.
+    
+      
+     4. Klarstellungen zu schwierigen/missverständlichen Details
+     -----------------------------------------------------------
+    
+      a) Alle nicht eindeutig als "Nur einmal" gekennzeichneten Header koennen
+         mehrfach auftreten.
+         
+      b) DISKUSSION-IN: kann auch eine PM Adresse angeben (Semantik von
+         "Followup-To: poster")
+         
+      c) Zeitzonen sind gueltig von -12:00 bis +12:00 inclusive. Größere 
+         Abweichungen von UTC sind nicht moeglich. Die Sommer/Winterzeit 
+         Unterscheidung dient nur der Information, die dadurch entstehende
+         zusaetzliche Zeitdifferenz wird explizit in der Zeitzone angegeben.
+         
+      d) Die Schreibweise von Schluesselworten in Header-Inhalten ist immer
+         case-insensitiv (z.B. "ARC Zoo lhA" ist identisch mit "ARC ZOO LHA").
+    
+      e) Nachrichten mit mehreren EMP: Headern muessen komplett geroutet werden.
+         Speziell bei oeffentlichen Nachrichten heisst das: alle EMP: Header
+         bleiben IMMER erhalten. Ausnahmen sind durch spezielle Verbote (Gruppe,
+         Prio) gesperrte Bretter: eine davon betroffene eingehende Nachricht 
+         sollte auf Zensur gesetzt werden, eine ausgehende Nachricht (lokal
+         erzeugt) kann notfalls einzelne EMP: Header durch KOP: Header ersetzt
+         bekommen.
+    
+    
+     5. JANUS
+     --------
+    
+      Bei der folgenden Erlaeuterung wird die Kentniss des Z3.8 Netcall-
+      Austauschs vorrausgesetzt. (Siehe Hitchhiker...)
+      
+      Ein JANUS Datenaustausch aus der Sicht des Anrufers sieht folgendermassen
+      aus:
+      
+        a) Verbindung aufbauen
+        b) auf "Username:" warten, dann "JANUS" <CR> senden.
+        c) auf "Systemname:" warten, dann eigenen Namen senden, <CR>
+        d) auf "Password:" oder "Passwort:" warten, Passwort und <CR> senden.
+           Tip: die Reihenfolge, in der diese Daten abgefragt werden darf,  
+           sollte beliebig gehalten werden!
+        e) Wenn das angerufene System "Netzzugriff verweigert" sendet, 
+           abbrechen: Passwort ist falsch oder das System hat uns nicht 
+           eingetragen.
+        f) Wenn das System "Running ARC...." sendet, hat es mit dem Packen 
+           begonnen. Das kann einige Zeit dauern (Vorschlag fuer Timeout: 10 
+           Minuten).
+        g) Seriennummern-Uebertragung (die Anzahl der empfangenen NAK's sollte
+           gezaehlt werden und begrenzt werden [z.B. auf 10], nach dem ersten
+           NAK kann das Timeout auf 1 Minute oder noch kuerzer gesetzt werden)
+           
+           Widerhole:
+              lese ein Byte:
+             ACK: -> fertig, weiter mit (h)
+             NAK: sende 4 Byte Seriennummer plus 1 Byte Pruefsumme.
+                  (alle Systeme, die keine Seriennummern auf dieser Basis
+                   pruefen moechten, sollten hier 5 Nullbytes senden)
+                 sonst: Uebertragungsfehler, ignorieren
+    
+       h) Starte Uebertragungsprotokoll: sende "CALLER.ARC" oder "CALLER.LZH" 
+          oder aehnliches...
+       
+       i) Falls die Uebertragung mit ZMODEM erfolgt (oder das verwendete 
+          Protokoll ein entsprechendes Verfahren hat), warte auf die Auto-
+          Download-Sequenz (ZINIT-Packet).
+          
+       j) Starte Uebertragungsprotokoll: empfange "CALLED.ARC" oder "CALLED.LZH"
+          oder aehnliches...
+    
+      Ein JANUS Datenpaket ist identisch mit einem ZCONNECT Datenpaket. Das 
+      heisst:
+      es befinden sich beliebig viele Dateien im uebertragenen Archiv, die alle
+      einzulesen sind. Die Dateinamen der einzelnen Pakete bestehen aus maximal
+      acht Kleinbuchstaben und Ziffern, einem Punkt und maximal drei 
+      Kleinbuchstaben. Das uebliche Verfahren zur Generierung eines solchen 
+      Dateinmanes ist: Zeit in Sekunden seit 1970 nehmen, als 8-stellige Hexzahl
+      ausgeben, und eine feste Endung (z.B. ".prv" fuer PM's, ".brt" fuer Brett-
+      Nachrichten) anhaengen. Genaueres siehe ZCONNECT Doku.
+    
+    
+    6. ANHANG
+    ---------
+    
+    ##########################################################################
+    #
+    # Beispiel fuer einen erfolgreichen ZCONNECT-Datenaustausch.
+    # Das System "BI-LINK.owl.de" ruft das System "TESTY.owl.de" an.
+    # Beide Systeme haben keine Daten zu uebertragen.
+    # 
+    # In den Bloecken sind die STATUS: und CRC: Header nicht mit aufgefuehrt.
+    # Die ACKx, NAK0 und TMEx Bloecke sind ebenfalls nicht aufgefuehrt.
+    # Alle Zeilen mit # am Anfang sind Kommentare und gehoeren nicht zum
+    # Datenaustausch.
+    #
+    # Die Header-Namen und der Inhalt sind der besseren Lesbarkeit halber
+    # durch einen Tab getrennt. Im online-Datenaustausch folgen sie direkt
+    # aufeinander.
+    #
+    ##########################################################################
+    
+    # Nach erfolgtem CONNECT:
+    #
+    # BI-LINK sendet eine Selbstdarstellung als BLK1
+    
+    Sys:        BI-LINK
+    Passwd:     GLGLA
+    ArcerOut:   ZIP
+    ARC:        1 ZIP ARJ ARC ZOO LHA NONE
+    Proto:      1 ZMODEM YMODEM XMODEM HSLINK
+    Port:       1
+    Domain:     zer.de owl.de zer.sub.org
+    TEL:        1 +49-5202-88888
+    Sysop:      ZENTRALE
+    SerNr:      Z202
+    Post:       Martin Husemann, Goethestrasse 32, D-4817 Leopoldshoehe
+    ISO2:       1 V.32bis V.32 V.22bis V.22 V.21
+    ISO3:       1 V.42bis V.42 MNP5 MNP
+    Mailformat: 1 ZCONNECT JANUS UUCP ZNETZ
+    Telefon:    +49-5202-82722
+    
+    # TESTY antwortet darauf mit seinen eigenen Daten
+    # als BLK2. Waere das Passwd: falsch gewesen, wuerde
+    # hier BLK2 mit einer Logoff: Anforderung gesendet.
+    
+    Sys:        TESTY
+    ARC:        1 ARC ZOO LHA ZIP NONE
+    Proto:      1 ZMODEM YMODEM XMODEM 
+    Port:       1
+    Domain:     owl.de
+    TEL:        1 +49-5202-88889
+    Sysop:      postmaster
+    Post:       Martin Husemann, Goethestrasse 32, D-4817 Leopoldshoehe
+    ISO2:       1 V.32bis V.32 V.22bis V.22 V.21
+    ISO3:       1 V.42bis V.42 MNP5 MNP
+    Mailformat: 1 ZCONNECT JANUS UUCP
+    Telefon:    +49-5202-82722
+    
+    # Der Anrufer (BI-LINK) prueft nun die Daten auf Gemeinsamkeiten
+    # (unter Beruecksichtigung von bereits gepackten Daten ;-)
+    # und sendet einen Vorschlag fuer diese Verbindung als BLK3
+    
+    ArcerOut:   ZIP
+    ArcerIn:    ZIP
+    Proto:      ZMODEM
+    
+    # TESTY kann diese Vorschlaege akzeptieren und antwortet mit einem
+    # leeren BLK4. Andernfalls wuerde TESTY die gegenueber BLK3 zu
+    # aendernden Daten als BLK4 schicken.
+    
+    (leer)
+    
+    ##########################################################################
+    #
+    # Damit ist der Austausch der Systemdaten beendet, beide Systeme gehen
+    # in die Dateiaustausch-Phase ueber.
+    #
+    ##########################################################################
+    
+    # BI-LINK ist bereit jedwede PM's/Brettnachrichten abzuholen und teilt
+    # dies als BLK1 mit
+    
+    GET:        PBEF
+    
+    # TESTY prueft, wie lange die Bereitstellung dieser Daten dauern wuerde,
+    # und meldet 0 Sekunden (da ja garkeine Daten da sind) als BLK2. Waeren
+    # bei TESTY Daten da, wuerde hier ein entsprechender PUT: Header 
+    # erscheinen.
+    
+    WAIT:       0
+    
+    # BI-LINK nimmt nun an, der Datentransfer solle gestartet werden und schickt
+    # eine Execute-Anweisung als BLK3
+    
+    EXECUTE:    Y
+    
+    # BI-LINK weiss, dass keine Daten uebertragen werden muessen (TESTY hatte
+    # auch keine abzuliefernden Daten angekuendigt) und lehnt die Ausfuehrung
+    # des Datentransports als BLK4 ab
+    
+    EXECUTE:    N
+    
+    # Gut, die erste Runde hat nichts getan. BI-LINK sendet einen leeren BLK1,
+    # um TESTY die Gelegenheit zu geben, weitere Datenanforderungen zu stellen.
+    
+    (leer)
+    
+    # TESTY hat nicht zu tun, also fordert er BI-LINK (die ja auch nichts zu
+    # tun hatte) auf, die Verbindung zu trennen. Der BLK2 enthaelt nur eine
+    # Logoff-Anforderung (ohne naehere Erlaeuterung).
+    
+    LOGOFF:     Y
+    
+    # Nachdem dieser BLK2 mit dem ueblichen ACK2/TME2 bestaetigt wurde, legen
+    # beide Systeme auf.
+    
+    

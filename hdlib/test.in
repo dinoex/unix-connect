@@ -1,0 +1,27 @@
+#
+# 1. Header:
+#
+Received:	Sys-1
+Received:	Sys-2
+Received:	Sys-3
+X-Gateway:	Test-Gateway
+X-Ein-Unbekannter-Header:	XA1
+X-Noch-Ein-Unbekannter-Header:	XA2
+To:		Blah.Fasel@compuserv.com
+Date:		Tue Nov 17 19:15:23 1992
+From:		Tester
+Subject:	Betreff
+
+#
+# 2. Header:
+#
+References:	<somone@somwhere.somtimes>
+x-Gateway:	Test-Gateway 2
+x-Ein-Unbekannter-Header:	XB1
+X-Ein-Dritter-Unbekannter-Header:	XB2
+Received:	Other-Sys
+To:		Blah.Fasel@compuserv.com 2
+Date:		Tue Nov 17 19:15:23 1992 2
+From:		Tester 2
+Subject:	Betreff 2
+

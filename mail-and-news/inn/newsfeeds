@@ -1,0 +1,7 @@
+#----------------------------------------------------------------------------
+# A ZCONNECT feed
+#
+bionic.zerberus.de\
+	:!*,z-netz.*,!junk,!control/!local\
+	:Tf,Wfb:
+

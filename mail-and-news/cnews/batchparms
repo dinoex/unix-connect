@@ -1,0 +1,12 @@
+# 100KB, after compress, is 10 minutes at 1200 baud
+# 20 batches is somewhat arbitrary, about 1MB per site
+# defaults:  2.11-compatible compression, transfer by uux
+
+# site		size	queue	builder	muncher	sender
+# ----		----	-----	-------	-------	------
+/default/	100000	20	batcher	compcun	viauux
+
+# big batches for fast modem (Trailblazer etc.), simple compression
+fub		300000	20	batcher	compcun	viauux
+# Local (via TCP/IP):
+bi-link		300000	20	batcher	nocomp	viazconnect

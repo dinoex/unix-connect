@@ -1,0 +1,142 @@
+Tips bei Problemen mit der Installation:
+========================================
+
+
+Problem (1) :
+
+    Beim "make" erhalte ich undefinierte Symbole "add_header" an 
+    mehreren Stellen...
+
+Tip:
+
+    Gperf ist nicht installiert oder nicht im Pfad und hdlib/hash.c
+    wurde versehentlich gelöscht. Installieren Sie gperf (Sourcen
+    finden Sie in der GNU C++ Library) oder restaurieren Sie hdlib/hash.c
+    aus der Original-Distribution.
+
+
+Problem (2) :
+
+    Ich bin nicht sicher, ob ich die Smail-Konfiguration richtig
+    gemacht habe...
+
+Tip:
+
+    Mit "smail -bP all" listet smail seine gesamte Konfiguration. Interssant
+    sind hier die Variablen "smart_path" und "smart_transport" für Point-
+    Konfigurationen sowie alle Varianten von "hostname" und "uucpname".
+
+    Mit dem "pathto"-Befehl kann man prüfen, über welche internen Mechanismen
+    (welcher Router, welcher Director, ...) Adressen bearbeitet werden.
+
+    Mit "smail -bt" startet man den Testmodus, smail fragt interaktiv nach
+    zu prüfenden Adressen und gibt jeweils Server und Ausgabeadresse für
+    die Mail aus.
+
+
+Problem (3) :
+
+    Ich kann nicht anrufen (zcall funktioniert nicht), obwohl das Modem
+    ansonsten funktioniert...
+
+Tip:
+
+    Je nach verwendetem "getty" und Lockfile-Format kann es nötig sein,
+    daß Sie für rausgehende Verbindungen ein anderes oder das gleiche
+    Device benutzen, wie für die hereinkommenden. Unter älteren System V's
+    wird z.B. /dev/tty2A für getty, aber /dev/tty2a für zcall verwendet.
+    Falls der serielle Treiber "FAS" von Uwe Döring installiert ist, finden
+    Sie in der dortigen Dokumentation eine detailierte Beschreibung, wann
+    welches Device zu nutzen ist.
+    
+    Gegenbeispiel: bei Verwendung von System V R4 Lockfiles ist es zwingend
+    notwendig, das gleiche Device für aus- und eingehende Verbindungen 
+    zu verwenden.
+    
+    Einfachste Erklärung für Probleme: Ihre Datei include/policy.h stimmt
+    nicht mit den tatsächlichen Systemgegebenheiten überein. Schalten Sie
+    zum Testen alle Modem-getty's ab und probieren Sie es dann nocheinmal.
+
+
+Problem (4) :
+
+    Die Gateway-Programme funktionieren nicht richtig, der News-Batcher 
+    bricht mitten bei der Arbeit ab...
+
+Tip:
+
+    Prüfen Sie, ob die Logfiles (z.B. /usr/spool/zconnect/logfiles/*) für
+    den User mbox schreibbar sind.
+
+
+Problem (5) :
+
+    Mails an ein bestimmtes hier direkt angeschlossenes System verschwinden
+    manchmal spurlos...
+
+Tip:
+
+    Eventuell erzwingen Sie nicht die vollständige FQDN-Adressierung für
+    dieses System. Smail erzeugt für unterschiedliche Eingabeadresse 
+    unterschiedliche Ausgabeadressen je nach Routerkonfiguration. Sie können
+    sicher die FQDN-Adressierung erzwingen, indem Sie (auch für direkt bei
+    Ihnen pollende Systeme) den Server mit FQDN in die Path's Datei 
+    eintragen. Beispiel:
+
+	bionic.zer.de	bionic.zer.de!bionic.zer.de!%s
+
+    "pathto -vdsnt padeluun@bionic.zer.de" zeigt, was daraus wird:
+
+	Verfahren   Routesystem      Adresse
+	------------------------------------------------------
+	zconnect    bionic.zer.de :: padeluun@bionic.zer.de
+
+
+Problem (6) :
+
+    'zcall' funktioniert nur, wenn es manuell gestartet wird. Aus der Crontab
+    heraus führt es zu mekrwürdigen TIMEOUT Meldungen und bricht den ZMODEM-
+    Transfer ab.
+
+
+Tip:
+
+    Verschiedene Betriebssysteme richten die Umgebungsvariablen (das 
+    Environment) eines Prozesses unterschiedlich ein. Die meisten Cron-
+    Varianten erlauben das explizite setzen in der Crontab. Beispiel:
+
+	# Crontab for root@euterpe.owl.de
+	#
+	MAILTO=martin
+	TERM=dumb
+	PATH=/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin
+	#
+	#min    hour    day     month   w-day   command
+	59      6       *       *       *       /root/bin/anruf
+
+    Entscheidend ist hier, das PATH so gesetzt ist, daß auch die 'rz' und
+    'sz' Kommandos gefunden werden.
+
+
+ Problem (7) :
+
+	Unix-Connect compiliert nicht richtig unter SunOS.
+
+ "Tip":
+	Unter SunOS sind bisher nur die Formatumsetzungs-
+	Routinen getestet, nicht aber die Online-Teile.
+ 
+
+ Problem (8) :
+
+	Das Einlesen der Netcalls funktioniert nicht richtig.
+
+ Tip:
+
+	Überprüfen Sie, ob das Modem-Locking im System konsistent ist,
+	ob also alle Programme (mgetty, minicom, uucico, ...), die das
+	Modem verwenden, dieselben Lockdateien benutzen, wie sie in der
+	include/policy.h eingestellt sind.
+
+
+

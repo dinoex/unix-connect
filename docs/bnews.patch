@@ -1,0 +1,291 @@
+From easix.GUN.de!arbi.informatik.uni-oldenburg.de!olis.isc.north.de!lord Tue Sep  7 22:39:10 1993
+Return-Path: <easix.GUN.de!arbi.informatik.uni-oldenburg.de!olis.isc.north.de!lord>
+Received: from easix.GUN.de by bi-link.owl.de with uucp
+	(Smail3.1.28.1 #3) id m0oa9oj-0001bpC; Tue, 7 Sep 93 22:39 MES
+Received: by easix.GUN.de (Smail3.1.28.1)
+	  from arbi.informatik.uni-oldenburg.de with smtp
+	  id <m0oa9ay-000178A>; Tue, 7 Sep 93 20:24 GMT
+Received: by arbi.informatik.uni-oldenburg.de (smail3.1.18 + xalias);
+	Tue, 7 Sep 93 20:14 CES
+Received: by olis.isc.north.de (/\==/\ Smail3.1.22.1 #22.19)
+	id <m0oa7Rb-0000ifC@olis.isc.north.de>; Tue, 7 Sep 93 20:07 MES
+Message-Id: <m0oa7Rb-0000ifC@olis.isc.north.de>
+Subject: Re: Bnews-Batches in uurnews (zconnect)
+To: terra@sol.ccc.de (Frank Simon)
+Date: Tue, 7 Sep 1993 20:07:07 +0200 (MES)
+From: Ulrich Tiemann <lord@olis.north.de>
+Cc: martin@sisyphos.owl.de
+In-Reply-To: <m0oa3Ct-0000t5C@sol.ccc.de> from "Frank Simon" at Sep 7, 93 03:35:38 pm
+X-Smiley: :-&	tongue-tied
+X-Mailer: ELM [version 2.4 PL20]
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+Content-Length: 7116
+Status: RO
+
+} Hallo,
+} 
+} Danke fuer die Korrekturen. In einigen Tagen kommt 0.54 raus. Ich gebe es
+} sofort an dich weiter.
+
+Das waere nett. Leider musste ich eben grade feststellen, dass ich eben die
+falsche Datei gepasted habe...hier also der richtige Auszug aus uurnews.c. 
+(Achso - nochwas: eine Funktion strip_white habe eich ebenfalls eingefuegt.]
+
+Anbei auch meine sendbatch-Version fuer bnews2.11. 
+
+Soweit ich es bisher ueberpruefen konnte, werden die News richtig das 
+z-Format gewandelt und in den entsprechenden spool gestellt.
+
+Gruss....Ulrich 
+
+
+*FILE: uurnews.c *Skalpell *----* SCRRRGGG *----* Fronz *----* Schnippel *----*
+
+id convert(FILE *batch, FILE *zconnect)
+{
+        static char line[MAXLINE];
+        FILE    *news;
+        char *s, *q;
+
+        while (!feof(batch)) {
+                 if (fgets(line, MAXLINE, batch) == NULL) break;
+                 readlength = -1;
+                 if(strncmp(line,"#! rnews",8)==0)
+                        sscanf(line, "#! rnews %ld", &readlength);
+                 if (readlength < 1) {
+                        strip_white(line);
+                        if(NULL==(news=fopen(line,"r"))) {
+                                fprintf(stderr,"Unusable News-FILE %s.\r\n",line
+);
+                                continue;
+                                }
+                        while(fgets(line,MAXLINE,news))
+                                        readlength=readlength+strlen(line);
+                        rewind(news);
+                        fgets(line,MAXLINE,news);
+
+                 }
+                else news=batch;
+
+                 convdata(news, zconnect);
+                fclose(news);
+        }
+}
+char * strip_white(char *s)
+{
+  char *ende;
+
+  ende = s + strlen(s);
+  while( --ende >= s && NULL != strchr(" \t\n\r",*ende))
+    ;
+  *++ende = '\0';
+  return(s);
+}
+*FILE: sendbatch *Skalpell *----* SCRRRGGG *----* Fronz *----* Schnippel *----*
+: '@(#)sendbatch.sh	1.10	9/23/86'
+# batches News
+# additional features by ut'92, Ulrich.Tiemann@olis.North.DE 
+# 
+# USAGE:
+#
+# sendbatch [optional features] [compression features] systemname
+# optional features:
+#			-m<less Blocks in Spool or no batch> 
+#			-s<provided batch-Size>
+#
+# compression features:
+#			-c 		use compress
+#			-cdos		use compress -b12 (12-Bit)
+#			-c7		use compress and uuencode
+#			-g		use gzip
+#			-z		use zconnect-method (uurnews)
+#			-n		use nntpxmit (doesnt use optional feat.)
+#
+# systemname
+#					Use is different as like the transport,
+#					nntp and Zerbel need FQDN's, i.e.
+#					subetha.ZER instead of subetha. For
+#					UUCP use only uucp-name. (subetha)
+#
+#
+# For some global values are taken from the file /etc/.admin, which is
+# far away from any standard, create it like this example:
+#LOCALADMIN: 	lord
+#SPOOLSIZE: 	10000   # 5MB
+#ROOTMINFREE: 	2000	# 1MB
+#SPOOLMINFREE:	4000	# 2MB
+#
+# without leading #'s, sure. 
+#
+# sendbatch may run only once to avoid possible overlapping with itself
+# and delivering same batch twice or more when machine is heavy under load
+# therefor the locking-code beyond, should work elsewhere. 
+#
+LOCKFILE=/tmp/sndbtchlck
+
+while [ -f $LOCKFILE ]
+do
+	if kill -0 `cat $LOCKFILE` >/dev/null 2>&1 ; then
+		sleep 30 
+        else rm $LOCKFILE
+	     break
+        fi
+done
+
+
+#
+# don`t run while rnews works, even a load-reducing feature
+#
+while ps -e | fgrep rnews >/dev/null 2>&1
+do
+sleep 10
+done
+
+# make the Lockfile
+echo $$ > $LOCKFILE
+
+#
+# now run
+#
+cflags=
+LIM=50000
+CMD='/usr/local/lib/news/batch /usr/spool/batch/$rmt $BLIM'
+ECHO=
+COMP=
+C7=
+DOIHAVE=
+RNEWS=rnews
+TRANSPORT=UUCP
+GRADE=d
+#
+# Mails to localadmin, try don't to overlood filesystems
+#
+OP=`fgrep "LOCALADMIN:" /etc/.admin | awk '{print $2}'`
+SPOOLMAX=`fgrep "SPOOLSIZE:" /etc/.admin | awk '{print $2}'`
+ROOTMIN=`fgrep "ROOTMINFREE:" /etc/.admin | awk '{print $2}'`
+SPOOLMIN=`fgrep "SPOOLMINFREE:" /etc/.admin | awk '{print $2}'`
+# Spoolsize as default from Adminfile
+#
+# Check Space on Device (root)
+SPACE=`df /dev/root | awk '{print $4}'`
+if [ $SPACE -lt ROOTMIN ] ; then 
+	echo "ROOT-SPACE low! ($SPACE blocks)[ $* ]" | mail -s SENDBATCH $OP
+	rm $LOCKFILE
+	exit
+fi
+SPACE=`df /dev/spoolfs | awk '{print $4}'`
+if [ $SPACE -lt $SPOOLMIN ] ; then 
+	echo "SPOOL-SPACE low! ($SPACE blocks)[ $* ]" | mail -s SENDBATCH $OP
+	rm $LOCKFILE
+	exit
+fi
+
+#System always last item...
+for i in $*
+do
+system=$i
+done
+
+BATCH="/usr/spool/batch/$system"
+
+for rmt in $*
+do
+	case $rmt in
+	-[bBC]*)	cflags="$cflags $rmt"; continue;;
+	-s*)	LIM=`expr "$rmt" : '-s\(.*\)'`
+		continue;;
+	-c7) 	COMP='| /usr/local/lib/news/compress $cflags'
+		C7='| /usr/local/lib/news/encode'
+		ECHO='echo "#! c7unbatch"'
+		continue;;
+	-cdos)	COMP='| /usr/local/lib/news/compress -b12 $cflags'
+		ECHO='echo "#! cunbatch"'
+		continue;;
+	-c)	COMP='| /usr/local/lib/news/compress $cflags'
+		ECHO='echo "#! cunbatch"'
+		continue;;
+	-g)	COMP='| /usr/local/bin/gzip -9 $cflags'
+		ECHO='echo "#! zunbatch"'
+		continue;;
+	-o*)	ECHO=`expr "$rmt" : '-o\(.*\)'`
+		RNEWS='cunbatch'
+		continue;;
+	-i*)	DOIHAVE=`expr "$rmt" : '-i\(.*\)'`
+		if test -z "$DOIHAVE"
+		then
+			DOIHAVE=`uuname -l`
+		fi
+		continue;;
+	-m*)	SPOOLMAX=`expr "$rmt" : '-m\(.*\)'`
+		continue;;
+	-z*)	#ZERBERUS - ZCONNECT
+		CMD="cat $BATCH.work|/usr/local/lib/zconnect/uurnews -f $system"
+		COMP="&& rm -f $BATCH.work"
+		ECHO="mv $BATCH $BATCH.work"
+		TRANSPORT=ZERBERUS
+		continue;;
+	esac
+
+	if test -n "$COMP"
+	then
+		BLIM=`expr $LIM \* 2`
+	else
+		BLIM=$LIM
+	fi
+# 
+# check Spool-dir, cancel if >10MB
+SPOOLSP=`du /usr/spool/uucp/$rmt | awk '{print $1}'`
+if [ "$SPOOLSP" = "" ] ; then SPOOLSP=0 ; fi
+if [ $SPOOLSP -gt $SPOOLMAX ] ; then 
+echo "	SYSTEM $rmt has a SPOOL - Overflow!
+	====================================
+	Max. Spoolcapacity allowed: $SPOOLMAX Blocks
+	Act. Spoolsize            : $SPOOLSP Blocks
+
+	Please contact the opponent System-Supervisor
+	as fast as possible. No more News are spooled
+	since he's reduced our System-Load. Data-loss
+	is possible.
+
+	Sincerly, your SENDBATCH (Bnews2.11, patched by <ut>92)
+  " | mail -s "$rmt SPOOL OVERFLOW" $OP
+rm $LOCKFILE
+exit
+fi
+	: make sure $? is zero
+	while test $? -eq 0 -a \( -s /usr/spool/batch/$rmt -o -s /usr/spool/batch/$rmt.work -o  \( -n "$DOIHAVE" -a -s /usr/spool/batch/$rmt.ihave \) \)
+	do
+		if test -n "$DOIHAVE" -a -s /usr/spool/batch/$rmt.ihave
+		then
+			mv /usr/spool/batch/$rmt.ihave /usr/spool/batch/$rmt.$$
+			/usr/local/lib/news/inews -t "cmsg ihave $DOIHAVE" -n to.$rmt.ctl < \
+				/usr/spool/batch/$rmt.$$
+			rm /usr/spool/batch/$rmt.$$
+					
+		else
+			(eval $ECHO; eval $CMD $COMP $C7) |
+			if test -s /usr/spool/batch/$rmt.cmd
+			then
+				/usr/spool/batch/$rmt.cmd
+			else
+			 if [ "$TRANSPORT" = "UUCP" ];
+				then  uux - -g$GRADE -r $rmt!$RNEWS
+			 fi
+			 if [ "$TRANSPORT" = "ZERBERUS" ];
+				then /usr/local/lib/zconnect/prearc
+			 fi
+			fi
+		fi
+	done
+done
+
+rm $LOCKFILE
+
+*----* CUT *----* Skalpell *----* SCRRRGGG *----* Fronz *----* Schnippel *----*
+-- 
+Ulrich Tiemann  * [lord | Ulrich.Tiemann]@olis.north.de    bio: 0441/8 43 26
+Ackerstrasse 6  * ----------------------------------------------------------
+26121 Oldenburg *  Oldenburger Informations System :  0441/8859796 / 8859797
+

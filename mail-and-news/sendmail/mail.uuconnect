@@ -1,0 +1,53 @@
+#!/bin/sh
+#
+#	Id$: batch/mail.uconnect	1.61	23.02.97
+#
+#	(c) 1994-97, Dirk Meyer, Im Grund 4, 34317 Habichtswald
+#
+#
+#	BSMT in Dateien wandeln
+#	$1 = Destination Host
+#	$2 = Envelope From
+#	$n = Envelope To
+#
+trap "exit 75;" 0 1 2 3 4 5 6 7 8 11 13 14 15 
+# EX_TEMPFAIL
+mailindir="/var/spool/zconnect/z-outq/$1"
+shift
+if [ ! -d ${mailindir} ]
+then
+	echo $0	$mailindir not found
+	trap "" 0 1 2 3 4 5 6 7 8 11 13 14 15
+	exit 69
+	# EX_UNAVAILIBLE (sysexit.h)
+fi
+# immer eine Nummer reservieren
+SEQ=`date +%Y%m%d%HH%S`
+#
+# Dateiname
+mailfilename="${mailindir}/q${SEQ}-$$"
+#
+# Datei Erzeugen
+(
+echo "MAIL FROM: <$1>"
+shift
+while [ ! ".$1" = "." ]
+do
+	echo "RCPT TO: <$1>"
+	shift
+done
+echo "DATA"
+cat
+echo "."
+) > $mailfilename
+if [ -s $mailfilename ]
+then
+	trap "" 0 1 2 3 4 5 6 7 8 11 13 14 15
+	exit 0
+	# EX_OK (sysexit.h)
+fi
+trap "" 0 1 2 3 4 5 6 7 8 11 13 14 15
+exit 75
+# EX_TEMPFAIL (sysexit.h)
+#
+# eof

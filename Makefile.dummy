@@ -1,0 +1,12 @@
+# $Id$
+# Leeres Makefile: vor dem Aufruf von ./configure geht nichts
+
+all:	include/sysdep.h
+
+include/sysdep.h:
+	@chmod a+rx ./configure
+	@sh ./configure
+
+quiet:
+	@chmod a+rx ./configure
+	@sh ./configure --quiet

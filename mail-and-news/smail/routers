@@ -1,0 +1,14 @@
+# 
+# our local gateway to zconnect:
+#
+gate_paths:
+	driver=pathalias,
+	transport=zconnect,		# deliver using ZCONNECT
+	always;				# force use even if some other
+					# router gets a more complete match
+
+	file=gatepaths,			# plain ASCII file (unsorted)
+	proto=lsearch,			# use linear search
+	optional,			# ignore if the file does not exist
+
+

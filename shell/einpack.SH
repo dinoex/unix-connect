@@ -1,0 +1,53 @@
+#! /bin/sh
+# $Id$
+#
+#   einpack     generisches Archivierungs-Kommando fuer ZCONNECT
+#
+#   Aufruf:     einpack (Kennung) (Archiv) (file)*
+#
+#   Funktion:   Extrahiert alle Dateien (ohne Directory) aus dem angegebenen
+#               Archiv in das aktuelle Verzeichnis.
+#
+#               (Kennung)   der ZCONNECT-Code fuer den verwendeten Arcer,
+#                           also z.B. ZIP ARC ZOO LHA NONE
+#               (Archiv)    die gepackte Datei OHNE Endung
+#
+#   Es sollte keine Meldungen ausgegeben werden. Directories werden nicht
+#   mit eingepackt.
+#
+
+if [ "x$3" = "x" ] 
+then
+	echo "Aufruf:  $0 (Kennung) (Archiv) (file)*" >&2
+	exit 1
+fi
+
+KENNUNG=$1
+ARC=$2
+
+shift; shift
+
+case "$KENNUNG" in
+ "ZIP" )	ARC=`dirname $ARC`/`basename $ARC .zip`
+		zip $ARC.zip $*		> /dev/null 2>&1 ;;
+ "ARC" )	ARC=`dirname $ARC`/`basename $ARC .arc`
+		arc a $ARC.arc $*	> /dev/null 2>&1 ;;
+ "ZOO" )	ARC=`dirname $ARC`/`basename $ARC .zoo`
+		zoo ah $ARC.zoo $*	> /dev/null 2>&1 ;;
+ "LHA" )	ARC=`dirname $ARC`/`basename $ARC .lha`
+		mv $ARC.lha $ARC.lzh	> /dev/null 2>&1 
+		lha a $ARC.lzh $*	> /dev/null 2>&1 
+		mv $ARC.lzh $ARC.lha	> /dev/null 2>&1 
+		rm -f $ARC.bak				 ;;
+ "NONE")	cat $* >> $ARC.nar			 ;;
+ *)		mail postmaster << EOF
+ZCONNECT Warnung
+
+Achtung:
+
+	Aufruf von 'einpack' mit illegalen Parametern: $KENNUNG $ARC $*
+EOF
+		;;
+esac
+
+exit 0

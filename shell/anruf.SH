@@ -1,0 +1,30 @@
+#!/bin/sh
+# $Id$
+#
+#	Kleines Script für Point-Systeme, die bei genau einem 
+#	ZCONNECT-Server anrufen müssen. 
+#
+#	Vor dem Anruf werden noch die Daten gepackt...
+#
+
+# Pruefe, ob interaktiv oder im Cron job:
+case "`tty`" in
+ /dev/* )
+	ECHO="echo"
+	;;
+ * )
+	ECHO=":"
+	;;
+esac
+
+$ECHO "Packe die vorliegenden Daten..."
+su news -c "/usr/lib/news/send-zcon bionic.zerberus.de"
+@DESTDIR@/prearc
+
+$ECHO "Anruf beim Server..."
+@DESTDIR@/zcall bionic.zerberus.de modem 38400 10
+#
+#	Warum auch immer - zcall hinterläßt das Ausgabedevice bei
+#	mir in einem ungeordneten Zustand. Also wieder korrigieren:
+#
+stty -f /dev/modem sane

@@ -1,0 +1,116 @@
+#! /bin/sh
+# $Id$
+#
+#   PreARC: Komprimieren der ZCONNECT/JANUS Netcalls
+#	    Konvertieren der ZNETZ-Netcalls nach Netcall-3.8 und komprimieren.
+#           Wird aus der Crontab regelmaessig (z.B. einmal pro Stunde)
+#	    aufgerufen.
+#
+#   Benutzt: einpack
+#
+#   Privileges: laeuft bei mir derzeit als root (daher auch chown...)
+#
+#   Bugs:   Um Race-Conditions zu vermeiden werden die Rohdaten in ein 
+#	    temporaeres Directory verschoben, das nach dem Arcen radikal
+#	    geloescht wird. Falls zwischenzeitlich etwas schief ging,
+#	    fuehrt das zu Datenverlusten.
+#
+#		Jemand, der sich besser mit /bin/sh auskennt, moege sich
+#		mal gelegentlich darum kuemmern...
+#
+
+LOCK=@SPOOLDIR@/locks/prearc.lck
+
+# Das shlock vom INN macht viel bessere Locks. Es erkennt
+# beispielsweise auch liegengebliebene Lockfiles. Dann bleiben
+# nicht mehr drei Tage lang alle Nachrichten liegen, weil
+# irgendjemand den Gate-Rechner gebootet hat...
+
+if [ -x /usr/lib/news/bin/shlock ]; then
+	/usr/lib/news/bin/shlock -p $$ -f ${LOCK} ||{ echo "$0: Es laeuft bereits ein anderer Prozess" >&2; ls -l $LOCK >&2; exit 1; }
+	trap 'rm -f ${LOCK} ; exit 1' 1 2 3 15
+	trap 'rm -f ${LOCK} ; exit 0' 0
+else
+	trap "rm -f $LOCK.$$; exit 0" 0 1 2 3
+	
+	echo $$ > $LOCK.$$
+	if (umask 222; ln $LOCK.$$ $LOCK) 2>/dev/null
+	then
+		# OK -> Datei gab es noch nicht
+		trap "rm -f $LOCK $LOCK.$$; exit 0" 0 1 2 3 
+		rm -f $LOCK.$$
+	else
+		# Fehler -> Lock existierte
+		echo "$0: es laeuft bereits ein anderer Prozess" >&2
+		ls -l $LOCK >&2
+		exit 0
+	fi
+fi
+
+SPOOL=@SPOOLDIR@
+TMP=prearc.$$
+
+PATH=@DESTDIR@:@PATHADD@:$PATH; export PATH
+
+zbatchsmtp
+
+cd @DESTDIR@/systems
+
+for sys in *
+do
+  if [ -d $SPOOL/$sys ]
+  then
+	arc=`fgrep -i 'ArcerOut:' @DESTDIR@/systems/$sys | awk '{print $2}'`
+	fmt=`fgrep -i 'X-Call:' @DESTDIR@/systems/$sys | awk '{print $2}'`
+
+	SYSLOCK=$SPOOL/$sys/prearc.lck		# Prearc laueft
+	NETLOCK=$SPOOL/$sys/netcall.lck		# Netcall laeuft
+
+	cd $SPOOL/$sys
+
+	# Lock fuer dieses System erzeugen
+	# (das ist so einfach, weil niemand ausser 'prearc' dort Locks erzeugt,
+	# und ein anderes 'prearc' ist bereits ausgeschlossen)
+	echo $$ > $SYSLOCK
+
+	# System nur bearbeiten, wenn (a) kein Netcall laeuft und (b) Arbeit
+	# vorhanden ist
+	WRK="`find . -type f ! -name \*.lck -print`"
+	if [ \( ! -r $NETLOCK \) -a \(  "$WRK" != "" \) ]; then
+		mkdir $TMP
+		mv $WRK $TMP 2> /dev/null
+		cd $TMP
+		if [ $fmt = "ZNETZ" ]
+		then
+			auspack $arc ../../$sys
+			for zcon in *.prv *.eil *.neu *.brt
+			do
+				if [ -r $zcon ]
+				then
+					net38export $zcon puffer
+				fi
+			done
+			einpack $arc ../../$sys puffer
+			rm -f *
+			chown zconnect ../../$sys.* 2> /dev/null
+		fi
+		if [ $fmt = "JANUS" ]
+		then
+			einpack $arc ../../$sys *
+			chown zconnect ../../$sys.* 2>/dev/null
+		fi
+		if [ $fmt = "ZCONNECT" ]
+		then
+			einpack $arc ../../prv.$sys *.prv *.eil *.neu 2>/dev/null
+			einpack $arc ../../brt.$sys *.brt 2>/dev/null
+			chown zconnect ../../prv.$sys.* 2>/dev/null
+			chown zconnect ../../brt.$sys.* 2>/dev/null
+		fi
+		cd ..
+		rm -rf $TMP
+	fi
+
+	# Ok, dieses System ist fertig - Lock wieder freigeben
+	rm -f $SYSLOCK
+  fi
+done
