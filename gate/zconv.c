@@ -730,36 +730,35 @@ void u_f_and_all(FILE *f, header_p hd) {
         /* U-, F- und ZConnect-eigene unbekannte
          * Headerzeilen richtig umwandeln:
          */ 
-        for (p=hd; p; p=p->next)
-                for (p1=p; p1; p1=p1->other) {
-                        if(strncasecmp(p1->header,"U-",2) != 0) {
-                                if(strncasecmp(p1->header,"F-",2) != 0) {
-                                        fputs("X-ZC-", f);
-					pc2iso(p1->text,strlen(p1->text));
-					text=mime_encode(p1->text);
-					foldputs(f, p1->header, text);
-					dfree(text);
-                                } else {
-                                        fputs("X-FTN-", f);
-					pc2iso(p1->text,strlen(p1->text));
-					text=mime_encode(p1->text);
-                                        foldputs(f,((p1->header)+2),text);
-					dfree(text);
-                                }
-                        } else {
-			        pc2iso(p1->text,strlen(p1->text));
+	for (p=hd; p; p=p->next)
+		for (p1=p; p1; p1=p1->other) {
+			if(strncasecmp(p1->header,"U-",2) == 0) {
+				pc2iso(p1->text,strlen(p1->text));
 				text=mime_encode(p1->text);
-                                foldputs(f,((p1->header)+2), p1->text);
+				foldputs(f,((p1->header)+2),text);
 				dfree(text);
-                        }
-                }
+				continue;
+			}
+			if(strncasecmp(p1->header,"F-",2) == 0) {
+				fputs("X-FTN-", f);
+				pc2iso(p1->text,strlen(p1->text));
+				text=mime_encode(p1->text);
+				foldputs(f,((p1->header)+2),text);
+				dfree(text);
+				continue;
+			}
+#ifndef NO_PLUS_KEEP_X_HEADER
+			fputs("X-ZC-", f);
+#else
+			/* TetiSoft: X- bleibt X- (Gatebau '97) */
+			if (strncasecmp(p1->header,"X-",2) != 0)
+				fputs("X-ZC-", f);
+#endif
+			pc2iso(p1->text,strlen(p1->text));
+			text=mime_encode(p1->text);
+			foldputs(f, p1->header, text);
+			dfree(text);
+		}
 }
-
-
-
-
-
-
-
 
 
