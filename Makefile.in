@@ -40,9 +40,10 @@ include Makefile.global
 
 # order is significant!
 CDIRS = date hdlib lib gate online tools rsmtp
-SUBDIRS = $(CDIRS) etc shell \
+SUBDIRS = $(CDIRS) \
 	mail-and-news/$(MAIL) \
-	mail-and-news/$(NEWS)
+	mail-and-news/$(NEWS) \
+	shell etc
 
 all:
 	for dir in $(SUBDIRS); do \
