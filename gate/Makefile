@@ -94,12 +94,13 @@ mime.o: mime.c ../include/config.h ../include/sysdep.h \
 pc2iso.o: pc2iso.c
 testmime.o: testmime.c
 uuapprove.o: uuapprove.c ../include/config.h ../include/sysdep.h \
- ../include/lib.h ../include/uulog.h
+ ../include/lib.h ../include/uulog.h ../include/uuapprove.h
 uuconv.o: uuconv.c ../include/config.h ../include/sysdep.h \
  ../include/utility.h ../include/header.h ../include/crc.h \
  ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/boxstat.h \
  ../include/version.h ../include/uulog.h ../include/alias.h \
- ../include/mime.h ../include/apc_a2b.h ../include/lib.h
+ ../include/mime.h ../include/uuconv.h ../include/apc_a2b.h \
+ ../include/lib.h ../include/datelib.h
 uurnews.o: uurnews.c ../include/config.h ../include/sysdep.h \
  ../include/lib.h ../include/utility.h ../include/header.h \
  ../include/crc.h ../include/uulog.h ../hdlib/hd_nam.h \
@@ -127,5 +128,5 @@ zconv.o: zconv.c ../include/config.h ../include/sysdep.h \
  ../include/lib.h ../include/utility.h ../include/header.h \
  ../include/crc.h ../hdlib/hd_def.h ../hdlib/hd_nam.h \
  ../include/uulog.h ../include/alias.h ../include/version.h \
- ../include/boxstat.h ../include/mime.h
+ ../include/boxstat.h ../include/mime.h ../include/zconv.h
 # eof

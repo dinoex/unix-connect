@@ -145,14 +145,17 @@ rdpara.o: rdpara.c ../include/config.h ../include/sysdep.h \
  ../include/header.h ../include/crc.h ../include/uulog.h \
  ../include/lib.h
 smtprd.o: smtprd.c ../include/config.h ../include/sysdep.h \
- ../include/header.h ../include/crc.h ../include/uulog.h
+ ../include/header.h ../include/crc.h ../include/uulog.h \
+ ../include/lib.h
 testheader.o: testheader.c ../include/config.h ../include/sysdep.h \
  ../include/uulog.h ../include/header.h ../include/crc.h hd_def.h \
  hd_nam.h
 uurd.o: uurd.c ../include/config.h ../include/sysdep.h \
- ../include/header.h ../include/crc.h ../include/uulog.h
+ ../include/header.h ../include/crc.h ../include/uulog.h \
+ ../include/lib.h
 uurdpara.o: uurdpara.c ../include/config.h ../include/sysdep.h \
- ../include/header.h ../include/crc.h ../include/uulog.h
+ ../include/header.h ../include/crc.h ../include/uulog.h \
+ ../include/lib.h
 wrpara.o: wrpara.c ../include/config.h ../include/sysdep.h \
  ../include/header.h ../include/crc.h hd_nam.h
 # eof

@@ -55,5 +55,5 @@ tidy:		clobber
 # automatic depend
 datetok.o: datetok.c ../include/config.h ../include/sysdep.h datetok.h
 getindate.o: getindate.c ../include/config.h ../include/sysdep.h \
- datetok.h
+ datetok.h ../include/datelib.h
 # eof
