@@ -42,14 +42,14 @@
  * version.h
  */
 
-#define	VERSION		"0.88-dm5"
+#define	VERSION		"0.88-dm6"
 
 #define	MAILER		"UNIX/Connect"
 #define	COPYRIGHT	\
 "(C) 1993-1994 Martin Husemann,\n" \
 "(C) 1995-1998 Christopher Creutzig, (C) 1995-1999 Moritz Both,\n" \
 "(C) 1997-1998 Detlef Wuerkner, (C) 1997-1999 Matthias Andree,\n" \
-"(C) 1997-1999 Andreas Barth, (C) 1999 Krischan Jodies,\n" \
+"(C) 1997-2000 Andreas Barth, (C) 1999-2000 Krischan Jodies,\n" \
 "(C) 1995-2000 Dirk Meyer."
 
 /*
