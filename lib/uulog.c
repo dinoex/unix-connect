@@ -79,7 +79,6 @@ void initlog(const char *xname) {
 	uudeblogfile = NULL;
 #endif
 	minireadstat();
-	return 0;
 }
 
 void
