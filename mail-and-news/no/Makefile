@@ -5,8 +5,5 @@ install:
 
 clean:
 
-clobber:
+distclean:
 
-tidy:
-
-distrib:

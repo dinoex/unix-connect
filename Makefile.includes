@@ -7,8 +7,5 @@ clean: clean-includes
 clean-includes:
 	-rm -f $(CLEANFILES)
 
-clobber: clean
+distclean: clean
 
-tidy: clobber
-
-distrib: tidy

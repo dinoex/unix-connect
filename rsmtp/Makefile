@@ -93,7 +93,6 @@ BINMIN	= \
 # rules
 
 all:	$(TARMIN)
-	date
 
 install:	${DESTDIR} \
 		$(SPOOLDIR)/rsmtp \
@@ -101,12 +100,9 @@ install:	${DESTDIR} \
 		$(BINMIN)
 
 clean:
-	-rm -f $(CLEANFILES)
+	-rm -f $(CLEANFILES) $(TARMIN)
 
-clobber:	clean
-	-rm -rf $(TARMIN)
-
-tidy:		clobber
+distclean:	clean
 
 rsmtp:	rsmtp.o
 	$(CC) -o rsmtp rsmtp.o $(LIBS) $(LDFLAGS)

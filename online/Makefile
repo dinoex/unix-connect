@@ -54,12 +54,9 @@ install:	all
 	( cd $(DESTDIR); chown $(USER) $(PROGS) )
 
 clean:
-	-rm -f $(CLEANFILES)
+	-rm -f $(CLEANFILES) $(PROGS)
 
-clobber:	clean
-	-rm -f $(PROGS)
-
-tidy:		clobber
+distclean:	clean
 
 receiver:	$(ROBJS) $(LIBS)
 	$(CC) -o receiver $(ROBJS) $(LIBS) $(LDFLAGS)
@@ -157,5 +154,5 @@ sysmaster.o: sysmaster.c ../include/config.h ../include/sysdep.h \
  ../include/uulog.h ../include/utility.h ../include/lib.h
 xprog.o: xprog.c ../include/config.h ../include/sysdep.h \
  ../include/boxstat.h ../include/ministat.h ../include/header.h \
- ../include/crc.h ../include/lib.h
+ ../include/crc.h ../include/lib.h ../include/xprog.h
 # eof

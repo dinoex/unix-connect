@@ -39,12 +39,31 @@ include ../Makefile.includes
 
 FILES = anruf auspack einpack import prearc uumlist
 
-all:
-	for file in $(FILES); do $(SHELL) ../helpers/subst < $$file.in > $$file; done
+SUFFIXES = .in
+
+all:	$(FILES)
+
+anruf: anruf.in  ../Makefile.global
+	$(SHELL) ../helpers/subst < anruf.in > $@
+
+auspack: auspack.in  ../Makefile.global
+	$(SHELL) ../helpers/subst < auspack.in > $@
+
+einpack: einpack.in  ../Makefile.global
+	$(SHELL) ../helpers/subst < einpack.in > $@
+
+import: import.in  ../Makefile.global
+	$(SHELL) ../helpers/subst < import.in > $@
+
+prearc: prearc.in  ../Makefile.global
+	$(SHELL) ../helpers/subst < prearc.in > $@
+
+uumlist: uumlist.in  ../Makefile.global
+	$(SHELL) ../helpers/subst < uumlist.in > $@
 
 install: $(FILES)
 	install -c -o $(USER) -g $(GROUP) -m 775 $(FILES) $(BINDIR)
 
-clobber:	clean
+distclean:	clean
 	-rm -f $(FILES)
 

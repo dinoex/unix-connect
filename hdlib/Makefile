@@ -54,18 +54,16 @@ install:	all
 clean:
 	-rm -f $(CLEANFILES) header.tmp header.gtmp test.out
 	-rm -f uurd.c smtprd.c pkread.c pkwrite.c
-
-clobber:	clean
 	-rm -f testheader
 
-tidy:	clobber
+distclean:	clean
 
-newhash-clean:	clobber
+maintainer-clean:	distclean
 	-rm -f hd_def.h hd_nam.h hd_nlist.h
 	-rm -f header.gtmp hash.tmp
 	-rm -f testheader hash.c header.gperf
 
-newhash:	newhash-clean hash.c
+newhash:	maintainer-clean hash.c
 
 uurd.c:	uurdpara.c
 	@-rm -f uurd.c

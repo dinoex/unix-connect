@@ -5,7 +5,7 @@ include ../../Makefile.includes
 
 all: send-zcon
 
-clobber:
+distclean:
 	-rm -f send-zcon
 
 send-zcon: send-zcon.in

@@ -28,9 +28,7 @@ install:
 
 clean:
 
-clobber:
-
-tidy:
+distclean:	clean
 	-rm -f subst subst.in ../configure
 
 subst.in: makesubst ../configure.in

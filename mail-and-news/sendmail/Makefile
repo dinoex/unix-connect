@@ -5,7 +5,7 @@ include ../../Makefile.includes
 
 all: zbatchsmtp
 
-clobber:
+distclean:
 	-rm -f zbatchsmtp
 
 zbatchsmtp: zbatchsmtp.in

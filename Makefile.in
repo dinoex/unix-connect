@@ -38,8 +38,9 @@
 
 include Makefile.global
 
-SUBDIRS = date hdlib lib gate online tools rsmtp \
-	etc shell \
+# order is significant!
+CDIRS = date hdlib lib gate online tools rsmtp
+SUBDIRS = $(CDIRS) etc shell \
 	mail-and-news/$(MAIL) \
 	mail-and-news/$(NEWS)
 
@@ -47,30 +48,57 @@ all:
 	for dir in $(SUBDIRS); do (cd $$dir; $(MAKE) -$(MAKEFLAGS) all); done
 
 install:
-	if test ! -d $(BINDIR); then mkdir $(BINDIR); chown $(USER) $(BINDIR); fi
-	if test ! -d $(ETCDIR); then mkdir $(ETCDIR); chown $(USER) $(ETCDIR); fi
-	if test ! -d $(ETCDIR)/systems; then mkdir $(ETCDIR)/systems; chown $(USER) $(ETCDIR)/systems; fi
-	for dir in $(SUBDIRS); do (cd $$dir; $(MAKE) -$(MAKEFLAGS) install); done
+	if test ! -d $(BINDIR); then
+		mkdir $(BINDIR); chown $(USER) $(BINDIR); fi
+	if test ! -d $(ETCDIR); then
+		mkdir $(ETCDIR); chown $(USER) $(ETCDIR); fi
+	if test ! -d $(ETCDIR)/systems; then
+		mkdir $(ETCDIR)/systems; chown $(USER) $(ETCDIR)/systems; fi
+	for dir in $(SUBDIRS); do
+		(cd $$dir; $(MAKE) -$(MAKEFLAGS) install); done
+
+install-strip:
+	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' install
 
 clean:
 	-rm -f $(CLEANFILES)
-	for dir in $(SUBDIRS); do (cd $$dir; $(MAKE) -$(MAKEFLAGS) clean); done
+	for dir in $(SUBDIRS); do
+		(cd $$dir; $(MAKE) -$(MAKEFLAGS) clean); done
 
-clobber:
-	-rm -f $(CLEANFILES)
-	for dir in $(SUBDIRS); do (cd $$dir; $(MAKE) -$(MAKEFLAGS) clobber); done
-
-tidy:	clobber
-	for dir in $(SUBDIRS); do (cd $$dir; $(MAKE) -$(MAKEFLAGS) tidy); done
+distclean:	distclean
+	for dir in $(SUBDIRS); do
+		(cd $$dir; $(MAKE) -$(MAKEFLAGS) distclean); done
 	-rm -f Makefile.global Makefile helpers/subst
 	-rm -f config.cache config.log config.status confdefs.h
 	-rm -f include/sysdep.h include/policy.h
 
+maintainer-clean:
+	(cd hdlib; $(MAKE) -$(MAKEFLAGS) maintainer-clean)
+	$(MAKE) -$(MAKEFLAGS) distclean
+
 newhash:
 	(cd hdlib; $(MAKE) -$(MAKEFLAGS) newhash)
 
-distrib:
+dist:
+	$(MAKE) -$(MAKEFLAGS) distclean
 	(cd helpers; $(MAKE) -$(MAKEFLAGS))
-	$(MAKE) -$(MAKEFLAGS) tidy
+
+depend:	all Makefile.global
+	for dir in $(CDIRS); do (cd $$dir; \
+		$(MAKE) -$(MAKEFLAGS) all; \
+		for i in *.c; do \
+			$(CPP) $(CPPFLAGS) -MM $$i; \
+		done >Makefile.depend; \
+		sed -e '/^# automatic depend/,$$d' Makefile >Makefile.new; \
+		echo "# automatic depend" >>Makefile.new; \
+		cat Makefile.depend >>Makefile.new; \
+		echo "# eof" >>Makefile.new; \
+		if ! diff Makefile Makefile.new; then \
+			mv -f Makefile.new Makefile; fi; \
+		rm -f Makefile.new Makefile.depend ); \
+	done
+
+Makefile: Makefile.in  config.status
+	CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 # eof

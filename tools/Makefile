@@ -46,12 +46,9 @@ install:	all
 	( cd $(DESTDIR); chown $(USER) $(PROGS) )
 
 clean:
-	-rm -f $(CLEANFILES)
+	-rm -f $(CLEANFILES) $(PROGS)
 
-clobber:	clean
-	-rm -f $(PROGS)
-
-tidy:	clobber
+distclean:	clean
 
 list-systems:	list-systems.o $(LIBS)
 	$(CC) -o list-systems list-systems.o $(LIBS) $(LDFLAGS)

@@ -39,10 +39,11 @@ include ../Makefile.global
 
 # Makefile fuer den UNIX-Connect Gateway
 
-LIBS	=	../lib/ministat.o ../hdlib/uuheader.a ../lib/gatelib.a
-DATELIB	=	../date/getindate.o ../date/datetok.o
+LIBS	= ../lib/ministat.o ../hdlib/uuheader.a ../lib/gatelib.a
+DATELIB	= ../date/getindate.o ../date/datetok.o
+PROGS	= uurnews uursmtp uuwsmtp uuwnews
 
-all:	uurnews uursmtp uuwsmtp uuwnews
+all:	$(PROGS)
 
 install:	all
 	cp uurnews uursmtp uuwsmtp uuwnews $(DESTDIR)
@@ -54,12 +55,9 @@ install:	all
 	chmod +s $(DESTDIR)/uuwsmtp $(DESTDIR)/uuwnews
 
 clean:
-	-rm -f $(CLEANFILES)
+	-rm -f $(CLEANFILES) $(PROGS)
 
-clobber:	clean
-	-rm -f uurnews uursmtp uuwsmtp uuwnews
-
-tidy:		clobber
+distclean:	clean
 
 uursmtp:	uursmtp.o uuconv.o mime.o alias.o iso2pc.o $(APCOBJS) $(DATELIB) $(LIBS)
 	$(CC) $(MODELL) -o $@ $@.o uuconv.o mime.o alias.o iso2pc.o $(APCOBJS) $(DATELIB) $(LIBS) $(LDFLAGS)
@@ -99,20 +97,18 @@ uuconv.o: uuconv.c ../include/config.h ../include/sysdep.h \
  ../include/utility.h ../include/header.h ../include/crc.h \
  ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/boxstat.h \
  ../include/version.h ../include/uulog.h ../include/alias.h \
- ../include/mime.h ../include/uuconv.h ../include/apc_a2b.h \
- ../include/lib.h ../include/datelib.h
+ ../include/mime.h ../include/uuconv.h ../include/lib.h \
+ ../include/datelib.h
 uurnews.o: uurnews.c ../include/config.h ../include/sysdep.h \
  ../include/lib.h ../include/utility.h ../include/header.h \
  ../include/crc.h ../include/uulog.h ../hdlib/hd_nam.h \
  ../hdlib/hd_def.h ../include/version.h ../include/ministat.h \
- ../include/boxstat.h ../include/mime.h ../include/uuconv.h \
- ../include/apc_a2b.h
+ ../include/boxstat.h ../include/mime.h ../include/uuconv.h
 uursmtp.o: uursmtp.c ../include/config.h ../include/sysdep.h \
  ../include/lib.h ../include/ministat.h ../include/boxstat.h \
  ../include/header.h ../include/crc.h ../include/utility.h \
  ../hdlib/hd_nam.h ../hdlib/hd_def.h ../include/version.h \
- ../include/uulog.h ../include/mime.h ../include/uuconv.h \
- ../include/apc_a2b.h
+ ../include/uulog.h ../include/mime.h ../include/uuconv.h
 uuwnews.o: uuwnews.c ../include/config.h ../include/sysdep.h \
  ../include/lib.h ../include/boxstat.h ../include/ministat.h \
  ../include/header.h ../include/crc.h ../include/utility.h \
@@ -123,7 +119,7 @@ uuwsmtp.o: uuwsmtp.c ../include/config.h ../include/sysdep.h \
  ../include/lib.h ../include/boxstat.h ../include/ministat.h \
  ../include/header.h ../include/crc.h ../include/utility.h \
  ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/version.h \
- ../include/uulog.h ../include/zconv.h ../include/mime.h
+ ../include/uulog.h ../include/mime.h ../include/zconv.h
 zconv.o: zconv.c ../include/config.h ../include/sysdep.h \
  ../include/lib.h ../include/utility.h ../include/header.h \
  ../include/crc.h ../hdlib/hd_def.h ../hdlib/hd_nam.h \

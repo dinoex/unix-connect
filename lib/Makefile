@@ -47,11 +47,9 @@ all:	gatelib.a strlib.a
 install:	all
 
 clean:
-	-rm -f $(CLEANFILES)
+	-rm -f $(CLEANFILES) gatelib.a strlib.a
 
-clobber:	clean
-
-tidy:		clobber
+distclean:	clean
 
 gatelib.a:	$(OBJS)
 	ar r gatelib.a $(OBJS)
