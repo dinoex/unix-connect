@@ -46,6 +46,11 @@ void *dalloc(size_t);
 void iso2pc(unsigned char *buffer, size_t len);
 void pc2iso(unsigned char *buffer, size_t len);
 
+#ifdef __GNUC__
+static inline void to_pc (unsigned char *) __attribute__ ((unused));
+static inline void to_iso(unsigned char *) __attribute__ ((unused));
+#endif
+
 static inline void to_pc(unsigned char *buf) { iso2pc(buf, strlen(buf)); } 
 static inline void to_iso(unsigned char *buf) { pc2iso(buf, strlen(buf)); }
 
