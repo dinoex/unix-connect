@@ -11,9 +11,6 @@ seit 0.87
 - Makefile.global.in
   install-mode mit führender "0"
 
-- configure{,.in}: (Matthias Andree)
-  sucht nach innshellvars
-
 - Makefile.global.in: Typo korrigiert
 
 - mail-and-news/inn/send-zcon.in: (Matthias Andree)

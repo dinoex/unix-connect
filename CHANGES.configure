@@ -2,6 +2,11 @@ $Id$
 
 Änderungen an configure
 
+seit 0.87
+
+- (Matthias Andree)
+  sucht nach innshellvars
+
 seit 0.86
 
 - verwende autoconf Definintionen:
