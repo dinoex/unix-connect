@@ -4,6 +4,9 @@ Aenderungen an UnixConnect
 
 seit 0.94
 
+- hdlib/hash.c
+  mot gperf 3.0.1 erstellt (Dirk Meyer)
+
 - mail-and-news/inn/send-zcon.in: (Matthias Andree)
   Leezeichen an Zeilenende entfernt. Bug: sf#513081.
 
