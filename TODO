@@ -37,5 +37,9 @@
 
 - GATE sollte base64 statt uuencode kodieren.
 
-- stderr mit lrzsz, da ausgabeumleitung probleme macht.
+- stderr mit lrzsz, da ausgabeumleitung probleme macht
+  hier ist ein neues Logfile sinnvoll oder nicht?
+
+- die programme in gate/ sollten die Schleife abbrechen,
+  wenn das Zielverzeichnis nicht existiert.
 
