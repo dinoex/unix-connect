@@ -8,9 +8,11 @@
 # FREEBSD	= YES
 LINUX		= YES
 
-DESTDIR	= /usr/local/libexec/unix-connect/
+DESTDIR	= /usr/local/libexec/unix-connect
 BINOWN	= -o root -g wheel
 BINMODE	= -m 755
+
+include ../.makefile.conf
 
 WARNALL	= \
 	-W \
