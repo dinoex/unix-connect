@@ -560,12 +560,10 @@ else
 fi
 
 
-(cd helpers; make subst.in)
-
 
 
 echo $ac_n "checking Path""... $ac_c" 1>&6
-echo "configure:569: checking Path" >&5
+echo "configure:567: checking Path" >&5
 # Check whether --with-path or --without-path was given.
 if test "${with_path+set}" = set; then
   withval="$with_path"
@@ -578,7 +576,7 @@ echo "$ac_t""$path" 1>&6
 
 
 echo $ac_n "checking Unterverzeichnis für die Dateien""... $ac_c" 1>&6
-echo "configure:582: checking Unterverzeichnis für die Dateien" >&5
+echo "configure:580: checking Unterverzeichnis für die Dateien" >&5
 # Check whether --with-dir or --without-dir was given.
 if test "${with_dir+set}" = set; then
   withval="$with_dir"
@@ -602,7 +600,7 @@ echo "$ac_t""$ZCDIR" 1>&6
 
 
 echo $ac_n "checking Unterverzeichnis für die Programme""... $ac_c" 1>&6
-echo "configure:606: checking Unterverzeichnis für die Programme" >&5
+echo "configure:604: checking Unterverzeichnis für die Programme" >&5
 # Check whether --with-execdir or --without-execdir was given.
 if test "${with_execdir+set}" = set; then
   withval="$with_execdir"
@@ -618,7 +616,7 @@ echo "$ac_t""$BINDIR" 1>&6
 
 
 echo $ac_n "checking Unterverzeichnis für die Konfiguration""... $ac_c" 1>&6
-echo "configure:622: checking Unterverzeichnis für die Konfiguration" >&5
+echo "configure:620: checking Unterverzeichnis für die Konfiguration" >&5
 # Check whether --with-confdir or --without-confdir was given.
 if test "${with_confdir+set}" = set; then
   withval="$with_confdir"
@@ -635,7 +633,7 @@ echo "$ac_t""$ETCDIR" 1>&6
 
 
 echo $ac_n "checking spooldir""... $ac_c" 1>&6
-echo "configure:639: checking spooldir" >&5
+echo "configure:637: checking spooldir" >&5
 # Check whether --with-spooldir or --without-spooldir was given.
 if test "${with_spooldir+set}" = set; then
   withval="$with_spooldir"
@@ -692,7 +690,7 @@ fi
 
 
 echo $ac_n "checking Welcher Typ ist das Gateway""... $ac_c" 1>&6
-echo "configure:696: checking Welcher Typ ist das Gateway" >&5
+echo "configure:694: checking Welcher Typ ist das Gateway" >&5
 # Check whether --with-box or --without-box was given.
 if test "${with_box+set}" = set; then
   withval="$with_box"
@@ -726,7 +724,7 @@ fi
 
 
 echo $ac_n "checking Nachrichten zurückkonvertieren""... $ac_c" 1>&6
-echo "configure:730: checking Nachrichten zurückkonvertieren" >&5
+echo "configure:728: checking Nachrichten zurückkonvertieren" >&5
 # Check whether --enable-real-gate or --disable-real-gate was given.
 if test "${enable_real_gate+set}" = set; then
   enableval="$enable_real_gate"
@@ -750,7 +748,7 @@ fi
 
 
 echo $ac_n "checking Mailsystem""... $ac_c" 1>&6
-echo "configure:754: checking Mailsystem" >&5
+echo "configure:752: checking Mailsystem" >&5
 # Check whether --enable-mail or --disable-mail was given.
 if test "${enable_mail+set}" = set; then
   enableval="$enable_mail"
@@ -763,7 +761,7 @@ echo "$ac_t""$MAIL" 1>&6
 
 
 echo $ac_n "checking Mailsystem""... $ac_c" 1>&6
-echo "configure:767: checking Mailsystem" >&5
+echo "configure:765: checking Mailsystem" >&5
 # Check whether --enable-news or --disable-news was given.
 if test "${enable_news+set}" = set; then
   enableval="$enable_news"
@@ -777,7 +775,7 @@ echo "$ac_t""$NEWS" 1>&6
 
 
 echo $ac_n "checking APC einkompilieren""... $ac_c" 1>&6
-echo "configure:781: checking APC einkompilieren" >&5
+echo "configure:779: checking APC einkompilieren" >&5
 # Check whether --enable-apc or --disable-apc was given.
 if test "${enable_apc+set}" = set; then
   enableval="$enable_apc"
@@ -806,7 +804,7 @@ fi
 
 
 echo $ac_n "checking Bang-Pfade""... $ac_c" 1>&6
-echo "configure:810: checking Bang-Pfade" >&5
+echo "configure:808: checking Bang-Pfade" >&5
 # Check whether --enable-bang or --disable-bang was given.
 if test "${enable_bang+set}" = set; then
   enableval="$enable_bang"
@@ -833,7 +831,7 @@ fi
 
 
 echo $ac_n "checking Dialcode""... $ac_c" 1>&6
-echo "configure:837: checking Dialcode" >&5
+echo "configure:835: checking Dialcode" >&5
 # Check whether --with-dialprae or --without-dialprae was given.
 if test "${with_dialprae+set}" = set; then
   withval="$with_dialprae"
@@ -846,7 +844,7 @@ echo "$ac_t""$ATDT" 1>&6
 
 
 echo $ac_n "checking Ortsvorwahl""... $ac_c" 1>&6
-echo "configure:850: checking Ortsvorwahl" >&5
+echo "configure:848: checking Ortsvorwahl" >&5
 # Check whether --with-ortswahl or --without-ortswahl was given.
 if test "${with_ortswahl+set}" = set; then
   withval="$with_ortswahl"
@@ -859,7 +857,7 @@ echo "$ac_t""$FERNWAHL" 1>&6
 
 
 echo $ac_n "checking Auslandsvorwahl""... $ac_c" 1>&6
-echo "configure:863: checking Auslandsvorwahl" >&5
+echo "configure:861: checking Auslandsvorwahl" >&5
 # Check whether --with-intwahl or --without-intwahl was given.
 if test "${with_intwahl+set}" = set; then
   withval="$with_intwahl"
@@ -877,12 +875,12 @@ echo "$ac_t""$INTERNATIONAL" 1>&6
 for ac_func in syslog
 do
 echo $ac_n "checking for $ac_func""... $ac_c" 1>&6
-echo "configure:881: checking for $ac_func" >&5
+echo "configure:879: checking for $ac_func" >&5
 if eval "test \"`echo '$''{'ac_cv_func_$ac_func'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 886 "configure"
+#line 884 "configure"
 #include "confdefs.h"
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char $ac_func(); below.  */
@@ -905,7 +903,7 @@ $ac_func();
 
 ; return 0; }
 EOF
-if { (eval echo configure:909: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:907: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   eval "ac_cv_func_$ac_func=yes"
 else
@@ -933,7 +931,7 @@ if test $ac_cv_func_syslog = no; then
        # syslog is not in the default libraries.  See if it's in some other.
        for lib in bsd socket inet; do
                echo $ac_n "checking for syslog in -l$lib""... $ac_c" 1>&6
-echo "configure:937: checking for syslog in -l$lib" >&5
+echo "configure:935: checking for syslog in -l$lib" >&5
 ac_lib_var=`echo $lib'_'syslog | sed 'y%./+-%__p_%'`
 if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
@@ -941,7 +939,7 @@ else
   ac_save_LIBS="$LIBS"
 LIBS="-l$lib  $LIBS"
 cat > conftest.$ac_ext <<EOF
-#line 945 "configure"
+#line 943 "configure"
 #include "confdefs.h"
 /* Override any gcc2 internal prototype to avoid an error.  */
 /* We use char because int might match the return type of a gcc2
@@ -952,7 +950,7 @@ int main() {
 syslog()
 ; return 0; }
 EOF
-if { (eval echo configure:956: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:954: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
@@ -980,7 +978,7 @@ fi
 fi
 
 echo $ac_n "checking Systemname""... $ac_c" 1>&6
-echo "configure:984: checking Systemname" >&5
+echo "configure:982: checking Systemname" >&5
 # Check whether --with-sys or --without-sys was given.
 if test "${with_sys+set}" = set; then
   withval="$with_sys"
@@ -994,7 +992,7 @@ echo "$ac_t""$SYS" 1>&6
 
 
 echo $ac_n "checking Domainname""... $ac_c" 1>&6
-echo "configure:998: checking Domainname" >&5
+echo "configure:996: checking Domainname" >&5
 # Check whether --with-domain or --without-domain was given.
 if test "${with_domain+set}" = set; then
   withval="$with_domain"
@@ -1015,7 +1013,7 @@ do
 # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:1019: checking for $ac_word" >&5
+echo "configure:1017: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_prog_INEWS'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -1049,7 +1047,7 @@ test -n "$INEWS" || INEWS="/usr/lib/news/inews"
 # Extract the first word of "gcc", so it can be a program name with args.
 set dummy gcc; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:1053: checking for $ac_word" >&5
+echo "configure:1051: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_prog_CC'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -1079,7 +1077,7 @@ if test -z "$CC"; then
   # Extract the first word of "cc", so it can be a program name with args.
 set dummy cc; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:1083: checking for $ac_word" >&5
+echo "configure:1081: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_prog_CC'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -1130,7 +1128,7 @@ fi
       # Extract the first word of "cl", so it can be a program name with args.
 set dummy cl; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:1134: checking for $ac_word" >&5
+echo "configure:1132: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_prog_CC'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -1162,7 +1160,7 @@ fi
 fi
 
 echo $ac_n "checking whether the C compiler ($CC $CFLAGS $LDFLAGS) works""... $ac_c" 1>&6
-echo "configure:1166: checking whether the C compiler ($CC $CFLAGS $LDFLAGS) works" >&5
+echo "configure:1164: checking whether the C compiler ($CC $CFLAGS $LDFLAGS) works" >&5
 
 ac_ext=c
 # CFLAGS is not in ac_cpp because -g, -O, etc. are not valid cpp options.
@@ -1173,12 +1171,12 @@ cross_compiling=$ac_cv_prog_cc_cross
 
 cat > conftest.$ac_ext << EOF
 
-#line 1177 "configure"
+#line 1175 "configure"
 #include "confdefs.h"
 
 main(){return(0);}
 EOF
-if { (eval echo configure:1182: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:1180: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   ac_cv_prog_cc_works=yes
   # If we can't run a trivial program, we are probably using a cross compiler.
   if (./conftest; exit) 2>/dev/null; then
@@ -1204,12 +1202,12 @@ if test $ac_cv_prog_cc_works = no; then
   { echo "configure: error: installation or configuration problem: C compiler cannot create executables." 1>&2; exit 1; }
 fi
 echo $ac_n "checking whether the C compiler ($CC $CFLAGS $LDFLAGS) is a cross-compiler""... $ac_c" 1>&6
-echo "configure:1208: checking whether the C compiler ($CC $CFLAGS $LDFLAGS) is a cross-compiler" >&5
+echo "configure:1206: checking whether the C compiler ($CC $CFLAGS $LDFLAGS) is a cross-compiler" >&5
 echo "$ac_t""$ac_cv_prog_cc_cross" 1>&6
 cross_compiling=$ac_cv_prog_cc_cross
 
 echo $ac_n "checking whether we are using GNU C""... $ac_c" 1>&6
-echo "configure:1213: checking whether we are using GNU C" >&5
+echo "configure:1211: checking whether we are using GNU C" >&5
 if eval "test \"`echo '$''{'ac_cv_prog_gcc'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -1218,7 +1216,7 @@ else
   yes;
 #endif
 EOF
-if { ac_try='${CC-cc} -E conftest.c'; { (eval echo configure:1222: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }; } | egrep yes >/dev/null 2>&1; then
+if { ac_try='${CC-cc} -E conftest.c'; { (eval echo configure:1220: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }; } | egrep yes >/dev/null 2>&1; then
   ac_cv_prog_gcc=yes
 else
   ac_cv_prog_gcc=no
@@ -1237,7 +1235,7 @@ ac_test_CFLAGS="${CFLAGS+set}"
 ac_save_CFLAGS="$CFLAGS"
 CFLAGS=
 echo $ac_n "checking whether ${CC-cc} accepts -g""... $ac_c" 1>&6
-echo "configure:1241: checking whether ${CC-cc} accepts -g" >&5
+echo "configure:1239: checking whether ${CC-cc} accepts -g" >&5
 if eval "test \"`echo '$''{'ac_cv_prog_cc_g'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -1270,7 +1268,7 @@ fi
 
 
 echo $ac_n "checking Various system-dependent things""... $ac_c" 1>&6
-echo "configure:1274: checking Various system-dependent things" >&5
+echo "configure:1272: checking Various system-dependent things" >&5
         SYSUNAME="`uname -s | tr 'A-Z' 'a-z'`"
 
         if test "$SYSUNAME" = "$HOST" ; then
@@ -1408,7 +1406,7 @@ echo "$ac_t""fertig" 1>&6
 # Extract the first word of "ranlib", so it can be a program name with args.
 set dummy ranlib; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:1412: checking for $ac_word" >&5
+echo "configure:1410: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_prog_RANLIB'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -1441,7 +1439,7 @@ do
 # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:1445: checking for $ac_word" >&5
+echo "configure:1443: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_prog_shell'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -1585,7 +1583,7 @@ done
 
 ac_given_srcdir=$srcdir
 
-trap 'rm -fr `echo "etc/config.in Makefile Makefile.global helpers/subst" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
+trap 'rm -fr `echo "Makefile Makefile.global helpers/subst" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
 EOF
 cat >> $CONFIG_STATUS <<EOF
 
@@ -1682,7 +1680,7 @@ EOF
 
 cat >> $CONFIG_STATUS <<EOF
 
-CONFIG_FILES=\${CONFIG_FILES-"etc/config.in Makefile Makefile.global helpers/subst"}
+CONFIG_FILES=\${CONFIG_FILES-"Makefile Makefile.global helpers/subst"}
 EOF
 cat >> $CONFIG_STATUS <<\EOF
 for ac_file in .. $CONFIG_FILES; do if test "x$ac_file" != x..; then

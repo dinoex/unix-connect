@@ -1,0 +1,44 @@
+Einige Policy-Entscheidungen:
+=============================
+
+
+
+Makefiles
+~~~~~~~~~
+
+In jedem Makefile müssen folgende Ziele vorhanden sein (rechte Spalte
+ist Beschreibung):
+
+
+all         Erzeugt alle Programme und Dateien so weit, daß sie zur
+            Installation nur noch in das richtige Verzeichnis kopiert
+            werden müssen
+
+install     Installiert die Programme und Konfigurationsdateien
+
+clean       Löscht die Objektfiles etc.
+
+clobber     Löscht Metafiles
+
+tidy        Löscht zudem auch die Konfigurationsdateien
+
+distrib     Wie tidy, die Dateien, die zusätzliche Software brauchen
+            oder zum Funktionieren von configure vorhanden sein müssen,
+            werden aber erhalten bzw. angelegt.
+
+Diese Ziele (und die Abhängigkeiten) können durch ein include der Datei
+Makefile.includes einfach erreicht werden.
+
+
+
+mail-and-news/
+~~~~~~~~~~~~~~
+
+In den einzelnen Unterverzeichnissen müssen gewisse Dateien vorhanden sein.
+Mehr in mail-and-news/README.
+
+
+
+
+
+Andi Barth <aba@muenchen.pro-bahn.de> / 10. August 1999
