@@ -174,11 +174,22 @@ int prsindate(char *line, struct tm *tm, int *tzp) /* line can be modified */
 	tm->tm_mon--;			/* convert month to zero-origin */
 	SKIPOVER(line);			/* skip month */
 
+	/* If the year is completely missing we'll be looking at the time 
+	 * already so the parsetime() below should fail. If we get one or 
+	 * more letters in the date field this will return 0 and be
+	 * treated as 2000.
+	 * 
+	 * This seems so unlikely in an otherwise valid header that we'll 
+	 * take the chance.   D. Glover 6/12/99
+	 */
+
 	tm->tm_year = atoi(line);
-	if (tm->tm_year <= 0)
-		return -1;		/* year is non-positive or missing */
+	if (tm->tm_year < 0)		/* DG need to allow 00 for Y2K */
+		return -1;		/* year is non-positive */
 	if (tm->tm_year >= 1900)	/* convert year to 1900 origin, */
 		tm->tm_year -= 1900;	/* but 2-digit years need no work */
+	if (tm->tm_year < 70)		/* DG assume anything below this is */
+		tm->tm_year += 100;	/* actually 20nn */
 	SKIPOVER(line);			/* skip year */
 
 	if (parsetime(line, tm) < 0)
