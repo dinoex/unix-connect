@@ -3,6 +3,7 @@
 #   UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
 #   Copyright (C) 1993-1994  Martin Husemann
 #   Copyright (C) 1999-2000  Dirk Meyer
+#   Copyright (C)      2000  Matthias Andree
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -43,7 +44,7 @@ GATEOBJS= hayes.o pattern.o track.o rawtty.o lockwait.o \
 MINIOBJS= ministat.o
 
 STROBJS	= utility.o stricmp.o strlwr.o strupr.o strdup.o stccpy.o \
-	  snprintf.o \
+	  snprintf.o strcdup.o \
 	  uufatal.o uulog.o
 
 all:	strlib.a ministat.a $(ONLINE_LIB)
@@ -92,10 +93,11 @@ rawtty.o: rawtty.c ../include/config.h ../include/sysdep.h \
  ../include/line.h
 readonedir.o: readonedir.c ../include/idir.h ../include/istring.h \
  ../include/utility.h ../include/calllib.h ../include/uulog.h
-snprintf.o: snprintf.c ../include/config.h ../include/sysdep.h \
- ../include/istring.h ../include/utility.h ../include/uulog.h
+snprintf.o: snprintf.c ../include/istring.h
 stccpy.o: stccpy.c ../include/config.h ../include/sysdep.h \
  ../include/utility.h
+strcdup.o: strcdup.c ../include/config.h ../include/sysdep.h \
+ ../include/istring.h ../include/utility.h
 strdup.o: strdup.c ../include/config.h ../include/sysdep.h \
  ../include/istring.h ../include/utility.h ../include/uulog.h
 stricmp.o: stricmp.c ../include/config.h ../include/sysdep.h \
