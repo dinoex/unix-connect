@@ -26,7 +26,7 @@ fi
 LOCALHOST=@FQDN@
 MAXSIZE=100000
 
-MAILSPOOL=/var/spool/zconnect
+MAILSPOOL=@SPOOLDIR@
 PATH=$PATH:/usr/local/bin:/usr/lib/news:/usr/local/lib/news/bin:/usr/local/lib/zconnect:/var/qmail/bin; export PATH
 
 

@@ -1,0 +1,109 @@
+#!/bin/sh
+# $Id$
+
+# deliver messages accumlated into subdirectories of the
+# z-outq spool directory.  Subdirectory names are based on
+# the actual hostnames involved (including full domain!)
+
+LOCK=@SPOOLDIR@/locks/zbatchsmtp.lck
+ERRDIR=@SPOOLDIR@/errors
+
+trap "rm -f $LOCK.$$; exit 0" 0 1 2 3
+
+echo $$ > $LOCK.$$
+if (umask 222; ln $LOCK.$$ $LOCK) 2>/dev/null
+then
+	# OK -> Datei gab es noch nicht
+	trap "rm -f $LOCK $LOCK.$$; exit 0" 0 1 2 3 
+	rm -f $LOCK.$$
+else
+	# Fehler -> Lock existierte
+	echo "$0: es laeuft bereits ein anderer Prozess" >&2
+	ls -l $LOCK >&2
+	exit 0
+fi
+
+LOCALHOST=@FQDN@
+MAXSIZE=100000
+
+MAILSPOOL="@SPOOLDIR@"
+OUTQ=$MAILSPOOL/z-outq
+PATH=$PATH:@PATHADD@:@BINDIR@; export PATH
+
+cd $OUTQ || exit 1
+
+# loop through all of the subdirectories
+for host in *
+do
+    (
+	# change to directory or exit subshell
+	test -d $host || exit
+	cd $host || exit 1
+
+	# send multiple batches
+	while :
+	do
+		# get the list of message files; quit if none
+		msgs="`ls 2>/dev/null | grep '^q'`"
+		test -n "$msgs" || break
+
+		# accumulate until total size exceeds maximum
+		send=
+		sz=0
+		for f in $msgs
+		do
+			send="$send $f"
+			n=`wc -c <$f 2>/dev/null`
+			test -n "$n" || continue
+			sz=`expr $sz + $n`
+			test $sz -lt $MAXSIZE || break
+		done
+
+		# send messages, adding HELO and QUIT commands
+		( echo "HELO $LOCALHOST"
+		  for f in $send
+		  do
+			  cat $f
+		  done
+		  echo QUIT ) | uursmtp -f $host
+
+		if [ $? -eq 0 ]
+		then
+
+			# remove messages that were sent
+			for f in $send
+			do
+				rm $f
+			done
+		else
+			ERROR=$?
+			[ -d $ERRDIR/$host ] || mkdir -p $ERRDIR/$host
+			for f in $send
+			do
+				mv -b -Vt $f $ERRDIR/$host/
+			done
+			( cat <<EOM
+There was an error from uursmtp. You can find the input(s)
+causing that error in $ERRDIR/$host/.
+
+Probably just one of those messages caused the failure. After fixing
+the problem, please move the messages back to
+$OUTQ/$host/,
+where they will be respooled.
+
+regards,
+
+ UNIX-Connect
+EOM
+			) | mail -s "uursmtp failed: $ERROR" postmaster@@FQDN@
+		fi
+	done
+    )
+done
+
+exit 0
+
+
+
+
+

@@ -1,0 +1,28 @@
+README für die Einbindung von Unix-Connect in INN
+=================================================
+
+
+INN -> Unix-Connect
+~~~~~~~~~~~~~~~~~~~
+
+Die Datei send-zcon in das bin-Verzeichnis (beispielsweise /usr/lib/inn/bin/)
+von INN kopieren.
+
+In <path/>newsfeeds für jede Site einen entsprechenden Eintrag vornehmen.
+Ein Beispieleintrag steht in newsfeeds. Damit werden die News automatisch
+zum Spoolen vorbereitet.
+
+Es müssen die News regelmäßig gespoolt werden. Dies geht beispielsweise
+mit einem entsprechenden Eintrag in der News-Crontab wie
+
+3,18,33,48 * * * *      /usr/lib/news/bin/send-zcon SITENAMEN > /dev/null
+
+
+Unix-Connect -> INN
+~~~~~~~~~~~~~~~~~~~
+
+Dies geht automatisch, aus <bindir/>import heraus wird automatisch rnews
+aufgerufen.
+
+
+Andi Barth <aba@muenchen.pro-bahn.de> / 9. August 1999
