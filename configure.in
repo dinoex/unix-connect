@@ -128,13 +128,13 @@ AC_MSG_CHECKING(Benutzerkennung für Unix-Connect)
 AC_ARG_WITH(user,
 [ --with-user=user         Benutzerkennung für Unix-Connect.],[
 if test -f /etc/passwd ; then
-  if ! grep "^$withval:" /etc/passwd >/dev/null ; then
+  if grep "^$withval:" /etc/passwd >/dev/null ; then
+    echo $withval
+    USER=$withval;
+  else
     echo
     echo "Es muß eine gültige Benutzerkennung gewählt werden"
     exit 1;
-  else
-    echo $withval
-    USER=$withval;
   fi
 else
   echo $withval
@@ -150,13 +150,13 @@ AC_MSG_CHECKING(Gruppenkennung für Unix-Connect)
 AC_ARG_WITH(group,
 [ --with-group=group       Gruppenkennung für Unix-Connect.],[
 if test -f /etc/group ; then
-  if ! grep "^$withval:" /etc/group >/dev/null ; then
+  if grep "^$withval:" /etc/group >/dev/null ; then
+    echo $withval
+    GROUP=$withval;
+  else
     echo
     echo "Es muß eine gültige Gruppe gewählt werden"
     exit 1;
-  else
-    echo $withval
-    GROUP=$withval;
   fi
 else
   echo $withval
@@ -737,7 +737,9 @@ FQDN=$SYS.$DOMAIN
 AC_SUBST(FQDN)
 
 AC_PATH_PROGS(INEWS,inews,inews,/usr/local/bin:/usr/bin:/usr/lib/news:/usr/local/lib/news:/usr/news:/usr/local/news:/usr/lib/news/bin)
-if test ! -x "$INEWS" ; then
+if test -x "$INEWS" ; then
+  echo "inews $INEWS."
+else
   echo "Kann inews nicht finden. uumlist wird nicht funktionieren."
 fi
 
@@ -751,13 +753,15 @@ fi
 ])
 
 AC_PATH_PROGS(SENDMAIL,sendmail,/usr/sbin/sendmail,$PATH:/usr/sbin:/usr/lib)
-if test ! -x "$SENDMAIL" ; then
+if test -x "$SENDMAIL" ; then
+  echo "Sendmail $SENDMAIL"
+else
   echo "Kann sendmail nicht finden. Bitte mit --with-sendmail einen sendmail-"
   echo "kompatibles Programm angeben. Es muß die Option -t akzeptieren."
   exit 1
 fi
 
-if ! test "$ONLINE_DIR" = "" ; then
+if test ! "$ONLINE_DIR" = "" ; then
   dnl AC_MSG_CHECKING(Transferprogramme)
 
   AC_ARG_WITH(zmodem,

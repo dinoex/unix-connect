@@ -2,6 +2,11 @@ $Id$
 
 Aenderungen an UnixConnect
 
+seit 0.91
+
+- configure.in: (Dirk Meyer)
+  if geaendert, so das sie auch mit alter "sh" laufen.
+
 seit 0.90
 
 - gate/uursmtp.c: (Dirk Meyer)
