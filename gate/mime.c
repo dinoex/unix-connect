@@ -362,7 +362,7 @@ static int decode_base64(char *msg, long *msglenp, int *eightbit) {
 				l--;
 				v = get_base64_6(ch);
 			} while (v==-1 && ch != '=');
-			if (!l)
+			if (l<0)
 				break;
 			b24l <<= 6;
 			if (v>-1)
