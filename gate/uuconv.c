@@ -90,8 +90,10 @@ int valid_newsgroups( char *data )
 {
 	if(NULL==data)
 		return 0;
+	/* Bretter fangen immer mit "@" an */
 	if ( data[0] != '/' )
 		return 0;
+	/* wenn dies eine Brett@Box-Adresse sein koennte */
 	if ( strchr( data, '@' ) != NULL )
 		return 0;
 	return 1;

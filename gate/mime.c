@@ -161,19 +161,20 @@ int is_8_bit(const unsigned char *string)
 	return 0;
 }
 
+static const char specialchar[]="()<>@,;:\"/[]?.= ";
+
 /*
  * Diese Funktion zaehlt, wieviele Zeichen QP-kodiert werden muessen.
  */
 int count_8_bit(const unsigned char *string)
 {
 	int i;
-	static char specialchar[]="()<>@,;:\"/[]?.= ";
 
 	for(i=0; *string; string++)
 	{
 		if((*string > 0x7E) || (strchr(specialchar,*string)!=0))
 		{
-			i = i+1;
+			i++;
 		}
 	}
 	return i;
@@ -186,7 +187,6 @@ char *mime_encode(const char *iso)
 {
 	char *encoded, *enc;
 	const unsigned char *p;
-	static const char specialchar[]="()<>@,;:\"/[]?.= ";
 	int len;
 
 	p=(const unsigned char*)iso;

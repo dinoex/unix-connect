@@ -1,0 +1,47 @@
+From methan.chemie.fu-berlin.de!hot.zer.de!p.mandrella Sun Feb 21 18:33:06 1993
+Return-Path: <methan.chemie.fu-berlin.de!hot.zer.de!p.mandrella>
+Received: from methan.chemie.fu-berlin.de by sisyphos.owl.de with cbsmtp
+	(Smail3.1.28.1 #3) id m0nQMQE-0004yYC; Sun, 21 Feb 93 18:33 MET
+Received: by methan.chemie.fu-berlin.de (Smail3.1.28.1)
+	  from ki1.chemie.fu-berlin.de (130.133.2.21) with smtp
+	  id <m0nQHl2-0000awC>; Sun, 21 Feb 93 15:34 MET
+Received: by ki1.chemie.fu-berlin.de (Smail3.1.28.1)
+	  from mcshh (192.76.134.1) with smtp
+	  id <m0nQHjG-0001bKC>; Sun, 21 Feb 93 15:32 MET
+Received: by mcshh.Hanse.DE from xclhh.comlink.de  Via bsmtp
+	id m0nQHg3-00031xC; Sun, 21 Feb 93 15:29 MEZ; (Smail3.1.28.1)
+Received: by xclhh.comlink.de (uzcopy) Sun, 21 Feb 1993 07:31:41 CET
+Path: xclhh.comlink.de!CL-HH!OLN!BIONIC!HOT
+Date: Fri, 19 Feb 1993 22:27:00 CET
+From: p.mandrella@hot.zer.de
+Reply-To: p.mandrella@hot.zer.de
+Message-Id: <4wAUB5dNU-@47.hot.zer.de>
+To: martin@sisyphos.owl.de
+Subject: Re: XPoint und JANUS
+Organization: MailBox im Z-NETZ Verbund
+Lines: 19      
+X-Gateway: NETCALL3.8 UC xclhh.comlink.de [UZERCP V3.99f]
+Content-Type: text
+Content-Length: 440
+Status: RO
+
+
+Hallo martin%sisyphos.owl.de,
+
+Du meintest am 17.02.93 zum Thema "XPoint und JANUS":
+
+> Du hast nicht zufaellig schon eine (Beta) Version, die "richtige" JANUS
+> Netcalls einlesen kann?
+
+Nope, ist aber auch gar nicht noetig. Du musst nur folgende Batchdatei
+als Entpacker eintragen:
+
+   cd spool
+   echo j|del *.*
+   pkunzip ..\called            <- hier den passenden Entpacker einsetzen
+   copy /b *.* ..\puffer
+   echo j|del *.*
+
+
+Peter
+
