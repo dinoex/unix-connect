@@ -3,7 +3,8 @@
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1993-1994  Martin Husemann
  *  Copyright (C) 1995-1998  Christopher Creutzig
- *  Copyright (C) 1996-2000  Dirk Meyer
+ *  Copyright (C) 2001       Detlef Würkner
+ *  Copyright (C) 1996-2001  Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -1232,20 +1233,35 @@ make_body(char *bigbuffer, size_t msglen,
 		 */
 		 if (mime_info->text_plain) {
 #ifndef ENABLE_ISO_IN_ZCONNECT
-			/* Bei Zeichensaetzen us-ascii,
-			 * undefiniert oder iso-8859-1
-			 * konvertieren wir nach IBM */
-			if (mime_info->charset > 1 )
-				fprintf(zconnect, HN_CHARSET": ISO%d\r\n", mime_info->charset);
-			else
-				iso2pc_size(start, msglen);
+			if (mime_info->charsetname) {
+				/* Unbekannte Charsets durchreichen */
+				fprintf(zconnect, HN_CHARSET": %s\r\n",
+					mime_info->charsetname);
+			} else {
+				/* Bei Zeichensaetzen us-ascii,
+				 * undefiniert oder iso-8859-1
+				 * konvertieren wir nach IBM */
+				if (mime_info->charset > 1 )
+					fprintf(zconnect, HN_CHARSET
+						": ISO%d\r\n",
+						mime_info->charset);
+				else
+					iso2pc_size(start, msglen);
+			}
 #else /* ENABLE_ISO_IN_ZCONNECT */
-			/* Wir konvertieren nie nach IBM,
-			 * setzen aber eine CHARSET:
-			 * Headerzeile (default: ISO1)
-			 */
-			fprintf(zconnect, HN_CHARSET": ISO%d\r\n",
-				mime_info->charset >0 ? mime_info->charset : 1);
+			if (mime_info->charsetname) {
+				/* Unbekannte Charsets durchreichen */
+				fprintf(zconnect, HN_CHARSET": %s\r\n",
+					mime_info->charsetname);
+			} else {
+				/* Wir konvertieren nie nach IBM,
+				 * setzen aber eine CHARSET:
+				 * Headerzeile (default: ISO1)
+				 */
+				fprintf(zconnect, HN_CHARSET": ISO%d\r\n",
+					mime_info->charset >0 ?
+					mime_info->charset : 1);
+			}
 #endif /* ENABLE_ISO_IN_ZCONNECT */
 		}
 		fprintf (zconnect, HN_LEN": %d\r\n\r\n", msglen);

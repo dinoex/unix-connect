@@ -497,6 +497,7 @@ int parse_mime_header(int direction, header_p hd,
 	info->type     = cty_none;
 	info->text_plain=1; /* default */
 	info->charset  = -1;
+	info->charsetname = NULL;
 	info->filename = NULL;
 	info->unixconnect_multipart = 0;
 
@@ -565,6 +566,10 @@ int parse_mime_header(int direction, header_p hd,
 /* Es gibt mittlerweile auch zweistellige ISO-8859-XX-Nummern, z.B. 15 */
 							para1value[9] = ch;
 							info->charset = atol(&para1value[9]);
+						} else {
+							/* Unbekannte Charsets durchreichen */
+							para1value[9] = ch;
+							info->charsetname = dstrdup(para1value);
 						}
 					}
 				}

@@ -366,6 +366,7 @@ convert(FILE *zconnect, FILE *smtp)
 	char buffer[300];
 	const char *mid;
 	char zbuf[4], *sp, *zp, *bufende, *c, *file, *typ;
+	char *charsetname;
 	static int binno = 0;
 	long comment, len, ascii_len;
 	size_t buffree;
@@ -515,15 +516,20 @@ convert(FILE *zconnect, FILE *smtp)
 		file = dstrdup(p->text);
 	} else
 		file = NULL;
+
+	/* CHARSET: Headerzeile auswerten */
+	charsetname = NULL;
 	p = find(HD_CHARSET, hd);
 	if (p) {
 		if (strncasecmp(p->text, "ISO", 3) == 0) {
 			/* Es gibt mittlerweile auch zweistellige
 			   ISO-8859-XX-Nummern, z.B. 15 */
 			charset = atol(&p->text[3]);
-		}
-		else
+		} else {
+			/* Unbekannte charsets durchreichen */
 			charset = -2; /* unbekannt */
+			charsetname = dstrdup(p->text);
+		}
 		hd = del_header(HD_CHARSET, hd);
 	}
 	else
@@ -772,10 +778,17 @@ convert(FILE *zconnect, FILE *smtp)
 	eightbit = eightbit & 0x80;
 
 	/* In smallbuffer charset-Info hinlegen */
-	if (eightbit)
-		sprintf(smallbuffer, "ISO-8859-%d", charset ? charset : 1);
-	else
-		strcpy(smallbuffer, "US-ASCII");
+	if (charsetname) {
+		/* Unbekannte charsets durchreichen */
+		strcpy(smallbuffer, charsetname);
+		free(charsetname);
+	} else {
+		if (eightbit)
+			sprintf(smallbuffer, "ISO-8859-%d",
+				charset ? charset : 1);
+		else
+			strcpy(smallbuffer, "US-ASCII");
+	}
 
 	/* MIME-Headerzeilen */
 	if (!wasmime) {

@@ -5,7 +5,8 @@
  *  Copyright (C) 1995-1998  Christopher Creutzig
  *  Copyright (C) 1999       Andreas Barth, Option "-p"
  *  Copyright (C) 1999       Matthias Andree, Option "-s"
- *  Copyright (C) 1996-2000  Dirk Meyer
+ *  Copyright (C) 2001       Detlef Würkner
+ *  Copyright (C) 1996-2001  Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -687,6 +688,8 @@ convdata(FILE *smtp, FILE *zconnect)
 	make_body(bigbuffer, msglen, &mime_info, binaer,
 		smallbuffer, zconnect);
 
+	if (mime_info.charsetname)
+		free(mime_info.charsetname);
 	if (mime_info.filename)
 		free(mime_info.filename);
 }
