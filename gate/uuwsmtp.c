@@ -149,6 +149,7 @@ void do_help(void)
 "        uuwsmtp -d ZCONNECT-file BSMTP-file [ fqdn-zconnect-host ]\n"
 "          secure mode, no delete, no directory search.\n"
 "        uuwsmtp -p [ fqdn-zconnect-host ]\n"
+"        uuwsmtp --pipe [ fqdn-zconnect-host ]\n"
 "          full Pipe\n"
 "        uuwsmtp --output BSMTP-file [ --remove ] ZCONNECT-file\n"
 "                [ fqdn-zconnect-host ]\n"
@@ -233,6 +234,14 @@ int main(int argc, const char *const *argv)
 					ready ++;
 					break;
 				};
+				if ( stricmp( cptr, "pipe" ) == 0 ) {
+					if ( ready != 0 )
+						usage();
+					input_file = "-";
+					output_file = "-";
+					ready ++;
+					break;
+				};
 				usage();
 				break;
 			case 'o':
@@ -247,14 +256,7 @@ int main(int argc, const char *const *argv)
 					usage();
 				/* Beide Argumente sind Dateien */
 				GET_NEXT_DATA( cptr );
-				fin = fopen( cptr, "rb");
-				if ( fin == NULL ) {
-					fprintf( stderr,
-					"%s: error open file %s: %s\n",
-					name, cptr, strerror( errno ) );
-					exit( EX_CANTCREAT );
-				};
-				ready ++;
+				input_file = cptr;
 				GET_NEXT_DATA( cptr );
 				output_file = cptr;
 				ready ++;

@@ -164,6 +164,7 @@ void do_help(void)
 "        uurnews -d RNEWS-file ZCONNECT-file\n"
 "          secure mode, no delete, no directory search.\n"
 "        uurnews -p [ fqdn-zconnect-host ]\n"
+"        uurnews --pipe\n"
 "          full Pipe\n"
 "        uurnews --output ZCONNECT-file [ --remove ] RNEWS-file\n"
 "          gnu standard\n"
@@ -229,6 +230,14 @@ int main(int argc, const char *const *argv)
 					GET_NEXT_DATA( cptr );
 					input_file = cptr;
 					remove_me = cptr;
+					ready ++;
+					break;
+				};
+				if ( stricmp( cptr, "pipe" ) == 0 ) {
+					if ( ready != 0 )
+						usage();
+					input_file = "-";
+					output_file = "-";
 					ready ++;
 					break;
 				};

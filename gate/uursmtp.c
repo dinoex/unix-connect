@@ -191,6 +191,7 @@ void do_help(void)
 "        uursmtp -d BSMTP-file ZCONNECT-file\n"
 "          secure mode, no delete, no directory search.\n"
 "        uursmtp -p [ FQDN-ZCONNECT-host ]\n"
+"        uursmtp --pipe\n"
 "          full Pipe\n"
 "        uursmtp --output ZCONNECT-file [ --remove ] BSMTP-file\n"
 "          gnu standard\n"
@@ -259,6 +260,14 @@ int main(int argc, const char *const *argv)
 					GET_NEXT_DATA( cptr );
 					input_file = cptr;
 					remove_me = cptr;
+					ready ++;
+					break;
+				};
+				if ( stricmp( cptr, "pipe" ) == 0 ) {
+					if ( ready != 0 )
+						usage();
+					input_file = "-";
+					output_file = "-";
 					ready ++;
 					break;
 				};
