@@ -1,6 +1,6 @@
 # archiv-name: newsalias
 #
-# Datum der letzten Aenderung: 05.08.1999
+# Datum der letzten Aenderung: 20.08.1999
 #
 # Hinweise zu der Brett- bzw. Newsgroupnamen-Umsetzungsliste für ZConnect/
 # RFC-News-Gateways
@@ -178,7 +178,6 @@ Alias:	/L-NETZ/MUELHEIM/TERMINE+VERANSTALT.	l-netz.muelheim.termine+veranstalt
 Alias:	/L-NETZ/OBERHAUSEN/TERMINE+VERANSTALT.	l-netz.oberhausen.termine+veranstalt
 Alias:	/L-NETZ/VIERSEN/TERMINE+VERANSTALT.	l-netz.viersen.termine+veranstalt
 Alias:	/MEDIANET/!WICHTIG			medianet._wichtig
-Alias:	/NATUR/KOORDINATION/!WICHTIG		natur.koordination._wichtig
 Alias:	/NM/BIBLIOTHEK/!KOORDINATION		nm.bibliothek.koordination
 Alias:	/PDS/!DISKUSSION			pds.diskussion
 Alias:	/PDS/LOKAL/LEIPZIG/AKTUELLES&TERMINE	pds.lokal.leipzig.aktuelles+termine
