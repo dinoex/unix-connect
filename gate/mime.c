@@ -110,7 +110,7 @@ static int decode_quoted_printable(char *, long *, int *);
 /*
  * zaehlt das Auftreten eines Zeichens in einem String
  */
-int count(char *s, char c)
+int count(const char *s, char c)
 {
 	int i=0;
 	
@@ -153,7 +153,7 @@ int is_mime(unsigned char *string)
  * Diese Funktion ueberprueft, ob ein uebergebener String das MSB gesetzt
  * hast, also Zeichen >127 enthaelt.
  */
-int is_8_bit(unsigned char *string)
+int is_8_bit(const unsigned char *string)
 {
 	for(; *string; string++)
 	{
@@ -168,7 +168,7 @@ int is_8_bit(unsigned char *string)
 /*
  * Diese Funktion zaehlt, wieviele Zeichen QP-kodiert werden muessen.
  */
-int count_8_bit(unsigned char *string)
+int count_8_bit(const unsigned char *string)
 {
 	int i;
 	static char specialchar[]="()<>@,;:\"/[]?.= "; 
@@ -186,7 +186,7 @@ int count_8_bit(unsigned char *string)
 /*
  * diese Funktion konvertiert einen ISO-String nach MIME, falls noetig.
  */
-char *mime_encode(char *iso)
+char *mime_encode(const char *iso)
 {
 	char *encoded, *enc;
 	unsigned char *p;
@@ -242,7 +242,7 @@ char *mime_encode(char *iso)
  * Sonderzeichen im Realnamen. Diese werden am besten verlustfrei
  * MIME-kodiert uebertragen.
  */
-char *mime_address(char *zcon_ad)
+char *mime_address(const char *zcon_ad)
 {
 	char *mime_ad, *rn, *mime_ad_start;
 	char *klammer_auf;
