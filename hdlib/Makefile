@@ -72,15 +72,15 @@ uurd.c:	uurdpara.c
 
 smtprd.c:	uurdpara.c
 	@-rm -f smtprd.c
-	ln uurdpara.c smtprd.c
+	( echo "#define SMTP"; cat uurdpara.c ) >$@
 
 pkread.c:	rdpara.c
 	@-rm -f pkread.c
-	ln rdpara.c pkread.c
+	( echo "#define DO_CRC"; cat rdpara.c ) >$@
 
 pkwrite.c:	wrpara.c
 	@-rm -f pkwrite.c
-	ln wrpara.c pkwrite.c
+	( echo "#define DO_CRC"; cat wrpara.c ) >$@
 
 hash.c:	header.gperf hash.epilogue gperf.prefix
 	cat gperf.prefix header.gperf > header.gtmp
@@ -108,15 +108,6 @@ check:	testheader test.in uuheader.a
 uuheader.a:	$(OBJS)
 	ar r uuheader.a $(OBJS)
 	$(RANLIB) uuheader.a
-
-smtprd.o:	../Makefile.global
-	$(CC) $(CFLAGS) $(CPPFLAGS) -DSMTP -c smtprd.c
-
-pkread.o:	../Makefile.global
-	$(CC) $(CFLAGS) $(CPPFLAGS) -DDO_CRC -c pkread.c
-
-pkwrite.o:	../Makefile.global
-	$(CC) $(CFLAGS) $(CPPFLAGS) -DDO_CRC -c pkwrite.c
 
 # automatic depend
 crc.o: crc.c ../include/crc.h ../include/sysdep.h
