@@ -122,10 +122,10 @@
  *
  * SYNOPSIS
  *   #include "line.h"
- *   void set_rawmode(int fileno)
+ *   void set_rawmode(int mfileno)
  *
  * DESCRIPTION
- *   Die Funktion stellt das TTY 'fileno' so ein, dass darueber eine
+ *   Die Funktion stellt das TTY 'mfileno' so ein, dass darueber eine
  *   transparente Datenkommunikation mit einem Modem bzw. einer Gegenstelle
  *   am anderen Ende der Leitung durchgefuehrt werden kann:
  *
@@ -146,24 +146,24 @@
  */
 
 void
-set_rawmode(int fileno)
+set_rawmode(int mfileno)
 {
 #ifdef HAS_SYSV_TERMIO
 	struct termio term;
 
-	if (ioctl(fileno, TCGETA, &term) != 0)
+	if (ioctl(mfileno, TCGETA, &term) != 0)
 		return;
 #endif
 #ifdef HAS_POSIX_TERMIOS
 	struct termios term;
 
-	if (tcgetattr(fileno, &term) !=0 )
+	if (tcgetattr(mfileno, &term) !=0 )
 		return;
 #endif
 #ifdef HAS_BSD_SGTTY
 	struct sgttyb term;
 
-	if (gtty(fileno, &term) !=0 )
+	if (gtty(mfileno, &term) !=0 )
 		return;
 #endif
 
@@ -178,19 +178,19 @@ set_rawmode(int fileno)
 	term.c_cflag |= ISET_CFLAG;
 	term.c_cc[VMIN] = 1;
 	term.c_cc[VTIME] = 0;
-	ioctl(fileno, TCSETAW, &term);
+	ioctl(mfileno, TCSETAW, &term);
 #endif
 #ifdef HAS_POSIX_TERMIOS
 	cfmakeraw(&term);
 	term.c_cflag |= ISET_CFLAG;
 	term.c_cflag &= ~CLOCAL;
-	tcsetattr(fileno, TCSADRAIN, &term);
+	tcsetattr(mfileno, TCSADRAIN, &term);
 #endif
 #ifdef HAS_BSD_SGTTY
-	stty(fileno, &term);
+	stty(mfileno, &term);
 #endif
 #ifdef	TIOCCAR
-	ioctl(fileno, TIOCCAR, 0);
+	ioctl(mfileno, TIOCCAR, 0);
 #endif
 }
 
@@ -199,24 +199,24 @@ set_rawmode(int fileno)
  */
 
 void
-hangup(int fileno)
+hangup(int mfileno)
 {
 #ifdef HAS_SYSV_TERMIO
 	struct termio term;
 
-	if (ioctl(fileno, TCGETA, &term) != 0)
+	if (ioctl(mfileno, TCGETA, &term) != 0)
 		return;
 #endif
 #ifdef HAS_POSIX_TERMIOS
 	struct termios term;
 
-	if (tcgetattr(fileno, &term) !=0 )
+	if (tcgetattr(mfileno, &term) !=0 )
 		return;
 #endif
 #ifdef HAS_BSD_SGTTY
 	struct sgttyb term;
 
-	if (gtty(fileno, &term) !=0 )
+	if (gtty(mfileno, &term) !=0 )
 		return;
 #endif
 
@@ -227,35 +227,35 @@ hangup(int fileno)
 	term.c_cflag = B0;
 #endif
 #ifdef HAS_SYSV_TERMIO
-	ioctl(fileno, TCSETAW, &term);
+	ioctl(mfileno, TCSETAW, &term);
 #endif
 #ifdef HAS_POSIX_TERMIOS
-	tcsetattr(fileno, TCSADRAIN, &term);
+	tcsetattr(mfileno, TCSADRAIN, &term);
 #endif
 #ifdef HAS_BSD_SGTTY
-	stty(fileno, &term);
+	stty(mfileno, &term);
 #endif
 }
 
 void
-set_local(int fileno, int local)
+set_local(int mfileno, int local)
 {
 #ifdef HAS_SYSV_TERMIO
 	struct termio term;
 
-	if (ioctl(fileno, TCGETA, &term) != 0)
+	if (ioctl(mfileno, TCGETA, &term) != 0)
 		return;
 #endif
 #ifdef HAS_POSIX_TERMIOS
 	struct termios term;
 
-	if (tcgetattr(fileno, &term) !=0 )
+	if (tcgetattr(mfileno, &term) !=0 )
 		return;
 #endif
 #ifdef HAS_BSD_SGTTY
 	struct sgttyb term;
 
-	if (gtty(fileno, &term) !=0 )
+	if (gtty(mfileno, &term) !=0 )
 		return;
 #endif
 
@@ -272,13 +272,13 @@ set_local(int fileno, int local)
 		term.c_cflag &= ~CLOCAL;
 #endif
 #ifdef HAS_SYSV_TERMIO
-	ioctl(fileno, TCSETAW, &term);
+	ioctl(mfileno, TCSETAW, &term);
 #endif
 #ifdef HAS_POSIX_TERMIOS
-	tcsetattr(fileno, TCSADRAIN, &term);
+	tcsetattr(mfileno, TCSADRAIN, &term);
 #endif
 #ifdef HAS_BSD_SGTTY
-	stty(fileno, &term);
+	stty(mfileno, &term);
 #endif
 }
 
@@ -316,7 +316,7 @@ bd_table_t bd_table[] = {
 	{ NULL,		0 }
 };
 
-void set_speed(int fileno, char *speed)
+void set_speed(int mfileno, char *speed)
 {
 	bd_table_t *p;
 #ifdef HAS_SYSV_TERMIO
@@ -337,27 +337,27 @@ void set_speed(int fileno, char *speed)
 		exit(1);
 	}
 #ifdef HAS_SYSV_TERMIO
-	if (ioctl(fileno, TCGETA, &term) != 0)
+	if (ioctl(mfileno, TCGETA, &term) != 0)
 		return;
 	term.c_cflag &= (~CBAUD);
 	term.c_cflag |= p->val;
-	ioctl(fileno, TCSETAW, &term);
+	ioctl(mfileno, TCSETAW, &term);
 #endif
 #ifdef HAS_POSIX_TERMIOS
-	if (tcgetattr(fileno, &term) !=0 )
+	if (tcgetattr(mfileno, &term) !=0 )
 		return;
 	cfsetospeed(&term, p->val);
 	cfsetispeed(&term, p->val);
-	tcsetattr(fileno, TCSADRAIN, &term);
+	tcsetattr(mfileno, TCSADRAIN, &term);
 #endif
 #ifdef HAS_BSD_SGTTY
 	struct sgttyb term;
 
-	if (gtty(fileno, &term) !=0 )
+	if (gtty(mfileno, &term) !=0 )
 		return;
 	term.sg_ispeed = p->val;
 	term.sg_ospeed = p->val;
-	stty(fileno, &term);
+	stty(mfileno, &term);
 #endif
 }
 
@@ -376,24 +376,24 @@ void set_speed(int fileno, char *speed)
 #endif
 
 void
-save_linesettings(int fileno)
+save_linesettings(int mfileno)
 {
 #ifdef HAS_SYSV_TERMIO
 	struct termio term;
 
-	if (ioctl(fileno, TCGETA, &term) != 0)
+	if (ioctl(mfileno, TCGETA, &term) != 0)
 		return;
 #endif
 #ifdef HAS_POSIX_TERMIOS
 	struct termios term;
 
-	if (tcgetattr(fileno, &term) !=0 )
+	if (tcgetattr(mfileno, &term) !=0 )
 		return;
 #endif
 #ifdef HAS_BSD_SGTTY
 	struct sgttyb term;
 
-	if (gtty(fileno, &term) !=0 )
+	if (gtty(mfileno, &term) !=0 )
 		return;
 #endif
 	save_term = term;
@@ -401,18 +401,18 @@ save_linesettings(int fileno)
 
 
 void
-restore_linesettings(int fileno)
+restore_linesettings(int mfileno)
 {
 #ifdef HAS_SYSV_TERMIO
 	save_term.c_cflag |= ISET_CFLAG;
-	ioctl(fileno, TCSETAW, &save_term);
+	ioctl(mfileno, TCSETAW, &save_term);
 #endif
 #ifdef HAS_POSIX_TERMIOS
 	save_term.c_cflag |= ISET_CFLAG;
-	tcsetattr(fileno, TCSADRAIN, &save_term);
+	tcsetattr(mfileno, TCSADRAIN, &save_term);
 #endif
 #ifdef HAS_BSD_SGTTY
-	stty(fileno, &save_term);
+	stty(mfileno, &save_term);
 #endif
 }
 
