@@ -4,7 +4,8 @@
  *  Copyright (C) 1993-1994  Martin Husemann
  *  Copyright (C) 1995       Moritz Both
  *  Copyright (C) 1995-1998  Christopher Creutzig
- *  Copyright (C) 1999-2000  Dirk Meyer
+ *  Copyright (C) 2001       Detlef Würkner
+ *  Copyright (C) 1999-2001  Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -61,6 +62,7 @@ typedef struct {
 	mime_cty type;
 	int text_plain; /* Type: text/plain */
 	int charset; /* undef=0; us-ascii=-1; sonst iso-8859-n */
+	char *charsetname; /* malloc'd, falls vorhanden; sonst NULL */
 	char *filename; /* malloc'd, falls vorhanden; sonst NULL */
 	int unixconnect_multipart; /* UnixConnect-Spezial-Multipart */
 } mime_header_info_struct;
