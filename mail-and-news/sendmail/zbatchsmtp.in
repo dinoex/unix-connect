@@ -37,8 +37,8 @@ for host in *
 do
     (
 	# change to directory or exit subshell
-	test -d $host || exit
-	cd $host || exit 1
+	test -d ./$host || exit
+	cd ./$host || exit 1
 
 	# send multiple batches
 	while :
@@ -65,7 +65,7 @@ do
 		  do
 			  cat $f
 		  done
-		  echo QUIT ) | uursmtp -f $host
+		  echo QUIT ) | uursmtp -f ./$host
 
 		if [ $? -eq 0 ]
 		then
