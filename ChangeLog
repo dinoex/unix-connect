@@ -4,6 +4,12 @@ Aenderungen an UnixConnect
 
 seit 0.93
 
+- gate/zconv.c: (Dirk Meyer)
+  Letzter Name in ROT: bei News nur loechen wenn err "not-for-mail" ist.
+
+- mail-and-news/sendmail/README: (Dirk Meyer)
+  erweitert.
+
 - mail-and-news/postfix/Makefile, mail-and-news/postfix/RSMTP,
   mail-and-news/postfix/run_as.c: (Matthias Andree)
   Postfix muss beim rsmtp sein "sendmail -bs" als Benutzer "postfix"
@@ -12,7 +18,7 @@ seit 0.93
 seit 0.92
 
 - Makefile.in: (Dirk Meyer)
-  chown Gruppe nach ':' start '.'
+  chown Gruppe nach ':' statt '.'
 
 - include/mime.h, gate/mime.c, gate/uuwnews.c, gate/uuwsmtp.c,
   gate/uurnews.c, gate/uursmtp.c, gate/uuconv.c: (Detlef Würkner)
