@@ -4,6 +4,48 @@ $Id$
 Aenderungen an UnixConnect
 seit 0.80
 
+- uufatal.c, ruft jetzt newlog() auf.
+
+- call.c: Anrufzeit vereinfacht.
+
+- Erweiterung des Log-Systems.
+
+- lib, includes aufgeräumt. Fehlenede und doppelte Prototypen korregiert.
+  sources includen ihr eigenes Interface.
+
+- zconv.c: MIME_ENC_HEADER, MIME default ...
+
+- uuconv.c: CONVERT_ISO darf nich wahlfrei für Kommentare sein.
+
+- uursmtp: Neue Option: -s
+  uursmtp -s (FQDN-ZCONNECT-Host) (Envelope-Sender) (Envelope-Empfänger)
+  Envelope-Empfänger darf mehrfach auftreten
+  Liest Mail mit RFC-822-Header und -Body aber OHNE BSMTP-Enveloper von stdin,
+  schreibt Ausgabe in Spooldirectory.
+  Motivation: um direkten Aufruf aus Postfix-pipe zu ermöglichen.
+  (Matthias Andree) 
+
+- IBMs Postfix wird nun unterstützt (Matthias Andree)
+  Integration ist dank neuer uursmtp-Option trivial.
+
+- strdup-Kollision beseitigt: (Matthias Andree)
+
+- zcall: verhindert blocking bei Oeffnen des seriellen Ports
+  jetzt auch unter Linux (Matthias Andree)
+  gibt nach beendetem erfolgreichem Netcall den Port wieder frei.
+
+- xprog.c: kompletter rewrite, führt überall Fehlerabfragen ein, wichtige
+  Neuerungen: 1) runcommand(); 2) erheblich besser wartbar
+  3) sx ist jetzt sz -X, alle Programme werden in /usr/bin erwartet
+  (Matthias Andree), Cleanup der Typ-Konflikite (Dirk Meyer)
+
+- strlib.a: neue Funktionen stccpy und qstccpy. Sind Varianten von strncpy,
+  die nur so viele Bytes wie nötig kopieren und IMMER für Nullterminierung
+  sorgen. ALLE strncpy sollten umgestellt werden.
+  Wenig getestet. (Matthias Andree)
+
+- anruf.in entrümpelt, Variablen eingebaut (Matthias Andree)
+
 - Nonblocking IO wieder abschalten (Matthias Andree)
 
 - redesign der Funktion import_all() (Matthias Andree)
@@ -30,6 +72,9 @@ seit 0.80
   Id für Multipart jetzt immer gesetzt.
   Exitcodes aus <sysexits.h> verwenden.
   Pointuser wird in allen Optionen gesetzt.
+
+- install-sh eingebaut, (C) 1991 MIT
+  (Matthias Andree)
 
 - Makefiles, die helpers/subst aufrufen, tun dies jetzt durch
   $(SHELL) (Matthias Andree)

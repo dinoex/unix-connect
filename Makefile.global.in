@@ -74,9 +74,13 @@ GROUP    = @GROUP@
 PATHADD  = @PATHADD@
 MAIL     = @MAIL@
 NEWS     = @NEWS@
+LIBOBJS  = @LIBOBJS@
 
-INSTALL = install -c
-INSTALL_PROGRAM = $(INSTALL) -o $(USER) -g $(GROUP)
+INSTALL = @INSTALL@
+# autoconf does a littel bit to much for us ....
+#INSTALL_PROGRAM = @INSTALL_PROGRAM@
+#INSTALL_DATA = @INSTALL_DATA@
+INSTALL_PROGRAM = $(INSTALL) -o $(USER) -g $(GROUP) -m 555
 INSTALL_DATA = $(INSTALL) -o $(USER) -g $(GROUP) -m 640
 
 # jetzt die Definitionen übernehmen

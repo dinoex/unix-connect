@@ -2,6 +2,7 @@
 #
 #   UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
 #   Copyright (C) 1993-94  Martin Husemann
+#   Copyright (C) 1999     Dirk Meyer
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -22,16 +23,16 @@
 #  GNU General Public License finden Sie in der Datei README.1st.
 #  ------------------------------------------------------------------------
 #
-#  Bugreports, suggestions for improvement, patches, ports to other systems
-#  etc. are welcome. Contact the maintainer by e-mail:
-#  christopher@nescio.foebud.org or snail-mail:
-#  Christopher Creutzig, Im Samtfelde 19, 33098 Paderborn
+#   Bugreports, suggestions for improvement, patches, ports to other systems
+#   etc. are welcome. Contact the maintainer by e-mail:
+#   dirk.meyer@dinoex.sub.org or snail-mail:
+#   Dirk Meyer, Im Grund 4, 34317 Habichstwald
 #
-#  There is a mailing-list for user-support:
-#   unix-connect@mailinglisten.im-netz.de,
-#  write a mail with subject "Help" to
-#   nora.e@mailinglisten.im-netz.de
-#  for instructions on how to join this list.
+#   There is a mailing-list for user-support:
+#    unix-connect@mailinglisten.im-netz.de,
+#   write a mail with subject "Help" to
+#    nora.e@mailinglisten.im-netz.de
+#   for instructions on how to join this list.
 #
 
 include ../Makefile.global
@@ -60,7 +61,8 @@ uumlist: uumlist.in  ../Makefile.global
 	$(SHELL) ../helpers/subst < uumlist.in > $@
 
 install: $(FILES)
-	$(INSTALL_PROGRAM) $(FILES) $(BINDIR)
+	$(INSTALL_PROGRAM) -b $(FILESBACKUP) $(BINDIR)
+	$(INSTALL_PROGRAM) $(FILESNORMAL) $(BINDIR)
 
 uninstall:
 	-cd $(BINDIR) && rm -f $(FILES)

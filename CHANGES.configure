@@ -1,6 +1,10 @@
 
 Änderungen seit 0.80:
 
+- diverse: LIBOBJS-Variable aus autoconf jetzt berücksichtigt
+  kann dazu gebraucht werden, fehlende System-Library-Funktionen nachzubauen.
+  (Matthias Andree)
+
 - Bei GCC viele Warnungen aktivieren.
 - Alte Verzeichnisse für sysdep.h und policy.h entfernt.
 

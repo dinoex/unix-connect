@@ -7,6 +7,22 @@
 #	Vor dem Anruf werden noch die Daten gepackt...
 #
 
+# Modemdevice
+MODEM="/dev/modem"
+
+# ZConnect-System, das angerufen werden soll
+ZCSYS="bionic.zerberus.de"
+
+# Anzahl der Anrufversuche insgesamt
+# diese Anzahl wird NICHT mit der Anzahl der Nummern multipliziert!
+# Ist sie also kleiner als die Anzahl der angegebenen Rufnummern für
+# $ZCSYS, so werden nicht alle Rufnummern probiert
+RETRIES=10
+
+# Geschwindigkeit des seriellen Ports
+SPEED=38400
+
+
 # Pruefe, ob interaktiv oder im Cron job:
 case "`tty`" in
  /dev/* )
@@ -18,13 +34,14 @@ case "`tty`" in
 esac
 
 $ECHO "Packe die vorliegenden Daten..."
-su news -c "/usr/lib/news/send-zcon bionic.zerberus.de"
+su news -c "/usr/lib/news/send-zcon $ZCSYS"
 @BINDIR@/prearc
 
 $ECHO "Anruf beim Server..."
-@BINDIR@/zcall bionic.zerberus.de modem 38400 10
+@BINDIR@/zcall $ZCSYS $MODEM $SPEED $RETRIES
+
 #
 #	Warum auch immer - zcall hinterläßt das Ausgabedevice bei
 #	mir in einem ungeordneten Zustand. Also wieder korrigieren:
 #
-stty -f /dev/modem sane
+stty sane <$MODEM

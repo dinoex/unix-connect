@@ -45,6 +45,8 @@ dnl AC_TYPE_SIGNAL
 dnl AC_FUNC_STRFTIME
 dnl AC_FUNC_VPRINTF
 dnl AC_CHECK_FUNCS(getcwd getwd mkdir mktime rmdir strcspn strdup strerror strstr strtol)
+AC_CHECK_FUNCS(snprintf)
+AC_REPLACE_FUNCS(strdup stccpy)
 
 dnl      checks for system services
 
@@ -145,12 +147,12 @@ AC_SUBST(GROUP)
 
 AC_MSG_CHECKING(Welcher Typ ist das Gateway)
 AC_ARG_WITH(box,
-[ --with-box=typ           point, gate, box
-                          Point: Unix-Connect ist Enduser-System
-                          Gate:  Kein Teil des Z-Netzes
-                          Box:   Alle ist möglich (default).],
+[ --with-box=typ           point, gate, server
+                          Point:  Unix-Connect ist Enduser-System
+                          Gate:   Kein Teil des Z-Netzes
+                          Server: Alles ist möglich (default).],
 [ case "$withval" in
-  box)
+  server)
         AC_MSG_RESULT(Box)
         INSTTYPE="box"
         ;;
@@ -462,6 +464,7 @@ AC_SUBST(SYSTYPE)
 AC_SUBST(CFLAGS)
 AC_SUBST(LDFLAGS)
 AC_SUBST(PATHADD)
+AC_SUBST(LIBOBJS)
 
 AC_PROG_RANLIB
 
