@@ -1,3 +1,9 @@
+Änderungen seit configure-19990813:
+
+- Das Verzeichnis rsmpt wird beachtet. (Dirk)
+- Host- und Domainnamen werden anders (portabler) erraten. (Andi)
+- in hdlib/Makefile ist das Target newhash enthalten. (Dirk)
+
 Änderungen seit configure-19990810:
 
 - Viele Bug-Fixes, damit es auch auf Nicht-GNU und Nicht-Linux

@@ -259,14 +259,14 @@ fi
 AC_MSG_CHECKING(Systemname)
 AC_ARG_WITH(sys,
 [ --with-sys=sys           Systemname.],[
-SYS=$withval;],[SYS=`hostname -s`])
+SYS=$withval;],[SYS=`hostname | sed 's/\..*//'`])
 AC_MSG_RESULT($SYS)
 AC_SUBST(SYS)
 
 AC_MSG_CHECKING(Domainname)
 AC_ARG_WITH(domain,
 [ --with-domain=domain     Domainname.],[
-DOMAIN=$withval;],[DOMAIN=`hostname -d`])
+DOMAIN=$withval;],[DOMAIN=`hostname | sed 's/^[[^\.]]*\.//'`])
 AC_MSG_RESULT($DOMAIN)
 AC_SUBST(DOMAIN)
 

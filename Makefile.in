@@ -38,7 +38,7 @@
 
 include Makefile.global
 
-SUBDIRS = lib date hdlib online gate tools etc shell helpers \
+SUBDIRS = helpers lib date hdlib online gate tools etc shell \
 	rsmtp \
 	mail-and-news/$(MAIL) \
 	mail-and-news/$(NEWS)
@@ -69,7 +69,7 @@ clobber:
 tidy:	clobber
 	for dir in $(SUBDIRS); do (cd $$dir; $(MAKE) tidy); done
 	-rm -f Makefile.global Makefile
-	-rm -f config.cache config.log config.status
+	-rm -f config.cache config.log config.status confdefs.h
 	-rm -f include/sysdep.h include/policy.h
 
 newhash:
