@@ -57,7 +57,9 @@
  *	configuration
  *---------------------------------------------------------------------------*/
 
+#ifndef MAILDIR
 #define MAILDIR		"/var/spool/dinoex/u/mailin"
+#endif
 
 #define	DATANAME	"%s/bsmtp.%06ld"
 

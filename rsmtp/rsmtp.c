@@ -65,7 +65,9 @@
  *---------------------------------------------------------------------------*/
 
 #define SENDMAIL	_PATH_SENDMAIL
+#ifndef GZIP
 #define GZIP		"/usr/bin/gzip"
+#endif
 
 #define	RCPT_MAX	1024
 

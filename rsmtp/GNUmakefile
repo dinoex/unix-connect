@@ -8,11 +8,14 @@
 # FREEBSD	= YES
 LINUX		= YES
 
+SPOOLDIR= /var/spool/uconnect/rsmtp
 DESTDIR	= /usr/local/libexec/unix-connect
 BINOWN	= -o root -g wheel
 BINMODE	= -m 755
 
 include ../.makefile.conf
+
+RSMTPSPOOL=$(SPOOLDIR)/rsmtp
 
 WARNALL	= \
 	-W \
@@ -101,6 +104,8 @@ else
 endif
 	CXX=gcc
 	CXXFLAGS= -g -Wall -Werror
+
+CPPFLAGS+= -DMAILDIR=${RSMTPSPOOL)
 
 TARMIN	= \
 	rsmtp \
