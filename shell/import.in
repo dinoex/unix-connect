@@ -1,6 +1,7 @@
 #!/bin/sh
 # $Id$
 #
+
 #  import (Netzwerk-System) (Datenformat)
 #
 #  Dieses Shell-Script wird von den Online-Programmen nach Austausch der
@@ -23,42 +24,88 @@ PATH=@BINDIR@@PATHADD@:$PATH; export PATH
 RSMTP="@RSMTP@"
 
 #
+# wenn wir abbrechen muessen  ...
+#
+out_mail() {
+	echo "To: postmaster"
+	echo "Subject: ZConnect: Fehler beim Entpacken von $sys" postmaster
+	echo ""
+	echo "
+
+Fehler beim Entpacken von System $sys
+
+Folgender Fehler ist aufgetreten:
+$error
+
+
+Logfile:
+--------"
+	cat $temp
+}
+
+ende() {
+	out_mail | mail postmaster
+	rm -rf $TMP
+	rm -f $temp
+	exit 1;
+}
+
+#
+#	watchgate "input"
+#
+watch_gate() {
+	errfile="$errfile $1"
+	echo "Gaten fehlgeschlagen $1" >>$temp
+	mv $1 @SPOOLDIR@/error/
+}
+
+#
 #  So tun, als wären wir über uucp unterwegs ... zum Loggen
 #
 if test -n $1; then
 	export UU_MACHINE=$1
+	sys=$1
 fi
 
 
-echo '##################################################################' >&2
-date >&2
-echo "Import der empfangenen Daten von $1" >&2
+# temporäre Datei
+temp=`mktemp /tmp/import.XXXXXX` || exit 1
+
+
+echo '################################################################' >>$temp
+date >>$temp
+echo "Import der empfangenen Daten von $1" >>$temp
 
 TMP=import.$$
 
 if [ ! -d @SPOOLDIR@/error ]
 then
-	mkdir @SPOOLDIR@/error || { echo "Ich kann /var/spool/zconnect/error nicht anlegen!"; exit 1; }
+	mkdir @SPOOLDIR@/error 2>>$temp ||
+	{ echo "Ich kann @SPOOLDIR@/error nicht anlegen!" >>$temp; ende; }
 fi
 
-mkdir $TMP || { echo "kann temporaer-Verzeichnis nicht anlegen!"; exit 1; }
+mkdir $TMP ||
+{ echo "kann temporaer-Verzeichnis nicht anlegen!" >>$temp; ende; }
 
 for file in *
 do
 	if [ -f $file ]
 	then
-		echo "Lese $file" >&2
+		echo "Teile $file" >>$temp
 
 		mv $file $TMP
 		cd $TMP
-		zconsplit $file || { echo "zconsplit $file failed: $?";  exit 1; }
+		zconsplit $file 2>>$temp ||
+		{ error="zconsplit $file failed: $?"; ende; }
 		if [ -f $file.prv -a -s $file.prv ]
 		then
-			(((uuwsmtp -f $file.prv $1 | $RSMTP) 2>> /tmp/zlog)||(mv $file.prv @SPOOLDIR@/error/; echo $file.prv " defekt -> /var/spool/zconnect/error/" |mail postmaster))
+			((uuwsmtp -f $file.prv $1 | $RSMTP) 2>>$temp) ||
+			watch_gate "$file.prv" )
 		fi
 		if [ -f $file.brt -a -s $file.brt ]
 		then
-			(((uuwnews -f $file.brt $1 | rnews) 2>> /tmp/zlog)||(mv $file.brt @SPOOLDIR@/error/; echo $file.brt " defekt -> /var/spool/zconnect/error/" |mail postmaster))
+			((uuwnews -f $file.brt $1 | rnews) 2>>$temp) ||
+			watch_gate "$file.prv" )
 		fi
 		if [ -f $file ]
 		then
@@ -68,8 +115,13 @@ do
 	fi
 done
 
-rm -rf $TMP
-
 # $TMP haengt von unserer Prozess-ID ab, kann also nicht belegt sein.
+if [ -n "$errfile" ]; then
+	error="Fehler beim Gaten ($errfile)";
+	ende;
+fi
 
+rm -rf $TMP
+rm -f $temp
 
+# eof

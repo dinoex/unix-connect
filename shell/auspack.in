@@ -49,6 +49,13 @@ case "$KENNUNG" in
 			ARC="$name".zoo
 		fi
 		zoo x $ARC	> /dev/null 2>&1 ;;
+ "lzh" | \
+ "LZH" )	name=3D`dirname $ARC`/`basename $ARC .lzh`
+ 		if [ -r $name.lzh ]
+		then
+			ARC=3D"$name".lzh
+		fi
+		lha xi $ARC	> /dev/null 2>&1 ;;
  "lha" | \
  "LHA" )	name=`dirname $ARC`/`basename $ARC .lha`
 		if [ -r $name.lha ]

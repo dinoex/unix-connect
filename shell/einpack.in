@@ -34,6 +34,8 @@ case "$KENNUNG" in
 		arc a $ARC.arc $*	> /dev/null 2>&1 ;;
  "ZOO" )	ARC=`dirname $ARC`/`basename $ARC .zoo`
 		zoo ah $ARC.zoo $*	> /dev/null 2>&1 ;;
+ "LZH" )	ARC=`dirname $ARC`/`basename $ARC .lzh`
+		lha aog0 $ARC.lzh $*	> /dev/null 2>&1 ;;
  "LHA" )	ARC=`dirname $ARC`/`basename $ARC .lha`
 		mv $ARC.lha $ARC.lzh	> /dev/null 2>&1
 		lha a $ARC.lzh $*	> /dev/null 2>&1
