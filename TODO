@@ -1,5 +1,11 @@
 Was muß noch getan werden?
 
+- sprintf gehört abgeschafft. Alternativcode kann "irgendwo" gestohlen
+  werden, müßte dann mal angesehen werden. 
+
+- Zcall: Bei Abbruch bleibt das Empfangsdirectory mit dem caller.zip da.
+- Zcall: Abbruchcodes sollten nochmal überarbeitet werden                
+
 - Backout fuer ZConnect
 
 - Januslogin: offene Dateien?

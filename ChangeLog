@@ -4,6 +4,16 @@ Aenderungen an UnixConnect
 
 seit 0.88
 
+- lib/backup.c, online/xprog.c: (Dirk Meyer)
+  sprintf -> snprintf.
+
+- include/istring.h, include/utility.h,
+  lib/Makefile, lib/snprintf.c: (Dirk Meyer)
+  neue Funktion (unsicher) zwecks Kompatibilitaet.
+
+- lib/strdup.c: (Dirk Meyer)
+  #if korregiert.
+
 - include/auth.h, include/locknew.c, online/auth.c, online/locknew.c,
   online/januslogin.c: (Andreas Barth)
   überarbeitetes Januslogin
