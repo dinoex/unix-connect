@@ -3,8 +3,8 @@
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1993-1994  Martin Husemann
  *  Copyright (C) 1995       Christopher Creutzig
- *  Copyright (C) 1999       Dirk Meyer
  *  Copyright (C) 1999       Matthias Andree
+ *  Copyright (C) 1999-2000  Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -410,3 +410,13 @@ restore_linesettings(int mfileno)
 	stty(mfileno, &save_term);
 #endif
 }
+
+
+void
+flush_modem(int mfileno)
+{
+#ifdef HAS_POSIX_TERMIOS
+	tcflush(mfileno, TCIFLUSH);
+#endif
+}
+

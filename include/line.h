@@ -71,3 +71,8 @@ void save_linesettings(int);
  */
 void restore_linesettings(int);
 
+/*
+ * Eingangsdaten vom Modem verwerfen
+ */
+void flush_modem(int mfileno);
+
