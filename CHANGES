@@ -4,6 +4,8 @@ $Id$
 Aenderungen an UnixConnect
 seit 0.79
 
+- bsmtp/rsmtp Pakete hinzugefügt.
+
 - GNU configure eingebaut
 
 - Die Gateprogramme verstehen "-p" für Pipe. (Andreas Barth)
