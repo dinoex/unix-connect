@@ -3,7 +3,8 @@
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1995       Moritz Both
  *  Copyright (C) 1995-1998  Christopher Creutzig
- *  Copyright (C) 1999-2000  Dirk Meyer
+ *  Copyright (C) 2001       Detlef Würkner
+ *  Copyright (C) 1999-2001  Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -547,13 +548,24 @@ int parse_mime_header(int direction, header_p hd,
 				if (stricmp(subtype, "plain")==0)
 					info->text_plain = 1;
 				if (stricmp(para1name, "charset")==0) {
+					/* Manchmal steht das
+					   in Anführungszeichen... */
+					if (para1value[0] == '\"') {
+						unsigned char *s;
+						strcpy(para1value, &para1value[1]);
+						if ((s = strchr(para1value, '\"')) != NULL)
+							*s = '\0';
+					}
 					if (stricmp(para1value, "us-ascii")==0)
 						info->charset = -1;
 					else {
 						char ch = para1value[9];
 						para1value[9]=0;
-						if (stricmp(para1value,"iso-8859-")==0)
-							info->charset = ch-'0';
+						if (stricmp(para1value,"iso-8859-")==0) {
+/* Es gibt mittlerweile auch zweistellige ISO-8859-XX-Nummern, z.B. 15 */
+							para1value[9] = ch;
+							info->charset = atol(&para1value[9]);
+						}
 					}
 				}
 			}
