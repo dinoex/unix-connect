@@ -174,6 +174,13 @@ bei Nachrichten an MAPS@* den Routstring auf ZConnect-Format zu stutzen.
 Das sollte eigentlich keine Probleme machen.
 
 
+--disable-nouser-in-rot  Sonderbehandlung für Usernamen im ROT-Header.
+
+Usernamen werden inormalerweise nicht in den ROT-Header überrnommen.
+Mit dieser Option wird erzwungen, das alle Namen aus der Path-Zeile
+in den Rot-Header übernommen werden.
+
+
 --enable-bang            Bang-Pfade erzeugen.
 
 UNIX-Connect erzeugt Nachrichten im BSMTP-Format. Für die
@@ -220,12 +227,30 @@ werden. Andererseits koennen viele Leute keine ISO-8859-1-Nachrichten
 lesen, weil ihre ZConnect-Programme den entsprechenden ZConnect-Header
 nicht auswerten.
 
+
 --enable-point-messageid Erzeuge Message-IDs für Points.
 
 Der ZConnect-Standard schreibt fuer Message-IDs von Points eine bestimmte
 Form vor ( <lokalteil>@<point>.<server>.<do>.<main> ). Diese Form
 kann vom Gateway erzwungen werden. Das kann aber dazu fuehren,
 dass die Bezugsverkettung im Point nicht mehr sauber funktioniert...
+
+--enable-uuencode-chksum Erzeuge Prüfsummen mit uuencode.
+
+Den Ausgabezeilen der Funktion "uuencode" zwird eine Prüfsumme
+anhehängt. Wird nicht überall unterstützt.
+
+
+--enable-short-spooldir  Verwende kurze Namen für Verzeichnisse.
+
+Mir dieser Option wird nur der Systemname ohne den Domainteil
+als Name des Verzeichnis genommen. Nur für das Gateway,
+Online-Programme und Scripte müssen von Hand angepaßt werden.
+
+
+--enable-slow-modem      Lege eine Pause für langsame Modems ein.
+
+Verzrögerung für langsame Modem in Online-Teil.
 
 
 --with-dialprae=code     Wählcode (Default=atdt).

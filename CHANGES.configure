@@ -18,11 +18,23 @@ seit 0.85
 - configure --disable-rot-for-maps
   Sonderbehandlung des ROT-Headers für MAPS.
 
+- configure --disable-nouser-in-rot
+  Sonderbehandlung für Usernamen ROT-Header.
+
 - configure --enable-iso-in-zconnect
   Erzeuge ISO-Charset in ZConnect.
 
 - configure --enable-point-messageid
-  Erzeuge Message-IDs für Points. 
+  Erzeuge Message-IDs für Points.
+
+- configure --enable-uuencode-chksum
+  Erzeuge Prüfsummen mit uuencode.
+
+- configure --enable-short-spooldir
+  Verwende kurze Namen für Verzeichnisse.
+
+- configure --enable-slow-modem
+  Lege eine Pause für langsame Modems ein.
 
 seit 0.84
 

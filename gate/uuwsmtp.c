@@ -378,7 +378,7 @@ convert(FILE *zconnect, FILE *smtp)
 	int qualify, local;
 	int wasmime, charset, eightbit, ctl, err;
 	mime_header_info_struct mime_info;
-#ifdef UUENCODE_CHKSUM
+#ifdef ENABLE_UUENCODE_CHKSUM
 	int sum;
 #endif
 
@@ -679,7 +679,7 @@ convert(FILE *zconnect, FILE *smtp)
 		} else {
 			sprintf(smallbuffer, "begin 644 %s\r\n", file);
 		}
-#ifdef UUENCODE_CHKSUM
+#ifdef ENABLE_UUENCODE_CHKSUM
 		sum = 0;
 #endif
 		for (c=smallbuffer; *c; c++) {
@@ -696,7 +696,7 @@ convert(FILE *zconnect, FILE *smtp)
 		for (bytecount = 0, zp = smallbuffer+1;
 					len > 0 || bytecount > 0; ) {
 			if (bytecount >= 45 || len <= 0) {
-#ifdef UUENCODE_CHKSUM
+#ifdef ENABLE_UUENCODE_CHKSUM
 				*zp++ = ENC(sum);
 				sum = 0;
 #endif
@@ -733,7 +733,7 @@ convert(FILE *zconnect, FILE *smtp)
 				bytecount += znr;
 				len -= znr;
 				sp = zbuf;
-#ifdef UUENCODE_CHKSUM
+#ifdef ENABLE_UUENCODE_CHKSUM
 				sum += sp[0] + sp[1] + sp[2];
 #endif
 			/* MB: Klammern korrigiert -

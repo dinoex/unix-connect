@@ -366,14 +366,14 @@ main(int argc, const char *const *argv)
 		exit( EX_CANTCREAT );
 	};
 	if ( fqdn != NULL ) {
-#ifdef SPOOLDIR_SHORTNAME
+#ifdef ENABLE_SPOOLDIR_SHORTNAME
 		char *p, *p1;
 #endif
 
 		strcpy(datei, netcalldir);
 		strcat(datei, "/");
 		strcat(datei, fqdn);
-#ifdef SPOOLDIR_SHORTNAME
+#ifdef ENABLE_SPOOLDIR_SHORTNAME
 		p = strrchr(datei, '/');
 		if (p) {
 			p1 = strchr(p+1, '.');

@@ -369,7 +369,7 @@ convert(FILE *zconnect, FILE *news)
 	size_t bytecount, znr;
 	int do_approve, multipart;
 	int skip, has_lines;
-#ifdef UUENCODE_CHKSUM
+#ifdef ENABLE_UUENCODE_CHKSUM
 	int sum;
 #endif
 	size_t comment, ascii_len, len, lines;
@@ -630,7 +630,7 @@ convert(FILE *zconnect, FILE *news)
 			sprintf(smallbuffer, "begin 644 %s\n", file);
 		}
 
-#ifdef UUENCODE_CHKSUM
+#ifdef ENABLE_UUENCODE_CHKSUM
 		sum = 0;
 #endif
 		for (c=smallbuffer; *c; c++) {
@@ -647,7 +647,7 @@ convert(FILE *zconnect, FILE *news)
 		}
 		for (bytecount = 0, zp = smallbuffer+1; len > 0 || bytecount > 0; ) {
 			if (bytecount >= 45 || len <= 0) {
-#ifdef UUENCODE_CHKSUM
+#ifdef ENABLE_UUENCODE_CHKSUM
 				*zp++ = ENC(sum);
 				sum = 0;
 #endif
@@ -680,7 +680,7 @@ convert(FILE *zconnect, FILE *news)
 				bytecount += znr;
 				len -= znr;
 				sp = zbuf;
-#ifdef UUENCODE_CHKSUM
+#ifdef ENABLE_UUENCODE_CHKSUM
 				sum += sp[0] + sp[1] + sp[2];
 #endif
 				*zp++ = ENC(*sp >> 2);

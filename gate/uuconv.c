@@ -557,12 +557,12 @@ convheader(header_p hd, FILE *f, char *from)
 	int has_wab=0;
 	header_p p, t;
 	char *s, *st, *e, *to;
-#ifndef USER_IN_ROT
+#ifndef DISABLE_NOUSER_IN_ROT
 	char *sender;
 #endif
 
 	s = st = e = to = NULL;
-#ifndef USER_IN_ROT
+#ifndef DISABLE_NOUSER_IN_ROT
 	sender = NULL;
 #endif
 	p = find(HD_X_GATEWAY, hd);
@@ -667,7 +667,7 @@ convheader(header_p hd, FILE *f, char *from)
 		 * zweiter kommen...
 		 */
 		 		has_wab=1;
-#ifndef USER_IN_ROT
+#ifndef DISABLE_NOUSER_IN_ROT
 				sender = dstrdup( wab_name );
 #endif
 		   		hd = del_header(HD_UU_SENDER, hd);
@@ -691,7 +691,7 @@ convheader(header_p hd, FILE *f, char *from)
 	 * wandeln wir nicht in einen WAB:.
 	 * Sender: mit zwei oder mehr @ auch nicht.
 	 */
-#ifndef USER_IN_ROT
+#ifndef DISABLE_NOUSER_IN_ROT
 		sender = dstrdup( p->text );
 #endif
 		if(count(p->text,'@')==1 && 0==has_wab)
@@ -893,7 +893,7 @@ convheader(header_p hd, FILE *f, char *from)
 		p = find(HD_UU_PATH, hd);
 		if (p) {
 	 		rot = dstrdup(p->text);
-#ifndef USER_IN_ROT
+#ifndef DISABLE_NOUSER_IN_ROT
 			/* Schrittkette, keine Schleife */
 			while (main_is_mail) {
 				char *mailuser;
@@ -933,7 +933,7 @@ convheader(header_p hd, FILE *f, char *from)
 		fprintf(f, HN_ROT": %s\r\n", rot);
 		dfree(rot);
 	}
-#ifndef USER_IN_ROT
+#ifndef DISABLE_NOUSER_IN_ROT
 	dfree(sender);
 #endif
 	p = find(HD_UU_RETURN_RECEIPT_TO, hd);
