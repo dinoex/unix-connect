@@ -57,9 +57,18 @@
 
 extern char *nomem;
 
-void logfile(char *lfilename, char *from, char *to, char *mid, char *format,...);
 
-void uufatal(char *prog, char *format, ...);
+void logfile(char *lfilename, char *from, char *to, char *mid, char *format,...)
+#ifdef __GNUC__
+__attribute__ ((format(printf,5,6)))
+#endif
+;
+
+void uufatal(char *prog, char *format, ...)
+#ifdef __GNUC__
+__attribute__ ((noreturn, format(printf,2,3)))
+#endif
+;
 
 #define out_of_memory(prg)	uufatal(prg, nomem)
 #define out_of_mem(prg,line)	uufatal(prg, "Out of memory in line %d", line)
