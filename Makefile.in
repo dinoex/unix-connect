@@ -38,16 +38,12 @@
 
 include Makefile.global
 
-SUBDIRS = helpers lib date hdlib online gate tools etc shell \
+SUBDIRS = helpers date lib hdlib date online gate tools etc shell \
 	rsmtp \
 	mail-and-news/$(MAIL) \
 	mail-and-news/$(NEWS)
 
 all:
-	(cd lib; $(MAKE) strlib.a)
-	(cd hdlib; $(MAKE) all)
-	helpers/update hdlib/hd_nam.h include/hd_nam.h
-	helpers/update hdlib/hd_def.h include/hd_def.h
 	for dir in $(SUBDIRS); do (cd $$dir; $(MAKE) all); done
 
 install:
@@ -62,8 +58,6 @@ clean:
 
 clobber:
 	-rm -f $(CLEANFILES)
-	-rm -f include/hd_nam.h
-	-rm -f include/hd_def.h
 	for dir in $(SUBDIRS); do (cd $$dir; $(MAKE) clobber); done
 
 tidy:	clobber
