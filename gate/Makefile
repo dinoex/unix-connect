@@ -89,12 +89,13 @@ gtools.o: gtools.c ../include/config.h ../include/sysdep.h \
  ../include/gtools.h
 iso2pc.o: iso2pc.c
 mime.o: mime.c ../include/config.h ../include/sysdep.h \
- ../include/lib.h ../include/header.h ../include/crc.h \
- ../include/mime.h ../hdlib/hd_def.h ../include/uulog.h
+ ../include/utility.h ../include/lib.h ../include/header.h \
+ ../include/crc.h ../include/mime.h ../hdlib/hd_def.h \
+ ../include/uulog.h
 pc2iso.o: pc2iso.c
 testmime.o: testmime.c
 uuapprove.o: uuapprove.c ../include/config.h ../include/sysdep.h \
- ../include/lib.h ../include/uulog.h ../include/uuapprove.h
+ ../include/utility.h ../include/uulog.h ../include/uuapprove.h
 uuconv.o: uuconv.c ../include/config.h ../include/sysdep.h \
  ../include/utility.h ../include/header.h ../include/crc.h \
  ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/boxstat.h \

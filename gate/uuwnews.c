@@ -79,7 +79,6 @@
 #include "mime.h"
 #include "zconv.h"
 #include "gtools.h"
-/* #include "trap.h" */
 
 int main_is_mail = 0;	/* Nein, wir erzeugen keine Mails */
 const char eol[] = "\n";
@@ -154,7 +153,7 @@ int main(int argc, const char *const *argv)
 	int ready;
 	char ch;
 
-/*	init_trap(argv[0]); */
+	initlog("uuwnews");
 	pointuser = NULL;
 	pointsys = NULL;
 	ulibinit();
@@ -347,8 +346,14 @@ int main(int argc, const char *const *argv)
 		fclose(fin);
 	if ( fout != stdout )
 		fclose(fout);
-	if ( remove_me != NULL )
-		remove(remove_me);
+	if ( remove_me != NULL ) {
+		if ( remove(remove_me) ) {
+			fprintf( stderr,
+				"%s: error removing input file %s: %s\n",
+				name, remove_me, strerror( errno ) );
+			exit( EX_CANTCREAT );
+		}
+	};
 	exit( EX_OK );
 	return 0;
 }
@@ -384,7 +389,8 @@ void convert(FILE *zconnect, FILE *news)
 	if (!hd) return;
 	p = find(HD_EMP, hd);
 	if (!p) {
-		uufatal("uuwnews", "Kein Empf„nger!");
+		newlog(ERRLOG, "Kein Empfaenger!" );
+		exit( EX_DATAERR );
 	}
 
 	skip = 0;
@@ -404,7 +410,7 @@ void convert(FILE *zconnect, FILE *news)
 		}
 	}
 	if (skip) {
-		logfile(ERRLOG, p->text, "-", "-", "Z3.8 Cross-Routing abgewiesen\n");
+		newlog(ERRLOG, "Z3.8 Cross-Routing abgewiesen %s", p->text);
 		p = find(HD_LEN, hd);
 		if (!p) return;
 		len = atol(p->text);
@@ -420,13 +426,14 @@ void convert(FILE *zconnect, FILE *news)
 		skip = 1;
 	}
 	if (skip) {
-		logfile(ERRLOG, p->text, "-", "-", "RFC->ZC->RFC Routing abgewiesen\n");
+		newlog(ERRLOG, "RFC->ZC->RFC Routing abgewiesen %s", p->text);
 		p = find(HD_LEN, hd);
 		if (!p) return;
 		len = atol(p->text);
 		free_para(hd);
 		while (len)
-			len -= fread(smallbuffer, 1, SMALLBUFFER > len ? len : SMALLBUFFER-1, zconnect);
+			len -= fread(smallbuffer, 1, SMALLBUFFER > len ?
+				len : SMALLBUFFER-1, zconnect);
 		return;
 	}
 #endif
@@ -441,11 +448,14 @@ void convert(FILE *zconnect, FILE *news)
 	lines = 0;
 	tmp = tmpfile();
 	if (!tmp) {
-		uufatal(__FILE__, "- - - Temporäre Datei nicht schreibbar!");
+		newlog(ERRLOG, "Temporäre Datei nicht schreibbar!");
+		exit( EX_CANTCREAT );
 	}
 	tmphd=tmpfile();
-	if (!tmphd)
-		uufatal(__FILE__, "- - - Temporäre Datei nicht schreibbar!");
+	if (!tmphd) {
+		newlog(ERRLOG, "Temporäre Datei nicht schreibbar!");
+		exit( EX_CANTCREAT );
+	}
 	setvbuf(tmp, NULL, (_IOFBF), (long)(BIGBUFFER) > (long)(MAXINT) ? (MAXINT) : (BIGBUFFER));
 	/* Steht schon ein Approved-Header im Text? */
 	p = find(HD_UU_U_APPROVED, hd);

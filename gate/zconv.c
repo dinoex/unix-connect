@@ -100,7 +100,7 @@ int adrmatch(const char *abs1, const char *abs2)
 
 void ulputs(char *text, FILE *f)
 {
-#ifdef MIME_ENC_HEADER
+#ifndef NO_MIME_ENC_HEADER
 	char *encoded;
 
 	encoded=mime_encode(text);

@@ -78,7 +78,6 @@
 #include "mime.h"
 #include "zconv.h"
 #include "gtools.h"
-/* #include "trap.h" */
 
 
 int main_is_mail = 1;	/* Ja, wir sind fuer Mail's zustaendig */
@@ -157,7 +156,7 @@ int main(int argc, const char *const *argv)
 	int ready;
 	char ch;
 
-/*	init_trap(argv[0]); */
+	initlog("uuwsmtp");
 	pointuser = NULL;
 	pointsys = NULL;
 	ulibinit();
@@ -356,8 +355,14 @@ int main(int argc, const char *const *argv)
 		fclose(fin);
 	if ( fout != stdout )
 		fclose(fout);
-	if ( remove_me != NULL )
-		remove(remove_me);
+	if ( remove_me != NULL ) {
+		if ( remove(remove_me) ) {
+			fprintf( stderr,
+				"%s: error removing input file %s: %s\n",
+				name, remove_me, strerror( errno ) );
+			exit( EX_CANTCREAT );
+		}
+	};
 	exit( EX_OK );
 	return 0;
 }
@@ -394,7 +399,10 @@ void convert(FILE *zconnect, FILE *smtp)
 	err=0;
 	habs = find(HD_WAB, hd);
 	if (!habs) habs = find(HD_ABS, hd);
-	if (!habs) uufatal(__FILE__, "- - %s Kein Absender!", mid);
+	if (!habs) {
+		newlog(ERRLOG, "mid=%s Kein Absender", mid );
+		exit( EX_DATAERR );
+	}
 /* Nachrichten mit STAT: CTL bekommen einen leeren Envelope-Absender. */
 	p = find(HD_STAT, hd);
 	while(p) {
@@ -442,7 +450,8 @@ void convert(FILE *zconnect, FILE *smtp)
 	for (p = find(HD_EMP, hd); p; p = p->other) {
 		char pbuffer[300], *at;
 
-		logfile(Z2ULOG, habs->text, p->text, mid, "\n");
+		newlog(Z2ULOG, "mid=%s, from=%s, to=%s", \
+			mid, habs->text, p->text);
 		strncpy(buffer, p->text, 300);
        		strcpy(pbuffer, buffer);
 		local = 0;

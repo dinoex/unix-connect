@@ -43,6 +43,8 @@
 
 
 #include "config.h"
+#include "utility.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #ifdef HAS_STRING_H
@@ -51,7 +53,6 @@
 #ifdef HAS_STRINGS_H
 # include <strings.h>
 #endif
-#include "lib.h"
 #include <ctype.h>
 #include "uulog.h"
 #include "uuapprove.h"

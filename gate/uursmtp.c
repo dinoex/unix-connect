@@ -4,6 +4,7 @@
  *  Copyright (C) 1993-94  Martin Husemann
  *  Copyright (C) 1995-98  Christopher Creutzig
  *  Copyright (C) 1999     Andreas Barth, Option "-p"
+ *  Copyright (C) 1999     Matthias Andree, Option "-s"
  *  Copyright (C) 1996-99  Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -84,7 +85,6 @@
 #include "hd_def.h"
 #include "version.h"
 #include "uulog.h"
-/* #include "trap.h" */
 #include "mime.h"
 #include "uuconv.h"
 #include "gtools.h"
@@ -113,7 +113,7 @@ typedef struct forward_st {
 
 void convert(FILE *, FILE *);
 void clear(void);
-void enterfwd(char *path);
+void enterfwd(const char *path);
 void convdata(FILE *smtp, FILE *zconnect);
 
 static int deliver;
@@ -156,6 +156,8 @@ void usage(void)
 "          Modus mit höchster Sicherheit, oder zum Testen.\n"
 "        uursmtp -p [ (FQDN-ZCONNECT-Host) ]\n"
 "          Echte Pipe\n"
+"        uursmtp -s (FQDN-ZCONNECT-host) (Absender) (Empfänger) [...]\n"
+"          Einzelne Nachricht in der Pipe mit Envelope Daten\n"
 , stderr);
 	exit( EX_USAGE );
 }
@@ -175,6 +177,10 @@ void do_help(void)
 "        uursmtp -p [ FQDN-ZCONNECT-host ]\n"
 "        uursmtp --pipe\n"
 "          full Pipe\n"
+"        uursmtp -s [ FQDN-ZCONNECT-host ] Sender To [To ...]\n"
+"        uursmtp --smtp [ FQDN-ZCONNECT-host ] Sender To [To ...]\n"
+"          SMTP input from stdin, envelope in commandline\n"
+"          outfile will be generated in the directory of the host.\n"
 "        uursmtp --output ZCONNECT-file [ --remove ] BSMTP-file\n"
 "          gnu standard\n"
 "        uursmtp --version\n"
@@ -197,9 +203,10 @@ int main(int argc, const char *const *argv)
 	const char *output_file;
 	char *dir_name;
 	int ready;
+	int smtp;
 	char ch;
 
-/*	init_trap(argv[0]); */
+	initlog("uursmtp");
 	ulibinit();
 	minireadstat();
 	srand(time(NULL));
@@ -220,6 +227,7 @@ int main(int argc, const char *const *argv)
 	fin = NULL;
 	fout = NULL;
 	ready = 0;
+	smtp = 0;
 
 	/* check for commandline */
 	while ( --argc > 0 ) {
@@ -240,6 +248,7 @@ int main(int argc, const char *const *argv)
 						usage();
 					GET_NEXT_DATA( cptr );
 					output_file = cptr;
+					fqdn = NULL;
 					ready ++;
 					break;
 				};
@@ -260,6 +269,17 @@ int main(int argc, const char *const *argv)
 					ready ++;
 					break;
 				};
+				if ( stricmp( cptr, "smtp" ) == 0 ) {
+					if ( ready != 0 )
+						usage();
+					input_file = "-";
+					/* Ein Argument ist Systenmane */
+					GET_NEXT_DATA( cptr );
+					fqdn = cptr;
+					ready ++;
+					smtp ++;
+					break;
+				};
 				usage();
 				break;
 			case 'o':
@@ -267,6 +287,7 @@ int main(int argc, const char *const *argv)
 					usage();
 				GET_NEXT_DATA( cptr );
 				output_file = cptr;
+				fqdn = NULL;
 				ready ++;
 				break;
 			case 'd':
@@ -302,10 +323,31 @@ int main(int argc, const char *const *argv)
 				fqdn = cptr;
 				ready ++;
 				break;
+			case 's':
+				if ( ready != 0 )
+					usage();
+				input_file = "-";
+				/* Ein Argument ist Systenmane */
+				GET_NEXT_DATA( cptr );
+				fqdn = cptr;
+				ready ++;
+				smtp ++;
+				break;
 			default:
 				usage();
 				break;
 			};
+			continue;
+		};
+		if ( smtp > 0 ) {
+			if ( smtp == 1 ) {
+				clear();
+		   		smtpdomain = dstrdup( "localhost" );
+				reverspath = dstrdup(cptr);
+				smtp ++;
+				continue;
+			};
+			enterfwd(cptr);
 			continue;
 		};
 		/* erstes freies Argument */
@@ -378,16 +420,26 @@ int main(int argc, const char *const *argv)
 		exit( EX_CANTCREAT );
 	};
 
-	while (!feof(fin))
-		convert(fin, fout);
+	if ( smtp > 0 ) {
+		convdata(fin, fout);
+	} else {
+		while (!feof(fin))
+			convert(fin, fout);
+	};
 
 	/* stdin/stdout nicht schiessen, das mach der parent */
 	if ( fin != stdin )
 		fclose(fin);
 	if ( fout != stdout )
 		fclose(fout);
-	if ( remove_me != NULL )
-		remove(remove_me);
+	if ( remove_me != NULL ) {
+		if ( remove(remove_me) ) {
+			fprintf( stderr,
+				"%s: error removing input file %s: %s\n",
+				name, remove_me, strerror( errno ) );
+			exit( EX_CANTCREAT );
+		}
+	};
 	exit( EX_OK );
 	return 0;
 }
@@ -477,7 +529,7 @@ void clear(void)
 	reverspath = NULL;
 }
 
-void enterfwd(char *path)
+void enterfwd(const char *path)
 {
 	forward_p neu;
 
@@ -546,7 +598,8 @@ void convdata(FILE *smtp, FILE *zconnect)
 		}
 		*n++ = '\r';
 		*n++ = '\n';
-		*n = '\0';    /* Ende der Nachricht hat damit auf jeden Fall ein 0 */
+		*n = '\0';
+		/* Ende der Nachricht hat damit auf jeden Fall ein \0 */
 		msglen += 2;
 		/*
 		 *  Invariant: bigbuffer enthaelt die Nachricht der Laenge msglen,
@@ -561,7 +614,7 @@ void convdata(FILE *smtp, FILE *zconnect)
 	/* Envelope-Adresse konvertieren: */
 	for(cnt=0,emp=fwdpaths; emp; emp=emp->next) {
 		cnt += convaddr(HN_EMP, emp->path, 1, zconnect);
-		logfile(U2ZLOG, habs, emp->path, mid, "\n");
+		newlog(U2ZLOG, "mid=%s, from=%s, to=%s", mid, habs, emp->path);
 	}
 	if (!cnt) {
 		deliver = 0;

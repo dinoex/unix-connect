@@ -43,6 +43,8 @@
  */
 
 #include "config.h"
+#include "utility.h"
+
 #include <stddef.h>
 #include <string.h>
 #include <stdlib.h>
@@ -65,6 +67,8 @@
 #ifndef NO_UNISTD_H
 #include <unistd.h>
 #endif
+#include <sysexits.h>
+
 #include "lib.h"
 #include "header.h"
 #include "mime.h"
@@ -525,9 +529,8 @@ int parse_mime_header(int direction, header_p hd,
 			info->charset=0;
 			l = strlen(p->text);
 			type= (char *) malloc(l * 4);
-			if (!type) {
-				uufatal("uursmtp","Out of memory");
-			}
+			if (!type)
+				out_of_mem(__FILE__,__LINE__);
 			l = strlen(p->text); /* avoid gcc -O bug */
 			subtype=type+l;
 			para1name=subtype+l;
@@ -594,8 +597,8 @@ int decode_x_uuencode(char *msg, long *msglenp,
 
 		sprintf(tmpdir, "/tmp/ur.dec%d.%d", bin_count++, getpid());
 		if (mkdir(tmpdir, 0700) != 0) {
-			uufatal("mime.c", "%s: %s\n", tmpdir, strerror(errno));
-			return 0;
+			newlog( ERRLOG, "%s: %s", tmpdir, strerror(errno));
+			exit( EX_CANTCREAT );
 		}
 #ifdef HAS_BSD_GETWD
 		getwd(sikdir);
@@ -622,13 +625,14 @@ int decode_x_uuencode(char *msg, long *msglenp,
 			info->filename = dstrdup(src);
 		if(s) src=s+1;
 		if (NULL==src) {
-		/*	uufatal("mime.c", "no begin line in uuencoded part\n"); */
-			return 0;
+			newlog( ERRLOG, "no begin line in uuencoded part");
+			exit( EX_DATAERR );
 		}
 		f = popen("uudecode", "w");
 		if (!f) {
-			uufatal("mime.c", "popen(uudecode): %s\n", strerror(errno));
-			return 0;
+			newlog( ERRLOG,
+				"popen(uudecode): %s", strerror(errno));
+			exit( EX_DATAERR );
 		}
 		fputs("begin 600 decoded.msg\n", f);
 		for (cnt=(*msglenp)-(src-msg); cnt; cnt--, src++) {
@@ -641,8 +645,10 @@ int decode_x_uuencode(char *msg, long *msglenp,
 
 		f = fopen("decoded.msg", "r");
 		if (!f) {
-			uufatal("mime.c", "uudecode failed (can't open file!): %s\n", strerror(errno));
-			return 0;
+			newlog( ERRLOG,
+				"uudecode failed (can't open file!): %s",
+				strerror(errno));
+			exit( EX_DATAERR );
 		}
 		fstat(fileno(f), &st);
 

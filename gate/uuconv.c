@@ -1088,7 +1088,7 @@ int make_body(char *bigbuffer, size_t msglen,
 		}
 		if (latob > 0) {
 			/* Text, der der Nachricht vorangestellt ist */
-#ifdef CONVERT_ISO
+#ifndef NO_CONVERT_ISO_IN_KOM
 			iso2pc(start, latob);
 #endif
 			fprintf(zconnect, HN_KOM": %ld\r\n", latob);
@@ -1139,7 +1139,7 @@ int make_body(char *bigbuffer, size_t msglen,
 			msglen = p2-p1+1;
 			memcpy(smallbuffer, p1, msglen);
 			/* CHARSET gilt fuer KOM:-Teil nicht */
-#ifdef CONVERT_ISO
+#ifndef NO_CONVERT_ISO_IN_KOM
 			iso2pc(smallbuffer, msglen);
 #endif
 			fprintf (zconnect, HN_KOM": %d\r\n", msglen);

@@ -93,7 +93,7 @@ void do_version( const char *name )
 	fprintf( stderr,
 "%s (Unix-Connect) " VERSION "\n"
 "Copyright " COPYRIGHT "\n"
-"Unix-Connect comes with NO WARRANTY,\n"
+"Unix-Connect comes with ABSOLUTELY NO WARRANTY,\n"
 "to the extent permitted by law.\n"
 "You may redistribute copies of Unix-Connect\n"
 "under the terms of the GNU General Public License.\n"

@@ -84,7 +84,6 @@
 #include "version.h"
 #include "ministat.h"
 #include "mime.h"
-/* #include "trap.h" */
 #include "uuconv.h"
 #include "gtools.h"
 
@@ -172,7 +171,7 @@ int main(int argc, const char *const *argv)
 	int ready;
 	char ch;
 
-/*	init_trap(argv[0]); */
+	initlog("uurnews");
 	ulibinit();
 	minireadstat();
 	srand(time(NULL));
@@ -351,8 +350,14 @@ int main(int argc, const char *const *argv)
 		fclose(fin);
 	if ( fout != stdout )
 		fclose(fout);
-	if ( remove_me != NULL )
-		remove(remove_me);
+	if ( remove_me != NULL ) {
+		if ( remove(remove_me) ) {
+			fprintf( stderr,
+				"%s: error removing input file %s: %s\n",
+				name, remove_me, strerror( errno ) );
+			exit( EX_CANTCREAT );
+		}
+	};
 	exit( EX_OK );
 	return 0;
 }
