@@ -47,7 +47,8 @@ PROGS	= uurnews uursmtp uuwsmtp uuwnews
 all:	$(PROGS)
 
 install:	all
-	$(INSTALL_PROGRAM) -m 4755 $(PROGS) $(BINDIR)
+	$(INSTALL_PROGRAM) uursmtp uuwsmtp $(BINDIR)
+	$(INSTALL_PROGRAM) -m 4755 uurnews uuwnews $(BINDIR)
 
 uninstall:
 	-cd $(BINDIR) && rm -f $(PROGS)
