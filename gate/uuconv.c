@@ -716,7 +716,10 @@ convheader(header_p hd, FILE *f, char *from)
 	if (p) {
 	        char *subject = decode_mime_string(p->text);
 		iso2pc(subject);
-		fprintf(f, HN_BET": %s\r\n", subject);
+		if ( strlen( subject ) > 0 )
+			fprintf(f, HN_BET": %s\r\n", subject);
+		else
+			fputs(HN_BET": -\r\n", f);
 		dfree(subject);
 		hd = del_header(HD_UU_SUBJECT, hd);
 	} else
