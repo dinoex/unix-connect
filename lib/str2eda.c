@@ -56,7 +56,7 @@ char *str2eda(char *text, int *tz_hour, int *tz_min)
 	char *answer;
 	char buffer[24];
 	
-	answer=dalloc(sizeof(char)*84*10);
+	answer=dalloc(sizeof(char)*84);
 
 	*tz_hour = *tz_min = 0;
 	memset(&t, 0, sizeof t);
