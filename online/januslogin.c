@@ -4,7 +4,7 @@
  *  Copyright (C) 1993-1994  Martin Husemann
  *  Copyright (C) 1995-1996  Christopher Creutzig
  *  Copyright (C) 1999-2000  Anderas Barth
- *  Copyright (C) 1999-2000  Dirk Meyer
+ *  Copyright (C) 1999-2001  Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -113,12 +113,12 @@ struct call_t {
 /* Fuer die Signals */
 
 static void
-handle_timeout() {
+handle_timeout( int dummy ) {
 	abbruch(E_ALARM);
 }
 
 static void
-handle_nocarrier() {
+handle_nocarrier( int dummy ) {
 	abbruch(E_HUP);
 }
 
@@ -150,7 +150,7 @@ getln (char *p, const int i, const int y) {
 
 
 
-static int init();
+static int init(void);
 static int getsysname(char *sysname, char *passwd, int len);
 static int mvtotmp(const auth_t *s);
 static int doonline(const auth_t *s);
@@ -244,7 +244,7 @@ main(int argc, char **argv)
  ***********************************************/
 
 static int
-init() {
+init( void ) {
 	/* Initalisiert die verschiedenen Dinge */
 
 	initlog("januslogin");
