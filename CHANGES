@@ -2,6 +2,8 @@ $Id$
 
 Aenderungen an UnixConnect
 
+seit 0.87
+
 - configure{,.in}: (Matthias Andree)
   sucht nach innshellvars
 
@@ -15,8 +17,6 @@ Aenderungen an UnixConnect
 
 - shell/anruf.in: (Matthias Andree)
   send-zcon wird nun aus dem @BINDIR@ gestartet
-
-seit 0.87
 
 - lib/rawtty.c: (Matthias Andree)
   Bugfix: berücksichtigt jetzt auch bei HAVE_POSIX_TERMIOS NEEDS_CRTSCTS
