@@ -4,6 +4,9 @@ Aenderungen an UnixConnect
 
 seit 0.89
 
+- mail-and-news/sendmail/Makefile: (Dirk Meyer)
+  erweitert um Reihenfolge einzuhalten.
+
 - lib/hayes.c: (Dirk Meyer)
   do_hayes muss abbrechen, falls das Modem-device
   wegen eines Hangup-Signal nicht mehr bereit ist.
