@@ -182,9 +182,9 @@ in den Rot-Header übernommen werden.
 --disable-janus-checksum Checksummer der Seriennummer unterdrücken.
 
 Durch die Checksumme wird das Ender der Vorpackphase erkannt.
-Damit kann Zmodem auf beiden Seiten glichzeitig gestarrtet
+Damit kann ZModem auf beiden Seiten glichzeitig gestarrtet
 werden. Anderenfalls können die Daten verloren gehen,
-falls Zmodem mit einem "Echo" spricht.
+falls ZModem mit einem "Echo" spricht.
 
 
 --disable-rsmtp          Eigene Programme für Batched SMTP.
@@ -225,7 +225,7 @@ Nach RFC1034 sollten solche Artikel nicht verändert werden,
 sondern einfach entsorgt werden.
 
 
---enable-zmodemhack      Ignoriere Zmodem Fehler.
+--enable-zmodemhack      Ignoriere ZModem Fehler.
 
 Leider hat das normalerweise verwendete rz von Omen Technologies
 die Eigenart, einen unmotivierten Fehlerwert von 128 zurueckzugeben,
