@@ -46,10 +46,11 @@
 # include "hd_def.h"
 # include "hd_nam.h"
 
-extern int stricmp (char *, char *);
+extern int stricmp (const char *, const char *);
 
-char *hd_crlf = "\n";
+const char *hd_crlf = "\n";
 
+void test1(void);
 void test1(void)
 {
 	header_p p;
