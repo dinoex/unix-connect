@@ -64,6 +64,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <sysexits.h>
+#include <errno.h>
 
 
 #include "boxstat.h"
@@ -82,11 +84,10 @@
 int main_is_mail = 1;	/* Ja, wir sind fuer Mail's zustaendig */
 char eol[] = "\r\n";
 
-void usage(void);
 void convert(FILE *, FILE *);
-header_p convheader(header_p, FILE *);
 
-header_p pointuser;	/* Wenn es ein Point ist: die Liste der erlaubten Absender */
+/* Wenn es ein Point ist: die Liste der erlaubten Absender */
+header_p pointuser;
 char *pointsys;		/* Name des Point-Systems */
 
 static char *bigbuffer	= NULL;
@@ -100,120 +101,217 @@ extern char umlautstr[], convertstr[];
 
 const char *hd_crlf = "\r\n";
 
-int main(int argc, char **argv)
+void usage(void);
+void usage(void)
+{
+	fputs(
+"UUwsmtp  -  RFC821/822  Batch aus ZCONNECT erzeugen\n"
+"Aufrufe:\n"
+"        uuwsmtp (ZCONNECT-Datei) (SMTP-Directory) [Absende-System]\n"
+"          (alter Standard)\n"
+"        uuwsmtp -d (ZCONNECT-Datei) (SMTP-Datei) [Absende-System]\n"
+"          (Die Eingabedatei wird nicht gelöscht)\n"
+"        uuwsmtp -f (ZCONNECT-Datei) [Absende-System]\n"
+"          (Ergebnis geht nach stdout)\n"
+"        uuwnews -p [Absendesystem]\n"
+"           (Echte Pipe)\n"
+, stderr);
+	exit(1);
+}
+
+int main(int argc, const char *const *argv)
 {
 	FILE *fin, *fout;
+	const char *cptr;
+	const char *name;
+	const char *remove_me;
 	time_t j;
-	int filter;
+	int filter, ready;
+	char ch;
 
 /*	init_trap(argv[0]); */
+	pointuser = NULL;
 	pointsys = NULL;
 	filter = 0;
 	ulibinit();
 	minireadstat();
 	srand(time(NULL));
-	if (argc < 3 || argc > 4) usage();
+
 	bigbuffer = malloc(BIGBUFFER);
 	smallbuffer = malloc(SMALLBUFFER);
 	if (!bigbuffer || !smallbuffer) {
 		fputs("Nicht genug Arbeitsspeicher!\n", stderr);
 		exit(1);
 	}
-	pointuser = NULL;
-	if (strcmp(argv[1], "-d") == 0) { /* Beide Argumente sind Dateien */
-		fin = fopen(argv[2], "rb");
-		strncpy(datei, argv[3], sizeof(datei));
-		fout = fopen(datei, "ab");
-	} else
-	if (strcmp(argv[1], "-p") == 0) {
-		fin = stdin;
-		fout= stdout;
-		if (argc==3) pointsys=argv[2];
-	} else
-	if (strcmp(argv[1], "-f") == 0) {
-		fin = fopen(argv[2], "rb");
-		if (argc == 4) {
+
+	name = argv[ 0 ];
+	strcpy(datei, "" );
+	remove_me = NULL;
+	fin = NULL;
+	fout = NULL;
+	ready = 0;
+
+	/* check for commandline */
+	while ( --argc > 0 ) {
+		cptr = *(++argv);
+		if ( *cptr == '-' ) {
+			ch = *(++cptr);
+			switch ( tolower( ch ) ) {
+			case 'd':
+				if ( ready != 0 )
+					usage();
+				/* Beide Argumente sind Dateien */
+				GET_NEXT_DATA( cptr );
+				fin = fopen( cptr, "rb");
+				if ( fin == NULL ) {
+					fprintf( stderr,
+					"%s: error open file %s: %s\n",
+					name, cptr, strerror( errno ) );
+					exit( EX_CANTCREAT );
+				};
+				ready ++;
+				GET_NEXT_DATA( cptr );
+				fout = fopen(cptr, "ab");
+				if ( fout == NULL ) {
+					fprintf( stderr,
+					"%s: error writing file %s: %s\n",
+					name, cptr, strerror( errno ) );
+					exit( EX_CANTCREAT );
+				};
+				ready ++;
+				break;
+			case 'p':
+				if ( ready != 0 )
+					usage();
+				/* echte Pipe */
+				fin = stdin;
+				fout = stdout;
+				ready += 2;
+				break;
+			case 'f':
+				if ( ready != 0 )
+					usage();
+				/* Ein Argument ist Eingabe-Datei */
+				GET_NEXT_DATA( cptr );
+				fin = fopen( cptr, "rb");
+				if ( fin == NULL ) {
+					fprintf( stderr,
+					"%s: error open file %s: %s\n",
+					name, cptr, strerror( errno ) );
+					exit( EX_CANTCREAT );
+				};
+				remove_me = cptr;
+				ready ++;
+				/* Ergebnis im aktuellem Verzeichnis */
+				/* Keine Kollisionserkennung!! */
+				fout = stdout;
+				j = time(NULL);
+				sprintf(datei, "%08lx", j);
+				id = datei;
+				filter = 1;
+				ready ++;
+				break;
+			default:
+				usage();
+				break;
+			};
+			continue;
+		};
+		/* erstes freies Argument */
+		if ( ready < 1 ) {
+			/* Argument ist Eingabe-Datei */
+			fin = fopen( cptr, "rb");
+			if ( fin == NULL ) {
+				fprintf( stderr,
+					"%s: error open file %s: %s\n",
+					name, cptr, strerror( errno ) );
+				exit( EX_CANTCREAT );
+			};
+			remove_me = cptr;
+			ready ++;
+		};
+		/* zweites freies Argument */
+		if ( ready < 2 ) {
+			/* Ergebnis im angegebene Verzeichnis */
+			int fh;
+
+			j = time(NULL);
+			sprintf(datei, "%s/%08lx", argv[2], j);
+			id = strrchr(datei, '/');
+			if (id) id++;
+			fh=open(datei,O_WRONLY|O_CREAT|O_EXCL, 
+					S_IRUSR|S_IWUSR|S_IRGRP);
+			while (fh<0)
+			{
+				((long)j)++;
+				sprintf(datei,"%s/%08lx.brt",argv[2],(long)j);
+				fh=open(datei,O_WRONLY|O_CREAT|O_EXCL,
+						S_IRUSR|S_IWUSR|S_IRGRP);
+				/* bei Permission denied und a.
+				   haengt das Programm hier endlos */
+			}
+			close(fh);
+			fout = fopen(datei, "wb");
+			ready ++;
+		};
+		/* dittes freies Argument */
+		if ( pointsys == NULL ) {
 			FILE *f;
 			char buf[FILENAME_MAX];
 
-			pointsys = argv[3];
+			pointsys = dstrdup( cptr );
 			strlwr(pointsys);
 			sprintf(buf, "%s/%s", systemedir, pointsys);
 			f = fopen(buf, "r");
 			if (f) {
-				header_p sys;
+				header_p sys, p;
 
 				sys = rd_para(f);
 				if (sys) {
-					header_p p;
-
 					p = find(HD_POINT_USER, sys);
 					pointuser = p;
 				}
 				fclose(f);
-			}
-		}
-		j = time(NULL);
-		sprintf(datei, "%08lx", j);
-		id = datei;
-		fout = stdout;
-		filter = 1;
-	} else {
-		int fh;
+			};
+			continue;
+		};
+		/* weitere Argumente */
+		usage();
+	};
+	if ( ready == 0 ) {
+		usage();
+	};
+	if ( fin == NULL ) {
+		fprintf( stderr,
+			"%s: no file to read\n",
+			name );
+		exit( EX_CANTCREAT );
+	};
+	if ( fout == NULL ) {
+		fprintf( stderr,
+			"%s: no file to write\n",
+			name );
+		exit( EX_CANTCREAT );
+	};
 
-		fin = fopen(argv[1], "rb");
-		j = time(NULL);
-		sprintf(datei, "%s/%08lx", argv[2], j);
-		id = strrchr(datei, '/');
-		if (id) id++;
-		fh=open(datei,O_WRONLY|O_CREAT|O_EXCL, S_IRUSR|S_IWUSR|S_IRGRP);
-		while(fh<0)
-		{
-			((long)j)++;
-			sprintf(datei,"%s/%08lx.brt",argv[2],(long)j);
-			fh=open(datei,O_WRONLY|O_CREAT|O_EXCL, S_IRUSR|S_IWUSR|S_IRGRP);
-		}
-		close(fh);
-		fout = fopen(datei, "wb");
-	}
-	if (!fin || !fout) {
-		perror("Dateifehler");
-		exit(1);
-	}
 	if (pointsys)
 		fprintf(fout, "HELO %s\r\n", pointsys);
 	else
-		fprintf(fout, "HELO %s.%s\r\n", boxstat.boxname, boxstat.boxdomain);
+		fprintf(fout, "HELO %s.%s\r\n", 
+				boxstat.boxname, boxstat.boxdomain);
 	while (!feof(fin))
 		convert(fin, fout);
 	fputs("QUIT\r\n", fout);
 
-	if (filter) {
+	/* stdin/stdout nicht schiessen, das mach der parent */
+	if ( fin != stdin )
 		fclose(fin);
-		remove(argv[2]);
-	} else {
-		fclose(fin);
+	if ( fout != stdout )
 		fclose(fout);
-		if (strcmp(argv[1],"-d") != 0)
-			remove(argv[1]);
-	}
-
+	if ( remove_me != NULL )
+		remove(remove_me);
+	exit( EX_OK );
 	return 0;
-}
-
-void usage(void)
-{
-	fputs(	"UUwsmtp  -  RFC821/822  Batch aus ZCONNECT erzeugen\n"
-		"Aufruf:\n"
-		"        uuwsmtp (ZCONNECT-Datei) (SMTP-Directory)\n"
-		"        uuwsmtp -d (ZCONNECT-Datei) (SMTP-Datei)\n"
-		"          (Die Eingabedatei wird nicht gelöscht)\n"
-		"oder    uuwsmtp -f (ZCONNECT-Datei) [Absende-System]\n"
-		"          (Ergebnis geht nach stdout)\n"
-		"oder    uuwnews -p [Absendesystem]\n"
-		"           (Echte Pipe)\n"
-		, stderr);
-	exit(1);
 }
 
 #define ENC(c)	(!((c) & 0x03f) ? '`' : (((c) & 0x03f) + ' '))
@@ -228,7 +326,8 @@ void convert(FILE *zconnect, FILE *smtp)
 	static int binno = 0;
 	long comment, len, ascii_len, lines;
 	size_t buffree;
-	int bytecount, znr, start_of_line, multipart, qualify, local, has_lines;
+	int bytecount, znr, start_of_line, multipart;
+	int qualify, local, has_lines;
 	int wasmime, charset, eightbit, ctl, err;
 	mime_header_info_struct mime_info;
 #ifdef UUENCODE_CHKSUM
@@ -286,8 +385,9 @@ void convert(FILE *zconnect, FILE *smtp)
 				if (isspace(*s)) break;
 			*s = '\0';
 		} else
+		  /* STAT: CTL und STAT: ERR nicht bouncen */
 		  if(ctl || err)
-		    buffer[0] = '\0'; /* STAT: CTL und STAT: ERR nicht bouncen */
+		    buffer[0] = '\0';
 		if(NULL==p->other)
 			fprintf(smtp, "MAIL FROM:<%s>\r\n", buffer);
 	}
@@ -485,7 +585,8 @@ void convert(FILE *zconnect, FILE *smtp)
 				buffree = BIGBUFFER;
 			}
 #ifndef USE_ISO_IN_MAILS
-			if (charset == 0 && mime_info.text_plain && !isascii(*c)) {
+			if (charset == 0 && mime_info.text_plain
+			&& !isascii(*c)) {
 				ul = strchr(umlautstr, *c);
 				if (ul) {
 					cv = convertstr + 2*(ul-umlautstr);
@@ -531,9 +632,9 @@ void convert(FILE *zconnect, FILE *smtp)
 		}
 		if (multipart) {
 			sprintf(smallbuffer, "--"SP_MULTIPART_BOUNDARY"\r\n"
-				     HN_UU_CONTENT_TYPE":  application/octet-stream\r\n"
-				     HN_UU_CONTENT_TRANSFER_ENCODING": X-uuencode\r\n\r\n"
-				     "begin 644 %s\r\n", file);
+			HN_UU_CONTENT_TYPE":  application/octet-stream\r\n"
+			HN_UU_CONTENT_TRANSFER_ENCODING": X-uuencode\r\n\r\n"
+			"begin 644 %s\r\n", file);
 		} else {
 			sprintf(smallbuffer, "begin 644 %s\r\n", file);
 		}
@@ -553,7 +654,8 @@ void convert(FILE *zconnect, FILE *smtp)
 		/*	if (*c == '\n')
 				lines++; */
 		}
-		for (bytecount = 0, zp = smallbuffer+1; len > 0 || bytecount > 0; ) {
+		for (bytecount = 0, zp = smallbuffer+1;
+					len > 0 || bytecount > 0; ) {
 			if (bytecount >= 45 || len <= 0) {
 #ifdef UUENCODE_CHKSUM
 				*zp++ = ENC(sum);
@@ -597,16 +699,20 @@ void convert(FILE *zconnect, FILE *smtp)
 #ifdef UUENCODE_CHKSUM
 				sum += sp[0] + sp[1] + sp[2];
 #endif
-			/* MB: Klammern korrigiert - Bug fuehrte zu Kleinbuchstaben, wenn
+			/* MB: Klammern korrigiert -
+				Bug fuehrte zu Kleinbuchstaben, wenn
 				erster Teil des 2. oder 3. Sextetts null war */
 				*zp++ = ENC(*sp >> 2);
-				*zp++ = ENC(((*sp << 4) & 060) | ((sp[1] >> 4) & 017));
-				*zp++ = ENC(((sp[1] << 2) & 074) | ((sp[2] >> 6) & 03));
+				*zp++ = ENC(((*sp << 4) & 060) |
+						((sp[1] >> 4) & 017));
+				*zp++ = ENC(((sp[1] << 2) & 074) |
+						((sp[2] >> 6) & 03));
 				*zp++ = ENC(sp[2] & 077);
 			}
 		}
 		if (multipart)
-			sprintf(smallbuffer, "``\r\nend\r\n\r\n--"SP_MULTIPART_BOUNDARY"\r\n");
+			sprintf(smallbuffer, "``\r\nend\r\n\r\n"
+				"--"SP_MULTIPART_BOUNDARY"\r\n");
 		else
 			sprintf(smallbuffer, "``\r\nend\r\n\r\n");
 		for (c=smallbuffer; *c; c++) {
@@ -640,23 +746,32 @@ void convert(FILE *zconnect, FILE *smtp)
 			fputs(HN_UU_MIME_VERSION": 1.0\r\n", smtp);
 			if (typ) {
 				if (multipart) {
-					fputs(HN_UU_CONTENT_TYPE": multipart/mixed; boundary=\""SP_MULTIPART_BOUNDARY"\"\r\n", smtp);
+					fputs(HN_UU_CONTENT_TYPE
+					": multipart/mixed; boundary=\""
+					SP_MULTIPART_BOUNDARY"\"\r\n", smtp);
 				} else {
-					fprintf(smtp, HN_UU_CONTENT_TYPE": application/octet-stream; name=\"%s\"\r\n", file);
+					fprintf(smtp, HN_UU_CONTENT_TYPE
+					": application/octet-stream; "
+					"name=\"%s\"\r\n", file);
 				}
 			} else {
-				fprintf(smtp, HN_UU_CONTENT_TYPE": text/plain; charset=%s\r\n", smallbuffer);
+				fprintf(smtp, HN_UU_CONTENT_TYPE
+					": text/plain; charset=%s\r\n",
+					smallbuffer);
 			}
 		}
 	}
 
 	/* Content-Transfer-Encoding */
-	if (!multipart && (!wasmime || (wasmime && mime_info.encoding == cty_none))) {
+	if (!multipart
+	&& (!wasmime || (wasmime && mime_info.encoding == cty_none))) {
 		if (typ && !multipart)
-			fputs(HN_UU_CONTENT_TRANSFER_ENCODING": X-uuencode\r\n", smtp);
+			fputs(HN_UU_CONTENT_TRANSFER_ENCODING
+				": X-uuencode\r\n", smtp);
 		else
 			if (eightbit)
-				fputs(HN_UU_CONTENT_TRANSFER_ENCODING": 8bit\r\n", smtp);
+				fputs(HN_UU_CONTENT_TRANSFER_ENCODING
+					": 8bit\r\n", smtp);
 	}
 
 #if 0
@@ -672,9 +787,11 @@ void convert(FILE *zconnect, FILE *smtp)
 
 	if (multipart) {
 		fputs("--"SP_MULTIPART_BOUNDARY"\r\n",smtp);
-		fprintf(smtp, HN_UU_CONTENT_TYPE": text/plain; charset=%s\r\n", smallbuffer);
+		fprintf(smtp, HN_UU_CONTENT_TYPE
+			": text/plain; charset=%s\r\n", smallbuffer);
 		if (eightbit)
-			fputs(HN_UU_CONTENT_TRANSFER_ENCODING": 8bit\r\n", smtp);
+			fputs(HN_UU_CONTENT_TRANSFER_ENCODING
+				": 8bit\r\n", smtp);
 		fputs("\r\n", smtp);
 	}
 
@@ -712,3 +829,4 @@ void convert(FILE *zconnect, FILE *smtp)
 	if (typ)
 		dfree(typ);
 }
+

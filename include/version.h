@@ -60,3 +60,7 @@
 #define PROGRAM		MAILER " fuer " BRAND
 
 #define OL_VERSION	"0.76"
+
+#define GET_NEXT_DATA(x)	{ argv++; argc--; x = *argv;	\
+				if (x == NULL) usage(); }
+
