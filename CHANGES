@@ -25,7 +25,7 @@ seit 0.80
 
 - zconv.c: MIME_ENC_HEADER, MIME default ...
 
-- uuconv.c: CONVERT_ISO darf nich wahlfrei für Kommentare sein.
+- uuconv.c: CONVERT_ISO darf nicht wahlfrei für Kommentare sein.
 
 - uursmtp: Neue Option: -s
   uursmtp -s (FQDN-ZCONNECT-Host) (Envelope-Sender) (Envelope-Empfänger)
