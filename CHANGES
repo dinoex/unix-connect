@@ -4,10 +4,6 @@ Aenderungen an UnixConnect
 
 seit 0.86
 
-- online/call.c online/import.c:
-  alter Code entfernt, da neue Onlinefunktionen getestet.
-  Option ENABLE_TESTING verfügbar für neue Erweiterungen
-
 - include/*/sysdep.h:
   HAS_BSD_DIRECT entfernt, da automatisch erkannt.
   WEXITSTATUS entfernt, da automatisch erkannt.
