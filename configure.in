@@ -802,7 +802,7 @@ EOF
   AC_MSG_CHECKING([ob unser ZModem auch als Y- oder XModem taugt])
   changequote(98,99)
   if test x`$LSZMODEM -h 2>&1 | grep -c -e '--[xy]modem'` != x2 \
-       -o x`$LRZ -h 2>&1 | grep -c -e '--[xy]modem'` != x2 ; then
+       -o x`$LRZMODEM -h 2>&1 | grep -c -e '--[xy]modem'` != x2 ; then
     cat <<EOF
 
 Warnung, das vorhandene ZModem sollte die Optionen

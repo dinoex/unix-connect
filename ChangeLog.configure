@@ -2,6 +2,11 @@ $Id$
 
 Änderungen an configure
 
+seit 0.94
+
+- configure.in: (Volker Stolz)
+  Fehler bei Abfrage auf LRZMODEM behoben.
+
 seit 0.91
 
 - configure.in: (Dirk Meyer)
