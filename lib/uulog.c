@@ -3,6 +3,7 @@
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1993-94  Martin Husemann
  *  Copyright (C) 1995-98  Christopher Creutzig
+ *  Copyright (C) 1994     Peter Much
  *  Copyright (C) 1999     Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -62,10 +63,11 @@ extern char *logdir;
 
 void
 #ifdef HAVE_SYSLOG
-logfile(int lchan, char *from, char *to, char *mid, char *format, ...)
+logfile(int lchan,
 #else
-logfile(char *lfilename, char *from, char *to, char *mid, char *format, ...)
+logfile(char *lfilename,
 #endif
+const char *from, const char *to, const char *mid, const char *format, ...)
 {
 	va_list ap;
 #ifdef HAVE_SYSLOG

@@ -3,6 +3,7 @@
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1993-94  Martin Husemann
  *  Copyright (C) 1995-98  Christopher Creutzig
+ *  Copyright (C) 1994     Peter Much
  *  Copyright (C) 1999     Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -62,7 +63,7 @@
 # include "ministat.h"
 # include "uulog.h"
 
-char *nomem = "Nicht genug Hauptspeicher!";
+const char *nomem = "Nicht genug Hauptspeicher!";
 
 /*@@
  *
@@ -91,7 +92,7 @@ char *nomem = "Nicht genug Hauptspeicher!";
  */
 
 
-void uufatal(char *prog, char *format, ...)
+void uufatal(const char *prog, const char *format, ...)
 {
 #ifndef HAVE_SYSLOG
 	FILE *f;

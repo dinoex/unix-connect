@@ -49,7 +49,8 @@
 # include <strings.h>
 #endif
 
-char *str2eda(char *text, int *tz_hour, int *tz_min)
+char *str2eda(const char *text, int *tz_hour, int *tz_min);
+char *str2eda(const char *text, int *tz_hour, int *tz_min)
 {
 	struct tm t;
 	time_t dt;
