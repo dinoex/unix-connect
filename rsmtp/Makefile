@@ -1,7 +1,7 @@
 #
-#	Id$: GNUmakefile	1.71	08.08.1999
+#	Id$: GNUmakefile	1.74	14.01.2000
 #
-#	(c) 1994-99, Dirk Meyer, Im Grund 4, 34317 Habichtswald
+#	(c) 1994-2000, Dirk Meyer, Im Grund 4, 34317 Habichtswald
 #
 
 include ../Makefile.global
