@@ -93,9 +93,8 @@ static int runcommand(const char *file, ...)
 
 	switch((c_pid = fork())) {
 	case -1: /* parent, child cannot fork */
-		perror(file);
 		freearglist(arg);
-		newlog(ERRLOG,"runcommand: cannot fork");
+		newlog(ERRLOG, "runcommand: cannot fork for %s", file);
 		return -1;
 	case 0: /* child */
 		fprintf(stderr, "running %s ", file);
@@ -107,8 +106,8 @@ static int runcommand(const char *file, ...)
 		}
 		(void)execv(file, (char * const *)arg);
 		/* hier ist was schiefgelaufen, execv kehrt nicht zurueck */
-		perror(file);
-		exit (-1);
+		newlog(ERRLOG, "runcommand: execv failed for %s", file);
+		exit(-1);
 	default: /* parent */
 		{
 #if defined (NEXTSTEP)
@@ -145,12 +144,21 @@ static struct {
 	const char *cmd;
 	int needfile;
 } transports[] = {
+#ifndef _FreeBSD_
+	{ "ZMODEM", 0, "/usr/local/bin/lrz", 0 },
+	{ "ZMODEM", 1, "/usr/local/bin/lsz", 1 },
+	{ "YMODEM", 0, "/usr/local/bin/lrb", 0 },
+	{ "YMODEM", 1, "/usr/local/bin/lsb", 1 },
+	{ "XMODEM", 0, "/usr/local/bin/lrx", 1 },
+ 	{ "XMODEM", 1, "/usr/local/bin/lsz -X", 1 },
+#else
 	{ "ZMODEM", 0, "/usr/bin/rz", 0 },
 	{ "ZMODEM", 1, "/usr/bin/sz", 1 },
 	{ "YMODEM", 0, "/usr/bin/rb", 0 },
 	{ "YMODEM", 1, "/usr/bin/sb", 1 },
 	{ "XMODEM", 0, "/usr/bin/rx", 1 },
  	{ "XMODEM", 1, "/usr/bin/sz -X", 1 },
+#endif
 	{ 0,0,0,0 }
 };
 
