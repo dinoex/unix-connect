@@ -43,10 +43,10 @@
  *
  */
 
-/* Changelog: 
+/* Changelog:
  *
  * 11.1.99
- * Logrotation dazugetan, Krischan 
+ * Logrotation dazugetan, Krischan
  *
  */
 
@@ -156,12 +156,13 @@ backup2(const char *backupdir, const char *file,
 	newlog(DEBUGLOG, "backup.c Anzahl Backups: %s",backupnumber);
 	if (backupdir && file && sysname) {
 		char backupname[FILENAME_MAX];
-		char subdir[FILENAME_MAX];
+		char systemdir[FILENAME_MAX];
 		char backupnamenew[FILENAME_MAX];
+		char olddir[FILENAME_MAX];
 		int i;
 		int backupnr;
 		struct stat st;
-		
+
 		if(lstat(file, &st)) {
 			newlog(ERRLOG, "backup: cannot stat %s: %s",
 			       file, strerror(errno));
@@ -174,51 +175,98 @@ backup2(const char *backupdir, const char *file,
 			return 2;
 		}
 
-		sprintf(subdir,"%s/%s",backupdir,sysname);
+		snprintf(systemdir,sizeof(systemdir)-1,"%s/%s",
+				backupdir,sysname);
 		if (backupnumber == NULL) {
 			backupnr = 5;
 			newlog(ERRLOG,
-				"Warnung: Backup-Zahl ist nicht definiert.");
+				"Warnung: Backup-Zahl ist nicht definiert."
+				" Nehme einfach 5.");
 		} else {
-			backupnr = atoi(backupnumber);	
+			backupnr = atoi(backupnumber);
 			if (backupnr < 1) {
 				backupnr = 5;
 				newlog(ERRLOG,
-			"Warnung: Backup-Zahl ist 0. Nehme stattdessen 5.");
+					"Warnung: Backup-Zahl ist 0."
+					" Nehme stattdessen 5.");
 			}
 		}
-		mkdir (subdir, 0700); /* *** pruefen */
+		if ( (mkdir (systemdir, 0700) < 0) && (errno != EEXIST) ) {
+			newlog(ERRLOG,
+				"Kann Verzeichnis %s nicht anlegen (%s)."
+				" Backup nicht erzeugt!",
+				systemdir,strerror(errno));
+			return 1;
+		}
+		if ( getcwd(olddir,FILENAME_MAX-1) != NULL ) {
+		      newlog(ERRLOG,
+				"Cannot get actual directoryr %s:",
+				strerror(errno));
+			return 1;
+		}
+		/* Ins Systemverzeichnis wechseln,
+		   damit ENOENT bei lstat bedeutet,
+		   dass die Datei nicht da ist
+		   (und nicht evtl. dass im Pfad ein Eintrag ungueltig ist)
+		 */
+		newlog(DEBUGLOG,"Backup: chdir(%s)",systemdir);
+		if (chdir(systemdir) < 0 ) {
+		      newlog(ERRLOG,"Cannot chdir to %s (%s)",
+				systemdir,strerror(errno));
+		      return 1;
+		}
 		/* Rotieren */
 		for (i = (backupnr-1);i > 0;i--) {
-			sprintf(backupname,"%s/%s.%d.%s",
-				subdir, sysname, i, arcer );
-			sprintf(backupnamenew,"%s/%s.%d.%s",
-				subdir, sysname, i+1, arcer );
-			newlog(DEBUGLOG,"old: %s",backupname);
-			newlog(DEBUGLOG,"new: %s",backupnamenew); 
+			sprintf(backupname,   "%s.%d.%s",sysname,i,arcer);
+			sprintf(backupnamenew,"%s.%d.%s",sysname,i+1,arcer);
 			/* Wenns die Datei nicht gibt,
 			   oder sie eine normale Datei ist, ok */
-			if ( lstat(backupnamenew,&st) != ENOENT ) { 
-			     if  (!S_ISREG(st.st_mode) ) {
-				snprintf(backupname,sizeof(backupname)-1,
-					"%s/%s.%ld.%s",
-					subdir, sysname,
-					(long)time(NULL), arcer );
+			if (! lstat(backupnamenew,&st)) {
+				if (errno != ENOENT) {
+					newlog(ERRLOG,
+		"Backup: Fehler beim Rotieren und lstat auf %s/%s (%s)",
+						systemdir,backupnamenew,
+						strerror(errno));
+					chdir(olddir);
+					return 1;
+				}
+			} else {
+				if (! S_ISREG(st.st_mode) ){
+					newlog(ERRLOG,
+				"Backup: Fehler %s ist keine regulaere Datei.",
+						backupnamenew);
+					chdir(olddir);
+					return 1;
+				}
+			}
+			newlog(DEBUGLOG,"old: %s",backupname);
+			newlog(DEBUGLOG,"new: %s",backupnamenew);
+			if ( (rename(backupname,backupnamenew) < 0)
+			&& (errno != ENOENT) ) {
 				newlog(ERRLOG,
-		"Backup: Fehler %s ist keine regulaere Datei."
-		" Speichere Backup unter %s", backupnamenew, backupname );
-				break;
-			     }
+				"Backup: rename(%s,%s) schlug fehl (%s)",
+					backupname,backupnamenew,
+					strerror(errno));
+				chdir(olddir);
+				return 1;
 			}
 			rename(backupname,backupnamenew);
 		}
+		chdir(olddir);
+
 		/* Wenn die Schleife durch ist,
-		   steht in backupname system.1.arcer, oder
-                   backupname hat einen Wert auf den geschrieben werden kann */
-		newlog(DEBUGLOG,"rename %s -> %s",file,backupname);
-		rename(file,backupname);
-		return 1;
+		   steht in backupname system.1.arcer */
+		snprintf(backupnamenew,sizeof(backupnamenew)-1,"%s/%s",
+			systemdir,backupname);
+		newlog(DEBUGLOG,"rename %s -> %s",file,backupnamenew);
+		if (rename(file,backupnamenew) < 0) {
+			newlog(ERRLOG,
+				"Backup: rename(%s,%s) schlug fehl (%s)",
+				file,backupnamenew,strerror(errno));
+		}
+		return 0;
 
 	}
 	return -1;
 }
+
