@@ -1,28 +1,3 @@
-prefix   = @prefix@
-exec_prefix = @exec_prefix@
-DESTDIR  = @BINDIR@
-BINDIR   = @BINDIR@
-ETCDIR   = @ETCDIR@
-SPOOLDIR = @SPOOLDIR@
-SHELL    = @shell@
-CC       = @CC@
-DEFS     = @DEFS@
-CPPFLAGS = @CPPFLAGS@ @DEFS@
-CFLAGS   = @CFLAGS@
-LDFLAGS  = @LDFLAGS@
-RANLIB   = @RANLIB@
-FQDN     = @FQDN@
-USER     = @USER@
-GROUP    = @GROUP@
-PATHADD  = @PATHADD@
-MAIL     = @MAIL@
-NEWS     = @NEWS@
-
-# jetzt die Definitionen übernehmen
-CFLAGS += -DDESTDIR=$(DESTDIR) -DBINDIR=$(BINDIR) -DETCDIR=$(ETCDIR)
-CFLAGS += -DCONFIG_FILE=\"$(ETCDIR)/config\"
-APCOBJS  = @APCOBJS@
-CLEANFILES = *.o *.a *.bak *.rej *.orig core *.core
 
 WARNALL	= \
 	-W \
@@ -81,5 +56,29 @@ WARN	= \
 	$(WARNBASE) \
 	$(WARNEGCS)
 
-CFLAGS+= $(WARN)
+prefix   = @prefix@
+exec_prefix = @exec_prefix@
+DESTDIR  = @BINDIR@
+BINDIR   = @BINDIR@
+ETCDIR   = @ETCDIR@
+SPOOLDIR = @SPOOLDIR@
+SHELL    = @shell@
+CC       = @CC@
+DEFS     = @DEFS@
+CPPFLAGS = @CPPFLAGS@ @DEFS@
+CFLAGS   = @CFLAGS@
+LDFLAGS  = @LDFLAGS@
+RANLIB   = @RANLIB@
+FQDN     = @FQDN@
+USER     = @USER@
+GROUP    = @GROUP@
+PATHADD  = @PATHADD@
+MAIL     = @MAIL@
+NEWS     = @NEWS@
+
+# jetzt die Definitionen übernehmen
+CFLAGS += -DDESTDIR=$(DESTDIR) -DBINDIR=$(BINDIR) -DETCDIR=$(ETCDIR)
+CFLAGS += -DCONFIG_FILE=\"$(ETCDIR)/config\"
+APCOBJS  = @APCOBJS@
+CLEANFILES = *.o *.a *.bak *.rej *.orig core *.core
 

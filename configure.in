@@ -425,8 +425,10 @@ EOF
         esac
         CPPFLAGS="$CPPFLAGS -I../include -I../hdlib"
 
+if test "$GCC" = yes; then
+	CFLAGS="$CFLAGS \$(WARN)"
+fi
 
-if test -f include/os-linux/policy.h; then
 	# neue Config
 	if test -f include/sysdep.h; then
 	    rm -f include/sysdep.h
@@ -450,28 +452,6 @@ if test -f include/os-linux/policy.h; then
 	    echo "Unbekanntes System, verwende include/os-linux/policy.h"
 	    cp -i include/os-linux/policy.h include/policy.h
 	fi
-
-else
-	# alte Config
-
-	if test -f include/sysdep.h; then
-	        rm -f include/sysdep.h
-	fi
-	if ln -s `pwd`/include/systems/$SYSTYPE.h include/sysdep.h 2>/dev/null;	then
-	        :
-	else
-        	ln include/systems/$SYSTYPE.h include/sysdep.h
-	fi
-
-	if test -f include/policy.h.$SYSTYPE; then
-	        echo "Erzeuge include/policy.h..."
-	        cp include/policy.h.$SYSTYPE include/policy.h
-	else
-	        echo "Fuer dieses System ist kein include/policy.h bekannt."
-	        echo "Sie muessen es unbedingt von Hand editieren!"
-	        echo ""
-	fi
-fi
 
 dnl AC_MSG_RESULT(fertig)
 AC_SUBST(SYSTYPE)
