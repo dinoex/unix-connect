@@ -120,14 +120,10 @@ Makefile: Makefile.in config.status
 Makefile.global: Makefile.global.in config.status
 	CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
-# automatic remaking                
 configure: configure.in # aclocal.m4
 	autoconf
 
-Makefile: Makefile.in config.status
-	./config.status
-
 config.status: configure        
-	./config.status --recheck
+	CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status --recheck
 
 # eof

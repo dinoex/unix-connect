@@ -61,3 +61,5 @@ Was kann noch getan werden?
 
 - PLUS_OLD_MKTIME automatisch erkennen
 
+- Ausgehende Puffer beim Janus-Netcall gehen manchmal verloren!!
+

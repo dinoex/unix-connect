@@ -1,6 +1,8 @@
 
 Änderungen seit 0.80:
 
+- erkenne: HAVE_STRING_H HAVE_STRINGS_H HAVE_UNISTD_H HAVE_SYS_FCNTL_H
+
 - Warnungen werden automatisch eingefügt.
 
 - diverse: LIBOBJS-Variable aus autoconf jetzt berücksichtigt
