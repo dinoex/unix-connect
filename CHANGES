@@ -22,7 +22,7 @@ seit 0.87
   Bugfix: berücksichtigt jetzt auch bei HAVE_POSIX_TERMIOS NEEDS_CRTSCTS
   korrekt. (Linux)
 
-- Kommentare korregiert
+- Kommentare korrigiert
 
 - date/getindate.c: (from D. Glover for c-news)
   Date-Header mit zweistelligem Datum auch weiter erlauben.
