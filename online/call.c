@@ -320,7 +320,9 @@ int main(int argc, char **argv)
 	
 		while (p && maxtry) {
 			DMLOG("place call on modem");
-			if (anruf(p->text, sys, ich, modem)) break;
+			if (anruf(p->text, sys, ich, modem)) {
+				maxtry = 0; break; 
+			}
 			p = p->other;
 			maxtry--;
 		}
@@ -704,7 +706,7 @@ int anruf (char *intntl, header_p sys, header_p ich, int modem)
 			fclose(deblogfile);
 			_exit(0);
 		}
-		return(0);
+		return(1);
 
 	} else {
 		/* ZCONNECT */
