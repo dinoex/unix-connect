@@ -71,6 +71,13 @@ zcall:	$(COBJS) $(LIBS) Makefile
 januslogin:	januslogin.o auth.o xprog.o locknew.o lockdev.o lock.o import.o $(LIBS) Makefile
 	$(CC) -o januslogin januslogin.o auth.o xprog.o locknew.o lockdev.o lock.o import.o $(LIBS) $(LDFLAGS)
 
+testrun: testrun.o $(LIBS) Makefile
+	$(CC) -o testrun testrun.o $(LIBS) $(LDFLAGS)
+
+check:	testrun
+	./testrun 2>&1 | grep -v ^cwd >test.out
+	diff -p test.out test.erg
+
 # automatic depend
 action.o: action.c ../include/config.h ../include/sysdep.h \
  ../include/zconnect.h ../include/crc.h ../include/header.h \
@@ -170,6 +177,10 @@ sysmaster.o: sysmaster.c ../include/config.h ../include/sysdep.h \
  ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/version.h \
  ../include/track.h ../include/line.h ../include/boxstat.h \
  ../include/ministat.h ../include/uulog.h ../include/utility.h
+testrun.o: testrun.c xprog.c ../include/config.h ../include/sysdep.h \
+ ../include/iwait.h ../include/istring.h ../include/utility.h \
+ ../include/boxstat.h ../include/ministat.h ../include/xprog.h \
+ ../include/uudebug.h ../include/uulog.h
 xprog.o: xprog.c ../include/config.h ../include/sysdep.h \
  ../include/iwait.h ../include/istring.h ../include/utility.h \
  ../include/boxstat.h ../include/ministat.h ../include/xprog.h \
