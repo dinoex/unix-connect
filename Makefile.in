@@ -127,7 +127,7 @@ Makefile.global: Makefile.global.in config.status
 configure: configure.in # aclocal.m4
 	autoconf
 
-config.status: configure        
+config.status: configure
 	CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status --recheck
 
 # eof

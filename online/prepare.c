@@ -233,7 +233,7 @@ void aufraeumen(void)
 			fprintf(deblogfile, "\n\nFATAL: kann nicht nach %s chdir()'en: %s\n", connection.tmp_dir, strerror(errno));
 			_exit(15);
 		}
-		import_all(connection.remote_arc, connection.remote_sys, 0);
+		import_all(connection.remote_arc, connection.remote_sys);
 		fclose(deblogfile);
 		chdir ("/");
 		rmdir(connection.tmp_dir);

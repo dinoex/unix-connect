@@ -3,6 +3,7 @@
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1993-94  Martin Husemann
  *  Copyright (C) 1999     Dirk Meyer
+ *  Copyright (C) 1999     Matthias Andree
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -69,11 +70,13 @@
 #ifdef BSD
 #include <sys/ioctl.h>	/* setup our own controlling tty */
 #endif
+#include <sys/wait.h>
 
 #include "utility.h"
 #include "hayes.h"
 #include "xprog.h"
 #include "locknames.h"
+#include "calllib.h"
 
 /*
  * Falls das angerufene System einen FIDO-Mailer installiert hat,
@@ -137,8 +140,8 @@ int gmodem;
 static void
 cleanup(void)
 {
-  if(gmodem>-1)
-    restore_linesettings(gmodem);
+	if(gmodem>-1)
+		restore_linesettings(gmodem);
 }
 
 static void
@@ -148,9 +151,6 @@ anrufdauer( void )
 
 	time(&now);
 	fprintf(stderr,
-		"Anrufdauer: ca. %ld Sekunden online\n",
-		(long)(now-online_start));
-	fprintf(deblogfile,
 		"Anrufdauer: ca. %ld Sekunden online\n",
 		(long)(now-online_start));
 	newlog(logname,
@@ -351,10 +351,14 @@ main(int argc, const char **argv)
 
 	if (online_start) {
 		anrufdauer();
-	} else
+	} else {
 		fprintf(stderr, "Keine Verbindung hergestellt.\n");
+	}
 
 	lock_device(0, tty);
+	/* Device ist freigegeben, aber wir warten noch auf das Ende
+	   der Importphase, bevor wir zurückkehren. */
+	wait(NULL);
 	return 0;
 }
 
@@ -381,11 +385,11 @@ login(int lmodem, int verfahren, const char *myname, const char *passwd)
 
 	free_all_tracks();
         t_esc = init_track(EMSI_REQ);
-	t_ogin = init_track("OGIN");
+	t_ogin = init_track("OGIN:");
 	if (verfahren == ZCONNECT)
 		t_ame = init_track("AME");
 	else
-		t_ame = init_track("USERNAME");
+		t_ame = init_track("USERNAME:");
 	t_wort = init_track("WORT");
 	t_word = init_track("WORD");
 	t_sysname = -1;
@@ -407,10 +411,9 @@ login(int lmodem, int verfahren, const char *myname, const char *passwd)
 		if (found == t_esc) {
                         write(lmodem, EMSI_CLI, sizeof(EMSI_CLI));
                 } else if (found == t_ogin || found == t_ame) {
-#ifndef PLUS_NO_SLEEP_FOR_FLUSH
+#ifdef SLOW_MODEM
                 	sleep(2);	/* fflush auf der Gegenseite? */
 #endif
-               		set_local(lmodem, 0);
 			write(lmodem, logstr[verfahren],
 				strlen(logstr[verfahren]));
 			if (verfahren < ZCONNECT && t_sysname == -1)
@@ -499,6 +502,20 @@ anruf(char *intntl, header_p sys, header_p ich, int lmodem)
 	int i, err;
 	static int dial_cnt = 1;
 
+	/* für Janus */
+	char *arcer=NULL, *arcerin=NULL, *transfer=NULL, *domain;
+	header_p t, d;
+	char c;
+	int netcall_error;
+	char filename[FILENAME_MAX];
+	char tmpname[FILENAME_MAX];
+	char outname[FILENAME_MAX];
+	char inname[FILENAME_MAX];
+	char sysname[FILENAME_MAX];
+	struct stat st;
+	/* ende für Janus */
+
+
 	while (*intntl && !isspace(*intntl))
 		intntl++;
 	while (*intntl && isspace(*intntl))
@@ -542,50 +559,10 @@ anruf(char *intntl, header_p sys, header_p ich, int lmodem)
 			break;
 	if (!*v) return 1;
 
-	fprintf(stderr, "%3d. Anwahlversuch: %-14s ", dial_cnt++, phone);
+	fprintf(stderr, "%3d. Anwahlversuch: %-.25s ", dial_cnt++, phone);
 	fflush(stderr);
 
-	if (redial(dialstr, lmodem, 1)) return 0;
-
-	time(&online_start);
-
 	if (i < ZCONNECT) {
-		if (name) dfree(name);
-		name = strdup(boxstat.boxname);
-		if (!name) name = strdup( "???" );
-		else strupr(name);
-		strupr(pw);
-	}
-	err = login(lmodem, i, name, pw);
-
-	if (err) return 0;
-
-	if (i < ZCONNECT) {
-		char filename[FILENAME_MAX];
-		char tmpname[FILENAME_MAX];
-		char outname[FILENAME_MAX];
-		char inname[FILENAME_MAX];
-		char sysname[FILENAME_MAX];
-		char *arcer, *arcerin, *transfer, *domain;
-		header_p t, d;
-		char c;
-		struct stat st;
-
-		fprintf(stderr, "....\n");
-		alarm(10*60);
-		do {
-			do { } while (read(lmodem, &c, 1) != 1);
-		} while (c != NAK);
-		alarm(0);
-		fprintf(stderr, "Gegenseite hat gepackt\n");
-		alarm(15);
-		do {
-			write(lmodem, "UNIXD", 5);
-			do { } while (read(lmodem, &c, 1) != 1);
- 		} while (c != ACK);
- 		alarm(0);
- 		fprintf(stderr, "Seriennummern OK\n");
-
 		t = find(HD_SYS, sys);
 		if (!t) {
 			fprintf(stderr,
@@ -646,6 +623,41 @@ anruf(char *intntl, header_p sys, header_p ich, int lmodem)
 		}
 		transfer = t->text;
 		strlwr(transfer);
+	}
+
+	if (redial(dialstr, lmodem, 1)) return 0;
+
+	set_local(lmodem, 0);
+	time(&online_start);
+
+	if (i < ZCONNECT) {
+		if (name) dfree(name);
+		name = strdup(boxstat.boxname);
+		if (!name) name = strdup( "???" );
+		else strupr(name);
+		strupr(pw);
+	}
+	if(login(lmodem, i, name, pw)) return 0;
+
+	if (i < ZCONNECT) { /* JANUS */
+		int have_file = 0;
+
+		netcall_error = 0;
+
+		fprintf(stderr, "....\n");
+		alarm(10*60);
+		do {
+			do { } while (read(lmodem, &c, 1) != 1);
+		} while (c != NAK);
+		alarm(0);
+		fprintf(stderr, "Gegenseite hat gepackt\n");
+		alarm(15);
+		do {
+			write(lmodem, "UNIXD", 5);
+			do { } while (read(lmodem, &c, 1) != 1);
+ 		} while (c != ACK);
+ 		alarm(0);
+ 		fprintf(stderr, "Seriennummern OK\n");
 
 		sprintf(tmpname, "%s/%s.%d.dir", netcalldir, sysname, getpid());
 		mkdir(tmpname, 0777);
@@ -654,9 +666,18 @@ anruf(char *intntl, header_p sys, header_p ich, int lmodem)
 		sprintf(outname, "%s/caller.%s", tmpname, arcer);
 		sprintf(filename, "%s/%s.%s", netcalldir, sysname, arcer);
 		sprintf(lockname, "%s/%s/" PREARC_LOCK, netcalldir, sysname);
-
 		if (access(filename, R_OK) != 0) {
 			FILE *f;
+			if(access(filename, F_OK) == 0) {
+				fprintf(stderr,
+			 		"Leerer Puffer, weil Puffer"
+					" %s nicht lesbar: %s\n",
+					outname, strerror(errno));
+				newlog(ERRLOG,
+					"Leerer Puffer, weil Puffer"
+					" %s nicht lesbar: %s\n",
+					outname, strerror(errno));
+			}
 
 			f = fopen(outname, "wb");
 			if (!f) {
@@ -671,7 +692,7 @@ anruf(char *intntl, header_p sys, header_p ich, int lmodem)
 			}
 			fputs("\r\n", f);
 			fclose(f);
-		} else {
+		} else { /* can read filename */
 			if (waitnolock(lockname, 180)) {
 				fprintf(deblogfile,
 					"Prearc LOCK: %s\n", lockname);
@@ -680,7 +701,9 @@ anruf(char *intntl, header_p sys, header_p ich, int lmodem)
 					sysname, lockname );
 				return 1;
 			}
-			if(symlink(filename, outname)) {
+			fprintf(stderr, "Link: %s -> %s\n",
+				filename, outname);
+			if(link(filename, outname)) {
 				fprintf(stderr,
 				"Linken: %s -> %s fehlgeschlagen: %s\n",
 					filename, outname, strerror(errno));
@@ -688,33 +711,35 @@ anruf(char *intntl, header_p sys, header_p ich, int lmodem)
 				newlog(ERRLOG,
 				"Linken: %s -> %s fehlgeschlagen: %s\n",
 					filename, outname, strerror(errno));
-				return 1;
+				netcall_error = 1;
+				goto finish;
 			}
+			have_file = 1;
 		}
-		sprintf(filename, "called.%s", arcer);
 		sprintf(inname, "called.%s", arcer);
-		sprintf(outname, "caller.%s", arcer);
 
 		st.st_size = 0;
 		if(stat(outname, &st)) {
 			fprintf(stderr,
 				"Zugriff auf %s fehlgeschlagen: %s\n",
 				outname, strerror(errno));
-			return 1;
+			netcall_error = 1;
+			goto finish;
 		}
-		fprintf(deblogfile, "Sende %s (%ld Bytes) per %s\n",
-			outname, (long)st.st_size, transfer);
-		fprintf(stderr, "Sende %s (%ld Bytes) per %s\n",
+		newlog(DEBUGLOG, "Sende %s (%ld Bytes) per %s",
 			outname, (long)st.st_size, transfer);
 		newlog(logname, "Sende %s (%ld Bytes) per %s",
-			outname, (long)st.st_size, transfer);
-		if (sendfile(transfer, outname)) {
+		       outname, (long)st.st_size, transfer);
+
+		err = sendfile(transfer, outname);
+		if (err) {
 			fprintf(stderr, "Versand der Daten fehlgeschlagen\n");
 			fprintf(deblogfile,
 				"Versand der Daten fehlgeschlagen\n");
 			newlog(logname,
 				"Versand der Daten fehlgeschlagen");
-			return 1;
+				netcall_error = 1;
+				goto finish;
 		}
 
 		fprintf(deblogfile, "Empfange per %s\n", transfer);
@@ -726,19 +751,24 @@ anruf(char *intntl, header_p sys, header_p ich, int lmodem)
 				"Empfang der Daten fehlgeschlagen\n");
 			newlog(logname,
 				"Empfang der Daten fehlgeschlagen");
-			return 1;
+			netcall_error = 1;
+			goto finish;
 		}
 		st.st_size = 0;
 		if(stat(inname, &st)) {
 			fprintf(stderr,
 				"Zugriff auf %s fehlgeschlagen: %s\n",
 				inname, strerror(errno));
+			newlog(logname,
+				"Zugriff auf %s fehlgeschlagen: %s\n",
+				inname, strerror(errno));
 		}
 		fprintf(stderr, "%ld Bytes empfangen\n", (long)st.st_size);
 		fprintf(deblogfile, "%ld Bytes empfangen\n", (long)st.st_size);
-		newlog(logname,
-			"%ld Bytes empfangen\n", (long)st.st_size);
+		newlog(logname, "%ld Bytes empfangen\n", (long)st.st_size);
 
+
+	finish:
 		anrufdauer();
 
 		/* Fertig, Modem auflegen */
@@ -749,36 +779,69 @@ anruf(char *intntl, header_p sys, header_p ich, int lmodem)
 		restore_linesettings(lmodem);
 		DMLOG("restoring modem parameters");
 		close(lmodem); lmodem=-1; DMLOG("close modem");
-		fopen("/dev/null", "r");	/* neuer stdin */
+		/* neuer stdin */
+		fopen("/dev/null", "r");
 		/* stderr wird in stdout kopiert */
 		dup2(fileno(stderr),fileno(stdout));
 
+		if(!netcall_error) {
 		/* Netcall war erfolgreich, also Daten loeschen */
-		if ( remove(outname) ) {
-			fprintf(stderr,
-				"Loeschen von %s fehlgeschlagen: %s\n",
-				outname, strerror(errno));
+		if(have_file) {
+			/* Backups von Nullpuffern sind
+			   uninteressant */
+			if(backoutdir) {
+				backup(backoutdir, filename,
+				       sysname, BACKUP_LINK);
+			}
+			/* und wenn wir das File nicht lesen konnten,
+			   sollten wir es auch nicht löschen */
+			if ( remove(filename) ) {
+				newlog(ERRLOG,
+				       "Loeschen von %s fehlgeschlagen: %s\n",
+				       filename, strerror(errno));
+			}
 		}
-		if ( remove(filename) ) {
-			fprintf(stderr,
-				"Loeschen von %s fehlgeschlagen: %s\n",
-				filename, strerror(errno));
+		/* das ist nur ein Link, den putzen wir weg */
+		if ( unlink(outname)) {
+			newlog(ERRLOG,
+			       "Loeschen von %s fehlgeschlagen: %s\n",
+			       outname, strerror(errno));
 		}
+
 		fclose(deblogfile);
 
 		/*
 		 * Und empfangene Daten (im Hintergrund) einlesen,
 		 * das Modem wird sofort wieder freigegeben.
 		 */
-		if (fork() == 0) {
-			/* Ich bin child */
-			deblogfile=fopen("/tmp/import.deblogfile", "a");
-			DMLOG("child forked");
-			import_all(arcerin, sysname, 0);
-			chdir ("/");
-			rmdir(tmpname);
-			fclose(deblogfile);
-			_exit(0);
+		switch(fork()) {
+		case -1:
+			{ /* cannot fork */
+				perror("forking import");
+				newlog(ERRLOG,
+				       "Forken des Importteils "
+				       "fehlgeschlagen: %s",
+				       strerror(errno));
+				break;
+			}
+		case 0:
+			{
+				/* Ich bin child */
+				deblogfile=fopen("/tmp/import.deblogfile", "a");
+				DMLOG("child forked");
+				import_all(arcerin, sysname);
+				chdir ("/");
+				if(rmdir(tmpname)) {
+					newlog(ERRLOG,
+					       "Loeschen von %s fehlgeschlagen: %s\n",
+					       tmpname, strerror(errno));
+				}
+				fclose(deblogfile);
+				exit(0);
+			}
+		default: /* parent */
+			break;
+		}
 		}
 		return(1);
 

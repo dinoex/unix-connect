@@ -39,9 +39,3 @@ su news -c "/usr/lib/news/send-zcon $ZCSYS"
 
 $ECHO "Anruf beim Server..."
 @BINDIR@/zcall $ZCSYS $MODEM $SPEED $RETRIES
-
-#
-#	Warum auch immer - zcall hinterl‰ﬂt das Ausgabedevice bei
-#	mir in einem ungeordneten Zustand. Also wieder korrigieren:
-#
-stty sane <$MODEM

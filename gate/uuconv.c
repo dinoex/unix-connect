@@ -275,8 +275,8 @@ splitaddr(char *rfc_addr, char *name, char *host, char *domain, char *lrna)
 	char *q, *q1, *s;
 
 	/* "Foo <blah@ee.fds>" und
-	 * "fds@fds.fds (Blah)" 
-	 * vereinheitlichen     
+	 * "fds@fds.fds (Blah)"
+	 * vereinheitlichen
 	 */
 
 	*name = '\0';
@@ -1004,7 +1004,7 @@ convheader(header_p hd, FILE *f, char *from)
 	  /* Sollte unnoetig sein. Wer weiss... */
 	        char *gat=decode_mime_string(p->text);
 		iso2pc(gat);
-		fprintf(f, HN_GATE": RFC1036/822 %s.%s [" 
+		fprintf(f, HN_GATE": RFC1036/822 %s.%s ["
 			MAILER " " VERSION "], %s\r\n",
 		   boxstat.boxname, boxstat.boxdomain, gat);
 		dfree(gat);

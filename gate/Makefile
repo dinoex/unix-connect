@@ -40,7 +40,7 @@ include ../Makefile.global
 # Makefile fuer den UNIX-Connect Gateway
 
 COMMON	= mime.o alias.o gtools.o
-LIBS	= ../lib/ministat.o ../hdlib/uuheader.a ../lib/gatelib.a
+LIBS	= ../hdlib/uuheader.a ../lib/strlib.a
 DATELIB	= ../date/datelib.a
 PROGS	= uurnews uursmtp uuwsmtp uuwnews
 TPROGS	= testeda testmime
@@ -62,23 +62,23 @@ distclean:	clean
 check:	testeda
 	./testeda
 
-uursmtp:	uursmtp.o uuconv.o iso2pc.o $(COMMON) $(APCOBJS) $(DATELIB) $(LIBS)
+uursmtp:	uursmtp.o uuconv.o iso2pc.o $(COMMON) $(APCOBJS) $(DATELIB) $(LIBS) Makefile
 	$(CC) $(MODELL) -o $@ $@.o uuconv.o iso2pc.o $(COMMON) $(APCOBJS) $(DATELIB) $(LIBS) $(LDFLAGS)
 
-uuwsmtp:	uuwsmtp.o zconv.o pc2iso.o $(COMMON) $(LIBS)
+uuwsmtp:	uuwsmtp.o zconv.o pc2iso.o $(COMMON) $(LIBS) Makefile
 	$(CC) $(MODELL) -o $@ $@.o zconv.o pc2iso.o $(COMMON) $(LIBS) $(LDFLAGS)
 
-uuwnews:	uuwnews.o zconv.o uuapprove.o pc2iso.o $(COMMON) $(LIBS)
+uuwnews:	uuwnews.o zconv.o uuapprove.o pc2iso.o $(COMMON) $(LIBS) Makefile
 	$(CC) $(MODELL) -o $@ $@.o zconv.o uuapprove.o pc2iso.o $(COMMON) $(LIBS) $(LDFLAGS)
 
-uurnews:	uurnews.o uuconv.o iso2pc.o $(COMMON) $(APCOBJS) $(DATELIB) $(LIBS)
+uurnews:	uurnews.o uuconv.o iso2pc.o $(COMMON) $(APCOBJS) $(DATELIB) $(LIBS) Makefile
 	$(CC) $(MODELL) -o $@ $@.o uuconv.o iso2pc.o $(COMMON) $(APCOBJS) $(DATELIB) $(LIBS) $(LDFLAGS)
 
-testmime:	testmime.o mime.o $(DATELIB) $(LIBS)
+testmime:	testmime.o mime.o $(DATELIB) $(LIBS) Makefile
 	$(CC) $(MODELL) -o $@ $@.o mime.o $(DATELIB) $(LIBS) \
 	-lreadline -ltermcap $(LDFLAGS)
 
-testeda:	testeda.o $(DATELIB)
+testeda:	testeda.o $(DATELIB) Makefile
 	$(CC) $(CFLAGS) -o testeda testeda.o $(DATELIB) $(LDFLAGS)
 
 # automatic depend

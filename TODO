@@ -1,8 +1,6 @@
-Was kann noch getan werden?
+Was muﬂ noch getan werden?
 
-- JANUS: Bei Abbruch Datenverlust.
-
-- Backout
+- Backout fuer ZConnect
 
 - Januslogin: offene Dateien?
 
@@ -60,3 +58,4 @@ Was kann noch getan werden?
 - Ausgehende Puffer beim Janus-Netcall gehen manchmal verloren!!
   Zmodem hack?
 
+- MA: call.c aufr‰umen. Alle Checks, PreArc VOR dem Onlinegehen!

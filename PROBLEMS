@@ -10,9 +10,9 @@ Problem (1) :
 Tip:
 
     Gperf ist nicht installiert oder nicht im Pfad und hdlib/hash.c
-    wurde versehentlich gelöscht. Installieren Sie gperf (Sourcen
-    finden Sie in der GNU C++ Library) oder restaurieren Sie hdlib/hash.c
-    aus der Original-Distribution.
+    wurde versehentlich gelöscht. Installieren Sie gperf (von jedem
+    GNU-Mirror) oder restaurieren Sie hdlib/hash.c aus der
+    Original-Distribution.
 
 
 Problem (2) :

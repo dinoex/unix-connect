@@ -1,5 +1,16 @@
+$Id$
 
-Änderungen seit 0.83:
+Änderungen an configure
+
+seit 0.84
+
+- -Wconversion abgeschaltet, das bläht die Ausgabe dermaßen
+  auf, daß man nicht mehr findet.
+  nur für Linux jetzt abgeschaltet.
+
+- Schreibfehler bei Real-Gate und X-Header behoben
+
+seit 0.83
 
 - configure --enable-zmodemhack
   setzt Compiler-Option DIRTY_ZMODEM_HACK
@@ -18,7 +29,7 @@
 - configure --enable-uxheader
   setzt Compiler-Option ENABLE_U_X_HEADER
 
-Änderungen seit 0.82:
+seit 0.82
 
 - Warnings erweitert
 
@@ -36,7 +47,7 @@
   überflüssige Warnoptionen entfernt. Einige abgeschaltet (XX direkt
   nach -W eingefügt)
 
-Änderungen seit 0.80:
+seit 0.80
 
 - erkenne: HAVE_STRING_H HAVE_STRINGS_H HAVE_UNISTD_H HAVE_SYS_FCNTL_H
 
@@ -59,20 +70,20 @@
 - Inhaltliche Fehler in congfigure.in, INSTALL beseitigt
   (Matthias Andree)
 
-Änderungen seit configure-19990813:
+seit configure-19990813
 
 - Das Verzeichnis rsmpt wird beachtet. (Dirk)
 - Host- und Domainnamen werden anders (portabler) erraten. (Andi)
 - in hdlib/Makefile ist das Target newhash enthalten. (Dirk)
 
-Änderungen seit configure-19990810:
+seit configure-19990810
 
 - Viele Bug-Fixes, damit es auch auf Nicht-GNU und Nicht-Linux
   läuft (manche GNU-Erweiterungen sind _wirklich_ angenehm :). (Dirk/Andi)
 - etc/config wird direkt bei "make all" erzeugt. (Andi)
 - Makefiles weiter aufgeräumt (Dirk)
 
-Änderungen seit configure-19990809c:
+seit configure-19990809c
 
 - Dokumentation in INSTALL angepasst, mail-and-news/README verfasst.
 - Alle Makefiles aufgeräumt, die Abhängigkeiten aus dem Toplevel-
@@ -84,7 +95,7 @@
 - Die Datei helpers/subst.in wird jetzt bei "make distrib" erzeugt,
   damit kann das "make" in configure entfernt werden.
 
-Änderungen seit configure-19990809b:
+seit configure-19990809b
 
 - Die Shellskripte sind überarbeitet und sauber getrennt.
 - PATHADD fängt stets mit einem Doppelpunkt an, wenn es nicht leer ist.
@@ -92,13 +103,13 @@
 - In allen mail-and-news-Verzeichnissen befinden sich jetzt Makefiles.
 - Die verschiedenen import-Skripte sind zusammengefasst.
 
-Änderungen seit configure-19990809a:
+seit configure-19990809a
 
 - Den unten angesprochenen Teilpatch zu den systemabhängigen Dateien
   (policy.h, sysdep.h) habe ich so eingebaut, daß er sowohl für die
   alte als auch neue Verzeichnisstruktur funktioniert.
 
-Änderungen seit configure-19990809:
+seit configure-19990809
 
 - Die Makefiles kommen auch wieder mit einem Nicht-GNU-make zurecht. (Andi)
 - Dirks weitere Makefile-Überarbeitungen (zB CLEANFILES) sind drinnen
@@ -115,7 +126,7 @@
   nicht zu uc < 0.80 passt.
 - Viele kleine Bugfixes. (Andi)
 
-Änderungen seit configure-19990808:
+seit configure-19990808
 
 - Die Makefiles sind komplett überarbeitet. Es wird jetzt mit einer Liste
   der Subdirs gearbeitet, die alle gleichmäßig bearbeitet werden. Es gibt
@@ -128,7 +139,7 @@
 - Ich habe angefangen, die Änderungen in CHANGES einzutragen
 - Die APC-Dinge sind nach Makefile.global.in verschoben
 
-Änderungen seit configure:
+seit configure
 
 - Die Patches von Dirk, die Freebsd, einbeziehen, sind drinnen
 - Die trivialen echten Fehler sind draußen

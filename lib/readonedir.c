@@ -1,9 +1,6 @@
 /* $Id$ */
 /*
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
- *  Copyright (C) 1993-94  Martin Husemann
- *  Copyright (C) 1995     Christopher Creutzig
- *  Copyright (C) 1999     Dirk Meyer
  *  Copyright (C) 1999     Matthias Andree
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -37,17 +34,13 @@
  *  for instructions on how to join this list.
  */
 
-
 /*
- *   import.c:
+ * readonedir.c
  *
- *	Liest alle Daten im aktuellen Verzeichnis ein (und packt sie vorher
- *	aus.
+ * baut eine verkettete Liste der Dateinamen im Directory
+ * l‰ﬂt . und .. aus
+ *
  */
-
-
-#include "config.h"
-#include "zconnect.h"
 
 #include <errno.h>
 #include <ctype.h>
@@ -66,65 +59,53 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+#ifdef HAVE_STRING_H
+#include <string.h>
+#else
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
+#endif
+#endif
 
 #include "utility.h"
-#include "xprog.h"
-
 #include "calllib.h"
-#include "uudebug.h"
+#include "uulog.h"
 
-/*
- *  Alle Dateien im aktuellen Verzeichnis entpacken und einlesen...
- */
-int import_all(char *arcer, char *sysname)
+ilist_p
+readonedir(const char *name)
 {
-	int returncode = 0;
+	ilist_p l = NULL;
+	DIR *dir;
+#ifdef HAS_BSD_DIRECT
+	struct direct *ent;
+#else
+	struct dirent *ent;
+#endif
 
-	/* Liste der zu entpackenden Dateien */
-	ilist_p l;
+	if (!(dir = opendir(name))) {
+		newlog(ERRLOG, "cannot open directory %s: %s",
+		       name, strerror(errno));
+	} else {
+		errno = 0;
+		while ((ent = readdir(dir)) != NULL) {
+			ilist_p neu;
 
-	logcwd("import_all");
-	l = readonedir(".");
-
-  	while (l) {
-  		ilist_p p;
-		int myret = 1;
-		struct stat st;
-
-		if(stat(l->name, &st)) {
-			newlog(ERRLOG, "Kann nicht auspacken: %s: %s", l->name,
-			       strerror(errno));
-			perror(l->name);
-		} else {
-			newlog(DEBUGLOG, "Auspacken: %s (%s), %ld bytes\n",
-				l->name, arcer, (long)st.st_size);
-			fprintf(stderr, "Auspacken: %s (%s), %ld bytes\n",
-				l->name, arcer, (long)st.st_size);
-			if (S_ISREG(st.st_mode)
-			    && (nlink_t)1==st.st_nlink) {
-				if(!call_auspack(arcer, l->name)) {
-					myret = 0;
-				}
-				if(backindir) {
-					backup(backindir, l->name,
-					       sysname, BACKUP_MOVE);
-				} else {
-					remove(l->name);
-				}
-			} else {
-				fprintf(stderr,
-					"File hat falschen Link count "
-					"oder ist kein regulaeres File!\n");
-				newlog(ERRLOG,
-					"File hat falschen Link count "
-					"oder ist kein regulaeres File!\n");
+			/* . und .. ignorieren */
+			if (ent->d_name[0] == '.') {
+				if (!ent -> d_name[1]) continue;
+				if (ent->d_name[1] == '.'
+				    && !ent->d_name[2]) continue;
 			}
+			neu = dalloc(sizeof(ilist_t));
+			neu->name = dstrdup(ent->d_name);
+			neu->next = l;
+			l = neu;
 		}
-		returncode |= myret;
-		p = l; l = p->next;
-		dfree(p->name); dfree(p);
+		if(errno) {
+			newlog(ERRLOG, "cannot read directory: %s",
+			       strerror(errno));
+		}
+		closedir(dir);
 	}
-
-	returncode |= call_import(sysname);
-	return returncode;
+	return l;
 }

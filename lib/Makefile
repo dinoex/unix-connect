@@ -36,11 +36,11 @@
 
 include ../Makefile.global
 
-OBJS	= hayes.o pattern.o stricmp.o track.o uufatal.o utility.o strlwr.o \
-	  strupr.o strdup.o rawtty.o ministat.o lockwait.o uulog.o \
-	  trap.o
+OBJS	= hayes.o pattern.o track.o rawtty.o lockwait.o \
+	  trap.o readonedir.o backup.o uudebug.o
 
-STROBJS	= stricmp.o uufatal.o utility.o strlwr.o strupr.o strdup.o stccpy.o
+STROBJS	= utility.o stricmp.o strlwr.o strupr.o strdup.o stccpy.o \
+	  uufatal.o uulog.o ministat.o
 
 all:	gatelib.a strlib.a
 
@@ -53,15 +53,17 @@ clean:
 
 distclean:	clean
 
-gatelib.a:	$(OBJS)
+gatelib.a:	$(OBJS) Makefile
 	ar r gatelib.a $(OBJS)
 	$(RANLIB) gatelib.a
 
-strlib.a:	$(STROBJS)
+strlib.a:	$(STROBJS) Makefile
 	ar r strlib.a $(STROBJS)
 	$(RANLIB) strlib.a
 
 # automatic depend
+backup.o: backup.c ../include/utility.h ../include/calllib.h \
+ ../include/uulog.h
 hayes.o: hayes.c ../include/config.h ../include/sysdep.h \
  ../include/crc.h ../include/header.h ../hdlib/hd_def.h \
  ../hdlib/hd_nam.h ../include/ministat.h ../include/hayes.h \
@@ -76,6 +78,8 @@ pattern.o: pattern.c ../include/config.h ../include/sysdep.h \
  ../include/utility.h ../include/pattern.h
 rawtty.o: rawtty.c ../include/config.h ../include/sysdep.h \
  ../include/line.h
+readonedir.o: readonedir.c ../include/utility.h ../include/calllib.h \
+ ../include/uulog.h
 stccpy.o: stccpy.c ../include/config.h ../include/sysdep.h \
  ../include/utility.h
 strdup.o: strdup.c ../include/config.h ../include/sysdep.h \

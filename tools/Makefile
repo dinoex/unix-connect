@@ -35,7 +35,7 @@
 
 include ../Makefile.global
 
-LIBS	= ../lib/ministat.o ../hdlib/uuheader.a ../lib/gatelib.a
+LIBS	= ../lib/ministat.o ../hdlib/uuheader.a ../lib/strlib.a
 
 PROGS	= zconsplit list-systems
 
@@ -52,10 +52,10 @@ clean:
 
 distclean:	clean
 
-list-systems:	list-systems.o $(LIBS)
+list-systems:	list-systems.o $(LIBS) Makefile
 	$(CC) -o list-systems list-systems.o $(LIBS) $(LDFLAGS)
 
-zconsplit:	zconsplit.o $(LIBS)
+zconsplit:	zconsplit.o $(LIBS) Makefile
 	$(CC) -o zconsplit zconsplit.o $(LIBS) $(LDFLAGS)
 
 # automatic depend

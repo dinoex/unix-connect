@@ -714,7 +714,7 @@ void
 foldputs_no_eol(FILE *f, const char *inhalt, int *col)
 {
 #if 0
-	int i; 
+	int i;
 	char *p, *p1, *lastspace;
 	char ch;
 

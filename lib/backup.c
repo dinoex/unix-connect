@@ -1,9 +1,6 @@
 /* $Id$ */
 /*
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
- *  Copyright (C) 1993-94  Martin Husemann
- *  Copyright (C) 1995     Christopher Creutzig
- *  Copyright (C) 1999     Dirk Meyer
  *  Copyright (C) 1999     Matthias Andree
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -37,17 +34,12 @@
  *  for instructions on how to join this list.
  */
 
-
 /*
- *   import.c:
+ * backup.c
  *
- *	Liest alle Daten im aktuellen Verzeichnis ein (und packt sie vorher
- *	aus.
+ * Backup eines Puffers anlegen
+ *
  */
-
-
-#include "config.h"
-#include "zconnect.h"
 
 #include <errno.h>
 #include <ctype.h>
@@ -66,65 +58,91 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+#ifdef HAVE_STRING_H
+#include <string.h>
+#else
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
+#endif
+#endif
+#include <stdio.h>
 
 #include "utility.h"
-#include "xprog.h"
-
 #include "calllib.h"
-#include "uudebug.h"
+#include "uulog.h"
 
-/*
- *  Alle Dateien im aktuellen Verzeichnis entpacken und einlesen...
+/* backup
+ * inputs:
+ *
+ *
+ * returns:
+ * 0: okay
+ * 1: error during execution
+ * 2: not a regular file
+ * 3: file not found
+ * -1: file, backup or sysname have been NULL or an illegal backup_type
+ *     has been specified
  */
-int import_all(char *arcer, char *sysname)
+int
+backup(const char *backupdir, const char *file,
+       const char *sysname, enum backup_type backup_type)
 {
-	int returncode = 0;
+	logcwd("backup");
 
-	/* Liste der zu entpackenden Dateien */
-	ilist_p l;
-
-	logcwd("import_all");
-	l = readonedir(".");
-
-  	while (l) {
-  		ilist_p p;
-		int myret = 1;
+	if (backupdir && file && sysname) {
+		char backupname[FILENAME_MAX];
+		const char *shortname, *btype;
+		int rc;
 		struct stat st;
 
-		if(stat(l->name, &st)) {
-			newlog(ERRLOG, "Kann nicht auspacken: %s: %s", l->name,
-			       strerror(errno));
-			perror(l->name);
-		} else {
-			newlog(DEBUGLOG, "Auspacken: %s (%s), %ld bytes\n",
-				l->name, arcer, (long)st.st_size);
-			fprintf(stderr, "Auspacken: %s (%s), %ld bytes\n",
-				l->name, arcer, (long)st.st_size);
-			if (S_ISREG(st.st_mode)
-			    && (nlink_t)1==st.st_nlink) {
-				if(!call_auspack(arcer, l->name)) {
-					myret = 0;
-				}
-				if(backindir) {
-					backup(backindir, l->name,
-					       sysname, BACKUP_MOVE);
-				} else {
-					remove(l->name);
-				}
-			} else {
-				fprintf(stderr,
-					"File hat falschen Link count "
-					"oder ist kein regulaeres File!\n");
-				newlog(ERRLOG,
-					"File hat falschen Link count "
-					"oder ist kein regulaeres File!\n");
-			}
+		if(lstat(file, &st)) {
+			newlog(ERRLOG, "backup: cannot stat %s: %s",
+			       file, strerror(errno));
+			return 3;
 		}
-		returncode |= myret;
-		p = l; l = p->next;
-		dfree(p->name); dfree(p);
-	}
+		if(!S_ISREG(st.st_mode)) {
+			newlog(ERRLOG,
+			       "backup: %s is not a regular file, mode: 0%o",
+			       file, st.st_mode);
+			return 2;
+		}
 
-	returncode |= call_import(sysname);
-	return returncode;
+		shortname = strrchr(file, '/');
+		if (!shortname) shortname = file;
+		else shortname++;
+		snprintf(backupname, sizeof(backupname),
+			 "%s/%s.%s.%ld",
+			 backupdir, sysname,
+			 shortname, (long)time(NULL));
+		newlog(DEBUGLOG, "Backup: %s -> %s\n", file, backupname);
+		if(remove(backupname) && errno != ENOENT) {
+			newlog(ERRLOG,
+			       "cannot remove backup destination %s: %s",
+			       backupname, strerror(errno));
+			return 1;
+		}
+
+		switch(backup_type) {
+		case BACKUP_MOVE:
+			rc=rename(file, backupname);
+			btype="mv";
+			break;
+		case BACKUP_LINK:
+			rc=link(file, backupname);
+			btype="ln";
+			break;
+		default:
+			return -1;
+		}
+		if(rc) {
+			newlog(ERRLOG,
+			       "cannot backup: %s %s %s: %s",
+			       btype, file, backupname,
+			       strerror(errno));
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+	return -1;
 }

@@ -47,5 +47,5 @@ int recvfile(const char *proto, const char *file);
 int sendfile(const char *proto, const char *file);
 
 int call_auspack(const char *arcer, const char *arcfile);
-int call_import(const char *lsystem, int net38format);
+int call_import(const char *lsystem);
 

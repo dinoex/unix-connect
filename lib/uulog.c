@@ -74,10 +74,9 @@ const char *def_debuglog;
 void
 initlog(const char *xname) {
 #ifdef HAVE_SYSLOG
-	openlog(xname, LOG_PID, SYSLOG_KANAL);
+	openlog(xname, LOG_PID|LOG_CONS, SYSLOG_KANAL);
 #else
-	strncpy(name,xname,30);
-	name[29] = 0;
+	stccpy(name,xname,sizeof(name));
 	uudeblogfile = NULL;
 #endif
 	minireadstat();
@@ -87,58 +86,66 @@ void
 newlog(int lchan, const char *format, ...)
 {
 	int prio;
-	char text[20];
-	char filename[20];
 	char buf[ MAX_LOG_LINE ];
 #ifndef HAVE_SYSLOG
 	FILE *logf;
 	time_t now;
+	char filename[20];
 	char buf1[ MAX_LOG_LINE ];
 #endif
 	const char *defformat = "%s\n";
 	va_list arg;
 
 	switch(lchan) {
-	    case Z2ULOG	:
+	case Z2ULOG :
 		prio = Z2ULOG_PRIO;
-		strcpy(text, Z2ULOG_NAME);
-		strcpy(filename, Z2ULOG_FILE);
+#ifndef HAVE_SYSLOG
+		stccpy(filename, Z2ULOG_FILE, sizeof(filename));
+#endif
 		break;
-	    case U2ZLOG	:
+	case U2ZLOG :
 		prio = U2ZLOG_PRIO;
-		strcpy(text, U2ZLOG_NAME);
-		strcpy(filename, U2ZLOG_FILE);
+#ifndef HAVE_SYSLOG
+		stccpy(filename, U2ZLOG_FILE, sizeof(filename));
+#endif
 		break;
-	    case ERRLOG	:
+	case ERRLOG :
 		prio = ERRLOG_PRIO;
-		strcpy(text, ERRLOG_NAME);
-		strcpy(filename, ERRLOG_FILE);
+#ifndef HAVE_SYSLOG
+		stccpy(filename, ERRLOG_FILE, sizeof(filename));
+#endif
 		break;
-	    case INCOMING :
+	case INCOMING :
 		prio = INCOMING_PRIO;
-		strcpy(text, INCOMING_NAME);
-		strcpy(filename, INCOMING_FILE);
+#ifndef HAVE_SYSLOG
+		stccpy(filename, INCOMING_FILE, sizeof(filename));
+#endif
 		break;
-	    case OUTGOING :
+	case OUTGOING :
 		prio = OUTGOING_PRIO;
-		strcpy(text, OUTGOING_NAME);
-		strcpy(filename, OUTGOING_FILE);
+#ifndef HAVE_SYSLOG
+		stccpy(filename, OUTGOING_FILE, sizeof(filename));
+#endif
 		break;
-	    case XTRACTLOG :
+	case XTRACTLOG :
 		prio = XTRACTLOG_PRIO;
-		strcpy(text, XTRACTLOG_NAME);
-		strcpy(filename, XTRACTLOG_FILE);
+#ifndef HAVE_SYSLOG
+		stccpy(filename, XTRACTLOG_FILE, sizeof(filename));
+#endif
 		break;
-	    case DEBUGLOG :
+	case DEBUGLOG :
 		prio = DEBUGLOG_PRIO;
-		strcpy(text, DEBUGLOG_NAME);
-		strcpy(filename, DEBUGLOG_FILE);
+#ifndef HAVE_SYSLOG
+		stccpy(filename, DEBUGLOG_FILE, sizeof(filename));
+#endif
 		break;
-	    default:
+	default:
 		prio = LOG_ERR;
-		strcpy(filename, DEBUGLOG_NAME);
-		strcpy(filename, DEBUGLOG_FILE);
+#ifndef HAVE_SYSLOG
+		stccpy(filename, DEBUGLOG_FILE, sizeof(filename));
+#endif
 		lchan = DEBUGLOG;
+		break;
 	}
 
 	if(format == NULL || strlen(format) == 0)
@@ -149,11 +156,25 @@ newlog(int lchan, const char *format, ...)
 	va_end (arg);
 
 #ifdef HAVE_SYSLOG
+	switch(lchan) {
+	case Z2ULOG :
+	case U2ZLOG :
+		/* keine Ausgabe auf stderr fuer uursmtp/uuwsmtp */
+		break;
+	case ERRLOG :
+	case INCOMING :
+	case OUTGOING :
+	case XTRACTLOG :
+	case DEBUGLOG :
+	default:
+		fprintf(stderr, "%s", buf);
+		break;
+	}
 	syslog(prio, "%s", buf);
 #else
 	if( lchan == DEBUGLOG ) {
 		if ( uudeblogfile == NULL ) {
-			uuuudeblogfile = fopen("/tmp/zlog", "a");
+			uudeblogfile = fopen("/tmp/zlog", "a");
 		}
 		if ( uudeblogfile == NULL ) {
 			fprintf(stderr,
@@ -162,7 +183,7 @@ newlog(int lchan, const char *format, ...)
 		}
 		logf = uudeblogfile;
 	} else {
-		sprintf(buf, "%s/%s", logdir, lfilename);
+		snprintf(buf,  sizeof(buf), "%s/%s", logdir, lfilename);
 		logf = fopen(buf, "a");
 		if (!logf) {
 			fprintf(stderr,

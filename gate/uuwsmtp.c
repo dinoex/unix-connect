@@ -348,7 +348,7 @@ main(int argc, const char *const *argv)
 	if (pointsys)
 		fprintf(fout, "HELO %s\r\n", pointsys);
 	else
-		fprintf(fout, "HELO %s.%s\r\n", 
+		fprintf(fout, "HELO %s.%s\r\n",
 				boxstat.boxname, boxstat.boxdomain);
 	while (!feof(fin))
 		convert(fin, fout);

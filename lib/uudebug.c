@@ -1,9 +1,7 @@
 /* $Id$ */
 /*
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
- *  Copyright (C) 1993-94  Martin Husemann
- *  Copyright (C) 1995-98  Christopher Creutzig
- *  Copyright (C) 1994     Peter Much
+ *  Copyright (C) 1999     Matthias Andree
  *  Copyright (C) 1999     Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -39,71 +37,39 @@
 
 
 /*
- *  uulog.h
+ *  uudebug.c
  *
  *  Logfile-Routinen fuer den ZCONNECT/RFC GateWay
  *
  */
 
-#define Z2ULOG		1
-#define U2ZLOG		2
-#define INCOMING	4
-#define ERRLOG		3
-#define OUTGOING	5
-#define XTRACTLOG	6
-#define DEBUGLOG	7
 
-#ifdef HAVE_SYSLOG
-#define SYSLOG_KANAL	LOG_LOCAL0
-#define SYSLOG_LOGNAME	"uconnect"
-#define FATALLOG_PRIO	LOG_CRIT
+#include "config.h"
 
-#define Z2ULOG_NAME	"zc2mail"
-#define Z2ULOG_PRIO	LOG_INFO
-
-#define U2ZLOG_NAME	"mail2zc"
-#define U2ZLOG_PRIO	LOG_INFO
-
-#define ERRLOG_NAME	"error"
-#define ERRLOG_PRIO	LOG_ERR
-
-#define INCOMING_NAME	"caller"
-#define INCOMING_PRIO	LOG_NOTICE
-
-#define OUTGOING_NAME	"calling"
-#define OUTGOING_PRIO	LOG_INFO
-
-#define XTRACTLOG_NAME	"extract"
-#define XTRACTLOG_PRIO	LOG_INFO
-
-#define DEBUGLOG_NAME	"debug"
-#define DEBUGLOG_PRIO	LOG_DEBUG
-
+#include <stdio.h>
+#include <unistd.h>
+#include <errno.h>
+#ifdef HAVE_STRING_H
+# include <string.h>
+#else
+#ifdef HAVE_STRINGS_H
+# include <strings.h>
+#endif
 #endif
 
-#define Z2ULOG_FILE		"import.log"
-#define U2ZLOG_FILE		"export.log"
-#define ERRLOG_FILE		"errors.log"
-#define INCOMING_FILE		"anrufe.log"
-#define OUTGOING_FILE		"telefon.log"
-#define XTRACTLOG_FILE		"extract.log"
-#define DEBUGLOG_FILE		"debug.log"
+#include "uulog.h"
+#include "uudebug.h"
 
-extern const char *nomem;
-
-void initlog(const char *name);
-
-void newlog(int lchan, const char *format, ...)
-#ifdef __GNUC__
-__attribute__ ((format(printf,2,3)))
+void
+logcwd(const char *func)
+{
+#ifndef NDEBUG
+	char cwd[1024];
+	if(!getcwd(cwd, sizeof(cwd))) {
+		newlog(ERRLOG, "cannot get cwd for function %s: %s", func,
+		       strerror(errno));
+	} else {
+		newlog(DEBUGLOG, "cwd for function %s: %s", func, cwd);
+	}
 #endif
-;
-
-void uufatal(const char *prog, const char *format, ...)
-#ifdef __GNUC__
-__attribute__ ((noreturn, format(printf,2,3)))
-#endif
-;
-
-#define out_of_memory(prg)	uufatal(prg, nomem)
-
+}

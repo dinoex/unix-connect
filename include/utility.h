@@ -58,7 +58,7 @@ char * strdup(const char *);
 #endif
 #ifndef HAVE_STCCPY
 int stccpy(char *, const char *, int);
-#endif   
+#endif
 void qstccpy(char *, const char *, int);
 
 /*

@@ -22,6 +22,19 @@ then
 	exit 1
 fi
 
+function findarc() {
+# Argumente: (NAME) (SUFFIX)
+    local
+    name=`dirname $1`/`basename $1 $2`
+    ARC=name
+    if [ -r $name.$2 ]
+    then
+	ARC="$name.$2"
+    fi
+    return $ARC;
+}
+
+
 KENNUNG=$1
 ARC=$2
 
@@ -34,28 +47,28 @@ case "$KENNUNG" in
 		then
 			ARC="$name".zip
 		fi
-		unzip $ARC	> /dev/null 2>&1 ;;
+		unzip $ARC ;;
  "arc" | \
  "ARC" )	name=`dirname $ARC`/`basename $ARC .arc`
 		if [ -r $name.arc ]
 		then
 			ARC="$name".arc
 		fi
-		arc x $ARC	> /dev/null 2>&1 ;;
+		arc x $ARC ;;
  "zoo" | \
  "ZOO" )	name=`dirname $ARC`/`basename $ARC .zoo`
 		if [ -r $name.zoo ]
 		then
 			ARC="$name".zoo
 		fi
-		zoo x $ARC	> /dev/null 2>&1 ;;
+		zoo x $ARC ;;
  "lzh" | \
- "LZH" )	name=3D`dirname $ARC`/`basename $ARC .lzh`
+ "LZH" )	name=`dirname $ARC`/`basename $ARC .lzh`
  		if [ -r $name.lzh ]
 		then
-			ARC=3D"$name".lzh
+			ARC="$name".lzh
 		fi
-		lha xi $ARC	> /dev/null 2>&1 ;;
+		lha xi $ARC ;;
  "lha" | \
  "LHA" )	name=`dirname $ARC`/`basename $ARC .lha`
 		if [ -r $name.lha ]
@@ -70,7 +83,7 @@ case "$KENNUNG" in
 				ARC="$name".lzh
 			fi
 		fi
-		lha xi $ARC	> /dev/null 2>&1 ;;
+		lha xi $ARC ;;
  "none" | \
  "NONE")	name=`dirname $ARC`/`basename $ARC .nar`
 		if [ -r $name.nar ]

@@ -61,7 +61,7 @@ watch_gate() {
 	echo "Gaten fehlgeschlagen $1"
 	backup="${sys}-`date +%Y%m%d-%H%M%S`-$$-$1"
 	echo "Die Daten finden sie unter $backup"
-	mv $1 @SPOOLDIR@/error/$backup 2>&1
+	mv $1 @SPOOLDIR@/error/$backup
 }
 
 #
@@ -77,20 +77,23 @@ fi
 temp=`mktemp /tmp/import.XXXXXX` || exit 1
 
 # Ausgaben ins Tempfile abfangen
-exec 2>>$temp 2>&1
+exec >>$temp 2>&1
 
 trap ende 0 1 2 3 4 5 6 7 8 11 13 14 15
 
-echo "$0"
-date >>$temp
+echo "cmdl: $0 $*"
+echo "date: "
+date
+echo "cwd:  "
+pwd
 echo ""
-echo "Import der empfangenen Daten von $1"
+echo "Import der empfangenen Daten von $1:"
 
 TMP=import.$$
 
 if [ ! -d @SPOOLDIR@/error ]
 then
-	mkdir @SPOOLDIR@/error 2>>$temp ||
+	mkdir @SPOOLDIR@/error ||
 	{ echo "Ich kann @SPOOLDIR@/error nicht anlegen!" ; ende; }
 fi
 
@@ -103,23 +106,27 @@ do
 	then
 		echo "Teile $file"
 
-		mv $file $TMP
+		mv $file $TMP ||
+		{ error="cannot mv $file $TMP: $?"; ende; }
 		cd $TMP
 		zconsplit $file ||
 		{ error="zconsplit $file failed: $?"; ende; }
+		if [ -f $file ]
+		then
+			echo "removing $file"
+			rm -f $file
+		fi
 		if [ -f $file.prv -a -s $file.prv ]
 		then
-			(uuwsmtp -f $file.prv $1 | $RSMTP) ) ||
+			echo "$file.prv -> $RSMTP"
+			(uuwsmtp -f $file.prv $1 | $RSMTP ) ||
 			watch_gate "$file.prv"
 		fi
 		if [ -f $file.brt -a -s $file.brt ]
 		then
-			(uuwnews -f $file.brt $1 | rnews) ) ||
+			echo "$file.brt -> rnews"
+			(uuwnews -f $file.brt $1 | rnews ) ||
 			watch_gate "$file.brt"
-		fi
-		if [ -f $file ]
-		then
-			rm -f $file
 		fi
 		cd ..
 	fi

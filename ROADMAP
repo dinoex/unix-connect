@@ -1,7 +1,6 @@
 ROADMAP fuer UNIX-Connect:
 ==========================
 
-
 Die Sourcen sind folgendermassen organisiert:
 
 docs/		Die Dokumentation (bzw. der Platz, wo sie entstehen sollte)
@@ -15,8 +14,7 @@ gate/		Die Konverteriungsprogramme und Zubehoer. Wandlungen von
 hdlib/		Die Header-Verwaltung. ***!!!*** ACHTUNG: es wird das
 		GNU utility "gperf" benötigt, um die Datei "hash.c" zu
 		erzeugen. Wer gperf nicht hat, sollte "hash.c" vorsichtig
-		behandeln. Gperf ist in den Sourcen zur GNU C++ Library
-		enthalten, wird aber oft nicht mit installiert.
+		behandeln. Gperf ist von GNU-Mirrors erhältlich.
 
 include/	Alle Header-Files
 
@@ -29,14 +27,12 @@ online/		Alle Programme zur Kommunikation: Login-Shells fuer die
 
 tools/		Generelle ZCONNECT Hilfsmittel.
 
-net38/		Konvertierungsprogramme von und zu Netcall-3.8
-
 shell/		Vorlagen fuer Shell-Scripte, die von "make install" nach
 		$(BINDIR) kopiert werden (und entsprechend angepasst).
 
-mail-and-news	Konfigurationsdateien zur Eingliederung in das Gesamtsystem
+mail-and-news/	Konfigurationsdateien zur Eingliederung in das Gesamtsystem
 		(smail, cnews, ...)
 
 etc/		Dateien, die nach $(ETCDIR) kopiert werden
 		sollten. Sie sind ALLE manuell an die lokalen Verhaeltnisse
-		anzupassen! Achtung, beim Update diff erstellen...
+		anzupassen! Achtung, beim Update diff erstellen!

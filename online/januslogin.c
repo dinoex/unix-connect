@@ -299,14 +299,14 @@ ask_passwort:
 	strlwr(transfer);
 
 	fputs("Running ARC....\r\n"
-	     "Running ARC....\r\n"
-	     "Running ARC....\r\n"
-	     "Running ARC....\r\n", stdout);
+	      "Running ARC....\r\n"
+	      "Running ARC....\r\n"
+	      "Running ARC....\r\n", stdout);
 	fprintf(deblogfile,
-		"%s: System %s erfolgreich eingelogt [%s]\n",
+		"%s: System %s erfolgreich eingeloggt [%s]\n",
 		argv[0], sysname, tty);
 	newlog(INCOMING,
-		"%s: System %s erfolgreich eingelogt [%s]",
+		"%s: System %s erfolgreich eingeloggt [%s]",
 		argv[0], sysname, tty);
 
 	sprintf(tmpname, "%s/%s.%d.dir", netcalldir, sysname, getpid());
@@ -426,7 +426,7 @@ ask_passwort:
 			 */
 			if (fork() == 0) {
 				/* Ich bin child */
-				import_all(arcerin, sysname, 0);
+				import_all(arcerin, sysname);
 				chdir ("/");
 				rmdir(tmpname);
 			}

@@ -298,7 +298,11 @@ uncompress( void )
 		Eargv[ 0 ] = Gzip;
 		Eargv[ 1 ] = "-dc";
 		Eargv[ 2 ] = NULL;
+#ifdef linux
+		execv( Gzip, Eargv );
+#else
 		execv( Gzip, (char *const *)Eargv );
+#endif
 		fprintf( stderr,
 			"%s: exec %s failed: %s\n",
 			Name, Gzip, strerror( errno ) );
@@ -433,7 +437,11 @@ feed_mail( void )
 			fprintf( stderr, "\n" );
 		};
 
+#ifdef linux
+		execv( Sendmail, Eargv );
+#else
 		execv( Sendmail, (char *const *)Eargv );
+#endif
 		fprintf( stderr,
 			"%s: exec %s failed: %s\n",
 			Name, Sendmail, strerror( errno ) );

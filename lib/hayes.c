@@ -4,6 +4,7 @@
  *  Copyright (C) 1993-94  Martin Husemann
  *  Copyright (C) 1995     Christopher Creutzig
  *  Copyright (C) 1999     Dirk Meyer
+ *  Copyright (C) 1999     Matthias Andree
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -55,6 +56,7 @@
 #ifdef HAVE_UNISTD_H
 # include <unistd.h>
 #endif
+#include <ctype.h>
 
 #include "crc.h"
 #include "header.h"
@@ -211,7 +213,9 @@ do_hayes(const char *command, int modem)
 	int found; /* Returncode         */
 
 	/* Dem Modem etwas Ruhe goennen */
-	sleep(1);
+#ifdef SLOW_MODEM
+       	sleep(1);
+#endif
 
 	/* Kommando senden */
 	write(modem, command, strlen(command));
@@ -227,7 +231,15 @@ do_hayes(const char *command, int modem)
 	do {
 		read(modem, &c, 1);
 #ifdef MODEM_DEBUG
-		fprintf(stderr, "%c", c); fflush(stderr);
+		if(isprint(c)) fprintf(stderr, "%c", c);
+		else {
+			if(c < 0x20) {
+				fprintf(stderr, "^%c", c | 0x40);
+			} else {
+				fprintf(stderr, "\\x%02x", c);
+			}
+		}
+		fflush(stderr);
 #endif
 		found = track_char(c);
 	} while (found < 0);

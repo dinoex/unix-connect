@@ -3,8 +3,8 @@
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1993-94  Martin Husemann
  *  Copyright (C) 1995     Christopher Creutzig
- *  Copyright (C) 1999     Matthias Andree
  *  Copyright (C) 1999     Dirk Meyer
+ *  Copyright (C) 1999     Matthias Andree
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -57,12 +57,14 @@
 #endif
 #endif
 #include <stdarg.h>
+#include <utime.h>
+#include <sys/stat.h>
 
 #include "utility.h"
 #include "boxstat.h"
 #include "ministat.h"
 #include "xprog.h"
-
+#include "uudebug.h"
 
 /* eine Art system, aber auf execv-Basis und ohne shell
    Warnung: Pfad muss mit angegeben werden! */
@@ -73,6 +75,7 @@ static int runcommand(const char *file, ...)
 	pid_t c_pid;
 	size_t i;
 
+	logcwd("runcommand");
 	i = 0;
 	arg[i++] = file;
 	va_start(ap, file);
@@ -94,10 +97,14 @@ static int runcommand(const char *file, ...)
 				fprintf(stderr, "%s ", *x);
 			fprintf(stderr, "\n");
 		}
+#ifdef linux
+		(void)execv(file, arg);
+#else
 		(void)execv(file, (char * const *)arg);
+#endif
 		/* hier ist was schiefgelaufen, execv kehrt nicht zurueck */
 		perror(file);
-		return -1;
+		exit (-1);
 	default: /* parent */
 		{
 #if defined (NEXTSTEP)
@@ -175,9 +182,9 @@ static int dofile(const char *proto, const char *file, int upload)
 		sprintf(buf, cmd, file);
 #endif
 		if(needsfile)
-			return runcommand(cmd, "-v", file, NULL);
+			return runcommand(cmd, "-vv", file, NULL);
 		else
-			return runcommand(cmd, "-v", NULL);
+			return runcommand(cmd, "-vv", NULL);
 	} else {
 		return -1;
 	}
@@ -185,7 +192,17 @@ static int dofile(const char *proto, const char *file, int upload)
 
 int recvfile(const char *proto, const char *file)
 {
-	return dofile(proto, file, 0);
+	int rc;
+
+	rc = dofile(proto, file, 0);
+	/* einige versiffte Müll-ZModems, namentlich das von
+	   Martin Brückner, schicken defektes Filedatum und defekte
+	   Permissions. Das wird hier gefixt. */
+	if (utime(file, NULL))
+		perror(file); /* korrekte Zeit erzeugen */
+	if (chmod(file, S_IRUSR|S_IWUSR|S_IRGRP))
+		perror(file); /* korrekte Modes setzen */
+	return rc;
 }
 
 int sendfile(const char *proto, const char *file)
@@ -205,9 +222,8 @@ int call_auspack(const char *arcer, const char *arcfile)
 }
 
 
-int call_import(const char *sysname, int net38format)
+int call_import(const char *sysname)
 {
 	return runcommand(import_prog, sysname, "ZCONNECT", NULL);
 }
-
 

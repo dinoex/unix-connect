@@ -37,8 +37,7 @@
 
 include ../Makefile.global
 
-LIBS	= ../lib/ministat.o ../hdlib/uuheader.a \
-	../lib/gatelib.a ../lib/strlib.a
+LIBS	= ../lib/gatelib.a ../hdlib/uuheader.a ../lib/strlib.a
 
 PROGS	= zcall receiver januslogin
 
@@ -61,13 +60,13 @@ clean:
 
 distclean:	clean
 
-receiver:	$(ROBJS) $(LIBS)
+receiver:	$(ROBJS) $(LIBS) Makefile
 	$(CC) -o receiver $(ROBJS) $(LIBS) $(LDFLAGS)
 
-zcall:	$(COBJS) $(LIBS)
+zcall:	$(COBJS) $(LIBS) Makefile
 	$(CC) -o zcall $(COBJS) $(LIBS) $(LDFLAGS)
 
-januslogin:	januslogin.o xprog.o lockdev.o lock.o import.o $(LIBS)
+januslogin:	januslogin.o xprog.o lockdev.o lock.o import.o $(LIBS) Makefile
 	$(CC) -o januslogin januslogin.o xprog.o lockdev.o lock.o import.o $(LIBS) $(LDFLAGS)
 
 # automatic depend

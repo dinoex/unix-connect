@@ -172,11 +172,6 @@ extern action_p todo,		/* Die globale Warteschlange */
 		senden_queue;	/* Die Liste der zu versendenden Dateien */
 
 /*
- * Der handle des Modems (fuer Ein-/Ausgabeumleitungen)
- */
-int modem;
-
-/*
  * auflegen = True -> Dies ist der letzte Paket-Austausch, wir haben uns mit
  * der Gegenseite geeinigt, jetzt aufzuhoeren.
  */
@@ -246,7 +241,7 @@ header_p sysparam(header_p local, header_p remote, header_p sysfile);
 void bereitstellen(void);
 void aufraeumen(void);
 header_p get_myself(void);
-int import_all(char *arcer, char *sysname, int ist_net38);
+int import_all(char *arcer, char *sysname);
 
 /*
  *  Paket-Routinen: phase ist 1 .. 4 (siehe ZCONNECT - Doku)

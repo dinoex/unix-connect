@@ -1,22 +1,112 @@
 $Id$
 
 Aenderungen an UnixConnect
+
+seit 0.84
+
+- lib/uulog.c: (Dirk Meyer)
+  filename weiter optimiert, text entsorgt.
+  syslog-Optionen verändert
+  LOG_PERROR gibt Probleme bei Z2ULOG und U2ZLOG.
+  DAten auf stderr gelten als Fehler bei uux.
+  Daher stderr bedingt in newlog() ausgeben.
+
+- online/call.c: (Matthias Andree)
+  MAJOR REWORK (noch nicht abgeschlossen)
+  Code restrukturiert, Backout für Janus implementiert, Backin für Janus
+  repariert. Sollte nun endlich bei Abbruch keine Daten mehr verlieren.
+  schmeißt bei Übertragungsfehler sofort die Leitung weg
+  zcall wartet bei freigegebenem Device auf das Ende des Entpackens und
+  Archivierens (Kosmetik)
+
+- online/import.c: (Dirk Meyer)
+  cast in sprintf wegen Warnungnen
+
+- online/import.c: (Matthias Andree)
+  MAJOR REWORK
+
+- lib/uulog.c: (Matthias Andree)
+  alle str[n]cpy auf stccpy umgestellt (-> buffer overflow-fest)
+  syslog-Optionen verändert (LOG_PERROR ist beim Debugging extrem praktisch)
+  Typo bei nicht-syslog-Systemen beseitigt (uuuudeblogfile -> uu...)
+  sprintf durch snprintf ersetzt
+
+- online/xprog.c: (Matthias Andree)
+  Transferprotokolle loggen mit -vv, sollte unkritisch sein
+  bei ausgehendem Call haben wir echtes stderr, bei eingehendem haben wir
+  ein temporäres File dafür.
+  recvfile setzt jetzt permissions und atime/mtime richtig - wenn auf der
+  anderen Seite ein Brückner-ZModem sitzt, kommt sonst nur Müll raus.
+
+- include/uudebug.h lib/uudebug.c: (Matthias Andree)
+  Neue Funktionen
+  logcwd hinzugefügt (loggt das aktuelle Verzeichnis mit einem
+  übergebenen Funktionsnamen, für Debugging)
+
+- include/uulog.h: (Matthias Andree)
+  #define ERRLOG_FILE war doppelt
+
+- */Makefile: (Dirk Meyer)
+  gatelib und strlib getrennt, keine doppelten Module mehr.
+  gate und online stärker entkoppelt.
+
+- PROBLEMS: (Matthias Andree)
+  Information über gperf aktualisiert.
+
+- include/calllib.h: lib/readonedir.c lib/backup.c: (Matthias Andree)
+  neue Funktionen
+
+- ROADMAP: (Matthias Andree)
+  Information über gperf aktualisiert, net38/-Zeile entfernt
+
+- lib/hayes.c: (Matthias Andree)
+  einige sleep auskommentiert
+  Modemausgabe zeigt nicht-druckbare Zeichen jetzt vernünftig
+
+- online/*: (Matthias Andree)
+  der Parameter "ist_netcall38" ist verschwunden
+
+- shell/anruf.in: (Matthias Andree)
+  stty-Aufruf entfernt, ist hier überflüssig und lockt eh
+  in 75% der Fälle beim open().
+
+- shell/auspack.in: (Matthias Andree)
+  Vereinfachung vorbereitet.
+  quoted-printable-nicht-bei-Dirk-decodiert-Bug beseitigt (=3D nach =)
+  verwirft die Ausgabe nicht mehr (-> Log?)
+
+- shell/einpack.in: (Matthias Andree)
+  verwirft die Ausgabe nicht mehr (-> Log?)
+
+- shells/import.in: (Matthias Andree)
+  erweitertes Error Checking
+  ein paar Böse Bugs getötet
+  * exec-Zeile hat statt stderr und stdout ins
+    Log nur stderr ins Log und auf stdout geschrieben
+  * uuwsmtp/uuwnews-Aufrufe hatten eine schließende Klammer zuviel
+
+- online/zconnect.h: (Dirk Meyer)
+  int modem entfernt, erzeugte Linker Warnungen
+
+- online/xprog.c: rsmtp/rsmtp.c: (Dirk Meyer)
+  execv für Linux nicht casten, da dort Interface nicht POSIX.
+
 seit 0.83
 
-- lib/syslog.c:
+- lib/syslog.c: (Dirk Meyer)
   Bei "%" in der Mailadresse, jetzt auch im Syslog sauber.
 
-- include/version.h:
+- include/version.h: (Dirk Meyer)
   VERSION entfert, steht in Makefile.global
 
-- include/config.h:
+- include/config.h: (Dirk Meyer)
   USE_ISO_IN_NEWS USE_ISO_IN_MAIL immer default
   DISABLE_ISO_IN_NEWS DISABLE_ISO_IN_MAIL kann gesetzt werden.
 
-- online/xprog.c:
+- online/xprog.c: (Dirk Meyer)
   arg jetzt immer const.
 
-- online/call.c: include/line.h: lib/rawtty.c
+- online/call.c: include/line.h: lib/rawtty.c: (Dirk Meyer)
   main hat jetzt const Pointer.
 
 - online/call.c: (Matthias Andree)
@@ -52,7 +142,7 @@ seit 0.83
 
 seit 0.82
 
-- gate/zconv.c: gate/uuconv.c
+- gate/zconv.c: gate/uuconv.c: (Dirk Meyer)
   X-Header nach Gatebau 97 auch umgekehrt erkennen.
 
 - gate/uuconv.c: (Moritz Both)
@@ -152,9 +242,9 @@ seit 0.80
 - Packmethode lzh hinzugefgt: ruft lha mit Optionen "Generic, level 0
   header format, use LHarc compatible method ("-lh1-")" auf. Zur
   Kompatibilität mit anachronistischen, DOS-basierten Systemen
-  (Prometheus-PC). (Matthias Andree) 
+  (Prometheus-PC). (Matthias Andree)
 
-- postfix Support (Matthias Andree) 
+- postfix Support (Matthias Andree)
 
 - uufatal.c, ruft jetzt newlog() auf.
 
@@ -175,7 +265,7 @@ seit 0.80
   Liest Mail mit RFC-822-Header und -Body aber OHNE BSMTP-Enveloper von stdin,
   schreibt Ausgabe in Spooldirectory.
   Motivation: um direkten Aufruf aus Postfix-pipe zu ermöglichen.
-  (Matthias Andree) 
+  (Matthias Andree)
 
 - IBMs Postfix wird nun unterstützt (Matthias Andree)
   Integration ist dank neuer uursmtp-Option trivial.
@@ -232,7 +322,7 @@ seit 0.80
   $(SHELL) (Matthias Andree)
 
 - Aufraeumarbeiten an Typen, signed/unsigned/printf konsistent
-  (Matthias Andree)    
+  (Matthias Andree)
 
 - Syslog ueber FACILITY=LOCAL0 statt MAIL
 
