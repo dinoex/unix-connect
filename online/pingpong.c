@@ -45,7 +45,6 @@
 
 #include "config.h"
 #include "utility.h"
-#include "zconnect.h"
 
 #ifdef HAS_STRING_H
 # include <string.h>
@@ -55,7 +54,7 @@
 #endif
 #include <unistd.h>
 
-#include "lib.h"
+#include "zconnect.h"
 
 int auflegen = 0;
 int auflegen_gesendet = 0;

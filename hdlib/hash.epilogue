@@ -44,19 +44,21 @@
  * ------------------------------------------------------------------------
  */
 
+#include "config.h"
+#include "utility.h"
+
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "header.h"
 #include "uulog.h"
 #include "hd_nam.h"
-#include "lib.h"
 
 const char *headers[] = {
 #include "hd_nlist.h"
 NULL
 };
 
-extern char * strupr(char *);
 static int nextNewCode = TOTAL_KEYWORDS +23;
 typedef struct newHeaderRecstruct
 {
@@ -100,7 +102,7 @@ int identify(const char *name)
 	return n->code;
 }
 
-header_p internal_add_header(const char *inhalt, int code,
+header_p internal_add_header(const char *inhalt, unsigned int code,
 			header_p ptr, const char *hname)
 {
 	header_p p, last, new;
@@ -157,7 +159,7 @@ header_p internal_add_header(const char *inhalt, int code,
 	return ptr;
 }
 
-header_p add_header(const char *inhalt, int code, header_p ptr)
+header_p add_header(const char *inhalt, unsigned int code, header_p ptr)
 {
 	if (code > TOTAL_KEYWORDS+1)
 		return NULL;

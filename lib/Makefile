@@ -67,13 +67,13 @@ hayes.o: hayes.c ../include/config.h ../include/sysdep.h \
  ../hdlib/hd_nam.h ../include/ministat.h ../include/boxstat.h \
  ../include/hayes.h ../include/track.h
 lockwait.o: lockwait.c ../include/config.h ../include/sysdep.h \
- ../include/lib.h
+ ../include/utility.h
 ministat.o: ministat.c ../include/config.h ../include/sysdep.h \
  ../include/utility.h ../include/ministat.h ../include/boxstat.h \
  ../include/header.h ../include/crc.h ../hdlib/hd_nam.h \
- ../hdlib/hd_def.h ../include/uulog.h ../include/lib.h
+ ../hdlib/hd_def.h ../include/uulog.h
 pattern.o: pattern.c ../include/config.h ../include/sysdep.h \
- ../include/pattern.h ../include/lib.h
+ ../include/utility.h ../include/pattern.h
 rawtty.o: rawtty.c ../include/config.h ../include/sysdep.h \
  ../include/line.h
 stccpy.o: stccpy.c ../include/config.h ../include/sysdep.h \
@@ -81,7 +81,7 @@ stccpy.o: stccpy.c ../include/config.h ../include/sysdep.h \
 str2eda.o: str2eda.c ../include/config.h ../include/sysdep.h \
  ../include/utility.h
 strdup.o: strdup.c ../include/config.h ../include/sysdep.h \
- ../include/utility.h ../include/lib.h ../include/uulog.h
+ ../include/utility.h ../include/uulog.h
 stricmp.o: stricmp.c ../include/config.h ../include/sysdep.h \
  ../include/utility.h
 strlwr.o: strlwr.c ../include/config.h ../include/sysdep.h \
@@ -89,7 +89,7 @@ strlwr.o: strlwr.c ../include/config.h ../include/sysdep.h \
 strupr.o: strupr.c ../include/config.h ../include/sysdep.h \
  ../include/utility.h
 track.o: track.c ../include/config.h ../include/sysdep.h \
- ../include/utility.h ../include/track.h ../include/lib.h
+ ../include/utility.h ../include/track.h
 trap.o: trap.c ../include/config.h ../include/sysdep.h \
  ../include/trap.h ../include/ministat.h ../include/boxstat.h \
  ../include/header.h ../include/crc.h

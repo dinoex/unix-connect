@@ -32,7 +32,8 @@
 
 
 #include "config.h"
-#include "policy.h"
+#include "utility.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #ifdef HAS_STRING_H
@@ -54,7 +55,7 @@
 #endif
 
 #include "zconnect.h"
-#include "lib.h"
+#include "policy.h"
 
 #ifndef O_RDONLY
 #define O_RDONLY 0

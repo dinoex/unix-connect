@@ -45,6 +45,8 @@
 
 
 #include "config.h"
+#include "utility.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #ifdef HAS_STRING_H
@@ -62,7 +64,6 @@
 #include <ctype.h>
 #include <unistd.h>
 
-#include "utility.h"
 #include "header.h"
 #include "hd_def.h"
 #include "hd_nam.h"
@@ -413,7 +414,7 @@ int convaddr(const char *zconnect_header, const char *rfc_addr,
 			}
 			if(rna[0]!='\0') {
 			  rna_decoded=decode_mime_string(rna);
-			  to_pc(rna_decoded);
+			  iso2pc(rna_decoded);
 			}
 		/* Nach RFC822 darf der Lokalteil einer Adresse mit '"'
 		   geklammert sein. qmail macht das auch generell so,
@@ -666,7 +667,7 @@ header_p convheader(header_p hd, FILE *f, char *from)
 	p = find(HD_UU_SUBJECT, hd);
 	if (p) {
 	        char *subject = decode_mime_string(p->text);
-		to_pc(subject);
+		iso2pc(subject);
 		fprintf(f, HN_BET": %s\r\n", subject);
 		dfree(subject);
 		hd = del_header(HD_UU_SUBJECT, hd);
@@ -807,7 +808,7 @@ header_p convheader(header_p hd, FILE *f, char *from)
 	p = find(HD_UU_TO, hd);
 	if (p) {
 		to = decode_mime_string(p->text);
-		to_pc(to);
+		iso2pc(to);
 #ifdef UUCP_SERVER
 		fprintf(f, HN_UU_U_TO": %s\r\n", to);
 #endif
@@ -819,7 +820,7 @@ header_p convheader(header_p hd, FILE *f, char *from)
 	if (p) {
 #ifdef UUCP_SERVER
 	        char *kop=decode_mime_string(p->text);
-		to_pc(kop);
+		iso2pc(kop);
 		fprintf(f, HN_UU_U_CC": %s\r\n", kop);
 		dfree(kop);
 #endif
@@ -830,7 +831,7 @@ header_p convheader(header_p hd, FILE *f, char *from)
 	if (p) {
 #ifdef UUCP_SERVER
 	        char *bcc=decode_mime_string(p->text);
-		to_pc(bcc);
+		iso2pc(bcc);
 		fprintf(f, HN_UU_U_BCC": %s\r\n", bcc);
 		dfree(bcc);
 #endif
@@ -908,7 +909,7 @@ header_p convheader(header_p hd, FILE *f, char *from)
 	p = find(HD_UU_ORGANIZATION, hd);
 	if (p) {
 	        char *org=decode_mime_string(p->text);
-		to_pc(org);
+		iso2pc(org);
 		fprintf (f, HN_ORG": %s\r\n", org);
 		dfree(org);
 		hd = del_header(HD_UU_ORGANIZATION, hd);
@@ -959,7 +960,7 @@ header_p convheader(header_p hd, FILE *f, char *from)
 	p = find(HD_UU_X_MAILER, hd);
 	if (p) {
 	        char *mal=decode_mime_string(p->text);
-		to_pc(mal);
+		iso2pc(mal);
 	        fprintf(f, HN_MAL": %s\r\n", mal);
 		dfree(mal);
 		hd = del_header(HD_UU_X_MAILER, hd);
@@ -975,7 +976,7 @@ header_p convheader(header_p hd, FILE *f, char *from)
 	if (p) {
 	  /* Sollte unnötig sein. Wer weiß... */
 	        char *gat=decode_mime_string(p->text);
-		to_pc(gat);
+		iso2pc(gat);
 		fprintf(f, HN_GATE": RFC1036/822 %s.%s [" 
 			MAILER " " VERSION "], %s\r\n",
 		   boxstat.boxname, boxstat.boxdomain, gat);
@@ -991,7 +992,7 @@ header_p convheader(header_p hd, FILE *f, char *from)
 	p = find(HD_UU_X_COMMENT_TO, hd);
 	if (p) {
 	        char *fto=decode_mime_string(p->text);
-		to_pc(fto);
+		iso2pc(fto);
 		fprintf(f, HN_F_TO": %s\r\n", fto);
 		dfree(fto);
 			hd = del_header(HD_UU_X_COMMENT_TO, hd);
@@ -1022,7 +1023,7 @@ header_p convheader(header_p hd, FILE *f, char *from)
 		if (strncasecmp(p->header, "X-ZC-", 5) == 0) {
 			for (t = p; t; t = t->other) {
 			  char *x = decode_mime_string(t->text);
-			  to_pc(x);
+			  iso2pc(x);
 			  fprintf(f, "%s: %s\r\n", t->header + 5, x);
 			  dfree(x);
 			}
@@ -1033,7 +1034,7 @@ header_p convheader(header_p hd, FILE *f, char *from)
 		if (strncasecmp(p->header, "X-Z-", 4) == 0) {
 			for (t = p; t; t = t->other) {
 			  char *x=decode_mime_string(t->text);
-			  to_pc(x);
+			  iso2pc(x);
 			  fprintf(f, "%s: %s\r\n", t->header + 4, t->text);
 			  dfree(x);
 			}
@@ -1044,7 +1045,7 @@ header_p convheader(header_p hd, FILE *f, char *from)
 		if (strncasecmp(p->header, "X-FTN-", 6) == 0) {
 			for (t = p; t; t = t->other) {
 			  char *x=decode_mime_string(t->text);
-			  to_pc(x);
+			  iso2pc(x);
 			  fprintf(f, "F-%s: %s\r\n", t->header + 6, t->text);
 			  dfree(x);
 			}
@@ -1091,7 +1092,7 @@ int make_body(char *bigbuffer, size_t msglen,
 		if (latob > 0) {
 			/* Text, der der Nachricht vorangestellt ist */
 #ifndef NO_CONVERT_ISO_IN_KOM
-			iso2pc(start, latob);
+			iso2pc_size(start, latob);
 #endif
 			fprintf(zconnect, HN_KOM": %ld\r\n", latob);
 		}
@@ -1142,7 +1143,7 @@ int make_body(char *bigbuffer, size_t msglen,
 			memcpy(smallbuffer, p1, msglen);
 			/* CHARSET gilt fuer KOM:-Teil nicht */
 #ifndef NO_CONVERT_ISO_IN_KOM
-			iso2pc(smallbuffer, msglen);
+			iso2pc_size(smallbuffer, msglen);
 #endif
 			fprintf (zconnect, HN_KOM": %d\r\n", msglen);
 
@@ -1160,7 +1161,7 @@ int make_body(char *bigbuffer, size_t msglen,
 			else
 				wrlen -= (p2 - bigbuffer);
 			/* Na, dann versuchen wir mal zu decodieren */
-			if (decode_x_uuencode(p2, (long *)&wrlen, mime_info))
+			if (decode_x_uuencode(p2, &wrlen, mime_info))
 				fprintf(zconnect, HN_TYPE": BIN\r\n");
 		}
 		else
@@ -1202,7 +1203,7 @@ int make_body(char *bigbuffer, size_t msglen,
 			if (mime_info->charset > 1 )
 				fprintf(zconnect, HN_CHARSET": ISO%d\r\n", mime_info->charset);
 			else
-				iso2pc(start, msglen);
+				iso2pc_size(start, msglen);
 #else /* CONVERT_ISO */
 			/* Wir konvertieren nie nach IBM, setzen aber eine CHARSET:
 			 * Headerzeile (default: ISO1)

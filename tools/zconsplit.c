@@ -46,6 +46,7 @@
  */
 
 #include "config.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #ifdef HAS_STRING_H
@@ -57,13 +58,12 @@
 #include <ctype.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+
 #include "header.h"
 #include "hd_def.h"
 #include "hd_nam.h"
-#include "config.h"
 #include "boxstat.h"
 #include "ministat.h"
-#include "version.h"
 
 
 static char *buffer;		/* Nachrichten-Buffer */
@@ -139,7 +139,7 @@ void convert(FILE *zcon, FILE *prv, FILE *brt)
 {
 	header_p hd, h, private, news;
 	char *p;
-	long mlen;
+	size_t mlen;
 
 	/*
 	 *  Kopf einlesen
@@ -150,16 +150,17 @@ void convert(FILE *zcon, FILE *prv, FILE *brt)
 	 *  Laenge ermittlen
 	 */
 	h = dofind(HD_LEN, hd);
-	sscanf(h->text, "%ld", &mlen);
+	mlen = (size_t)atol( h->text );
 	/*
 	 *  Gegebenenfalls buffer vergroessern
 	 */
-	if (mlen > (long)buf_alloc) {
+	if (mlen > buf_alloc) {
 		dfree(buffer);
 		buf_alloc = mlen;
 		buffer = malloc(buf_alloc);
 		if (!buffer) {
-			fprintf(stderr, "FATAL: Speichermangel: %ld\n", mlen);
+			fprintf(stderr,
+				"FATAL: Speichermangel: %ld\n", (long)mlen);
 			exit(5);
 		}
 	}

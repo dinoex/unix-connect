@@ -106,13 +106,22 @@ static  unsigned char pc437xiso [] =                    /* 000-255 */
 	176, 168, 183, 185, 179, 178, 183, ' '          /* 248-255 */
 } ;
 
-void pc2iso(unsigned char *buffer, size_t len);
-void pc2iso(unsigned char *buffer, size_t len)
+#include "lib.h"
+
+void pc2iso_size(char *buffer, size_t len)
 {
+	unsigned char *b;
 	unsigned char c;
 
+	b = (unsigned char *)buffer;
 	while (len--) {
-		c = pc437xiso[*buffer];
-		*buffer++ = c;
+		c = pc437xiso[*b];
+		*b++ = c;
 	}
 }
+
+void pc2iso(char *buffer)
+{
+	pc2iso_size(buffer, strlen( buffer ));
+}
+

@@ -43,7 +43,7 @@
  */
 
 #include "config.h"
-#include "zconnect.h"
+
 #ifndef NO_UNISTD_H
 #include <unistd.h>
 #endif
@@ -53,8 +53,8 @@
 #ifdef HAS_STRINGS_H
 # include <strings.h>
 #endif
-#include "lib.h"
 
+#include "zconnect.h"
 
 /*
  * Welches Zeilenende soll wr_para verwenden?

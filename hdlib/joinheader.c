@@ -43,9 +43,11 @@
  *   Funktion:  Verbindet zwei Header zu einem
  */
 
-# include "config.h"
-# include <stdio.h>
-# include <stdlib.h>
+#include "config.h"
+#include "utility.h"
+
+#include <stdio.h>
+#include <stdlib.h>
 #ifdef HAS_STRING_H
 # include <string.h>
 #endif
@@ -55,7 +57,6 @@
 
 #include "header.h"
 #include "uulog.h"
-#include "lib.h"
 
 /*
  *  Erzeugt die Kopie eines other-> Astes, behaelt dabei die

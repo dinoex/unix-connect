@@ -39,6 +39,8 @@
 
 
 #include "config.h"
+#include "utility.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -49,19 +51,18 @@
 #ifndef NO_UNISTD_H
 #include <unistd.h>
 #endif
-#include "boxstat.h"
-#include "ministat.h"
 #ifdef HAS_STRING_H
 # include <string.h>
 #endif
 #ifdef HAS_STRINGS_H
 # include <strings.h>
 #endif
-#include "lib.h"
-#include "utility.h"
+#include <stdarg.h>
+
+#include "boxstat.h"
+#include "ministat.h"
 #include "xprog.h"
 
-#include <stdarg.h>
 
 /* eine Art system, aber auf execv-Basis
    Warnung: Pfad muﬂ mit angegeben werden! */

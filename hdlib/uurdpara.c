@@ -54,20 +54,21 @@
  *              im SMTP-Batch aber "\r\n".
  */
 
-# include "config.h"
-# include <stdio.h>
-# include <stdlib.h>
+#include "config.h"
+#include "utility.h"
+
+#include <stdio.h>
+#include <stdlib.h>
 #ifdef HAS_STRING_H
 # include <string.h>
 #endif
 #ifdef HAS_STRINGS_H
 # include <strings.h>
 #endif
-# include <ctype.h>
+#include <ctype.h>
 
-# include "header.h"
-# include "uulog.h"
-# include "lib.h"
+#include "header.h"
+#include "uulog.h"
 
 static char *uugets(char *s, int n, FILE *stream);
 

@@ -61,8 +61,6 @@
 
 #define	MAX_LOG_LINE	200
 
-extern char *logdir;
-
 #ifndef HAVE_SYSLOG
 static char name[30];
 FILE *uudeblogfile;

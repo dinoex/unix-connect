@@ -69,7 +69,6 @@
 #endif
 #include <sysexits.h>
 
-#include "lib.h"
 #include "header.h"
 #include "mime.h"
 #include "hd_def.h"
@@ -99,9 +98,9 @@ mime_cty_struct mime_ctys[] = {
 static const char *base64_charset =
 	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-static int decode_base64(char *, long *, int*);
+static int decode_base64(char *, size_t *, int*);
 static int get_base64_6(char);
-static int decode_quoted_printable(char *, long *, int *);
+static int decode_quoted_printable(char *, size_t *, int *);
 
 /*
  * zaehlt das Auftreten eines Zeichens in einem String
@@ -122,7 +121,7 @@ int count(const char *s, char c)
  * Diese Funktion ueberprueft, ob der uebergebene String MIME-QP-kodiert
  * ist, d.h. =?...?.?.........?= als Form hat.
  */
-int is_mime(unsigned char *string)
+int is_mime(char *string)
 {
 	/* Wenn der String mit "=?" beginnt, mit "?=" aufhoert
 	 * und zwei weitere '?' enthaelt, nehmen wir an, dass es
@@ -149,11 +148,13 @@ int is_mime(unsigned char *string)
  * Diese Funktion ueberprueft, ob ein uebergebener String das MSB gesetzt
  * hast, also Zeichen >127 enthaelt.
  */
-int is_8_bit(const unsigned char *string)
+int is_8_bit(const char *string)
 {
-	for(; *string; string++)
+	const unsigned char *s;
+
+	for ( s=(const unsigned char *)string; *s; s++ )
 	{
-		if(*string & 0x80)
+		if(*s & 0x80)
 		{
 			return 1;
 		}
@@ -166,13 +167,15 @@ static const char specialchar[]="()<>@,;:\"/[]?.= ";
 /*
  * Diese Funktion zaehlt, wieviele Zeichen QP-kodiert werden muessen.
  */
-int count_8_bit(const unsigned char *string)
+int count_8_bit(const char *string)
 {
 	int i;
+	const unsigned char *s;
 
-	for(i=0; *string; string++)
+	i = 0;
+	for ( s=(const unsigned char *)string; *s; s++ )
 	{
-		if((*string > 0x7E) || (strchr(specialchar,*string)!=0))
+		if((*s > 0x7E) || (strchr(specialchar,*s)!=0))
 		{
 			i++;
 		}
@@ -186,10 +189,10 @@ int count_8_bit(const unsigned char *string)
 char *mime_encode(const char *iso)
 {
 	char *encoded, *enc;
-	const unsigned char *p;
+	const char *p;
 	int len;
 
-	p=(const unsigned char*)iso;
+	p=iso;
 
 	/*
 	 * falls noetig, wird konvertiert, ansonsten umkopiert:
@@ -204,7 +207,7 @@ char *mime_encode(const char *iso)
 		strcpy(encoded,"=?ISO-8859-1?Q?");
 		encoded += strlen("=?ISO-8859-1?Q?");
 
-		for(p=(const unsigned char*)iso; *p; p++)
+		for(p=iso; *p; p++)
 		{
 			if((strchr(specialchar,*p)!=0) || (*p > 0x7E))
 			{
@@ -301,7 +304,7 @@ char *mime_address(const char *zcon_ad)
 }
 
 /* Gibt 1 zurueck, wenn decodiert wurde */
-int decode_cte(char *msg, long *msglenp, int *eightbit,
+int decode_cte(char *msg, size_t *msglenp, int *eightbit,
 	mime_header_info_struct *info)
 {
 	switch (info->encoding) {
@@ -326,14 +329,15 @@ int decode_cte(char *msg, long *msglenp, int *eightbit,
 
 /* base64 - Behandlung */
 
-static int decode_base64(char *msg, long *msglenp, int *eightbit) {
+static int decode_base64(char *msg, size_t *msglenp, int *eightbit) {
 	long b24l;
 	char *buf, *getp, *putp;
-	long newlen, l;
+	size_t newlen;
+	long l;
 	int err=0;
 	int bit8 = 0;
 
-	buf = (char *) malloc(*msglenp);
+	buf = (char *) malloc( *msglenp );
 	if (!buf)
 		return 0;
 
@@ -407,7 +411,7 @@ static int get_base64_6(char ch) {
 
 #define HEXDIGIT(x) ((x)>'9' ? (x)-'A'+10 : (x)-'0')
 
-static int decode_quoted_printable(char *buf, long *msglen, int *eightbit)
+static int decode_quoted_printable(char *buf, size_t *msglen, int *eightbit)
 {
 	char *readp;
 	char *newbuf, *newbufp;
@@ -523,14 +527,15 @@ int parse_mime_header(int direction, header_p hd,
 			/* Content-Type rauskriegen */
 			mime_cty_struct *mp;
 			char *type, *subtype, *para1name, *para1value;
-			int nfields, l;
+			int nfields;
+			size_t l;
 
 			info->text_plain=0;
 			info->charset=0;
 			l = strlen(p->text);
 			type= (char *) malloc(l * 4);
 			if (!type)
-				out_of_mem(__FILE__,__LINE__);
+				out_of_memory(__FILE__);
 			l = strlen(p->text); /* avoid gcc -O bug */
 			subtype=type+l;
 			para1name=subtype+l;
@@ -585,7 +590,7 @@ int parse_mime_header(int direction, header_p hd,
 		return 0; /* kein MIME-Version: */
 }
 
-int decode_x_uuencode(char *msg, long *msglenp,
+int decode_x_uuencode(char *msg, size_t *msglenp,
 	mime_header_info_struct *info)
 {
 		char tmpdir[FILENAME_MAX], sikdir[FILENAME_MAX], *src, *s;
@@ -595,7 +600,7 @@ int decode_x_uuencode(char *msg, long *msglenp,
 		FILE *f;
 		int success = 0;
 
-		sprintf(tmpdir, "/tmp/ur.dec%d.%d", bin_count++, getpid());
+		sprintf(tmpdir, "/tmp/ur.dec%d.%ld", bin_count++, (long)getpid());
 		if (mkdir(tmpdir, 0700) != 0) {
 			newlog( ERRLOG, "%s: %s", tmpdir, strerror(errno));
 			exit( EX_CANTCREAT );
@@ -668,7 +673,7 @@ int decode_x_uuencode(char *msg, long *msglenp,
  * Fast eher eine Aufgabe für lex. :-) */
 typedef struct encpart {
   const char* start;
-  int len;
+  size_t len;
   char* charset;
   char encoding;
   char* text;
@@ -694,12 +699,12 @@ static encpart* find_encoded_part (const char *where) {
       if(*(end+1)=='=') {
 	ans->start=start;
 	ans->len=end-start+2;
-	ans->charset=malloc(enc-start-1);
-	strncpy(ans->charset,start+2,enc-start-2);
+	ans->charset=malloc((size_t)(enc-start-1));
+	strncpy(ans->charset,start+2,(size_t)(enc-start-2));
 	ans->charset[enc-start-2]='\0';
 	ans->encoding=*(enc+1);
-	ans->text=malloc(end-text);
-	strncpy(ans->text,text+1,end-text-1);
+	ans->text=malloc((size_t)(end-text));
+	strncpy(ans->text,text+1,(size_t)(end-text-1));
 	ans->text[end-text-1]='\0';
 	return(ans);
       }
@@ -719,7 +724,7 @@ char *decode_mime_string(const char *buf) {
   char *ans, *s;
   const char *rest;
   int eightbit;
-  long length;
+  size_t length;
 
   parts=find_encoded_part(buf);
   if(!parts)
@@ -727,13 +732,13 @@ char *decode_mime_string(const char *buf) {
 
   ans=malloc(strlen(buf)+1); /* wird nur kleiner. */
   if(!ans)
-    out_of_mem(__FILE__,__LINE__);
+    out_of_memory(__FILE__);
 
   rest = buf;
   ans[0]='\0';
   while(parts) {
     length=strlen(parts->text);
-    strncat(ans,rest, parts->start - rest);
+    strncat(ans, rest, (size_t)(parts->start - rest) );
     rest=parts->start+parts->len;
     /* Es werden nur US-ASCII und ISO-8859-1 dekodiert. */
     if(strcasecmp(parts->charset,"us-ascii")==0

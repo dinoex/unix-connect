@@ -43,10 +43,12 @@
  *   Funktion:  Gibt einen Header wieder frei
  */
 
-# include "config.h"
-# include <stdio.h>
-# include <stdlib.h>
-# include "header.h"
+#include "config.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "header.h"
 
 
 void do_free_para(header_p ptr)

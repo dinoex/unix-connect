@@ -49,6 +49,8 @@
  */
 
 #include "config.h"
+#include "utility.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #ifdef HAS_STRING_H
@@ -59,7 +61,6 @@
 #endif
 
 #include "pattern.h"
-#include "lib.h"
 
 static short next[MAXPATTERN];
 static char *pat = NULL;  /* Suchstring */

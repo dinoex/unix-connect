@@ -78,15 +78,15 @@ extern mime_cty_struct mime_ctys[];
 #define ATR_CONST
 #endif
 
-int is_mime(unsigned char *string);
-int count_8_bit(const unsigned char *string);
-int decode_cte(char *msg, long *msglenp, int *eightbit,
+int is_mime(char *string);
+int count_8_bit(const char *string);
+int decode_cte(char *msg, size_t *msglenp, int *eightbit,
 	mime_header_info_struct *info);
-int decode_x_uuencode(char *, long *, mime_header_info_struct *);
+int decode_x_uuencode(char *, size_t *, mime_header_info_struct *);
 char *mime_encode(const char *iso) ATR_CONST;
 char *mime_address(const char *zcon_ad) ATR_CONST;
 int count(const char *s, char c) ATR_CONST;
-int is_8_bit(const unsigned char *string) ATR_CONST;
+int is_8_bit(const char *string) ATR_CONST;
 int parse_mime_header(int direction, header_p hd, mime_header_info_struct *);
 char *decode_mime_string(const char *buf) ATR_CONST;
 

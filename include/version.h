@@ -39,12 +39,6 @@
  * version.h
  */
 
-#ifndef CONFIG_H
-#include "config.h"
-#endif
-
-#include "sysdep.h"
-
 /*
  *   Haupt-Version: gibt den Stand der Gateway-Routinen wieder und
  *   wird im X-Gateway: Header vermerkt.
@@ -64,7 +58,4 @@
 #define PROGRAM		MAILER " fuer " BRAND
 
 #define OL_VERSION	"0.76"
-
-#define GET_NEXT_DATA(x)	{ argv++; argc--; x = *argv;	\
-				if (x == NULL) usage(); }
 

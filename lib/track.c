@@ -57,7 +57,6 @@
 #endif
 
 #include "track.h"
-#include "lib.h"
 
 /* KMP-Array */
 static short next[MAXTRACKS][MAXPATTERN];

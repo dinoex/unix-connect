@@ -14,8 +14,8 @@
  */
 
 #include "config.h"
-#include "zconnect.h"
-#include "policy.h"
+#include "utility.h"
+
 #include <stdio.h>
 #ifndef NO_UNISTD_H
 #include <unistd.h>
@@ -28,7 +28,9 @@
 #ifdef MAJOR_IN_SYSMACROS
 #include <sys/sysmacros.h>
 #endif
-#include "lib.h"
+
+#include "zconnect.h"
+#include "policy.h"
 
 #define FALSE	0
 #define TRUE	1

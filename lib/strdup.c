@@ -58,7 +58,6 @@
 #include <strings.h>
 #endif
 
-#include "lib.h"
 #include "uulog.h"
 
 #if defined(NEXTSTEP)

@@ -4,6 +4,9 @@ $Id$
 Aenderungen an UnixConnect
 seit 0.80
 
+- unsigned char/size_t überarbeitet, Typefehler behoben.
+  Includefiles aufgeräumt.
+
 - Packmethode lzh hinzugefgt: ruft lha mit Optionen "Generic, level 0
   header format, use LHarc compatible method ("-lh1-")" auf. Zur
   Kompatibilität mit anachronistischen, DOS-basierten Systemen

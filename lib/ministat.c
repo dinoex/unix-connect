@@ -72,7 +72,6 @@
 #include "hd_nam.h"
 #include "hd_def.h"
 #include "uulog.h"
-#include "lib.h"
 
 /* Globale Variable, siehe boxstat.h enthaelt:
  *

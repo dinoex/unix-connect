@@ -48,7 +48,7 @@
 # include <stdio.h>
 # include "header.h"
 
-header_p find(int code, header_p ptr)
+header_p find(unsigned int code, header_p ptr)
 {
 
         while (ptr && code > ptr->code)

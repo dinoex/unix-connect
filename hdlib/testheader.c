@@ -36,17 +36,17 @@
  */
 
 
-# include "config.h"
-# include <stdio.h>
-# include <stdlib.h>
-# include <string.h>
+#include "config.h"
+#include "utility.h"
 
-# include "uulog.h"
-# include "header.h"
-# include "hd_def.h"
-# include "hd_nam.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-extern int stricmp (const char *, const char *);
+#include "uulog.h"
+#include "header.h"
+#include "hd_def.h"
+#include "hd_nam.h"
 
 const char *hd_crlf = "\n";
 

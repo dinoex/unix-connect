@@ -45,12 +45,14 @@
  *   Funktion:  L”scht einen Header
  */
 
-# include "config.h"
-# include <stdio.h>
-# include <stdlib.h>
-# include "header.h"
+#include "config.h"
 
-header_p del_header(int code, header_p ptr)
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "header.h"
+
+header_p del_header(unsigned int code, header_p ptr)
 {
         header_p p, last;
 

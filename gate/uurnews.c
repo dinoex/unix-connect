@@ -45,6 +45,8 @@
 
 
 #include "config.h"
+#include "utility.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -76,12 +78,10 @@
 #include <errno.h>
 #include <sysexits.h>
 
-#include "utility.h"
 #include "header.h"
 #include "uulog.h"
 #include "hd_nam.h"
 #include "hd_def.h"
-#include "version.h"
 #include "ministat.h"
 #include "mime.h"
 #include "uuconv.h"
@@ -90,8 +90,6 @@
 #ifdef APC_A2B
 #include "apc_a2b.h"
 #endif
-
-header_p uu_rd_para(FILE *);
 
 extern int dont_gate;
 
@@ -107,9 +105,7 @@ void convdata(FILE *news, FILE *zconnect);
 
 static char *bigbuffer	= NULL;
 static char *readbuffer	= NULL;
-long buffsize = 0;	/* gegenwaertig allokierte Buffer-Groesse */
-
-extern char *netcalldir;
+size_t buffsize = 0;	/* gegenwaertig allokierte Buffer-Groesse */
 
 const char *fqdn = NULL;
 int main_is_mail = 0;	/* Nein, wir sind nicht fuer PM EMP:s zustaendig */
@@ -174,7 +170,7 @@ int main(int argc, const char *const *argv)
 	initlog("uurnews");
 	ulibinit();
 	minireadstat();
-	srand(time(NULL));
+	srand( (unsigned) time(NULL));
 
 	name = argv[ 0 ];
 	remove_me = NULL;
@@ -383,7 +379,7 @@ void convert(FILE *news, FILE *zconnect)
 void convdata(FILE *news, FILE *zconnect)
 {
 	char *n, *s;
-	long msglen, wrlen;
+	size_t msglen, wrlen;
 	header_p hd, p, t;
 	int binaer, eightbit;
 	mime_header_info_struct mime_info;
@@ -396,7 +392,7 @@ void convdata(FILE *news, FILE *zconnect)
 	/* MIME-Headerzeilen lesen */
 	ismime = parse_mime_header(0, hd, &mime_info);
 
-	if (readlength >= buffsize) {
+	if (readlength >= (long)buffsize) {
 		dfree(bigbuffer);
 		dfree(readbuffer);
 		buffsize = readlength+1000;
@@ -413,7 +409,7 @@ void convdata(FILE *news, FILE *zconnect)
 
 	/* Text lesen, LF nach CR/LF wandeln... */
 	if (readlength > 0) {
-		msglen = fread(readbuffer, 1, readlength, news);
+		msglen = fread(readbuffer, 1, (size_t)readlength, news);
 		for (wrlen=0, s=readbuffer, n=bigbuffer; msglen; msglen--) {
 			if (*s == '\n') {
 				wrlen++;
@@ -471,7 +467,7 @@ void convdata(FILE *news, FILE *zconnect)
 	   for (p=hd; p; p=p->next) {
 	     for(;p;t=p, p=p->other) {
 	        char *x=decode_mime_string(p->text);
-		to_pc(x);
+		iso2pc(x);
 #ifndef NO_PLUS_KEEP_X_HEADER
 		fprintf (zconnect, "U-%s: %s\r\n", p->header, x);
 #else
@@ -498,7 +494,7 @@ void convdata(FILE *news, FILE *zconnect)
          * es steht daher in uuconv.c
          */
 
-        make_body(bigbuffer, msglen, &mime_info, binaer,
+        make_body(bigbuffer, (size_t)msglen, &mime_info, binaer,
                 readbuffer, zconnect);
 
         if (mime_info.filename)

@@ -126,32 +126,32 @@ find.o: find.c ../include/config.h ../include/sysdep.h \
  ../include/header.h ../include/crc.h
 freepara.o: freepara.c ../include/config.h ../include/sysdep.h \
  ../include/header.h ../include/crc.h
-hash.o: hash.c /usr/include/string.h hd_def.h ../include/header.h \
- ../include/sysdep.h ../include/crc.h ../include/uulog.h hd_nam.h \
- ../include/lib.h hd_nlist.h
+hash.o: hash.c /usr/include/string.h hd_def.h ../include/config.h \
+ ../include/sysdep.h ../include/utility.h ../include/header.h \
+ ../include/crc.h ../include/uulog.h hd_nam.h hd_nlist.h
 joinheader.o: joinheader.c ../include/config.h ../include/sysdep.h \
- ../include/header.h ../include/crc.h ../include/uulog.h \
- ../include/lib.h
+ ../include/utility.h ../include/header.h ../include/crc.h \
+ ../include/uulog.h
 pkread.o: pkread.c ../include/config.h ../include/sysdep.h \
- ../include/header.h ../include/crc.h ../include/uulog.h \
- ../include/lib.h
+ ../include/utility.h ../include/header.h ../include/crc.h \
+ ../include/uulog.h
 pkwrite.o: pkwrite.c ../include/config.h ../include/sysdep.h \
  ../include/header.h ../include/crc.h hd_nam.h
 rdpara.o: rdpara.c ../include/config.h ../include/sysdep.h \
- ../include/header.h ../include/crc.h ../include/uulog.h \
- ../include/lib.h
+ ../include/utility.h ../include/header.h ../include/crc.h \
+ ../include/uulog.h
 smtprd.o: smtprd.c ../include/config.h ../include/sysdep.h \
- ../include/header.h ../include/crc.h ../include/uulog.h \
- ../include/lib.h
+ ../include/utility.h ../include/header.h ../include/crc.h \
+ ../include/uulog.h
 testheader.o: testheader.c ../include/config.h ../include/sysdep.h \
- ../include/uulog.h ../include/header.h ../include/crc.h hd_def.h \
- hd_nam.h
+ ../include/utility.h ../include/uulog.h ../include/header.h \
+ ../include/crc.h hd_def.h hd_nam.h
 uurd.o: uurd.c ../include/config.h ../include/sysdep.h \
- ../include/header.h ../include/crc.h ../include/uulog.h \
- ../include/lib.h
+ ../include/utility.h ../include/header.h ../include/crc.h \
+ ../include/uulog.h
 uurdpara.o: uurdpara.c ../include/config.h ../include/sysdep.h \
- ../include/header.h ../include/crc.h ../include/uulog.h \
- ../include/lib.h
+ ../include/utility.h ../include/header.h ../include/crc.h \
+ ../include/uulog.h
 wrpara.o: wrpara.c ../include/config.h ../include/sysdep.h \
  ../include/header.h ../include/crc.h hd_nam.h
 # eof

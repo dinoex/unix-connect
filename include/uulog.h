@@ -113,4 +113,4 @@ __attribute__ ((noreturn, format(printf,2,3)))
 ;
 
 #define out_of_memory(prg)	uufatal(prg, nomem)
-#define out_of_mem(prg,line)	uufatal(prg, "Out of memory in line %d", line)
+

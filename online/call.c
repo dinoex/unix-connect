@@ -51,8 +51,6 @@
 #include "utility.h"
 #include "zconnect.h"
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <errno.h>
 #include <ctype.h>
 #include <time.h>
@@ -70,11 +68,11 @@
 #else
 #include <unistd.h>
 #endif
-#include "lib.h"
-#include "track.h"
+
 #include "hayes.h"
 #include "xprog.h"
 #include "locknames.h"
+
 #ifdef BSD
 #include <sys/ioctl.h>	/* setup our own controlling tty */
 #endif

@@ -64,13 +64,18 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#ifdef HAS_STRING_H
+# include <string.h>
+#endif
+#ifdef HAS_STRINGS_H
+# include <strings.h>
+#endif
 #include <setjmp.h>
 #include <signal.h>
+
 #include "header.h"
 #include "hd_def.h"
 #include "hd_nam.h"
-#include "config.h"
 #include "version.h"
 #include "track.h"
 #include "line.h"

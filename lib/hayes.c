@@ -203,8 +203,8 @@ redial (const char *anwahl, int modem, int maxtry)
 int
 do_hayes(const char *command, int modem)
 {
-	char c;      /* Antwort des Modems */
-	int found;   /* Returncode         */
+	char c;    /* Antwort des Modems */
+	int found; /* Returncode         */
 
 	/* Dem Modem etwas Ruhe goennen */
 	sleep(1);

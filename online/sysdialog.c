@@ -46,7 +46,6 @@
 
 #include "config.h"
 #include "utility.h"
-#include "zconnect.h"
 
 #include <sys/stat.h>
 #ifndef NO_UNISTD_H
@@ -59,7 +58,7 @@
 # include <strings.h>
 #endif
 
-#include "lib.h"
+#include "zconnect.h"
 
 int ist_testaccount;
 

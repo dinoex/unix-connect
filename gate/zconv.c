@@ -44,6 +44,8 @@
  */
 
 #include "config.h"
+#include "utility.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #ifdef HAS_STRING_H
@@ -61,7 +63,6 @@
 #include <time.h>
 #include <ctype.h>
 
-#include "utility.h"
 #include "header.h"
 #include "hd_def.h"
 #include "hd_nam.h"
@@ -76,7 +77,7 @@
 void foldputs(FILE *, const char *, const char *);
 void foldputh(FILE *f, const char *hd, header_p t);
 void foldputaddrs(FILE *f, const char *hd, header_p t);
-char umlautstr[] = "\x94\x99\x84\x8e\x81\x9a\xe1",
+char umlautstr[] = "\0x94\0x99\0x84\0x8e\0x81\0x9a\0xe1",
  convertstr[] = "oeOeaeAeueUess";
 extern char eol[];
 
@@ -386,7 +387,7 @@ header_p convheader(header_p hd, FILE *f)
 		habs = dstrdup("");
 	}
 	if (!habs || !oabs) {
-		out_of_mem(__FILE__,__LINE__);
+		out_of_memory(__FILE__);
 	}
 	s = strchr(habs, ' ');
 	if (s) *s = '\0';
@@ -402,14 +403,14 @@ header_p convheader(header_p hd, FILE *f)
 	} else
 		if (s) *s = ' ';
 	if (!org_from) {
-		pc2iso(oabs, strlen(oabs));
+		pc2iso(oabs);
 		mime_name=mime_address(oabs);
 		foldputs(f, HN_UU_FROM, mime_name);
 		dfree(mime_name);
 		hd = del_header(HD_UU_U_FROM, hd);
 	}
 	if (sender) {
-		pc2iso(sender, strlen(sender));
+		pc2iso(sender);
 		mime_name=mime_address(sender);
 		fprintf(f, "Sender: %s%s", mime_name, eol);
 		dfree(mime_name);
@@ -468,11 +469,11 @@ header_p convheader(header_p hd, FILE *f)
 		for(t=p; t; t=t->other) {
 			if (*(t->text))
 			{
-			  pc2iso(t->text,strlen(t->text));
+			  pc2iso(t->text);
 			  mime_name=mime_address(t->text);
 			} else {
 			  /* habs wird hier zerstoert */
-			  pc2iso(habs,strlen(habs));
+			  pc2iso(habs);
 			  mime_name=mime_address(habs);
 			}
 			fprintf(f, HN_UU_RETURN_RECEIPT_TO ": %s%s", mime_name, eol);
@@ -484,7 +485,7 @@ header_p convheader(header_p hd, FILE *f)
 	dfree(oabs);
 	p = find(HD_ORG, hd);
 	if (p) {
-	        pc2iso(p->text,strlen(p->text));
+	        pc2iso(p->text);
 		mime_name=mime_encode(p->text);
 		foldputs(f, HN_UU_ORGANIZATION, mime_name);
 		dfree(mime_name);
@@ -495,7 +496,7 @@ header_p convheader(header_p hd, FILE *f)
 		/* Umlaute werden nicht mit ae... ausgegeben, um
 		 * ein transparentes Gating zu ermöglichen. */
 		char *encoded;
-		pc2iso(p->text,strlen(p->text));
+		pc2iso(p->text);
 		encoded = mime_encode(p->text);
 		foldputs(f, HN_UU_SUBJECT, encoded);
 		dfree(encoded);
@@ -514,7 +515,7 @@ header_p convheader(header_p hd, FILE *f)
 
 			buffer = str2eda(p->text, &tz_hour, &tz_min);
 			if (buffer ==NULL)
-				out_of_mem(__FILE__,__LINE__);
+				out_of_memory(__FILE__);
 
 			fprintf(f, HN_UU_DATE": %s%s", buffer, eol);
 			hd = del_header(HD_EDA, hd);
@@ -534,7 +535,7 @@ header_p convheader(header_p hd, FILE *f)
 
 			buffer = str2eda(p->text, &tz_hour, &tz_min);
 			if(buffer ==NULL)
-				out_of_mem(__FILE__,__LINE__);
+				out_of_memory(__FILE__);
 
 			fprintf(f, HN_UU_EXPIRES": %s%s", buffer, eol);
 			hd = del_header(HD_LDA, hd);
@@ -573,7 +574,7 @@ header_p convheader(header_p hd, FILE *f)
 	p = find(HD_MAL, hd);
 	if (p) {
 	  char *encoded;
-	  pc2iso(p->text, strlen(p->text));
+	  pc2iso(p->text);
 	  encoded=mime_encode(p->text);
 	  foldputs(f, HN_UU_X_MAILER, encoded);
 	  dfree(encoded);
@@ -720,7 +721,7 @@ void foldputaddrs(FILE *f, const char *hd, header_p t)
 			}
 			rna=index(p->text,'(');
 			if(rna) {
-			  pc2iso(rna,strlen(rna));
+			  pc2iso(rna);
 			}
 			mime_name=mime_address(p->text);
 			fprintf(f, "%s%s", mime_name, p->other ? ", " : "");
@@ -742,7 +743,7 @@ void u_f_and_all(FILE *f, header_p hd)
 	for (p=hd; p; p=p->next)
 		for (p1=p; p1; p1=p1->other) {
 			if(strncasecmp(p1->header,"U-",2) == 0) {
-				pc2iso(p1->text,strlen(p1->text));
+				pc2iso(p1->text);
 				text=mime_encode(p1->text);
 				foldputs(f,((p1->header)+2),text);
 				dfree(text);
@@ -750,7 +751,7 @@ void u_f_and_all(FILE *f, header_p hd)
 			}
 			if(strncasecmp(p1->header,"F-",2) == 0) {
 				fputs("X-FTN-", f);
-				pc2iso(p1->text,strlen(p1->text));
+				pc2iso(p1->text);
 				text=mime_encode(p1->text);
 				foldputs(f,((p1->header)+2),text);
 				dfree(text);
@@ -763,7 +764,7 @@ void u_f_and_all(FILE *f, header_p hd)
 			if (strncasecmp(p1->header,"X-",2) != 0)
 				fputs("X-ZC-", f);
 #endif
-			pc2iso(p1->text,strlen(p1->text));
+			pc2iso(p1->text);
 			text=mime_encode(p1->text);
 			foldputs(f, p1->header, text);
 			dfree(text);

@@ -38,6 +38,8 @@
 
 
 #include "config.h"
+#include "utility.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -45,7 +47,6 @@
 #include <unistd.h>
 #endif
 
-#include "lib.h"
 
 #define	WAIT_SLEEP	5
 

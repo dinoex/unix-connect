@@ -45,7 +45,6 @@
 
 #include "config.h"
 #include "utility.h"
-#include "zconnect.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -61,7 +60,7 @@
 #include <unistd.h>
 #endif
 
-#include "lib.h"
+#include "zconnect.h"
 
 connect_t connection;
 

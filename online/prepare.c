@@ -46,7 +46,6 @@
 
 #include "config.h"
 #include "utility.h"
-#include "zconnect.h"
 
 #include <errno.h>
 #include <sys/types.h>
@@ -67,7 +66,8 @@
 #ifdef HAS_STRINGS_H
 # include <strings.h>
 #endif
-#include "lib.h"
+
+#include "zconnect.h"
 #include "xprog.h"
 #include "locknames.h"
 

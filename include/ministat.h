@@ -57,7 +57,6 @@ typedef struct str_list_st {
 	struct str_list_st *next;
 } node_t, *list_t;
 
-extern bs_st boxstat;
 extern char *ortsnetz;
 extern char *fernwahl;
 extern char *international;

@@ -42,24 +42,19 @@
 
 
 #include "config.h"
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 #ifdef HAS_STRING_H
 # include <string.h>
 #endif
 #ifdef HAS_STRINGS_H
 # include <strings.h>
 #endif
-#include "lib.h"
-#ifdef NEED_VALUES_H
-#include <values.h>
-#endif
-#include <errno.h>
-#ifndef NO_UNISTD_H
-#include <unistd.h>
-#endif
-#include <ctype.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <time.h>
+#include <fcntl.h>
 #ifdef HAS_BSD_DIRECT
 #include <sys/types.h>
 #include <sys/dirent.h>
@@ -67,23 +62,11 @@
 #else
 #include <dirent.h>
 #endif
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 #include <errno.h>
 #include <sysexits.h>
 
-#include "utility.h"
-#include "header.h"
-#include "uulog.h"
-#include "hd_nam.h"
-#include "hd_def.h"
-#include "version.h"
-#include "ministat.h"
-#include "mime.h"
-/* #include "trap.h" */
-#include "uuconv.h"
 #include "gtools.h"
+#include "version.h"
 
 char datei[2000];
 char baseid[20];

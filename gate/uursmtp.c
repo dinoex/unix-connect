@@ -45,6 +45,8 @@
  */
 
 #include "config.h"
+#include "utility.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -77,13 +79,10 @@
 #include <errno.h>
 #include <sysexits.h>
 
-#include "config.h"
 #include "ministat.h"
-#include "utility.h"
 #include "header.h"
 #include "hd_nam.h"
 #include "hd_def.h"
-#include "version.h"
 #include "uulog.h"
 #include "mime.h"
 #include "uuconv.h"
@@ -95,8 +94,6 @@
 
 int main_is_mail = 1;	/* Wir sind hauptsaechlich fuer PM EMP: zustaendig */
 const char *hd_crlf = "\n";
-
-header_p smtp_rd_para(FILE *);
 
 typedef enum {	cmd_noop, cmd_helo, cmd_mail, cmd_rcpt, cmd_data,
 		cmd_rset, cmd_quit, cmd_unknown } smtp_cmd;
@@ -137,7 +134,6 @@ static size_t bufflen = 0;		/* Groesse von smallbuffer */
 static char *smtpdomain	= NULL;
 static char *reverspath = NULL;
 static forward_p fwdpaths = NULL;
-extern char *netcalldir;
 extern char wab_name[], wab_host[], wab_domain[];
 
 const char *fqdn = NULL;
@@ -209,7 +205,7 @@ int main(int argc, const char *const *argv)
 	initlog("uursmtp");
 	ulibinit();
 	minireadstat();
-	srand(time(NULL));
+	srand( (unsigned) time(NULL));
 
 	bufflen = 100000;
 	smallbuffer = dalloc(bufflen);
@@ -448,7 +444,10 @@ static char *smtp_gets(char *line, size_t s, FILE *f)
 {
 	char *p;
 
-	if (!fgets(line, s, f)) return NULL;
+	/* be sure, no overrun */
+	if ( s > 32767 )
+		s = 32767;
+	if (!fgets(line, (int)s, f)) return NULL;
 	p = strchr(line, '\n');
 	if (p) {
 		if (*(p-1) == '\r') p--;
@@ -544,7 +543,7 @@ void convdata(FILE *smtp, FILE *zconnect)
 	char *n;
 	const char *habs, *mid;
 	static char rna[MAXLINE];
-	long msglen;
+	size_t msglen;
 	header_p hd, p;
 	forward_p emp;
 	int binaer, cnt;
@@ -571,7 +570,7 @@ void convdata(FILE *smtp, FILE *zconnect)
 	while (!feof(smtp)) {
 		if (smtp_gets(n, bufflen, smtp) == NULL)
 			break;
-		if ((msglen+4) > (long)bufflen) {
+		if ((msglen+4) > bufflen) {
 			bufflen *= 2;
 			dfree(smallbuffer);
 			smallbuffer = bigbuffer;
@@ -673,7 +672,7 @@ void convdata(FILE *smtp, FILE *zconnect)
 	    header_p t;
 	    for(;p;t=p, p=p->other) {
 		char *x=decode_mime_string(p->text);
-		to_pc(x);
+		iso2pc(x);
 #ifndef NO_PLUS_KEEP_X_HEADER
 		fprintf (zconnect, "U-%s: %s\r\n", p->header, x);
 #else

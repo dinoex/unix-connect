@@ -45,7 +45,8 @@
  */
 
 #include "config.h"
-#include "zconnect.h"
+#include "utility.h"
+
 #ifndef NO_UNISTD_H
 #include <unistd.h>
 #endif
@@ -56,7 +57,8 @@
 # include <strings.h>
 #endif
 #include <time.h>
-#include "lib.h"
+
+#include "zconnect.h"
 #include "xprog.h"
 
 unsigned waittime;

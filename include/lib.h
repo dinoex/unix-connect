@@ -36,34 +36,8 @@
  *  for instructions on how to join this list.
  */
 
-int lock_device (int flok, const char *device);
+void iso2pc(char *buffer);
+void pc2iso(char *buffer);
+void iso2pc_size(char *buffer, size_t len);
+void pc2iso_size(char *buffer, size_t len);
 
-char *dstrdup(const char *);
-void *dalloc(size_t);
-
-void iso2pc(unsigned char *buffer, size_t len);
-void pc2iso(unsigned char *buffer, size_t len);
-
-#ifdef __GNUC__
-static inline void to_pc (unsigned char *) __attribute__ ((unused));
-static inline void to_iso(unsigned char *) __attribute__ ((unused));
-#endif
-
-static inline void to_pc(unsigned char *buf) { iso2pc(buf, strlen(buf)); }
-static inline void to_iso(unsigned char *buf) { pc2iso(buf, strlen(buf)); }
-
-void splitaddr(char *rfc_addr, char *name, char *host, char *domain,
-	char *realname);
-
-/*
- *  Prüfe ein lock-File und warte gegebenenfalls, bis es verschwindet.
- *  'ltimeout' gibt die Warte-Strategie an:
- *
- *	< 0 :	warte maximal abs(ltimeout) Sekunden und versuch dann, den
- *		Lock zu entfernen
- *	  0 :	warte zur Not ewig
- *	> 0 :	warte maximal timeout Sekunden und gib dann auf
- *
- *   Returns:	0 bei Erfolg
- */
-int waitnolock(const char *lockname, long ltimeout);

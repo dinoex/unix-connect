@@ -49,8 +49,6 @@
 #include "utility.h"
 #include "zconnect.h"
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <sys/types.h>
 #ifdef HAS_SYS_FCNTL_H
 #include <sys/fcntl.h>
@@ -60,24 +58,13 @@
 #endif
 #include <ctype.h>
 #include <sys/stat.h>
-#include <setjmp.h>
-#include <signal.h>
 #include <dirent.h>
 
-#include "header.h"
-#include "hd_def.h"
-#include "hd_nam.h"
-#include "version.h"
-#include "track.h"
-#include "line.h"
 #include "boxstat.h"
-#include "ministat.h"
-#include "uulog.h"
 #include "xprog.h"
-#include "lib.h"
 #include "locknames.h"
 
-static jmp_buf timeout, nocarrier;
+jmp_buf timeout, nocarrier;
 static const char *tty = "/dev/tty";
 
 FILE *deblogfile;

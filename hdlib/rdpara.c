@@ -44,9 +44,11 @@
  *   Funktion:  Liest einen Header
  */
 
-# include "config.h"
-# include <stdio.h>
-# include <stdlib.h>
+#include "config.h"
+#include "utility.h"
+
+#include <stdio.h>
+#include <stdlib.h>
 #ifdef HAS_STRING_H
 # include <string.h>
 #endif
@@ -58,7 +60,6 @@
 
 #include "header.h"
 #include "uulog.h"
-#include "lib.h"
 
 #ifndef DO_CRC
 static int may_i_call_fatal = 1;
@@ -72,7 +73,6 @@ int set_rd_para_reaction (int new_reaction)
    return old_reaction;
 }
 #else
-extern int rd_para_error;
 const int may_i_call_fatal = 0;
 #endif
 
@@ -122,7 +122,7 @@ char *crc_gets(char *buffer, size_t max_len, FILE *f, int name)
 	   toupper(buffer[1]) != 'R' ||
 	   toupper(buffer[2]) != 'C' ||
 	   buffer[3] != ':') {
-		for (p=buffer; *p && *p != '\n'; p++) {
+		for (p=(unsigned char *)buffer; *p && *p != '\n'; p++) {
 			crc = CRC(*p, crc);
 		}
 	}

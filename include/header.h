@@ -62,7 +62,7 @@
 typedef struct para_s {
 	char *text;      /* Pointer auf den Inhalts-String */
 	char *header;    /* Pointer auf den Namen dieses Headers */
-	int code;        /* Interner Code dieses Header-Namens */
+	unsigned int code; /* Interner Code dieses Header-Namens */
 
         struct para_s
              *other,     /* Pointer auf weitere Header mit diesem code */
@@ -111,20 +111,20 @@ void     wr_para_continue(header_p, FILE *);
 void     wr_paraf(header_p ptr, FILE *fp,int laenge);
 long     size_para(header_p);
 void     do_free_para(header_p);
-header_p find(int, header_p);
-header_p truefind(int, header_p);
-char *	 header_name(int);
-char *headertext (header_p, int, char *);
-header_p internal_add_header(const char *, int, header_p, const char *);
-header_p add_header(const char *, int, header_p);
-header_p del_header(int, header_p);
+header_p find(unsigned int, header_p);
+header_p truefind(unsigned int, header_p);
+char *	 header_name(unsigned int);
+char *headertext (header_p, unsigned int, char *);
+header_p internal_add_header(const char *, unsigned int,
+		header_p, const char *);
+header_p add_header(const char *, unsigned int, header_p);
+header_p del_header(unsigned int, header_p);
 header_p copy_one_header(header_p p);
 header_p join_header(header_p, header_p);
 header_p unify_header(header_p, header_p);
 #define copy_header(p) join_header(p,NULL)
 int identify(const char *);
 
-/* header_p new_header(char *, int); */
 # define new_header(text, code) add_header(text, code, NULL)
 # define for_header(par, code, h) for(par=find(code, h); par; par=par->other)
 #endif

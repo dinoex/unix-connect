@@ -44,19 +44,11 @@
  */
 
 #include "config.h"
-#include "version.h"
 #include "zconnect.h"
+
 #ifndef NO_UNISTD_H
 #include <unistd.h>
 #endif
-#ifdef HAS_STRING_H
-# include <string.h>
-#endif
-#ifdef HAS_STRINGS_H
-# include <strings.h>
-#endif
-#include "lib.h"
-
 
 #ifdef TCP_SUPPORT
 void banner_login(void)

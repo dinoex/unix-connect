@@ -1,6 +1,8 @@
 
 Änderungen seit 0.80:
 
+- Warnungen werden automatisch eingefügt.
+
 - diverse: LIBOBJS-Variable aus autoconf jetzt berücksichtigt
   kann dazu gebraucht werden, fehlende System-Library-Funktionen nachzubauen.
   (Matthias Andree)

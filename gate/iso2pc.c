@@ -103,13 +103,22 @@ static unsigned char isoxpc437 [] =                     /* 000-255 */
 	155, 151, 163, 150, 129, 236, 231, 152          /* 248-255 */
 } ;
 
-void iso2pc(unsigned char *buffer, size_t len);
-void iso2pc(unsigned char *buffer, size_t len)
+#include "lib.h"
+
+void iso2pc_size(char *buffer, size_t len)
 {
+	unsigned char *b;
 	unsigned char c;
 
+	b = (unsigned char *)buffer;
 	while (len--) {
-		c = isoxpc437[*buffer];
-		*buffer++ = c;
+		c = isoxpc437[*b];
+		*b++ = c;
 	}
 }
+
+void iso2pc(char *buffer)
+{
+	iso2pc_size(buffer, strlen( buffer ));
+}
+

@@ -44,6 +44,8 @@
  */
 
 #include "config.h"
+#include "utility.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #ifdef HAS_STRING_H
@@ -69,11 +71,9 @@
 #include "lib.h"
 #include "boxstat.h"
 #include "ministat.h"
-#include "utility.h"
 #include "header.h"
 #include "hd_def.h"
 #include "hd_nam.h"
-#include "version.h"
 #include "uulog.h"
 #include "mime.h"
 #include "zconv.h"
@@ -161,7 +161,7 @@ int main(int argc, const char *const *argv)
 	pointsys = NULL;
 	ulibinit();
 	minireadstat();
-	srand(time(NULL));
+	srand( (unsigned) time(NULL));
 
 	bigbuffer = malloc(BIGBUFFER);
 	smallbuffer = malloc(SMALLBUFFER);
@@ -379,7 +379,8 @@ void convert(FILE *zconnect, FILE *smtp)
 	static int binno = 0;
 	long comment, len, ascii_len, lines;
 	size_t buffree;
-	int bytecount, znr, start_of_line, multipart;
+	size_t bytecount, znr;
+	int start_of_line, multipart;
 	int qualify, local, has_lines;
 	int wasmime, charset, eightbit, ctl, err;
 	mime_header_info_struct mime_info;
@@ -635,7 +636,7 @@ void convert(FILE *zconnect, FILE *smtp)
 				*bufende = '\0';
 #ifdef USE_ISO_IN_MAILS
 				if (mime_info.text_plain && charset == 0)
-					pc2iso(bigbuffer, strlen(bigbuffer));
+					pc2iso(bigbuffer);
 #endif
 				fputs(bigbuffer, tmp);
 				bufende = bigbuffer;
@@ -857,7 +858,7 @@ void convert(FILE *zconnect, FILE *smtp)
 
 #ifdef USE_ISO_IN_MAILS
 		if (charset==0 && mime_info.text_plain)
-			pc2iso(bigbuffer, strlen(bigbuffer));
+			pc2iso(bigbuffer);
 #endif
 		fputs(bigbuffer, tmp);
 		fflush(tmp);
@@ -870,7 +871,7 @@ void convert(FILE *zconnect, FILE *smtp)
 	} else {
 #ifdef USE_ISO_IN_MAILS
 		if (charset == 0 && mime_info.text_plain)
-			pc2iso(bigbuffer, strlen(bigbuffer));
+			pc2iso(bigbuffer);
 #endif
 		fputs(bigbuffer, smtp);
 	}

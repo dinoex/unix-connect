@@ -44,6 +44,8 @@
  */
 
 #include "config.h"
+#include "utility.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #ifdef HAS_STRING_H
@@ -69,11 +71,9 @@
 #include "lib.h"
 #include "boxstat.h"
 #include "ministat.h"
-#include "utility.h"
 #include "header.h"
 #include "hd_def.h"
 #include "hd_nam.h"
-#include "version.h"
 #include "uuapprove.h"
 #include "uulog.h"
 #include "mime.h"
@@ -158,7 +158,7 @@ int main(int argc, const char *const *argv)
 	pointsys = NULL;
 	ulibinit();
 	minireadstat();
-	srand(time(NULL));
+	srand( (unsigned) time(NULL));
 
 	bigbuffer = malloc(BIGBUFFER);
 	smallbuffer = malloc(SMALLBUFFER);
@@ -371,12 +371,13 @@ void convert(FILE *zconnect, FILE *news)
 	char id[30], zbuf[4], lines_line[50], *sp, *zp,
 		*bufende, *c, *typ, *file;
 	static int binno = 0;
-	int bytecount, znr, do_approve, multipart;
+	size_t bytecount, znr;
+	int do_approve, multipart;
 	int skip, has_lines;
 #ifdef UUENCODE_CHKSUM
 	int sum;
 #endif
-	long comment, ascii_len, len, lines;
+	size_t comment, ascii_len, len, lines;
 	size_t buffree;
 	int charset, wasmime, eightbit;
 	mime_header_info_struct mime_info;
@@ -416,7 +417,8 @@ void convert(FILE *zconnect, FILE *news)
 		len = atol(p->text);
 		free_para(hd);
 		while (len)
-			len -= fread(smallbuffer, 1, SMALLBUFFER > len ? len : SMALLBUFFER-1, zconnect);
+			len -= fread(smallbuffer, 1, SMALLBUFFER > len ?
+				len : SMALLBUFFER-1, zconnect);
 		return;
 	}
 
@@ -599,7 +601,7 @@ void convert(FILE *zconnect, FILE *news)
 				*bufende = '\0';
 #ifdef USE_ISO_IN_NEWS
 				if(charset == 0 && mime_info.text_plain)
-					pc2iso(bigbuffer, strlen(bigbuffer));
+					pc2iso(bigbuffer);
 #endif
 				fputs(bigbuffer, tmp);
 				bufende = bigbuffer;
@@ -765,7 +767,7 @@ void convert(FILE *zconnect, FILE *news)
 
 #ifdef USE_ISO_IN_NEWS
 	if (charset == 0 && mime_info.text_plain)
-		pc2iso(bigbuffer, strlen(bigbuffer));
+		pc2iso(bigbuffer);
 #endif
 	fputs(bigbuffer, tmp);
 
@@ -785,8 +787,8 @@ void convert(FILE *zconnect, FILE *news)
 
 	*lines_line = 0;
 	if (!has_lines)
-		sprintf(lines_line, HN_UU_LINES": %ld\n", lines);
-	fprintf (news, "#! rnews %ld\n", len+strlen(lines_line));
+		sprintf(lines_line, HN_UU_LINES": %ld\n", (long)lines);
+	fprintf (news, "#! rnews %ld\n", (long)(len+strlen(lines_line)));
 	fputs(lines_line, news);
 	fseek(tmphd, 0, SEEK_SET);
 	while (!feof(tmphd)) {

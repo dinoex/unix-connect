@@ -44,6 +44,8 @@
  */
 
 #include "config.h"
+#include "utility.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #ifdef HAS_STRING_H
@@ -55,15 +57,10 @@
 #include <ctype.h>
 #include <errno.h>
 
-#include "utility.h"
-#include "lib.h"
-
 #include "alias.h"
-#include "utility.h"
 #include "header.h"
 #include "hd_def.h"
 #include "hd_nam.h"
-#include "config.h"
 #include "uulog.h"
 
 extern void minireadstat(void);

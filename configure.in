@@ -431,9 +431,29 @@ EOF
         esac
         CPPFLAGS="$CPPFLAGS -I../include -I../hdlib"
 
-if test "$GCC" = yes; then
-	CFLAGS="$CFLAGS \$(WARN)"
+dnl	paranoid ....
+gcc_warn="-W -Wall -Wimplicit -Wreturn-type -Wunused -Wswitch -Wcomment -Wtrigraphs -Wformat -Wchar-subscripts -Wuninitialized -Wparentheses -Wshadow -Wid-clash-30 -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -Wnested-externs -Woverloaded-virtual -Winline -pedantic -Wconversion -Wtraditional -Wenum-clash -Wmissing-declarations -Wimplicit-int -Wimplicit-function-delcaration -Wredundant-decls -Wbad-function-cast -Wno-import -Wno-parentheses"
+
+ggc_warn_ok=""
+if test $ac_cv_prog_gcc = yes; then
+  for i in $gcc_warn
+  do
+    echo $ac_n "checking whether ${CC-cc} accepts $i""... $ac_c" 1>&6
+    echo 'void f(){}' > conftest.c
+    if test -z "`${CC-cc} ${CFLAGS} $i -c conftest.c 2>&1`"; then
+      gcc_warn_ok="$gcc_warn_ok $i"
+      echo "yes"
+    else
+      echo "no"
+    fi
+    rm -fr conftest*
+  done
 fi
+echo "$gcc_warn_ok"
+if test "$GCC" = yes; then
+	CFLAGS="$CFLAGS $gcc_warn_ok"
+fi
+
 
 	# neue Config
 	if test -f include/sysdep.h; then

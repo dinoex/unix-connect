@@ -47,7 +47,8 @@
 
 
 #include "config.h"
-#include "zconnect.h"
+#include "utility.h"
+
 #include <errno.h>
 #include <ctype.h>
 #include <time.h>
@@ -65,7 +66,8 @@
 #ifndef NO_UNISTD_H
 #include <unistd.h>
 #endif
-#include "lib.h"
+
+#include "zconnect.h"
 #include "xprog.h"
 
 /*
