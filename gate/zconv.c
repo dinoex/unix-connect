@@ -413,7 +413,7 @@ header_p convheader(header_p hd, FILE *f)
 		dfree(mime_name);
 	}
 
-	if(main_is_mail) {
+	if(!main_is_mail) {
 	  p = find(HD_ROT, hd);
 	  if (p) {
 	    if (pointuser) {
