@@ -55,7 +55,7 @@
 #include "utility.h"
 #include "uulog.h"
 
-#if defined(NEXTSTEP)
+#ifndef HAVE_STRDUP
 
 /*@@
  *
