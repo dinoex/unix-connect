@@ -4,6 +4,8 @@ Aenderungen an UnixConnect
 
 seit 0.88
 
+- CHANGES => ChangeLog
+
 - shell/prearc.in: (Krischan Jodies) (Dirk Meyer)
   Fehlerbehandlung erweitert.
 

@@ -4,6 +4,8 @@ $Id$
 
 seit 0.88
 
+- CHANGES.configure => ChangeLog.configure
+
 - configure --enable-noempty-subject
   Fälsche das Subject wenn es leer ist. 
 
