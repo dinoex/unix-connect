@@ -1,1 +1,1 @@
-/usr/sbin/sendmail -bs
+run_as postfix /usr/sbin/sendmail -bs

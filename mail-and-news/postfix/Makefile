@@ -2,7 +2,7 @@
 
 include ../../Makefile.global
 
-FILES = zbatchsmtp 
+FILES = zbatchsmtp run_as
 
 all: $(FILES) README ucpf.pl
 
@@ -27,3 +27,4 @@ README: README.in
 ucpf.pl: ucpf.pl.in
 	$(SHELL) ../../helpers/subst < ucpf.pl.in > $@
 
+run_as: run_as.c
