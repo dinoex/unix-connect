@@ -692,6 +692,7 @@ convheader(header_p hd, FILE *f)
 /*
  * Gibt einen String inhalt aus, der gemaess RFC822 umbrochen wird.
  * Ein '\t' im auszugebenden String erzwingt einen Umbruch.
+ * Innerhalb eines "" quoted-strings ist es nicht siinnvoll.
  * *col gibt eine Spalte an, in der wir beginnen und steht nach der
  * Rueckkehr auf der derzeitigen Position.
  *
@@ -702,28 +703,41 @@ convheader(header_p hd, FILE *f)
 void
 foldputs_no_eol(FILE *f, const char *inhalt, int *col)
 {
-#if 0
+#if ENABLE_NEW_BREAK
 	int i;
+	int in_quoted_string, in_quoted_string2;
 	char *p, *p1, *lastspace;
 	char ch;
 
 	p=inhalt;
 	while (*p) {
 		lastspace=NULL;
-		/* move MAXCOL characters forward; stop at a tab character;
-		   remeber position of final space */
+		in_quoted_string=0;
+		/* move MAXCOL characters forward; if not in quoted-string,
+		 * stop at a tab character and rememer position of final space
+		 */
 		for(p1=p; *p1 && (*col)<MAXCOL; p1++, (*col)++) {
-			if (*p1 == '\t')
-				break;
-			if (*p1 == ' ')
-				lastspace=p1;
+			if (*p1 == '\"')
+				in_quoted_string = !in_quoted_string;
+			if (! in_quoted_string) {
+				if (*p1 == '\t')
+					break;
+				if (*p1 == ' ')
+					lastspace=p1;
+			}
 		}
 		if ((*col) == MAXCOL && *p1 != '\t') {
 			/* There was no tab char. See if there will be a tab
 			   or the end of the string
 			   within the next 7 characters, then we wrap there.
 			 */
-			for (i=0; i<7 && p1[i] && p1[i] != '\t'; i++);
+			in_quoted_string2 = in_quoted_string;
+			for (i=0;
+				i<7 && p1[i] &&
+				(p1[i] != '\t' || in_quoted_string2);
+				i++)
+				if (p1[i] == '\"')
+					in_quoted_string2 = !in_quoted_string2;
 			if (i<7) {
 				p1+=i;
 			} else {
@@ -732,7 +746,11 @@ foldputs_no_eol(FILE *f, const char *inhalt, int *col)
 					 p1=lastspace;
 				} else {
 					/* else, look for next one */
-					while(*p1 && !isspace(*p1))
+					while(*p1 && (!isspace(*p1) ||
+							in_quoted_string)) {
+						if (*p1 == '\"')
+							in_quoted_string =
+							    !in_quoted_string;
 						p1++;
 				}
 			}

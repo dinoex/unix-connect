@@ -101,21 +101,7 @@ int import_all(const char *arcer, const char *sysname)
 				if(!call_auspack(arcer, l->name)) {
 					myret = 0;
 				}
-				if(backindir) {
-				    if(backupnumber) {
-					if (backup2(backindir,l->name,
-							sysname,arcer)) {
-						newlog(ERRLOG,
-				"Backupin hat nicht funktioniert!");
-						remove(l->name);
-					}
-				    } else {
-					backup(backindir, l->name,
-					       sysname, BACKUP_MOVE);
-				    }
-				} else {
-					remove(l->name);
-				}
+				backup3(backindir,l->name,sysname,arcer);
 			} else {
 				newlog(ERRLOG,
 					"File hat falschen Link count "

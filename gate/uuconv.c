@@ -598,8 +598,11 @@ convheader(header_p hd, FILE *f, char *from)
 		}else{
 			fputs(p->text,f);
 		}
+		/* will niemals News-Message-IDs veraendern. Auch
+		 * nicht, wenn sie keinen @ enthalten.
+		 */
 		s=strchr(p->text,'@');
-		if(s==NULL)
+		if((s==NULL) && main_is_mail )
 		{
 			fputs("@unknown.nil",f);
 		}
@@ -613,7 +616,8 @@ convheader(header_p hd, FILE *f, char *from)
 		 * ziemlich schlechte Loesung. Ziemlich schlecht
 		 * ist besser als sehr schlecht: */
 		if(main_is_mail) {
-			fprintf(f,HN_MID": gateway-generated.%d.%d@unknown.nil\r\n",
+			fprintf(f,HN_MID
+				": gateway-generated.%d.%d@unknown.nil\r\n",
 				rand(), getpid());
 		}
 	}

@@ -853,25 +853,7 @@ anruf( header_p sys, header_p ich, int lmodem, int tries )
 		if(have_file) {
 			/* Backups von Nullpuffern sind
 			   uninteressant */
-			if(backoutdir) {
-			    if(backupnumber) {
-				if (backup2(backoutdir,filename,
-							sysname,arcer)) {
-					newlog(ERRLOG,
-				"Backupout hat nicht funktioniert!");
-				 }
-			    } else {
-				backup(backoutdir, filename,
-				       sysname, BACKUP_LINK);
-			    }
-			}
-			/* und wenn wir das File nicht lesen konnten,
-			   sollten wir es auch nicht loeschen */
-			if ( remove(filename) ) {
-				newlog(ERRLOG,
-				       "Loeschen von %s fehlgeschlagen: %s",
-				       filename, strerror(errno));
-			}
+			backup3(backoutdir,filename,sysname,arcer);
 		}
 		/* das ist nur ein Link, den putzen wir weg */
 		if ( unlink(outname)) {

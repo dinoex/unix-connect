@@ -216,7 +216,10 @@ main(int argc, char **argv)
 	lock_device(0, tty);
 	/* Netcall war erfolgreich, also Daten loeschen */
 	newlog(INCOMING, WHO " Netcall erfolgreich");
-	remove(call.outname);
+	if (has_data)
+		backup3(backoutdir,call.outname,sys->ssysname,sys->arcerout);
+	else
+		remove(call.outname);
 	has_data=FALSE;
 
 	rmnewlock(spooldir, sys->lsysname);
@@ -449,23 +452,6 @@ mvtotmp(const auth_t *s)
 		/* Ok, wir haben die Daten. Jeder Abbruch muss die Daten
 		   jetzt wieder zurueckgeben */
 		has_data=TRUE;
-
-		/* Sicherheitshalber erst mal ins backout kopieren, man
-		 * kann nie wissen ...
-		 */
-		if(backoutdir) {
-		    if(backupnumber) {
-			if (backup2(backoutdir, call.outname,
-					s->ssysname, sys->arcerout)) {
-				newlog(ERRLOG,
-					"Backupout hat nicht funktioniert!");
-				remove( call.outname );
-			}
-		    } else {
-			backup(backoutdir, call.outname,
-				s->ssysname, BACKUP_LINK);
-		    }
-		} /* XXX Die externen Variablen gehoeren noch weg */
 	}
 
 	return 0;
@@ -560,9 +546,17 @@ abbruch(const int cause) {
 		break;
 	}
 
+	/* Lock freigeben */
+	lock_device(0, tty);
 	if (has_syslock) {
-//	lock_device(0, tty);
 	    if (has_data) {
+
+#if 0
+		if (waitnolock(lockname, 180)) {
+			newlog(ERRLOG, "Prearc still running %s",
+				lockname );
+		}
+#endif
 
 		/* Jetzt muessen die Daten zurueck aus dem temporaeren
 		 * Verzeichnis ins Haupt-Netcall-Verzeichnis
@@ -596,11 +590,12 @@ abbruch(const int cause) {
 			newlog(ERRLOG, "Cant delete %s (%s)",
 				call.outname, strerror(errno));
 		} /* Und die Eingangsdatei kann im Prinzip auch loeschen */
-/*		if (remove(call.inname)) {
+#if 0
+		if (remove(call.inname)) {
 			newlog(ERRLOG, "Cant delete %s (%s)",
 				call.inname, strerror(errno));
 		}
-*/
+#endif
 	/* Noch das Verzeichnis loeschen */
 	    chdir("/");
 	    rmdir(call.tmpdir);
@@ -608,7 +603,6 @@ abbruch(const int cause) {
 	    rmnewlock(spooldir, sys->lsysname);
 	    has_syslock=FALSE;
 	}
-
 
 	newlog(INCOMING, "Abbruch: %s", grund);
 

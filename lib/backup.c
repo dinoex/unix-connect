@@ -165,6 +165,8 @@ backup2(const char *backupdir, const char *file,
 		return -1;
 	if ( sysname == NULL )
 		return -1;
+	if ( arcer == NULL )
+		arcer = "non";
 
 	if(lstat(file, &st)) {
 		newlog(ERRLOG, "backup: cannot stat %s: %s",
@@ -224,3 +226,28 @@ backup2(const char *backupdir, const char *file,
 	rename(file,backupname);
 	return 0;
 }
+
+int
+backup3(const char *backupdir, const char *file,
+	const char *sysname, const char *arcer)
+{
+	int rc = -1;
+
+	if ( file == NULL )
+		return rc;
+
+	if ( backupdir != NULL ) {
+		if ( backupnumber ) {
+			return backup2( backupdir, file, sysname, arcer );
+		};
+		rc = backup( backupdir, file, sysname, BACKUP_LINK );
+	};
+	if(remove(file) && errno != ENOENT) {
+		newlog(ERRLOG,
+		       "cannot remove file %s: %s",
+		       file, strerror(errno));
+		rc = 1;
+	}
+	return rc;
+}
+

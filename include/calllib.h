@@ -57,6 +57,8 @@ extern int backup(const char *backupdir, const char *file,
 		  const char *sysname, enum backup_type);
 extern int backup2(const char *backupdir, const char *file,
 		   const char *sysname, const char *arcer);
+extern int backup3(const char *backupdir, const char *file,
+		   const char *sysname, const char *arcer);
 
 #else
 #warning "online/calllib.h included twice"

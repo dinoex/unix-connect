@@ -4,6 +4,22 @@ Aenderungen an UnixConnect
 
 seit 0.90
 
+- gate/zconv.c: (Moritz Both)
+  bricht RFC-Headerzeilen nicht mehr mitten in quoted-strings um.
+
+- gate/uuconv.c: (Moritz Both)
+  Message-ID's von News _nie_ verändern.
+
+- online/januslogin.c: (Dirk Meyer)
+  Backup erst nach dem Anruf.
+
+- include/calllib.h, lib/backup.c, online/call.c, online/import.c,
+  online/januslogin.c: (Dirk Meyer)
+  Backup vereinfacht, neue Funktion.
+
+- shells/prearc.in: (Moritz Both)
+  Netcall3.8 entfernt und Race-Condition beseitigt.
+
 - *.h, *.c (Dirk Meyer)
   #ifdef -> #if
 
