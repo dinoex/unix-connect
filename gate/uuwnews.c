@@ -1,10 +1,10 @@
 /* $Id$ */
 /*
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
- *  Copyright (C) 1993-94  Martin Husemann
- *  Copyright (C) 1995-98  Christopher Creutzig
- *  Copyright (C) 1999     Andreas Barth, Option "-p"
- *  Copyright (C) 1996-99  Dirk Meyer
+ *  Copyright (C) 1993-1994  Martin Husemann
+ *  Copyright (C) 1995-1998  Christopher Creutzig
+ *  Copyright (C) 1999       Andreas Barth, Option "-p"
+ *  Copyright (C) 1996-2000  Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -385,7 +385,7 @@ convert(FILE *zconnect, FILE *news)
 	if (!hd) return;
 	p = find(HD_EMP, hd);
 	if (!p) {
-		newlog(ERRLOG, "Kein Empfaenger!" );
+		newlog(ERRLOG, "no EMP header in message" );
 		exit( EX_DATAERR );
 	}
 
@@ -406,7 +406,7 @@ convert(FILE *zconnect, FILE *news)
 		}
 	}
 	if (skip) {
-		newlog(ERRLOG, "Z3.8 Cross-Routing abgewiesen %s", p->text);
+		newlog(ERRLOG, "Z3.8 Cross-Routing denied %s", p->text);
 		p = find(HD_LEN, hd);
 		if (!p) return;
 		len = atol(p->text);
@@ -423,7 +423,7 @@ convert(FILE *zconnect, FILE *news)
 		skip = 1;
 	}
 	if (skip) {
-		newlog(ERRLOG, "RFC->ZC->RFC Routing abgewiesen %s", p->text);
+		newlog(ERRLOG, "RFC->ZC->RFC Routing denied %s", p->text);
 		p = find(HD_LEN, hd);
 		if (!p) return;
 		len = atol(p->text);
@@ -445,12 +445,12 @@ convert(FILE *zconnect, FILE *news)
 	lines = 0;
 	tmp = tmpfile();
 	if (!tmp) {
-		newlog(ERRLOG, "Temporaere Datei nicht schreibbar!");
+		newlog(ERRLOG, "unable to open temporary file");
 		exit( EX_CANTCREAT );
 	}
 	tmphd=tmpfile();
 	if (!tmphd) {
-		newlog(ERRLOG, "Temporaere Datei nicht schreibbar!");
+		newlog(ERRLOG, "unable to open temporary file");
 		exit( EX_CANTCREAT );
 	}
 	setvbuf(tmp, NULL, (_IOFBF),

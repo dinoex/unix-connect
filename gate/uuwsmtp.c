@@ -399,7 +399,7 @@ convert(FILE *zconnect, FILE *smtp)
 	habs = find(HD_WAB, hd);
 	if (!habs) habs = find(HD_ABS, hd);
 	if (!habs) {
-		newlog(ERRLOG, "mid=<%s> Kein Absender", mid );
+		newlog(ERRLOG, "mid=<%s> no ABS header in message", mid );
 		exit( EX_DATAERR );
 	}
 /* Nachrichten mit STAT: CTL bekommen einen leeren Envelope-Absender. */
