@@ -44,7 +44,7 @@ case "$KENNUNG" in
 		zoo ah $ARC.zoo $*
 		EC=$? ;;
  "LZH" )	ARC=`dirname $ARC`/`basename $ARC .lzh`
-		lha aog0 $ARC.lzh $*
+		lha ag0o $ARC.lzh $*
 		EC=$? ;;
  "LHA" )	ARC=`dirname $ARC`/`basename $ARC .lha`
 		mv $ARC.lha $ARC.lzh
