@@ -146,6 +146,9 @@ void do_help(void)
 "          secure mode, no delete, no directory search.\n"
 "        uuwnews -p [ fqdn-zconnect-host ]\n"
 "          full Pipe\n"
+"        uuwnews --output RNEWS-file [ --remove ] ZCONNECT-file \n"
+"                [ fqdn-zconnect-host ]\n"
+"          gnu standard\n"
 "        uuwnews --version\n"
 "          print version and copyright\n"
 "        uuwnews --help\n"
@@ -162,6 +165,8 @@ int main(int argc, const char *const *argv)
 	const char *cptr;
 	const char *name;
 	const char *remove_me;
+	const char *input_file; 
+	const char *output_file;
 	time_t j;
 	int ready;
 	char ch;
@@ -186,6 +191,8 @@ int main(int argc, const char *const *argv)
 
 	name = argv[ 0 ];
 	remove_me = NULL;
+	input_file = NULL;
+	output_file = NULL;
 	fin = NULL;
 	fout = NULL;
 	ready = 0;
@@ -204,7 +211,31 @@ int main(int argc, const char *const *argv)
 				if ( stricmp( cptr, "version" ) == 0 ) {
 					do_version();
 				};
+				if ( stricmp( cptr, "output" ) == 0 ) {
+					if ( ready != 0 )
+						usage();
+					GET_NEXT_DATA( cptr );
+					output_file = cptr;
+					ready ++;
+					break;
+				};
+				if ( stricmp( cptr, "remove" ) == 0 ) {
+					if ( ready != 0 )
+						usage();
+					GET_NEXT_DATA( cptr );
+					input_file = cptr;
+					remove_me = cptr;
+					ready ++;
+					break;
+				};
 				usage();
+				break;
+			case 'o':
+				if ( ready != 0 )
+					usage();
+				GET_NEXT_DATA( cptr );
+				output_file = cptr;
+				ready ++;
 				break;
 			case 'd':
 				if ( ready != 0 )
@@ -220,39 +251,26 @@ int main(int argc, const char *const *argv)
 				};
 				ready ++;
 				GET_NEXT_DATA( cptr );
-				fout = fopen(cptr, "ab");
-				if ( fout == NULL ) {
-					fprintf( stderr,
-					"%s: error writing file %s: %s\n",
-					name, cptr, strerror( errno ) );
-					exit( EX_CANTCREAT );
-				};
+				output_file = cptr;
 				ready ++;
 				break;
 			case 'p':
 				if ( ready != 0 )
 					usage();
 				/* echte Pipe */
-				fin = stdin;
-				fout = stdout;
-				ready += 2;
+				input_file = "-";
+				output_file = "-";
+				ready ++;
 				break;
 			case 'f':
 				if ( ready != 0 )
 					usage();
 				/* Ein Argument ist Eingabe-Datei */
 				GET_NEXT_DATA( cptr );
-				fin = fopen( cptr, "rb");
-				if ( fin == NULL ) {
-					fprintf( stderr,
-					"%s: error open file %s: %s\n",
-					name, cptr, strerror( errno ) );
-					exit( EX_CANTCREAT );
-				};
+				input_file = cptr;
 				remove_me = cptr;
-				ready ++;
 				/* Ergebnis nach stdout */
-				fout = stdout;
+				output_file = "-";
 				ready ++;
 				break;
 			default:
@@ -262,21 +280,15 @@ int main(int argc, const char *const *argv)
 			continue;
 		};
 		/* erstes freies Argument */
-		if ( ready < 1 ) {
+		if ( input_file == NULL ) {
 			/* Argument ist Eingabe-Datei */
-			fin = fopen( cptr, "rb");
-			if ( fin == NULL ) {
-				fprintf( stderr,
-					"%s: error open file %s: %s\n",
-					name, cptr, strerror( errno ) );
-				exit( EX_CANTCREAT );
-			};
-			remove_me = cptr;
-			ready ++;
+			input_file = cptr;
+			if ( ready == 0 )
+				remove_me = cptr;
 			continue;
 		};
 		/* zweites freies Argument */
-		if ( ready < 2 ) {
+		if ( output_file == NULL ) {
 			/* Ergebnis im angegebene Verzeichnis */
 			int fh;
 
@@ -294,7 +306,7 @@ int main(int argc, const char *const *argv)
 				   haengt das Programm hier endlos */
 			}
 			close(fh);
-			fout = fopen(datei, "wb");
+			output_file = datei;
 			ready ++;
 			continue;
 		};
@@ -322,19 +334,32 @@ int main(int argc, const char *const *argv)
 		/* weitere Argumente */
 		usage();
 	};
-	if ( ready == 0 ) {
+	if ( ready == 0 )
 		usage();
+	if ( input_file == NULL )
+		usage();
+	if ( strcmp( input_file, "-" ) == 0 ) {
+		fin = stdin;
+	} else {
+		fin = fopen( input_file, "rb");
 	};
 	if ( fin == NULL ) {
 		fprintf( stderr,
-			"%s: no file to read\n",
-			name );
+		"%s: error open input file %s: %s\n",
+		name, input_file, strerror( errno ) );
 		exit( EX_CANTCREAT );
+	};
+	if ( output_file == NULL )
+		usage();
+	if ( strcmp( output_file, "-" ) == 0 ) {
+		fout = stdout;
+	} else {
+		fout = fopen( output_file, "wb");
 	};
 	if ( fout == NULL ) {
 		fprintf( stderr,
-			"%s: no file to write\n",
-			name );
+		"%s: error create output file %s: %s\n",
+		name, output_file, strerror( errno ) );
 		exit( EX_CANTCREAT );
 	};
 
