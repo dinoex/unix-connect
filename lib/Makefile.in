@@ -36,19 +36,6 @@
 
 include ../.makefile.conf
 
-#
-# Makefile fuer gatelib.a
-#
-# Datum        NZ  Aenderungen
-# ===========  ==  ===========
-# 15-Feb-1993  KK  Dokumentation erstellt.
-#                  Angepasst fuer Systeme ohne automatisches RANLIB
-#                  Define fuer NeXTstep
-# 17-Feb-1993  MH  ministat und rawtty neu
-# 23-Apr-1996  MB  'trap.o' hinzugefuegt
-
-INC     = ../include
-
 OBJS	= hayes.o pattern.o stricmp.o track.o uufatal.o utility.o strlwr.o \
 	  strupr.o strdup.o rawtty.o str2eda.o ministat.o lockwait.o uulog.o \
 	  trap.o
@@ -60,11 +47,9 @@ all:	gatelib.a strlib.a
 install:	all
 
 clean:
-	-rm -f *.o
-	-rm -f core gatelib.a strlib.a
+	-rm -f $(CLEANFILES)
 
 clobber:	clean
-	-rm -f gatelib.a
 
 gatelib.a:	$(OBJS)
 	ar r gatelib.a $(OBJS)
@@ -74,9 +59,8 @@ strlib.a:	$(STROBJS)
 	ar r strlib.a $(STROBJS)
 	$(RANLIB) strlib.a
 
-
 .c.o:
-	$(CC) -c $(CFLAGS) -I$(INC) $<
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
 
 # Individuelle Abhaengigkeiten [gcc -I../include -MM *.c]
 

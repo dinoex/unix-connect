@@ -39,7 +39,6 @@ include ../.makefile.conf
 
 # Makefile fuer den UNIX-Connect Gateway
 
-INC	=	../include
 LIBS	=	../lib/ministat.o ../hdlib/uuheader.a ../lib/gatelib.a
 DATELIB	=	../date/getindate.o ../date/datetok.o
 
@@ -71,13 +70,13 @@ testmime:	testmime.o mime.o $(DATELIB) $(LIBS)
 	 -lreadline -ltermcap $(LDFLAGS)
 
 clean:
-	-rm -f *.o core
+	-rm -f $(CLEANFILES)
 
 clobber:	clean
 	-rm -f uurnews uursmtp uuwsmtp uuwnews
 
 .c.o:	
-	$(CC) -c $(CFLAGS) -I$(INC) $(DEFS) $<
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
 
 # Individuelle Abhaengigkeiten [gcc -I../include -MM *.c]
 alias.o: alias.c ../include/config.h ../include/sysdep.h \

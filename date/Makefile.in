@@ -38,17 +38,16 @@ include ../.makefile.conf
 
 OBJS	= getindate.o datetok.o
 
-
 all:	$(OBJS)
 
 clean:
-	-rm -f *.o
+	-rm -f $(CLEANFILES)
 
 clobber:	clean
 
-datetok.o : datetok.c datetok.h 
-getindate.o : getindate.c datetok.h 
+datetok.o : datetok.c datetok.h
+getindate.o : getindate.c datetok.h
 
 .c.o:
-	$(CC) -c $(CFLAGS) -I../include $<
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
 

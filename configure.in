@@ -247,7 +247,7 @@ EOF
                 freebsd)
                         echo "Konfiguriere fuer FreeBSD..."
                         SYSTYPE=freebsd
-			CFLAGS="$CFLAGS -pipe -Wall"
+			CFLAGS="$CFLAGS -O2 -Wall"
                 ;;
                 netbsd)
                         echo "Konfiguriere fuer NetBSD..."
@@ -297,31 +297,36 @@ EOF
 			CFLAGS="$CFLAGS -O"
                         ;;
         esac
+	CPPFLAGS="$CPPFLAGS -I../include"
 
-echo "Linke include/systems/$SYSTYPE.h nach include/sysdep.h..."
 if test -f include/sysdep.h
 then
         rm -f include/sysdep.h
 fi
-if ln -s `pwd`/include/systems/$SYSTYPE.h include/sysdep.h 2>/dev/null
+if test -f include/os-$SYSTYPE/sysdep.h
 then
-        :
+	echo "Linke include/os-$SYSTYPE/sysdep.h nach include/sysdep.h..."
+	cp -i include/os-$SYSTYPE/sysdep.h include/sysdep.h
 else
-        ln include/systems/$SYSTYPE.h include/sysdep.h
+	echo "Unbeknates System verwende include/os-linux/sysdep.h"
+	cp -i include/os-linux/sysdep.h include/sysdep.h
 fi
-
-if test -f include/policy.h.$SYSTYPE
+if test -f include/policy.h
 then
-        echo "Erzeuge include/policy.h..."
-        cp include/policy.h.$SYSTYPE include/policy.h
+        rm -f include/policy.h
+fi
+if test -f include/os-$SYSTYPE/policy.h
+then
+	echo "Linke include/os-$SYSTYPE/policy.h nach include/policy.h..."
+	cp -i include/os-$SYSTYPE/policy.h include/policy.h
 else
-        echo "Fuer dieses System ist kein include/policy.h bekannt."
-        echo "Sie muessen es unbedingt von Hand editieren!"
-        echo ""
+	echo "Unbeknates System verwende include/os-linux/policy.h"
+	cp -i include/os-linux/policy.h include/policy.h
 fi
 
 AC_MSG_RESULT(fertig)
 AC_SUBST(SYSTYPE)
+AC_SUBST(CPPFLAGS)
 AC_SUBST(CFLAGS)
 AC_SUBST(LDFLAGS)
 AC_SUBST(PATHADD)

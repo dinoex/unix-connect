@@ -35,7 +35,6 @@
 
 include ../.makefile.conf
 
-INC	= ../include
 LIBS	= ../lib/ministat.o ../hdlib/uuheader.a ../lib/gatelib.a
 
 PROGS	= zconsplit list-systems
@@ -61,13 +60,13 @@ zconsplit:	zconsplit.o $(LIBS)
 #
 
 clean:
-	-rm -f *.a *.o *.bak hd_*.h hd_*.c
+	-rm -f $(CLEANFILES)
 
 clobber:	clean
 	-rm -f $(PROGS)
 
 .c.o:
-	$(CC) $(CFLAGS) -I$(INC) $(DEFS) -c $<
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
 
 list-systems.o : list-systems.c ../include/config.h ../include/sysdep.h ../include/lib.h \
   ../include/header.h ../include/crc.h ../include/hd_def.h ../include/hd_nam.h \

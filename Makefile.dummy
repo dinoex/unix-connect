@@ -5,8 +5,6 @@ all:	include/sysdep.h
 
 include/sysdep.h:
 	@chmod a+rx ./configure
-	@sh ./configure
+	@sh ./configure --with-user=news --with-group=uucp \
+		--with-files=/usr/local/libexec/uconnect
 
-quiet:
-	@chmod a+rx ./configure
-	@sh ./configure --quiet

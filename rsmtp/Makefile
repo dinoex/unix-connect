@@ -1,5 +1,5 @@
 #
-#	Id$: GNUmakefile	1.71	26.07.1999
+#	Id$: GNUmakefile	1.71	08.08.1999
 #
 #	(c) 1994-99, Dirk Meyer, Im Grund 4, 34317 Habichtswald
 #
@@ -70,18 +70,14 @@ WARNBASE = \
 	-Woverloaded-virtual \
 	-Winline
 
-WARNEXT	= \
-	$(WARN) \
-	-Wredundant-decls \
-	-Wbad-function-cast \
-	-Wno-import \
-	-Wno-parentheses \
-	-Wtest
+WARN	= \
+	$(WARNBASE) \
+	$(WARNEGCS)
 
 CPPFLAGS+= -DUNIX -DHAVE_SYSEXITS
-CFLAGS	= -O2 -g $(WARN)
-LDFLAGS	= -g
-INSTALL	= install -c
+CFLAGS+= -O2 -g $(WARN)
+LDFLAGS+= -g
+INSTALL= install -c
 
 CPPFLAGS+= -DMAILDIR="\"$(RSMTPSPOOL)"\"
 
@@ -100,10 +96,10 @@ all:	$(TARMIN)
 	date
 
 clean:
-	rm -rf *.o *.ln $(TARMIN)
+	-rm -f $(CLEANFILES)
 
-clean.bin:
-	rm -rf $(TARMIN)
+clobber:	clean
+	-rm -rf $(TARMIN)
 
 install:	${DESTDIR} \
 		$(SPOOLDIR)/rsmtp \
@@ -123,6 +119,7 @@ $(DESTDIR):
 
 $(SPOOLDIR)/rsmtp:
 	mkdir -p $(SPOOLDIR)/rsmtp
+	choen $(USER) $(SPOOLDIR)/rsmtp
 	chmod 1777 $(SPOOLDIR)/rsmtp
 
 $(DESTDIR)/rsmtp: rsmtp
@@ -132,5 +129,8 @@ $(DESTDIR)/rsmtp: rsmtp
 
 $(DESTDIR)/bsmtp: bsmtp
 	$(INSTALL) $(BINMODE) $(BINOWN) $(<) $(@)
+
+.c.o:
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
 
 # end of makefile

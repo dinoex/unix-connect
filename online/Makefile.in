@@ -37,7 +37,6 @@
 
 include ../.makefile.conf
 
-INC	= ../include
 LIBS	= ../lib/ministat.o ../hdlib/uuheader.a ../lib/gatelib.a
 
 PROGS	= zcall receiver januslogin
@@ -63,17 +62,14 @@ zcall:	$(COBJS) $(LIBS)
 januslogin:	januslogin.o xprog.o lockdev.o lock.o import.o $(LIBS)
 	$(CC) -o januslogin januslogin.o xprog.o lockdev.o lock.o import.o $(LIBS) $(LDFLAGS)
 
-receiver.o:	$(INC)/config.h $(INC)/version.h $(INC)/track.h
-
 clean:
-	-rm -f *.a *.o *.bak hd_*.h hd_*.c
-	rm -f core
+	-rm -f $(CLEANFILES)
 
 clobber:	clean
 	-rm -f $(PROGS)
 
 .c.o:
-	$(CC) $(CFLAGS) -I$(INC) -c $<
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
 
 # Individuelle Abhaengigkeiten [gcc -I../include -MM *.c]
 

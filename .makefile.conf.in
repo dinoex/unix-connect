@@ -1,6 +1,8 @@
 SHELL    = @shell@
 CC       = @CC@
-CFLAGS   = @CFLAGS@ @DEFS@
+DEFS	 = @DEFS@
+CPPFLAGS = @CPPFLAGS@ @DEFS@
+CFLAGS   = @CFLAGS@
 LDFLAGS  = @LDFLAGS@
 RANLIB   = @RANLIB@
 DESTDIR  = @DESTDIR@
@@ -8,3 +10,4 @@ SPOOLDIR = @SPOOLDIR@
 #FQDN     = @HOST@
 USER     = @USER@
 PATHADD  = @PATHADD@
+CLEANFILES = *.o *.a *.bak *.rej *.orig core *.core

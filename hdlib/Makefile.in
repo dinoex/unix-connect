@@ -40,7 +40,6 @@ include ../.makefile.conf
 
 # Makefile fuer die Header-Verwaltung
 
-INC	= ../include
 LIBS	= ../lib/strlib.a
 
 GFLAGS	= -L ANSI-C -C -D -G -K header -N predefd_header -t
@@ -57,30 +56,30 @@ all:    uuheader.a $(LIBS)
 install:	all
 
 testheader:	testheader.o uuheader.a $(LIBS)
-	$(CC) $(CFLAGS) -I$(INC) -o testheader testheader.o uuheader.a ../lib/ministat.o $(LIBS) $(LDFLAGS)
+	$(CC) $(CFLAGS) -o testheader testheader.o uuheader.a ../lib/ministat.o $(LIBS) $(LDFLAGS)
 
 uurd.o:	uurdpara.c
 	-rm -f uurd.c
 	-ln uurdpara.c uurd.c
-	$(CC) -c $(CFLAGS) -I$(INC) uurd.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c uurd.c
 	-rm -f uurd.c
 
 smtprd.o:	uurdpara.c
 	-rm -f smtprd.c
 	-ln uurdpara.c smtprd.c
-	$(CC) $(CFLAGS) -I$(INC) -DSMTP -c smtprd.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) -DSMTP -c smtprd.c
 	-rm -f smtprd.c
 
 pkread.o:	rdpara.c
 	-rm -f pkread.c
 	-ln rdpara.c pkread.c
-	$(CC) $(CFLAGS) -I$(INC) -DDO_CRC -c pkread.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) -DDO_CRC -c pkread.c
 	-rm -f pkread.c
 
 pkwrite.o:	wrpara.c
 	-rm -f pkwrite.c
 	-ln wrpara.c pkwrite.c
-	$(CC) $(CFLAGS) -I$(INC) -DDO_CRC -c pkwrite.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) -DDO_CRC -c pkwrite.c
 	-rm -f pkwrite.c
 
 hash.c:	header.gperf hash.epilogue gperf.prefix
@@ -104,13 +103,16 @@ uuheader.a:	$(OBJS)
 	$(RANLIB) uuheader.a
 
 clean:
-	-rm -f *.a *.o *.bak hd_*.h hd_*.c header.tmp header.gtmp
+	-rm -f $(CLEANFILES) header.tmp header.gtmp
 
 clobber:	clean
+
+tidy:	clobber
+	-rm -f hd_*.h hd_*.c
 	-rm -f testheader hash.c header.gperf
 
 .c.o:
-	$(CC) $(CFLAGS) -I$(INC) -c $<
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
 
 crc.o : crc.c ../include/crc.h ../include/sysdep.h 
 delheader.o : delheader.c ../include/header.h ../include/sysdep.h ../include/crc.h 

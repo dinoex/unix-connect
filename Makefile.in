@@ -36,19 +36,7 @@
 #   for instructions on how to join this list.
 #
 
-SHELL    = @shell@
-CC       = @CC@
-CFLAGS   = @CFLAGS@ @DEFS@
-LDFLAGS  = @LDFLAGS@
-RANLIB   = @RANLIB@
-DESTDIR  = @DESTDIR@
-SPOOLDIR = @SPOOLDIR@
-FQDN     = @HOST@
-USER     = @USER@
-PATHADD  = @PATHADD@
-# APCOBJS  = '"$APCTEXT"'
-
-
+include .makefile.conf
 
 all:
 	(cd lib; $(MAKE) strlib.a)
@@ -62,7 +50,15 @@ all:
 	(cd tools; $(MAKE) all)
 	(cd rsmtp; $(MAKE) all)
 
+install: install-dirs install-usr-lib-zcon
+	(cd online; $(MAKE) install)
+	(cd gate; $(MAKE) install)
+	(cd tools; $(MAKE) install)
+	(cd shell; $(MAKE) install)
+	(cd rsmtp; $(MAKE) install)
+
 clean:
+	-rm -f $(CLEANFILES)
 	(cd lib; $(MAKE) clean)
 	(cd date; $(MAKE) clean)
 	(cd hdlib; $(MAKE) clean)
@@ -71,13 +67,6 @@ clean:
 	(cd tools; $(MAKE) clean)
 	(cd rsmtp; $(MAKE) clean)
 
-install: install-dirs install-usr-lib-zcon
-	(cd online; $(MAKE) install)
-	(cd gate; $(MAKE) install)
-	(cd tools; $(MAKE) install)
-	(cd shell; $(MAKE) install)
-	(cd rsmtp; $(MAKE) install)
-	
 clobber:
 	-rm -f include/hd_nam.h
 	-rm -f include/hd_def.h
@@ -87,26 +76,31 @@ clobber:
 	(cd online; $(MAKE) clobber)
 	(cd gate; $(MAKE) clobber)
 	(cd tools; $(MAKE) clobber)
+	(cd rsmtp; $(MAKE) clobber)
 
 tidy:	clobber
-	-rm -f */Makefile
+	-rm -f lib/Makefile
+	-rm -f date/Makefile
+	-rm -f hdlib/Makefile
+	-rm -f online/Makefile
+	-rm -f gate/Makefile
+	-rm -f tools/Makefile
+	-rm -f shell/Makefile
 	-rm -f Makefile
-	-rm -f include/sysdep.h include/config.h
+	-rm -f .makefile.conf
+	-rm -f config.cache config.log config.status
+	-rm -f include/sysdep.h include/policy.h include/config.h
+	-rm -f misc/config
 
 distrib:	tidy
-	(cd hdlib; $(MAKE) -f Makefile.hdlib SHELL=/bin/sh hash.c)
+	(cd hdlib; $(MAKE) -f Makefile.in tidy)
+	(cd hdlib; $(MAKE) -f Makefile.in SHELL=/bin/sh hash.c)
 	-rm -f configure.dat
-	-rm -f *.orig
-	-rm -f */*.orig
-	-rm -f include/config.h
-	-rm -f *,v */*,v
 	-rm -f docs/unix-connect.{aux,log,toc,cp,fn,ky,pg,tp,vr}
-	cp include/policy.h.linux include/policy.h
-
 
 install-dirs:
-	if test ! -d @DESTDIR@; then mkdir @DESTDIR@; chown @USER@ @DESTDIR@; fi
-	if test ! -d @DESTDIR@/systems; then mkdir @DESTDIR@/systems; chown @USER@ @DESTDIR@/systems; fi
+	if test ! -d $(DESTDIR); then mkdir $(DESTDIR); chown $(USER) $(DESTDIR); fi
+	if test ! -d $(DESTDIR)/systems; then mkdir $(DESTDIR)/systems; chown $(USER) $(DESTDIR)/systems; fi
 
 install-usr-lib-zcon:
-	install -o @USER@ -g @GROUP@ -m 660 usr-l-lib-zcon/* -b -S .old @DESTDIR@/
+	install -o @USER@ -g @GROUP@ -m 660 usr-l-lib-zcon/* -b -S .old $(DESTDIR)/
