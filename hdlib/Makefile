@@ -88,7 +88,7 @@ hash.c:	header.gperf hash.epilogue gperf.prefix
 	-gperf $(GFLAGS) < header.gtmp > hash.tmp
 	if test -s hash.tmp; then \
 		cat hash.tmp hash.epilogue > hash.c; \
-	else touch hash.c; fi
+	fi
 	@-rm -f header.gtmp hash.tmp
 
 header.gperf hd_def.h hd_nam.h hd_nlist.h:	header.lst
