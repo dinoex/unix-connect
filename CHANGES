@@ -6,6 +6,8 @@ seit 0.80
 
 - uuwsmtp schiesst die Datein richtig,
   und versucht nicht die Pipe zu loeschen.
+  Id für Multipart jetzt immer gesetzt.
+  Exitcodes aus <sysexits.h> verwenden.
 
 - Makefiles, die helpers/subst aufrufen, tun dies jetzt durch
   $(SHELL) (Matthias Andree)

@@ -108,15 +108,16 @@ void usage(void)
 "UUwsmtp  -  RFC821/822  Batch aus ZCONNECT erzeugen\n"
 "Aufrufe:\n"
 "        uuwsmtp (ZCONNECT-Datei) (SMTP-Directory) [Absende-System]\n"
-"          (alter Standard)\n"
-"        uuwsmtp -d (ZCONNECT-Datei) (SMTP-Datei) [Absende-System]\n"
-"          (Die Eingabedatei wird nicht gelöscht)\n"
+"          alter Standard, Eingabedatei wird gelöscht,\n"
+"          Ausgabedatei wird im Verzeichns erzeugt.\n"
 "        uuwsmtp -f (ZCONNECT-Datei) [Absende-System]\n"
-"          (Ergebnis geht nach stdout)\n"
+"          Ergebnis geht nach stdout, Eingabedatei wird gelöscht,\n"
+"        uuwsmtp -d (ZCONNECT-Datei) (SMTP-Datei) [Absende-System]\n"
+"          Modus mit höchster Sicherheit, oder zum Testen.\n"
 "        uuwnews -p [Absendesystem]\n"
-"           (Echte Pipe)\n"
+"          Echte Pipe\n"
 , stderr);
-	exit(1);
+	exit( EX_USAGE );
 }
 
 int main(int argc, const char *const *argv)
@@ -126,26 +127,29 @@ int main(int argc, const char *const *argv)
 	const char *name;
 	const char *remove_me;
 	time_t j;
-	int filter, ready;
+	int ready;
 	char ch;
 
 /*	init_trap(argv[0]); */
 	pointuser = NULL;
 	pointsys = NULL;
-	filter = 0;
 	ulibinit();
 	minireadstat();
 	srand(time(NULL));
+
+	/* fuer multipart */
+	j = time(NULL);
+	sprintf(datei, "%08lx", j);
+	id = datei;
 
 	bigbuffer = malloc(BIGBUFFER);
 	smallbuffer = malloc(SMALLBUFFER);
 	if (!bigbuffer || !smallbuffer) {
 		fputs("Nicht genug Arbeitsspeicher!\n", stderr);
-		exit(1);
+		exit( EX_TEMPFAIL );
 	}
 
 	name = argv[ 0 ];
-	strcpy(datei, "" );
 	remove_me = NULL;
 	fin = NULL;
 	fout = NULL;
@@ -202,13 +206,8 @@ int main(int argc, const char *const *argv)
 				};
 				remove_me = cptr;
 				ready ++;
-				/* Ergebnis im aktuellem Verzeichnis */
-				/* Keine Kollisionserkennung!! */
+				/* Ergebnis nach stdout */
 				fout = stdout;
-				j = time(NULL);
-				sprintf(datei, "%08lx", j);
-				id = datei;
-				filter = 1;
 				ready ++;
 				break;
 			default:
@@ -236,7 +235,7 @@ int main(int argc, const char *const *argv)
 			int fh;
 
 			j = time(NULL);
-			sprintf(datei, "%s/%08lx", argv[2], j);
+			sprintf(datei, "%s/%08lx", cptr, j);
 			id = strrchr(datei, '/');
 			if (id) id++;
 			fh=open(datei,O_WRONLY|O_CREAT|O_EXCL, 
@@ -244,7 +243,7 @@ int main(int argc, const char *const *argv)
 			while (fh<0)
 			{
 				((long)j)++;
-				sprintf(datei,"%s/%08lx.brt",argv[2],(long)j);
+				sprintf(datei,"%s/%08lx.brt", cptr, (long)j);
 				fh=open(datei,O_WRONLY|O_CREAT|O_EXCL,
 						S_IRUSR|S_IWUSR|S_IRGRP);
 				/* bei Permission denied und a.
