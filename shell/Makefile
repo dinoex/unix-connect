@@ -43,7 +43,7 @@ all:
 	for file in $(FILES); do $(SHELL) ../helpers/subst < $$file.in > $$file; done
 
 install: $(FILES)
-	install -o $(USER) -g $(GROUP) -m 775 $(FILES) $(BINDIR)
+	install -c -o $(USER) -g $(GROUP) -m 775 $(FILES) $(BINDIR)
 
 clobber:	clean
 	-rm -f $(FILES)
