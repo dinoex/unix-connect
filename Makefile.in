@@ -45,16 +45,18 @@ SUBDIRS = $(CDIRS) etc shell \
 	mail-and-news/$(NEWS)
 
 all:
-	for dir in $(SUBDIRS); do (cd $$dir; $(MAKE) -$(MAKEFLAGS) all); done
+	for dir in $(SUBDIRS); do \
+		(cd $$dir; $(MAKE) -$(MAKEFLAGS) all); done
 
 install:
-	if test ! -d $(BINDIR); then
+	if test ! -d $(BINDIR); then \
 		mkdir $(BINDIR); chown $(USER) $(BINDIR); fi
-	if test ! -d $(ETCDIR); then
+	if test ! -d $(ETCDIR); then  \
 		mkdir $(ETCDIR); chown $(USER) $(ETCDIR); fi
-	if test ! -d $(ETCDIR)/systems; then
-		mkdir $(ETCDIR)/systems; chown $(USER) $(ETCDIR)/systems; fi
-	for dir in $(SUBDIRS); do
+	if test ! -d $(ETCDIR)/systems; then \
+		mkdir $(ETCDIR)/systems; \
+		chown $(USER) $(ETCDIR)/systems; fi
+	for dir in $(SUBDIRS); do \
 		(cd $$dir; $(MAKE) -$(MAKEFLAGS) install); done
 
 install-strip:
@@ -62,12 +64,13 @@ install-strip:
 
 clean:
 	-rm -f $(CLEANFILES)
-	for dir in $(SUBDIRS); do
+	for dir in $(SUBDIRS); do \
 		(cd $$dir; $(MAKE) -$(MAKEFLAGS) clean); done
 
-distclean:	distclean
-	for dir in $(SUBDIRS); do
+distclean:
+	for dir in $(SUBDIRS); do \
 		(cd $$dir; $(MAKE) -$(MAKEFLAGS) distclean); done
+	-rm -f $(CLEANFILES)
 	-rm -f Makefile.global Makefile helpers/subst
 	-rm -f config.cache config.log config.status confdefs.h
 	-rm -f include/sysdep.h include/policy.h
