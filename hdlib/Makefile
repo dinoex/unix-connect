@@ -62,37 +62,34 @@ tidy:	clobber
 
 newhash-clean:	clobber
 	-rm -f hd_def.h hd_nam.h hd_nlist.h
+	-rm -f header.gtmp hash.tmp
 	-rm -f testheader hash.c header.gperf
 
 newhash:	newhash-clean hash.c
 
-uurd.o:	uurdpara.c
+uurd.c:	uurdpara.c
 	@-rm -f uurd.c
-	@-ln uurdpara.c uurd.c
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c uurd.c
+	ln uurdpara.c uurd.c
 
-smtprd.o:	uurdpara.c
+smtprd.c:	uurdpara.c
 	@-rm -f smtprd.c
-	@-ln uurdpara.c smtprd.c
-	$(CC) $(CFLAGS) $(CPPFLAGS) -DSMTP -c smtprd.c
+	ln uurdpara.c smtprd.c
 
-pkread.o:	rdpara.c
+pkread.c:	rdpara.c
 	@-rm -f pkread.c
-	@-ln rdpara.c pkread.c
-	$(CC) $(CFLAGS) $(CPPFLAGS) -DDO_CRC -c pkread.c
+	ln rdpara.c pkread.c
 
-pkwrite.o:	wrpara.c
+pkwrite.c:	wrpara.c
 	@-rm -f pkwrite.c
-	@-ln wrpara.c pkwrite.c
-	$(CC) $(CFLAGS) $(CPPFLAGS) -DDO_CRC -c pkwrite.c
+	ln wrpara.c pkwrite.c
 
 hash.c:	header.gperf hash.epilogue gperf.prefix
 	cat gperf.prefix header.gperf > header.gtmp
 	-gperf $(GFLAGS) < header.gtmp > hash.tmp
-	if test -s hash.tmp; \
-		then cat hash.tmp hash.epilogue > hash.c; \
-		else touch hash.c; fi
-	-rm -f header.gtmp hash.tmp
+	if test -s hash.tmp; then \
+		cat hash.tmp hash.epilogue > hash.c; \
+	else touch hash.c; fi
+	@-rm -f header.gtmp hash.tmp
 
 header.gperf hd_def.h hd_nam.h hd_nlist.h:	header.lst
 	sed -e '/^#/d' -e '/^$$/d' < header.lst > header.tmp
@@ -112,6 +109,15 @@ test:	testheader test.in uuheader.a
 uuheader.a:	$(OBJS)
 	ar r uuheader.a $(OBJS)
 	$(RANLIB) uuheader.a
+
+smtprd.o:	../Makefile.global
+	$(CC) $(CFLAGS) $(CPPFLAGS) -DSMTP -c smtprd.c
+
+pkread.o:	../Makefile.global
+	$(CC) $(CFLAGS) $(CPPFLAGS) -DDO_CRC -c pkread.c
+
+pkwrite.o:	../Makefile.global
+	$(CC) $(CFLAGS) $(CPPFLAGS) -DDO_CRC -c pkwrite.c
 
 .c.o:	../Makefile.global
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<

@@ -356,7 +356,7 @@ EOF
                        CFLAGS="$CFLAGS -O"
                         ;;
         esac
-        CPPFLAGS="$CPPFLAGS -I../include"
+        CPPFLAGS="$CPPFLAGS -I../include -I../hdlib"
 
 
 if test -f include/os-linux/policy.h; then

@@ -22,7 +22,7 @@
 #  GNU General Public License finden Sie in der Datei README.1st.
 #  ------------------------------------------------------------------------
 
-all: subst.in
+all: subst.in ../configure
 
 install:
 
@@ -31,8 +31,12 @@ clean:
 clobber:
 
 tidy:
-	-rm -f subst.in subst
+	-rm -f subst subst.in ../configure
 
 subst.in: makesubst ../configure.in
 	$(SHELL) ./makesubst > subst.in
 
+../configure:	../configure.in
+	(cd ..;  autoconf)
+
+# eof
