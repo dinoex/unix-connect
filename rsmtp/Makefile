@@ -106,6 +106,7 @@ clean.bin:
 	rm -rf $(TARMIN)
 
 install:	${DESTDIR} \
+		$(SPOOLDIR)/rsmtp \
 		$(TARMIN) \
 		$(BINMIN)
 
@@ -119,6 +120,10 @@ bsmtp.o:	bsmtp.c version.h
 
 $(DESTDIR):
 	mkdir -p ${DESTDIR}
+
+$(SPOOLDIR)/rsmtp:
+	mkdir -p $(SPOOLDIR)/rsmtp
+	chmod 1777 $(SPOOLDIR)/rsmtp
 
 $(DESTDIR)/rsmtp: rsmtp
 	$(INSTALL) $(BINMODE) $(BINOWN) $(<) $(@)
