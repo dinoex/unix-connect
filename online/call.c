@@ -3,7 +3,7 @@
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1993-1994  Martin Husemann
  *  Copyright (C) 1999-2000  Matthias Andree
- *  Copyright (C) 1999-2000  Dirk Meyer
+ *  Copyright (C) 1999-2001  Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -571,7 +571,7 @@ setup_dial_info(const char *intnl, char *int_prefix, char *ovst, char *telno)
 	strcpy(telno, q);
 }
 
-int
+static int
 janus_wait(int lmodem)
 {
 	/* FIXME: erkennt Protokollfehler nicht */
