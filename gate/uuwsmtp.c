@@ -124,6 +124,11 @@ int main(int argc, char **argv)
 		strncpy(datei, argv[3], sizeof(datei));
 		fout = fopen(datei, "ab");
 	} else
+	if (strcmp(argv[1], "-p") == 0) {
+		fin = stdin;
+		fout= stdout;
+		if (argc==3) pointsys=argv[2];
+	} else
 	if (strcmp(argv[1], "-f") == 0) {
 		fin = fopen(argv[2], "rb");
 		if (argc == 4) {
@@ -204,6 +209,8 @@ void usage(void)
 		"          (Die Eingabedatei wird nicht gelöscht)\n"
 		"oder    uuwsmtp -f (ZCONNECT-Datei) [Absende-System]\n"
 		"          (Ergebnis geht nach stdout)\n"
+		"oder    uuwnews -p [Absendesystem]\n"
+		"           (Echte Pipe)\n"
 		, stderr);
 	exit(1);
 }

@@ -133,6 +133,10 @@ int main(int argc, char **argv)
 	minireadstat();
 	srand(time(NULL));
 	if (argc != 3) usage();
+	if (strcmp(argv[1], "-p") == 0) {
+		fin = stdin;
+		fout= stdout;
+	} else
 	if (strcmp(argv[1], "-f") == 0) {
 		time_t j;
 		char tmp[20];
@@ -210,6 +214,9 @@ void usage(void)
 		"oder    uurnews -f (FQDN-ZCONNECT-Host)\n"
 		"           (News Batch von stdin)\n"
 		"           (ZCONNECT in das entsprechende Netcall-Dir)\n"
+		"oder    uurnews -p (FQDN-ZCONNECT-Host)\n"
+		"           (News Batch von stdin)\n"
+		"           (ZCONNECT nach stdout)\n"
 		, stderr);
 	exit(1);
 }

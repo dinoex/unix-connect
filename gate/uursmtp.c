@@ -154,6 +154,10 @@ int main(int argc, char **argv)
 	bufflen = 100000;
 	smallbuffer = dalloc(bufflen);
 	bigbuffer = dalloc(bufflen * 2);
+	if (strcmp(argv[1], "-p") == 0) {
+		fin = stdin;
+		fout= stdout;
+	} else
 	if (strcmp(argv[1], "-f") == 0) {
 		time_t j;
 #ifdef SPOOLDIR_SHORTNAME
@@ -229,6 +233,9 @@ void usage(void)
 		"oder    uursmtp -f (FQDN-ZCONNECT-Host)\n"
 		"          (SMTP wird von stdin gelesen)\n"
 		"          (ZCONNECT in das entsprechende Netcall-Dir)\n"
+		"oder    uurnews -p (FQDN-ZCONNECT-Host)\n"
+		"           (SMTP wird von stdin gelesen)\n"
+		"           (ZCONNECT nach stdout)\n"
 		, stderr);
 	exit(1);
 }

@@ -113,7 +113,7 @@ int main(int argc, char **argv)
 	filter = 0;
 	ulibinit();
 	srand(time(NULL));
-	if (argc < 3 || argc > 4) usage();
+	if (argc < 2 || argc > 4) usage();
 	bigbuffer = malloc(BIGBUFFER);
 	smallbuffer = malloc(SMALLBUFFER);
 	if (!bigbuffer || !smallbuffer) {
@@ -125,6 +125,11 @@ int main(int argc, char **argv)
 		fin = fopen(argv[2], "rb");
 		strncpy(datei, argv[3], sizeof(datei));
 		fout = fopen(datei, "ab");
+	} else
+	if (strcmp(argv[1], "-p") == 0) {
+		fin = stdin;
+		fout= stdout;
+		if (argc==3) pointsys=argv[2];
 	} else
 	if (strcmp(argv[1], "-f") == 0) {
 		fout = stdout;
@@ -196,6 +201,8 @@ void usage(void)
 		"           (Eingabedatei wird nicht gelöscht)\n"
 		"oder    uuwnews -f (ZCONNECT-Datei) [Absende-System]\n"
 		"           (Ergebnis geht nach stdout)\n"
+		"oder    uuwnews -p [Absendesystem]\n"
+		"           (Echte Pipe)\n"
 		, stderr);
 	exit(1);
 }
