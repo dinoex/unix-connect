@@ -4,6 +4,10 @@ Aenderungen an UnixConnect
 
 seit 0.88
 
+- include/auth.h, include/locknew.c, online/auth.c, online/locknew.c,
+  online/januslogin.c: (Andreas Barth)
+  überarbeitetes Januslogin
+
 - lib/hayes.c: (Dirk Meyer)
   Neuer Anfang einer Zeile senden,
   damit das erste "AT" gleich verstanden wird.

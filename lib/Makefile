@@ -78,7 +78,7 @@ backup.o: backup.c ../include/idir.h ../include/istring.h \
 hayes.o: hayes.c ../include/config.h ../include/sysdep.h \
  ../include/crc.h ../include/header.h ../hdlib/hd_def.h \
  ../hdlib/hd_nam.h ../include/ministat.h ../include/hayes.h \
- ../include/track.h
+ ../include/track.h ../include/line.h
 lockwait.o: lockwait.c ../include/config.h ../include/sysdep.h \
  ../include/utility.h
 ministat.o: ministat.c ../include/istring.h ../include/utility.h \
