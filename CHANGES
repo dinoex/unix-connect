@@ -2,6 +2,10 @@
 $Id$
 
 Aenderungen an UnixConnect
+seit 0.79
+
+- retryverhalten von call verbessert (Matthias Andree)
+
 seit 0.78
 
 - stderr umleiten in Datei, um tty nicht zu stoeren
