@@ -1,10 +1,11 @@
 /* $Id$ */
 /*
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
- *  Copyright (C) 1993-94  Martin Husemann
- *  Copyright (C) 1995     Christopher Creutzig
- *  Copyright (C) 1999     Dirk Meyer
- *  Copyright (C) 1999     Matthias Andree
+ *  Copyright (C) 1993-1994  Martin Husemann
+ *  Copyright (C) 1995       Christopher Creutzig
+ *  Copyright (C) 1999       Dirk Meyer
+ *  Copyright (C) 1999       Matthias Andree
+ *  Copyright (C) 2000       Krischan Jodies
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -74,6 +75,7 @@
 #include "ministat.h"
 #include "xprog.h"
 #include "uudebug.h"
+#include "uulog.h"
 
 #ifdef __GNUC__
 __inline__
@@ -107,6 +109,7 @@ static int runcommand(const char *file, ...)
 	case -1: /* parent, child cannot fork */
 		perror(file);
 		freearglist(arg);
+		newlog(ERRLOG,"runcommand: cannot fork");
 		return -1;
 	case 0: /* child */
 		fprintf(stderr, "running %s ", file);
@@ -234,6 +237,7 @@ int call_auspack(const char *arcer, const char *arcfile)
 	arg[sizeof(arg-1)] = '\0';
 	strupr(arg);
 
+	newlog(DEBUGLOG,"auspack %s",arcfile);
 	return runcommand(auspack, arg, arcfile, NULL);
 }
 
