@@ -2,6 +2,32 @@ $Id$
 
 Aenderungen an UnixConnect
 
+seit 0.90
+
+- *.h, *.c (Dirk Meyer)
+  #ifdef -> #if
+
+- lib/rawtty.c: (Dirk Meyer)
+  ENABLE_MODEM_DEBUG
+
+- include/zconnect.h: (Dirk Meyer)
+  ENABLE_MODEM_LOG
+
+- include/os*/sysdep.h: (Dirk Meyer)
+  entfernt: MAJOR_IN_SYSMACROS, MAJOR_IN_MKDEF
+
+- online/januslogin.c: (Dirk Meyer)
+  FIX: 418: warning: control reaches end of non-void function
+
+- lib/uulog.c, lib/uufatal.c: (Dirk Meyer)
+  include erweitert.
+
+- include/istring.h: (Dirk Meyer)
+  Prototyp für snprintf, vsnprintf
+
+- lib/snprintf.c: (Dirk Meyer)
+  FIX: 62: warning: `HAVE_VARARGS_H' redefined
+
 seit 0.89
 
 - mail-and-news/sendmail/Makefile: (Dirk Meyer)

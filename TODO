@@ -32,8 +32,6 @@ Was muﬂ noch getan werden?
 - MA: call.c aufr‰umen. Alle Checks, PreArc VOR dem Onlinegehen!
 
 - AIX: rtty.c: cfmakeraw?
-- AIX: trap.c: __sighandler_t 
-- AIX: lockdev.c: sys/mkdev.h
 
 ### Problems:
 

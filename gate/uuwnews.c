@@ -47,7 +47,7 @@
 #include <stdlib.h>
 #include "istring.h"
 #include <ctype.h>
-#ifdef HAVE_LIMITS_H
+#if HAVE_LIMITS_H
 #include <limits.h>
 #endif
 #include <time.h>

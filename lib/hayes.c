@@ -47,13 +47,15 @@
  *
  */
 
-#define MODEM_DEBUG
+#ifndef ENABLE_MODEM_DEBUG
+#define ENABLE_MODEM_DEBUG	1
+#endif
 
 #include "config.h"
 
 #include <stdio.h>
 #include <stdlib.h>
-#ifdef HAVE_UNISTD_H
+#if HAVE_UNISTD_H
 # include <unistd.h>
 #endif
 #include <ctype.h>
@@ -228,7 +230,7 @@ do_hayes(const char *command, int modem)
 		write(modem, "\r", 1);
 	}
 
-#ifdef MODEM_DEBUG
+#if ENABLE_MODEM_DEBUG
 	/* Debugging */
 	fprintf(stderr, "An Modem : \"%s\"\n", command);
 	fprintf(stderr, "Modem    : \"");
@@ -240,7 +242,7 @@ do_hayes(const char *command, int modem)
 			found = -1;
 			break;
 		}
-#ifdef MODEM_DEBUG
+#if ENABLE_MODEM_DEBUG
 		if(isprint(c)) fprintf(stderr, "%c", c);
 		else {
 			if(c < 0x20) {
@@ -254,7 +256,7 @@ do_hayes(const char *command, int modem)
 		found = track_char(c);
 	} while (found < 0);
 
-#ifdef MODEM_DEBUG
+#if ENABLE_MODEM_DEBUG
 	fprintf(stderr, "\"\n");
 #endif
 

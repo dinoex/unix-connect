@@ -57,7 +57,6 @@
 #define SYSV	/* beliebiges System V */
 
 #define HAS_POSIX_TERMIOS	/* benutze <termios.h> IOCTL's */
-#define MAJOR_IN_SYSMACROS	/* major()/minor() in sys/sysmacros.h */
 
 #define LEAVE_CTRL_TTY		/* Entlasse das Controlling TTY... */
 #define USE_SETPGRP		/* ... durch einen Aufruf von setpgrp(2) */

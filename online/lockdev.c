@@ -16,15 +16,15 @@
 #include "config.h"
 #include "zconnect.h"
 
-#ifdef HAVE_UNISTD_H
+#if HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 #include <errno.h>
 #include <sys/stat.h>
-#ifdef MAJOR_IN_MKDEV
+#if HAVE_SYS_MKDEV_H
 #include <sys/mkdev.h>
 #endif
-#ifdef MAJOR_IN_SYSMACROS
+#if HAVE_SYS_SYSMACROS_H
 #include <sys/sysmacros.h>
 #endif
 

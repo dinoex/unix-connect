@@ -2,6 +2,10 @@ $Id$
 
 Änderungen an configure
 
+seit 0.90
+
+- configure sucht nach sys/mkdev.h und sys/sysmacros.h
+
 seit 0.89
 
 - configure --enable-difftime

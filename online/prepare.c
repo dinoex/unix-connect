@@ -50,10 +50,10 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#ifdef HAVE_SYS_FCNTL_H
+#if HAVE_SYS_FCNTL_H
 #include <sys/fcntl.h>
 #endif
-#ifdef HAVE_UNISTD_H
+#if HAVE_UNISTD_H
 #include <unistd.h>
 #else
 #ifndef R_OK

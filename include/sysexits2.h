@@ -34,7 +34,7 @@
  *  for instructions on how to join this list.
  */
 
-#ifdef HAVE_SYSEXITS
+#if HAVE_SYSEXITS
 
 #include <sysexits.h>
 

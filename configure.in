@@ -37,7 +37,7 @@ fi
 if eval "test \"`echo '$ac_cv_header_limits_h'`\" = no"; then
   AC_CHECK_HEADERS(values.h)
 fi
-AC_CHECK_HEADERS(stdarg.h varargs.h)
+AC_CHECK_HEADERS(stdarg.h varargs.h sys/mkdev.h sys/sysmacros.h)
 
 dnl      checks for typedefs, structures and compiler characteristics
 dnl AC_C_CONST
@@ -944,7 +944,6 @@ gcc_warn="
 -Wcomment
 -Wconversion
 -Wenum-clash
--Werror-implicit-function-declaration
 -Wformat
 -Wid-clash-30
 -Wimplicit
@@ -952,12 +951,12 @@ gcc_warn="
 -Wimplicit-int
 -Winline
 -Wlong-long
+-Wmain
 -Wmissing-declarations
 -Wmissing-prototypes
 -Wnested-externs
 -Wno-import
 -Wno-parentheses
--Woverloaded-virtual
 -Wparentheses
 -Wpointer-arith
 -Wredundant-decls

@@ -59,7 +59,6 @@
 #define HAS_SYSV_TERMIO
 #define NEED_CRTSCTS		/* Flag in termio */
 
-#define MAJOR_IN_SYSMACROS	/* major()/minor() in sys/sysmacros.h */
 /* #define	NEED_MODE_H		 inlcude mode.h fuer open-modes */
 
 #define FILENAME_MAX 255	/* So ist es in sys/dir.h auch definiert,

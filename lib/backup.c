@@ -56,10 +56,10 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include "idir.h"
-#ifdef HAVE_SYS_FCNTL_H
+#if HAVE_SYS_FCNTL_H
 #include <sys/fcntl.h>
 #endif
-#ifdef HAVE_UNISTD_H
+#if HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 #include "istring.h"

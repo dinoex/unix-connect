@@ -115,6 +115,7 @@ utility.o: utility.c ../include/config.h ../include/sysdep.h \
  ../include/utility.h
 uudebug.o: uudebug.c ../include/config.h ../include/sysdep.h \
  ../include/istring.h ../include/uulog.h ../include/uudebug.h
-uufatal.o: uufatal.c ../include/uulog.h ../include/sysexits2.h
-uulog.o: uulog.c ../include/uulog.h
+uufatal.o: uufatal.c ../include/istring.h ../include/uulog.h \
+ ../include/sysexits2.h
+uulog.o: uulog.c ../include/istring.h ../include/uulog.h
 # eof

@@ -49,7 +49,8 @@
 
 #include <stdio.h>
 #include <stdarg.h>
-#ifdef HAVE_SYSLOG
+#include "istring.h"
+#if HAVE_SYSLOG
 # include <syslog.h>
 #endif
 #include <time.h>
@@ -65,7 +66,7 @@ FILE *uudeblogfile;
 
 void
 initlog(const char *xname) {
-#ifdef HAVE_SYSLOG
+#if HAVE_SYSLOG
 	openlog(xname, LOG_PID|LOG_CONS, SYSLOG_KANAL);
 #else
 	stccpy(name,xname,sizeof(name));
@@ -146,7 +147,7 @@ newlog(int lchan, const char *format, ...)
 	vsnprintf (buf, MAX_LOG_LINE, format, arg);
 	va_end (arg);
 
-#ifdef HAVE_SYSLOG
+#if HAVE_SYSLOG
 	switch(lchan) {
 	case Z2ULOG :
 	case U2ZLOG :

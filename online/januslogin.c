@@ -59,10 +59,10 @@
 #include "zconnect.h"
 
 #include <sys/types.h>
-#ifdef HAVE_SYS_FCNTL_H
+#if HAVE_SYS_FCNTL_H
 #include <sys/fcntl.h>
 #endif
-#ifdef HAVE_UNISTD_H
+#if HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 #include <ctype.h>
@@ -352,7 +352,24 @@ getsysname(char *sysname, char *passwd, int len) {
 
 static int
 initnames(const auth_t* s) {
-#ifndef HAVE_ASPRINTF
+#if HAVE_ASPRINTF
+	if (
+	   ( asprintf (&(call.tmpdir), "%s/%s.%d.dir",
+		spooldir, s->lsysname, getpid()) > 0 ) &&
+	   ( asprintf (&(call.sysspooldir), "%s/%s",
+		spooldir, s->lsysname) > 0 ) &&
+	   ( asprintf (&(call.outname), "%s/called.%s",
+		call.tmpdir, s->arcerout) > 0 ) &&
+	   ( asprintf (&(call.inname), "%s/caller.%s",
+		call.tmpdir, s->arcerin) > 0 ) &&
+	   ( asprintf (&(call.spooloutname), "%s/%s.%s",
+		spooldir, s->lsysname, s->arcerout) > 0 )
+	   ) {
+		return 0;
+	}
+
+	return -1;
+#else
 	char *x,*y;
 
 	if (!(x = (char *) malloc(
@@ -396,24 +413,7 @@ initnames(const auth_t* s) {
         }
 	sprintf(x, "%s/%s.%s", spooldir, s->lsysname, s->arcerout);
 	call.spooloutname=x;
-#else
-
-	if (
-	   ( asprintf (&(call.tmpdir), "%s/%s.%d.dir",
-		spooldir, s->lsysname, getpid()) > 0 ) &&
-	   ( asprintf (&(call.sysspooldir), "%s/%s",
-		spooldir, s->lsysname) > 0 ) &&
-	   ( asprintf (&(call.outname), "%s/called.%s",
-		call.tmpdir, s->arcerout) > 0 ) &&
-	   ( asprintf (&(call.inname), "%s/caller.%s",
-		call.tmpdir, s->arcerin) > 0 ) &&
-	   ( asprintf (&(call.spooloutname), "%s/%s.%s",
-		spooldir, s->lsysname, s->arcerout) > 0 )
-	   ) {
-		return 0;
-	}
-
-	return -1;
+	return 0;
 #endif
 }
 

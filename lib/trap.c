@@ -24,7 +24,7 @@
 
 #include "config.h"
 #include <stdio.h>
-#ifdef HAVE_UNISTD_H
+#if HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 #include <signal.h>
@@ -55,7 +55,7 @@ void init_trap(char *progname) {
 
 	me = progname;
 	for (sp = signallist; sp->no; sp++)
-#ifdef BSD
+#if defined BSD || defined AIX
 		signal(sp->no, (sighandler_t)s_handler);
 #else
 	/* sighandler_t und __sighandler_t sind dasselbe,

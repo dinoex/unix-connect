@@ -59,7 +59,9 @@
 
 /* Define this as a fall through, HAVE_STDARG_H is probably already set */
 
+#if 0
 #define HAVE_VARARGS_H
+#endif
 
 /* varargs declarations: */
 

@@ -56,11 +56,11 @@
 #include <time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#ifdef HAVE_SYS_FCNTL_H
+#if HAVE_SYS_FCNTL_H
 #include <sys/fcntl.h>
 #endif
 #include <fcntl.h>
-#ifdef HAVE_UNISTD_H
+#if HAVE_UNISTD_H
 #include <unistd.h>
 #else
 #ifndef R_OK
@@ -143,11 +143,11 @@ make_dialstr(char *dialstr, size_t maxlen, char *intntl)
 {
 	/* input:
 	   dialstr: Zielstring
-	   maxlen: max. Länge desselben
+	   maxlen: max. Laenge desselben
 	   phone: Rufnummer
 	 * return:
 	    0: Erfolg
-	   -1: Überlauf
+	   -1: Ueberlauf
 	   -2: kein %s im Config-Dialstring
 	 */
 	int rc;

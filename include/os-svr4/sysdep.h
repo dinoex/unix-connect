@@ -57,7 +57,6 @@
 #define SYSV	/* beliebiges System V */
 
 #define HAS_POSIX_TERMIOS	/* benutze <termios.h> IOCTL's */
-#define MAJOR_IN_MKDEV		/* major()/minor() in sys/mkdev.h */
 #define	NEED_MODE_H		/* inlcude mode.h fuer open-modes */
 #define LEAVE_CTRL_TTY		/* Entlasse das Controlling TTY... */
 /* #define USE_SETSID		 ... durch einen Aufruf von setsid(2) */

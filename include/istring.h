@@ -34,10 +34,10 @@
  *  for instructions on how to join this list.
  */
 
-#ifdef HAVE_STRING_H
+#if HAVE_STRING_H
 # include <string.h>
 #else
-#ifdef HAVE_STRINGS_H
+#if HAVE_STRINGS_H
 # include <strings.h>
 #endif
 #endif
@@ -46,6 +46,9 @@
 char * strdup(const char *);
 #endif
 #ifndef HAVE_SNPRINTF
-int snprintf(char *str, size_t size, const char *format, ...)
+int snprintf(char *str, size_t size, const char *format, ...);
+#endif
+#ifndef HAVE_VSNPRINTF
+int vsnprintf (char *str, size_t count, const char *fmt, va_list args);
 #endif
 

@@ -64,13 +64,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#ifdef HAVE_STRING_H
-# include <string.h>
-#else
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
-#endif
-#endif
+#include "istring.h"
 #include <setjmp.h>
 #include <signal.h>
 
@@ -263,7 +257,7 @@ header_p get_beg(int phase);
 
 int lock_device (int flok, const char *device);
 
-#ifdef DO_MODEM_LOG
+#if ENABLE_MODEM_LOG
 #define	DMLOG(msg)	{ fprintf(deblogfile, "#$ %8ld [%d] %s:%d: %s\n", time(NULL), getpid(), __FILE__, __LINE__, msg); fflush(deblogfile); }
 #else
 #define	DMLOG(msg)	{ /* msg */ }

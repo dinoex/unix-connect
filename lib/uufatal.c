@@ -47,6 +47,7 @@
 
 #include <stdio.h>
 #include <stdarg.h>
+#include "istring.h"
 
 #include "uulog.h"
 #include "sysexits2.h"
