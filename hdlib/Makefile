@@ -40,14 +40,14 @@ include ../Makefile.global
 
 # Makefile fuer die Header-Verwaltung
 
-LIBS	= ../lib/strlib.a
+LIBS	= ../lib/ministat.o ../lib/strlib.a
 
 GFLAGS	= -L ANSI-C -C -D -G -K header -N predefd_header -t
 
 OBJS	= hash.o delheader.o find.o freepara.o joinheader.o rdpara.o \
 	  wrpara.o pkread.o pkwrite.o crc.o uurd.o smtprd.o
 
-all:    uuheader.a $(LIBS)
+all:    uuheader.a
 
 install:	all
 
@@ -66,28 +66,28 @@ newhash-clean:	clobber
 newhash:	newhash-clean hash.c
 
 uurd.o:	uurdpara.c
-	-rm -f uurd.c
-	-ln uurdpara.c uurd.c
+	@-rm -f uurd.c
+	@-ln uurdpara.c uurd.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c uurd.c
-	-rm -f uurd.c
+	@-rm -f uurd.c
 
 smtprd.o:	uurdpara.c
-	-rm -f smtprd.c
-	-ln uurdpara.c smtprd.c
+	@-rm -f smtprd.c
+	@-ln uurdpara.c smtprd.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -DSMTP -c smtprd.c
-	-rm -f smtprd.c
+	@-rm -f smtprd.c
 
 pkread.o:	rdpara.c
-	-rm -f pkread.c
-	-ln rdpara.c pkread.c
+	@-rm -f pkread.c
+	@-ln rdpara.c pkread.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -DDO_CRC -c pkread.c
-	-rm -f pkread.c
+	@-rm -f pkread.c
 
 pkwrite.o:	wrpara.c
-	-rm -f pkwrite.c
-	-ln wrpara.c pkwrite.c
+	@-rm -f pkwrite.c
+	@-ln wrpara.c pkwrite.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) -DDO_CRC -c pkwrite.c
-	-rm -f pkwrite.c
+	@-rm -f pkwrite.c
 
 hash.c:	header.gperf hash.epilogue gperf.prefix
 	cat gperf.prefix header.gperf > header.gtmp
@@ -103,10 +103,10 @@ header.gperf hd_def.h hd_nam.h hd_nlist.h:	header.lst
 	awk '{printf("#define HN_%s \"%s\"\n", $$2, $$1)}' header.tmp > hd_nam.h
 	awk '{printf("#define HD_%s %d\n", $$2, nr); nr++}' header.tmp > hd_def.h
 	awk '{printf("%s, HD_%s\n", $$1, $$2)}' header.tmp | tr '[a-z]' '[A-Z]' > header.gperf
-	-rm -f header.tmp
+	@-rm -f header.tmp
 
 testheader:	testheader.o uuheader.a $(LIBS)
-	$(CC) $(CFLAGS) -o testheader testheader.o uuheader.a ../lib/ministat.o $(LIBS) $(LDFLAGS)
+	$(CC) $(CFLAGS) -o testheader testheader.o uuheader.a $(LIBS) $(LDFLAGS)
 
 test:	testheader test.in uuheader.a
 	./testheader test.in test.out

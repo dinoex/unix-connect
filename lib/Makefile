@@ -67,13 +67,13 @@ strlib.a:	$(STROBJS)
 # Individuelle Abhaengigkeiten [gcc -I../include -MM *.c]
 
 hayes.o: hayes.c ../include/config.h ../include/sysdep.h \
- ../include/header.h ../include/crc.h ../include/hd_def.h \
- ../include/hd_nam.h ../include/ministat.h ../include/boxstat.h \
+ ../include/header.h ../include/crc.h ../hdlib/hd_def.h \
+ ../hdlib/hd_nam.h ../include/ministat.h ../include/boxstat.h \
  ../include/hayes.h ../include/track.h
 lockwait.o: lockwait.c ../include/config.h ../include/sysdep.h
 ministat.o: ministat.c ../include/config.h ../include/sysdep.h \
  ../include/ministat.h ../include/boxstat.h ../include/header.h \
- ../include/crc.h ../include/hd_nam.h ../include/hd_def.h \
+ ../include/crc.h ../hdlib/hd_nam.h ../hdlib/hd_def.h \
  ../include/uulog.h ../include/lib.h
 pattern.o: pattern.c ../include/config.h ../include/sysdep.h \
  ../include/pattern.h ../include/lib.h

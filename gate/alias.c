@@ -121,8 +121,6 @@ static void parse_alias(header_p p, int v)
 
 static void init(void)
 {
-	char *s;
-
 	if (init_done) return;
 	init_done = 1;
 	data = NULL;

@@ -38,7 +38,7 @@
 
 include Makefile.global
 
-SUBDIRS = helpers date lib hdlib date online gate tools etc shell \
+SUBDIRS = helpers date hdlib lib online gate tools etc shell \
 	rsmtp \
 	mail-and-news/$(MAIL) \
 	mail-and-news/$(NEWS)

@@ -49,9 +49,9 @@ clobber:	clean
 
 tidy:		clobber
 
-datetok.o : datetok.c datetok.h
-getindate.o : getindate.c datetok.h
-
 .c.o:	../Makefile.global
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
+
+datetok.o : datetok.c datetok.h
+getindate.o : getindate.c datetok.h
 
