@@ -578,9 +578,9 @@ header_p convheader(header_p hd, FILE *f)
 	  /* References enthalten keinen Whitespace
 	   * und dürfen daher nicht umbrochen werden.
 	   */
-		fputs(HN_UU_REFERENCES": ", f);
+		fputs(HN_UU_REFERENCES":", f);
 		for (; p; p=p->other) {
-			fprintf(f, "<%s>", p->text);
+			fprintf(f, " <%s>", p->text);
 		}
 		fputs(eol, f);
 		hd = del_header(HD_BEZ, hd);

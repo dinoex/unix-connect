@@ -4,6 +4,8 @@ $Id$
 Aenderungen an UnixConnect
 seit 0.78
 
+- References wieder mit Whitespaces
+
 - Option fuer syslogd -D LOGSYSLOG
 
 - Fehler bei bestimmten base64-Laengen behoben
