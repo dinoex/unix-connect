@@ -39,6 +39,7 @@ include ../Makefile.global
 
 # Makefile fuer den UNIX-Connect Gateway
 
+COMMON	= mime.o alias.o gtools.o
 LIBS	= ../lib/ministat.o ../hdlib/uuheader.a ../lib/gatelib.a
 DATELIB	= ../date/getindate.o ../date/datetok.o
 PROGS	= uurnews uursmtp uuwsmtp uuwnews
@@ -56,17 +57,17 @@ clean:
 
 distclean:	clean
 
-uursmtp:	uursmtp.o uuconv.o mime.o alias.o iso2pc.o $(APCOBJS) $(DATELIB) $(LIBS)
-	$(CC) $(MODELL) -o $@ $@.o uuconv.o mime.o alias.o iso2pc.o $(APCOBJS) $(DATELIB) $(LIBS) $(LDFLAGS)
+uursmtp:	uursmtp.o uuconv.o iso2pc.o $(COMMON) $(APCOBJS) $(DATELIB) $(LIBS)
+	$(CC) $(MODELL) -o $@ $@.o uuconv.o iso2pc.o $(COMMON) $(APCOBJS) $(DATELIB) $(LIBS) $(LDFLAGS)
 
-uuwsmtp:	uuwsmtp.o zconv.o mime.o alias.o pc2iso.o $(LIBS)
-	$(CC) $(MODELL) -o $@ $@.o zconv.o mime.o alias.o pc2iso.o $(LIBS) $(LDFLAGS)
+uuwsmtp:	uuwsmtp.o zconv.o pc2iso.o $(COMMON) $(LIBS)
+	$(CC) $(MODELL) -o $@ $@.o zconv.o pc2iso.o $(COMMON) $(LIBS) $(LDFLAGS)
 
-uuwnews:	uuwnews.o zconv.o mime.o alias.o uuapprove.o pc2iso.o $(LIBS)
-	$(CC) $(MODELL) -o $@ $@.o zconv.o mime.o alias.o uuapprove.o pc2iso.o $(LIBS) $(LDFLAGS)
+uuwnews:	uuwnews.o zconv.o uuapprove.o pc2iso.o $(COMMON) $(LIBS)
+	$(CC) $(MODELL) -o $@ $@.o zconv.o uuapprove.o pc2iso.o $(COMMON) $(LIBS) $(LDFLAGS)
 
-uurnews:	uurnews.o uuconv.o mime.o alias.o iso2pc.o $(APCOBJS) $(DATELIB) $(LIBS)
-	$(CC) $(MODELL) -o $@ $@.o uuconv.o mime.o alias.o iso2pc.o $(APCOBJS) $(DATELIB) $(LIBS) $(LDFLAGS)
+uurnews:	uurnews.o uuconv.o iso2pc.o $(COMMON) $(APCOBJS) $(DATELIB) $(LIBS)
+	$(CC) $(MODELL) -o $@ $@.o uuconv.o iso2pc.o $(COMMON) $(APCOBJS) $(DATELIB) $(LIBS) $(LDFLAGS)
 
 testmime:	testmime.o mime.o $(DATELIB) $(LIBS)
 	$(CC) $(MODELL) -o $@ $@.o mime.o $(DATELIB) $(LIBS) \
@@ -79,6 +80,12 @@ alias.o: alias.c ../include/config.h ../include/sysdep.h \
  ../hdlib/hd_nam.h ../include/uulog.h
 apc_a2b.o: apc_a2b.c ../include/apc_a2b.h
 atob.o: atob.c
+gtools.o: gtools.c ../include/config.h ../include/sysdep.h \
+ ../include/lib.h ../include/utility.h ../include/header.h \
+ ../include/crc.h ../include/uulog.h ../hdlib/hd_nam.h \
+ ../hdlib/hd_def.h ../include/version.h ../include/ministat.h \
+ ../include/boxstat.h ../include/mime.h ../include/uuconv.h \
+ ../include/gtools.h
 iso2pc.o: iso2pc.c
 mime.o: mime.c ../include/config.h ../include/sysdep.h \
  ../include/lib.h ../include/header.h ../include/crc.h \
@@ -97,23 +104,26 @@ uurnews.o: uurnews.c ../include/config.h ../include/sysdep.h \
  ../include/lib.h ../include/utility.h ../include/header.h \
  ../include/crc.h ../include/uulog.h ../hdlib/hd_nam.h \
  ../hdlib/hd_def.h ../include/version.h ../include/ministat.h \
- ../include/boxstat.h ../include/mime.h ../include/uuconv.h
+ ../include/boxstat.h ../include/mime.h ../include/uuconv.h \
+ ../include/gtools.h
 uursmtp.o: uursmtp.c ../include/config.h ../include/sysdep.h \
  ../include/lib.h ../include/ministat.h ../include/boxstat.h \
  ../include/header.h ../include/crc.h ../include/utility.h \
  ../hdlib/hd_nam.h ../hdlib/hd_def.h ../include/version.h \
- ../include/uulog.h ../include/mime.h ../include/uuconv.h
+ ../include/uulog.h ../include/mime.h ../include/uuconv.h \
+ ../include/gtools.h
 uuwnews.o: uuwnews.c ../include/config.h ../include/sysdep.h \
  ../include/lib.h ../include/boxstat.h ../include/ministat.h \
  ../include/header.h ../include/crc.h ../include/utility.h \
  ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/version.h \
  ../include/uuapprove.h ../include/uulog.h ../include/mime.h \
- ../include/zconv.h
+ ../include/zconv.h ../include/gtools.h
 uuwsmtp.o: uuwsmtp.c ../include/config.h ../include/sysdep.h \
  ../include/lib.h ../include/boxstat.h ../include/ministat.h \
  ../include/header.h ../include/crc.h ../include/utility.h \
  ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/version.h \
- ../include/uulog.h ../include/mime.h ../include/zconv.h
+ ../include/uulog.h ../include/mime.h ../include/zconv.h \
+ ../include/gtools.h
 zconv.o: zconv.c ../include/config.h ../include/sysdep.h \
  ../include/lib.h ../include/utility.h ../include/header.h \
  ../include/crc.h ../hdlib/hd_def.h ../hdlib/hd_nam.h \

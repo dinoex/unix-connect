@@ -87,6 +87,7 @@
 /* #include "trap.h" */
 #include "mime.h"
 #include "uuconv.h"
+#include "gtools.h"
 
 #ifdef APC_A2B
 #include "apc_a2b.h"
@@ -131,7 +132,6 @@ static cmd_list cmds[] = {
 /* ist immer 2 * bufflen gross, bei APC_A2B 4 * buflen */
 static char *bigbuffer	= NULL;
 static char *smallbuffer= NULL;		/* wird dynamisch vergroessert */
-static char datei[2000];
 static size_t bufflen = 0;		/* Groesse von smallbuffer */
 
 static char *smtpdomain	= NULL;
@@ -142,7 +142,6 @@ extern char wab_name[], wab_host[], wab_domain[];
 
 const char *fqdn = NULL;
 
-void usage(void);
 void usage(void)
 {
 	fputs(
@@ -161,23 +160,6 @@ void usage(void)
 	exit( EX_USAGE );
 }
 
-void do_version(void);
-void do_version(void)
-{
-	fputs(
-"UUrsmtp (Unix-Connect) " VERSION "\n"
-"Copyright " COPYRIGHT "\n"
-"Unix-Connect comes with NO WARRANTY,\n"
-"to the extent permitted by law.\n"
-"You may redistribute copies of Unix-Connect\n"
-"under the terms of the GNU General Public License.\n"
-"For more information about these matters,\n"
-"see the files named COPYING.\n"
-, stderr);
-	exit( EX_OK );
-}
-
-void do_help(void);
 void do_help(void)
 {
 	fputs(
@@ -213,6 +195,7 @@ int main(int argc, const char *const *argv)
 	const char *remove_me;
 	const char *input_file;
 	const char *output_file;
+	char *dir_name;
 	int ready;
 	char ch;
 
@@ -228,6 +211,7 @@ int main(int argc, const char *const *argv)
 	remove_me = NULL;
 	input_file = NULL;
 	output_file = NULL;
+	dir_name = NULL;
 	fin = NULL;
 	fout = NULL;
 	ready = 0;
@@ -244,7 +228,7 @@ int main(int argc, const char *const *argv)
 					do_help();
 				};
 				if ( stricmp( cptr, "version" ) == 0 ) {
-					do_version();
+					do_version( "UUrsmtp" );
 				};
 				if ( stricmp( cptr, "output" ) == 0 ) {
 					if ( ready != 0 )
@@ -349,20 +333,15 @@ int main(int argc, const char *const *argv)
 	};
 	if ( fin == NULL ) {
 		fprintf( stderr,
-		"%s: error open input file %s: %s\n",
-		name, input_file, strerror( errno ) );
+			"%s: error open input file %s: %s\n",
+			name, input_file, strerror( errno ) );
 		exit( EX_CANTCREAT );
 	};
 	if ( fqdn != NULL ) {
-		time_t j;
-		char tmp[20];
-		char *tmp2;
-		int fh;
 #ifdef SPOOLDIR_SHORTNAME
 		char *p, *p1;
 #endif
 
-		j = time(NULL);
 		strcpy(datei, netcalldir);
 		strcat(datei, "/");
 		strcat(datei, fqdn);
@@ -374,40 +353,23 @@ int main(int argc, const char *const *argv)
 		}
 #endif
 		strcat(datei, "/");
-		tmp2 = dstrdup(datei);
-		sprintf(tmp, "%08lx.prv", (long)j);
-		strcat(datei, tmp);
-/* Um sicherzugehen, dass wir keine Datei ueberschreiben,
- * oeffnen wir sie zunaechst mit O_EXCL. Um weiter unten
- * einen FILE* zu haben, schliessen wir sie anschliessend
- * wieder und oeffnen sie mit fopen() erneut. Potentielles
- * Sicherheitsproblem. */
-		fh = open(datei, O_WRONLY|O_CREAT|O_EXCL,
-				S_IRUSR|S_IWUSR|S_IRGRP);
-		while(fh<0)
-		{
-			((long)j)++;
-			sprintf(tmp,"%08lx.prv",(long)j);
-			strcpy(datei,tmp2);
-			strcat(datei,tmp);
-			fh = open(datei, O_WRONLY|O_CREAT|O_EXCL,
-					S_IRUSR|S_IWUSR|S_IRGRP);
-		}
-		close(fh);
+		dir_name = dstrdup( datei );
+		fout = open_new_file( name, dir_name );
+		dfree( dir_name );
 		output_file = datei;
-		free(tmp2);
-	};
-	if ( output_file == NULL )
-		usage();
-	if ( strcmp( output_file, "-" ) == 0 ) {
-		fout = stdout;
 	} else {
-		fout = fopen( output_file, "wb");
+		if ( output_file == NULL )
+			usage();
+		if ( strcmp( output_file, "-" ) == 0 ) {
+			fout = stdout;
+		} else {
+			fout = fopen( output_file, "ab");
+		}
 	};
 	if ( fout == NULL ) {
 		fprintf( stderr,
-		"%s: error create output file %s: %s\n",
-		name, output_file, strerror( errno ) );
+			"%s: error create output file %s: %s\n",
+			name, output_file, strerror( errno ) );
 		exit( EX_CANTCREAT );
 	};
 

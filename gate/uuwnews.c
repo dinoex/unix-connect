@@ -78,6 +78,7 @@
 #include "uulog.h"
 #include "mime.h"
 #include "zconv.h"
+#include "gtools.h"
 /* #include "trap.h" */
 
 int main_is_mail = 0;	/* Nein, wir erzeugen keine Mails */
@@ -91,12 +92,10 @@ char *pointsys;		/* Name des Point-Systems (fuer die Message-Id) */
 
 static char *bigbuffer	= NULL;
 static char *smallbuffer= NULL;
-static char datei[2000];
 #ifndef USE_ISO_IN_NEWS
 extern char umlautstr[], convertstr[];
 #endif
 
-void usage(void);
 void usage(void)
 {
 	fputs(
@@ -115,23 +114,6 @@ void usage(void)
 	exit( EX_USAGE );
 }
 
-void do_version(void);
-void do_version(void)
-{
-	fputs(
-"UUwnews (Unix-Connect) " VERSION "\n"
-"Copyright " COPYRIGHT "\n"
-"Unix-Connect comes with NO WARRANTY,\n"
-"to the extent permitted by law.\n"
-"You may redistribute copies of Unix-Connect\n"
-"under the terms of the GNU General Public License.\n"
-"For more information about these matters,\n"
-"see the files named COPYING.\n"
-, stderr);
-	exit( EX_OK );
-}
-
-void do_help(void);
 void do_help(void)
 {
 	fputs(
@@ -166,8 +148,9 @@ int main(int argc, const char *const *argv)
 	const char *cptr;
 	const char *name;
 	const char *remove_me;
-	const char *input_file; 
+	const char *input_file;
 	const char *output_file;
+	char *dir_name;
 	time_t j;
 	int ready;
 	char ch;
@@ -194,6 +177,7 @@ int main(int argc, const char *const *argv)
 	remove_me = NULL;
 	input_file = NULL;
 	output_file = NULL;
+	dir_name = NULL;
 	fin = NULL;
 	fout = NULL;
 	ready = 0;
@@ -210,7 +194,7 @@ int main(int argc, const char *const *argv)
 					do_help();
 				};
 				if ( stricmp( cptr, "version" ) == 0 ) {
-					do_version();
+					do_version( "UUwnews" );
 				};
 				if ( stricmp( cptr, "output" ) == 0 ) {
 					if ( ready != 0 )
@@ -290,25 +274,10 @@ int main(int argc, const char *const *argv)
 			continue;
 		};
 		/* zweites freies Argument */
-		if ( output_file == NULL ) {
+		if ( ( output_file == NULL )
+		&& ( dir_name == NULL ) ) {
 			/* Ergebnis im angegebene Verzeichnis */
-			int fh;
-
-			j = time(NULL);
-			sprintf(datei, "%s/%08lx", cptr, j);
-			fh=open(datei,O_WRONLY|O_CREAT|O_EXCL, 
-					S_IRUSR|S_IWUSR|S_IRGRP);
-			while (fh<0)
-			{
-				((long)j)++;
-				sprintf(datei,"%s/%08lx.brt", cptr, (long)j);
-				fh=open(datei,O_WRONLY|O_CREAT|O_EXCL,
-						S_IRUSR|S_IWUSR|S_IRGRP);
-				/* bei Permission denied und a.
-				   haengt das Programm hier endlos */
-			}
-			close(fh);
-			output_file = datei;
+			dir_name = dstrdup( cptr );
 			ready ++;
 			continue;
 		};
@@ -347,21 +316,31 @@ int main(int argc, const char *const *argv)
 	};
 	if ( fin == NULL ) {
 		fprintf( stderr,
-		"%s: error open input file %s: %s\n",
-		name, input_file, strerror( errno ) );
+			"%s: error open input file %s: %s\n",
+			name, input_file, strerror( errno ) );
 		exit( EX_CANTCREAT );
 	};
-	if ( output_file == NULL )
-		usage();
-	if ( strcmp( output_file, "-" ) == 0 ) {
-		fout = stdout;
+	if ( dir_name != NULL ) {
+		strcpy(datei, dir_name);
+		strcat(datei, "/");
+		dfree( dir_name );
+		dir_name = dstrdup( datei );
+		fout = open_new_file( name, dir_name );
+		dfree( dir_name );
+		output_file = datei;
 	} else {
-		fout = fopen( output_file, "wb");
-	};
+		if ( output_file == NULL )
+			usage();
+		if ( strcmp( output_file, "-" ) == 0 ) {
+			fout = stdout;
+		} else {
+			fout = fopen( output_file, "ab");
+		};
+	}
 	if ( fout == NULL ) {
 		fprintf( stderr,
-		"%s: error create output file %s: %s\n",
-		name, output_file, strerror( errno ) );
+			"%s: error create output file %s: %s\n",
+			name, output_file, strerror( errno ) );
 		exit( EX_CANTCREAT );
 	};
 

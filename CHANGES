@@ -4,6 +4,9 @@ $Id$
 Aenderungen an UnixConnect
 seit 0.80
 
+- Zusammenfassung in gtools.h gtools.c
+  Exclusive Suche von Dateien gefixt (Matthias Andree)
+
 - Sendmail/cnews jetzt generiert.
 
 - Makefiles weiter optimiert.
