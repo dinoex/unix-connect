@@ -565,11 +565,11 @@ fi
 if test "${with_user+set}" = set; then
   withval="$with_user"
   
-if test $enableval = no ; then
+if test $withval = no ; then
 	echo "Es muß eine Benutzerkennung gewählt werden"
 	exit 1;
 else
-	USER=$enableval;
+	USER=$withval;
 fi
 else
   	echo "Es muß eine Benutzerkennung gewählt werden"
@@ -583,11 +583,11 @@ fi
 if test "${with_group+set}" = set; then
   withval="$with_group"
   
-if test $enableval = no ; then
+if test $withval = no ; then
 	echo "Es muß eine Gruppe gewählt werden"
 	exit 1;
 else
-	GROUP=$enableval;
+	GROUP=$withval;
 fi
 else
   	echo "Es muß eine Gruppe gewählt werden"
@@ -945,7 +945,7 @@ echo $ac_n "checking Various system-dependent things""... $ac_c" 1>&6
 echo "configure:946: checking Various system-dependent things" >&5
         SYSUNAME="`uname -s | tr 'A-Z' 'a-z'`"
 
-        if test "$SYSUNAME" = $HOST ; then
+        if test "$SYSUNAME" = "$HOST" ; then
                 cat <<EOF
 Ah, der beruechtigte AT&T 'uname' Bug...
 Ist dieses System
@@ -968,6 +968,12 @@ EOF
         fi
 
         case "$SYSUNAME" in
+                freebsd)
+                        echo "Konfiguriere fuer FreeBSD..."
+                        SYSTYPE=freebsd
+                        CFLAGS="-g -Wall"
+                        LDFLAGS=""
+                ;;
                 netbsd)
                         echo "Konfiguriere fuer NetBSD..."
                         SYSTYPE=netbsd
