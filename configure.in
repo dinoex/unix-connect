@@ -197,6 +197,15 @@ AC_ARG_WITH(intwahl,
 AC_MSG_RESULT($INTERNATIONAL)
 AC_SUBST(INTERNATIONAL)
 
+AC_CHECK_FUNCS(syslog)
+if test $ac_cv_func_syslog = no; then
+	# syslog is not in the default libraries.  See if it's in some other.
+	for lib in bsd socket inet; do
+		AC_CHECK_LIB($lib, syslog, [AC_DEFINE(HAVE_SYSLOG)
+		LIBS="$LIBS $lib"; break])
+	done
+fi
+
 dnl AC_MSG_CHECKING(Finding inews)
 AC_CHECK_PROGS(INEWS,inews,/usr/lib/news/inews,/usr/lib/news /usr/local/lib/news /usr/news /usr/local/news)
 dnl	if test -x $dir/inews; then
@@ -238,63 +247,54 @@ EOF
                 freebsd)
                         echo "Konfiguriere fuer FreeBSD..."
                         SYSTYPE=freebsd
-                        CFLAGS="-O2 -g -pipe -Wall"
-                        LDFLAGS=""
+			CFLAGS="$CFLAGS -pipe -Wall"
                 ;;
                 netbsd)
                         echo "Konfiguriere fuer NetBSD..."
                         SYSTYPE=netbsd
-                        CFLAGS="-O2 -g -pipe -Wall"
-                        LDFLAGS=""
+			CFLAGS="$CFLAGS -pipe -Wall"
                 ;;
                 linux)
                         echo "Konfiguriere fuer Linux..."
                         SYSTYPE=linux
-                        CFLAGS="-g -Wall"
+			CFLAGS="$CFLAGS -Wall"
                         PATHADD=$PATHADD:/usr/lib/news:/usr/local/lib/news/bin
                 ;;
                 bsd/386)
                         echo "Konfiguriere fuer BSDI BSD/386..."
                         SYSTYPE=bsdi
-                        CFLAGS="-O2 -g -pipe -Wall"
-                        LDFLAGS=""
+			CFLAGS="$CFLAGS -pipe -Wall"
                 ;;
                 svr4)
                         SYSTYPE=svr4
-                        CFLAGS="-O"
-                        LDFLAGS=""
+			CFLAGS="$CFLAGS -O"
                 ;;
                 sco*)
                         echo "Konfiguriere fuer SCO UNIX..."
                         SYSTYPE=sco
-                        CFLAGS=""
-                        LDFLAGS="-lPW"
+			LDFLAGS="$LDFLAGS -lPW"
                 ;;
                 isc*)
                         echo "Konfiguriere fuer Interactive UNIX..."
                         SYSTYPE=isc
-                        CFLAGS=""
-                        LDFLAGS="-lcposix -lPW"
+			LDFLAGS="$LDFLAGS -cposix -lPW"
                 ;;
                 unix)
                         echo "Konfiguriere fuer System V..."
                         SYSTYPE=sysv
-                        CFLAGS=""
-                        LDFLAGS="-lPW"
+			LDFLAGS="$LDFLAGS -lPW"
                 ;;
                 sunos)
                         echo "Konfiguriere fuer SunOS..."
                         echo "(ohne gcc sehe ich allerdings offen gesagt schwarz!)"
                         SYSTYPE=sunos
-                        CFLAGS="-O"
-                        LDFLAGS=""
+			CFLAGS="$CFLAGS -O"
                         ;;
                 *)
                         echo "Diesen Systemtyp kenne ich nicht, mal sehen ob POSIX"
                         echo "klappt..."
                         SYSTYPE=svr4
-                        CFLAGS="-O"
-                        LDFLAGS=""
+			CFLAGS="$CFLAGS -O"
                         ;;
         esac
 
@@ -325,6 +325,7 @@ AC_SUBST(SYSTYPE)
 AC_SUBST(CFLAGS)
 AC_SUBST(LDFLAGS)
 AC_SUBST(PATHADD)
+AC_SUBST(DEFS)
 
 AC_PROG_RANLIB
 

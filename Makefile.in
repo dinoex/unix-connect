@@ -38,7 +38,7 @@
 
 SHELL    = @shell@
 CC       = @CC@
-CFLAGS   = @CFLAGS@
+CFLAGS   = @CFLAGS@ @DEFS@
 LDFLAGS  = @LDFLAGS@
 RANLIB   = @RANLIB@
 DESTDIR  = @DESTDIR@
