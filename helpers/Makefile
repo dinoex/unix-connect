@@ -35,6 +35,7 @@ tidy:
 
 subst.in: makesubst ../configure.in
 	$(SHELL) ./makesubst > subst.in
+	chmod a+x subst.in
 
 ../configure:	../configure.in
 	(cd ..;  autoconf)

@@ -116,11 +116,12 @@ header_p smtp_rd_para(FILE *f)
 	      if (!uugets(hname, MAX_HEADER_NAME_LEN, f)) break;
 	      hname[MAX_HEADER_NAME_LEN] = '\0'; /* Sentinel */
 
-              if ((hname[0] == '\r') || (hname[0] == '\n'))
+              if ((hname[0] == '\r') || (hname[0] == '\n')) {
                   if (start)
                      break;     /* Ende einer Header-Liste */
                   else
                      continue;  /* Leerzeile am Anfang einer Header-Liste */
+	      }
 
               /* Header-Name und Inhalt trennen */
               p = strchr(hname, ':');

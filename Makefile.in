@@ -44,33 +44,33 @@ SUBDIRS = date hdlib lib gate online tools rsmtp \
 	mail-and-news/$(NEWS)
 
 all:
-	for dir in $(SUBDIRS); do (cd $$dir; $(MAKE) all); done
+	for dir in $(SUBDIRS); do (cd $$dir; $(MAKE) -$(MAKEFLAGS) all); done
 
 install:
 	if test ! -d $(BINDIR); then mkdir $(BINDIR); chown $(USER) $(BINDIR); fi
 	if test ! -d $(ETCDIR); then mkdir $(ETCDIR); chown $(USER) $(ETCDIR); fi
 	if test ! -d $(ETCDIR)/systems; then mkdir $(ETCDIR)/systems; chown $(USER) $(ETCDIR)/systems; fi
-	for dir in $(SUBDIRS); do (cd $$dir; $(MAKE) install); done
+	for dir in $(SUBDIRS); do (cd $$dir; $(MAKE) -$(MAKEFLAGS) install); done
 
 clean:
 	-rm -f $(CLEANFILES)
-	for dir in $(SUBDIRS); do (cd $$dir; $(MAKE) clean); done
+	for dir in $(SUBDIRS); do (cd $$dir; $(MAKE) -$(MAKEFLAGS) clean); done
 
 clobber:
 	-rm -f $(CLEANFILES)
-	for dir in $(SUBDIRS); do (cd $$dir; $(MAKE) clobber); done
+	for dir in $(SUBDIRS); do (cd $$dir; $(MAKE) -$(MAKEFLAGS) clobber); done
 
 tidy:	clobber
-	for dir in $(SUBDIRS); do (cd $$dir; $(MAKE) tidy); done
+	for dir in $(SUBDIRS); do (cd $$dir; $(MAKE) -$(MAKEFLAGS) tidy); done
 	-rm -f Makefile.global Makefile helpers/subst
 	-rm -f config.cache config.log config.status confdefs.h
 	-rm -f include/sysdep.h include/policy.h
 
 newhash:
-	(cd hdlib; $(MAKE) newhash)
+	(cd hdlib; $(MAKE) -$(MAKEFLAGS) newhash)
 
 distrib:
-	(cd helpers; $(MAKE))
-	$(MAKE) tidy
+	(cd helpers; $(MAKE) -$(MAKEFLAGS))
+	$(MAKE) -$(MAKEFLAGS) tidy
 
 # eof

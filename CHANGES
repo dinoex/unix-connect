@@ -16,9 +16,9 @@ seit 0.80
 
 - Inhaltliche Fehler in congfigure.in, INSTALL beseitigt
   (Matthias Andree)
-       
+      
 - Aufraeumarbeiten an Typen, signed/unsigned/printf konsistent
-  (Matthias Andree)     
+  (Matthias Andree)    
 
 - Syslog ueber FACILITY=LOCAL0 statt MAIL
 

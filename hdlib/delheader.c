@@ -49,7 +49,7 @@
 # include <stdlib.h>
 # include "header.h"
 
-header_p del_header(int code, header_p ptr)
+header_p del_header(unsigned code, header_p ptr)
 {
         header_p p, last;
 

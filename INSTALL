@@ -76,7 +76,7 @@ sonst /usr/spool/zconnect
 Diese beiden Parameter _müssen_ angegeben werden.
 
 
---with-box=typ           point, gate, server
+--with-box=typ           point, gate, box
 
 UNIX-Connect kann sehr vielseitig einsetzen werden. Die häufigsten
 Konfigurationen sind:
@@ -88,7 +88,7 @@ Konfigurationen sind:
    2) Gateway:  Der Rechner hat nichts mit dem Z-NETZ zu tun,
                 aber andere Systeme moechten von Ihnen Mail/News
                 per ZCONNECT (bzw. JANUS) beziehen.
-   3) MailBox:  Als MailBox im Z-Netz. UNIX-Connect macht Verbindungen zu
+   3) Box:      Als MailBox im Z-Netz. UNIX-Connect macht Verbindungen zu
                 anderen MailBoxen sowie zu Points.
 
 Wenn Sie unsicher sind, waehlen Sie die (3). Damit wird eine Vollversion

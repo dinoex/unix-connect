@@ -109,14 +109,14 @@ void     wr_para_continue(header_p, FILE *);
 void     wr_paraf(header_p ptr, FILE *fp,int laenge);
 long     size_para(header_p);
 void     do_free_para(header_p);
-header_p find(int, header_p);
+header_p find(unsigned, header_p);
 header_p truefind(int, header_p);
 char *	 header_name(int);
 char *headertext (header_p, int, char *);
 header_p internal_add_header(char *, int, header_p, const char *);
 header_p add_header(char *, int, header_p);
 header_p replace_header(char *, int, header_p);
-header_p del_header(int, header_p);
+header_p del_header(unsigned, header_p);
 header_p join_header(header_p, header_p);
 header_p unify_header(header_p, header_p);
 #define copy_header(p) join_header(p,NULL)

@@ -107,7 +107,7 @@ jmp_buf timeout, nocarrier;
 
 FILE *deblogfile;
 static time_t online_start;
-static files = 0;
+static int files = 0;
 
 char int_prefix[20];	/* international prefix, z.B. 49 fuer Deutschland */
 char ovst[40];		/* Ortsnetz, z.B. 521 fuer Bielefeld */

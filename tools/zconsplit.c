@@ -136,7 +136,7 @@ void convert(FILE *zcon, FILE *prv, FILE *brt)
 {
 	header_p hd, h, private, news;
 	char *p;
-	long mlen;
+	size_t mlen;
 
 	/*
 	 *  Kopf einlesen
@@ -147,7 +147,7 @@ void convert(FILE *zcon, FILE *prv, FILE *brt)
 	 *  Laenge ermittlen
 	 */
 	h = dofind(HD_LEN, hd);
-	sscanf(h->text, "%ld", &mlen);
+	sscanf(h->text, "%d", &mlen);
 	/*
 	 *  Gegebenenfalls buffer vergroessern
 	 */
@@ -156,7 +156,7 @@ void convert(FILE *zcon, FILE *prv, FILE *brt)
 		buf_alloc = mlen;
 		buffer = malloc(buf_alloc);
 		if (!buffer) {
-			fprintf(stderr, "FATAL: Speichermangel: %ld\n", mlen);
+			fprintf(stderr, "FATAL: Speichermangel: %d\n", mlen);
 			exit(5);
 		}
 	}

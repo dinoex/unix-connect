@@ -9,4 +9,4 @@ clobber:
 	-rm -f send-zcon
 
 send-zcon: send-zcon.in
-	../../helpers/subst < send-zcon.in > send-zcon
+	$(SHELL) ../../helpers/subst < send-zcon.in > send-zcon

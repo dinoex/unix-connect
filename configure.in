@@ -6,13 +6,46 @@ dnl und unterliegt der GPL (siehe COPYING)
 AC_INIT(mail-and-news)
 dnl AC_CONFIG_HEADER(include/config.h)
 dnl AC_DEFINE_UNQUOTED(CONFIG_FILE,$sysconfdir)
+
 dnl      checks for programs
+AC_PROG_AWK
+AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_CC
+
 dnl      checks for libraries
+dnl Replace `main' with a function in -lreadline:
+dnl AC_CHECK_LIB(readline, main)
+dnl Replace `main' with a function in -ltermcap:
+dnl AC_CHECK_LIB(termcap, main)
+
 dnl      checks for header files
-dnl      checks for typedefs
-dnl      checks for structures
-dnl      checks for compiler characteristics
+dnl AC_HEADER_DIRENT
+dnl AC_HEADER_STDC
+dnl AC_HEADER_MAJOR
+dnl AC_HEADER_SYS_WAIT
+dnl AC_CHECK_HEADERS(fcntl.h limits.h paths.h sgtty.h strings.h sys/file.h sys/ioctl.h syslog.h termio.h unistd.h)
+
+dnl      checks for typedefs, structures and compiler characteristics
+dnl AC_C_CONST
+dnl AC_C_INLINE
+dnl AC_TYPE_OFF_T
+dnl AC_TYPE_PID_T
+dnl AC_TYPE_SIZE_T
+dnl AC_STRUCT_ST_RDEV
+dnl AC_STRUCT_TM
+dnl AC_STRUCT_TIMEZONE
+
 dnl      checks for library functions
+dnl AC_PROG_GCC_TRADITIONAL
+dnl AC_FUNC_MEMCMP
+dnl AC_FUNC_SETPGRP
+dnl AC_FUNC_SETVBUF_REVERSED
+dnl AC_TYPE_SIGNAL
+dnl AC_FUNC_STRFTIME
+dnl AC_FUNC_VPRINTF
+dnl AC_CHECK_FUNCS(getcwd getwd mkdir mktime rmdir strcspn strdup strerror strstr strtol)
+
 dnl      checks for system services
 
 
@@ -76,36 +109,43 @@ fi
 AC_MSG_RESULT($SPOOLDIR)
 AC_SUBST(SPOOLDIR)
 
-
+AC_MSG_CHECKING(Benutzerkennung für Unix-Connect)
 AC_ARG_WITH(user,
-[ --with-user=user         Userkennung für Unix-Connect.],[
-if test $withval = no ; then
-	echo "Es muß eine Benutzerkennung gewählt werden"
+[ --with-user=user         Benutzerkennung für Unix-Connect.],[
+if ! grep "^$withval:" /etc/passwd >/dev/null ; then
+	echo
+	echo "Es muß eine gültige Benutzerkennung gewählt werden"
 	exit 1;
 else
+	echo $withval
 	USER=$withval;
 fi],
-[	echo "Es muß eine Benutzerkennung gewählt werden"
+[	echo
+	echo "Es muß eine gültige Benutzerkennung gewählt werden"
 	exit 1]
 )
 AC_SUBST(USER)
 
+AC_MSG_CHECKING(Gruppenkennung für Unix-Connect)
 AC_ARG_WITH(group,
 [ --with-group=group       Gruppenkennung für Unix-Connect.],[
-if test $withval = no ; then
-	echo "Es muß eine Gruppe gewählt werden"
+if ! grep "^$withval:" /etc/group >/dev/null ; then
+	echo
+	echo "Es muß eine gültige Gruppe gewählt werden"
 	exit 1;
 else
+	echo $withval
 	GROUP=$withval;
 fi],
-[	echo "Es muß eine Gruppe gewählt werden"
+[	echo
+	echo "Es muß eine gültige Gruppe gewählt werden"
 	exit 1]
 )
 AC_SUBST(GROUP)
 
 AC_MSG_CHECKING(Welcher Typ ist das Gateway)
 AC_ARG_WITH(box,
-[ --with-box=typ           point, gate, server
+[ --with-box=typ           point, gate, box
                           Point: Unix-Connect ist Enduser-System
                           Gate:  Kein Teil des Z-Netzes
                           Box:   Alle ist möglich (default).],
@@ -152,16 +192,32 @@ AC_ARG_ENABLE(real-gate,
 dnl Mail- und Newssystem
 dnl in den zweiten Teil sollen mal Heuristiken eingebaut werden
 AC_MSG_CHECKING(Mailsystem)
-AC_ARG_ENABLE(mail,
+AC_ARG_WITH(mail,
 [ --with-mail=typ          Welches Mailsystem wird verwendet?],
-[ MAIL=$enableval ], [MAIL='no'])
+[ 
+if test -d "mail-and-news/$withval" ; then
+  	MAIL=$withval 
+else
+  	echo "es gibt kein Mailsystem \"$withval\"."
+	AC_MSG_RESULT(Fehler!)
+	exit 1
+fi
+], [MAIL='no'])
 AC_MSG_RESULT($MAIL)
 AC_SUBST(MAIL)
 
-AC_MSG_CHECKING(Mailsystem)
-AC_ARG_ENABLE(news,
+AC_MSG_CHECKING(Newssystem)
+AC_ARG_WITH(news,
 [ --with-news=typ          Welches Newssystem wird verwendet?],
-[ NEWS=$enableval ], [NEWS='no'])
+[ 
+if test -d "mail-and-news/$withval" ; then
+  	NEWS=$withval 
+else
+  	echo "es gibt kein Newssystem \"$withval\"."
+	AC_MSG_RESULT(Fehler!)
+	exit 1
+fi
+], [NEWS='no'])
 AC_MSG_RESULT($NEWS)
 AC_SUBST(NEWS)
 
@@ -225,7 +281,7 @@ dnl         fi
 
 AC_MSG_CHECKING(Dialcode)
 AC_ARG_WITH(dialprae,
-[ --with-dialprae=code     Wählcode (Default=atdt).],
+[ --with-dialprae=code     Wählcode (Default=ATDT).],
 [ATDT=$withval],[ATDT="ATDT"])
 AC_MSG_RESULT($ATDT)
 AC_SUBST(ATDT)
@@ -266,18 +322,29 @@ AC_SUBST(SYS)
 AC_MSG_CHECKING(Domainname)
 AC_ARG_WITH(domain,
 [ --with-domain=domain     Domainname.],[
-DOMAIN=$withval;],[DOMAIN=`hostname | sed 's/^[[^\.]]*\.//'`])
+DOMAIN=$withval;],[
+if hostname | grep '\.' >/dev/null ; then
+	DOMAIN=`hostname | sed 's/^[[^\.]]*\.//'`
+else 
+	if hostname -f | grep '\.' >/dev/null ; then
+		DOMAIN=`hostname -f | sed 's/^[[^\.]]*\.//'`
+	else
+		echo "Kann Domainnamen nicht ermitteln."
+		echo "Bitte mit --with-domain angeben."
+		AC_MSG_RESULT(Fehler!)
+		exit 1
+	fi
+fi
+])
 AC_MSG_RESULT($DOMAIN)
 AC_SUBST(DOMAIN)
 
 FQDN=$SYS.$DOMAIN
 AC_SUBST(FQDN)
 
-AC_CHECK_PROGS(INEWS,inews,/usr/lib/news/inews,/usr/lib/news /usr/local/lib/news /usr/news /usr/local/news)
+AC_CHECK_PROGS(INEWS,inews,/usr/lib/news/inews,/usr/lib/news /usr/local/lib/news /usr/news /usr/local/news /usr/lib/news/bin)
 
-AC_PROG_CC
-
-AC_MSG_CHECKING(Various system-dependent things)
+AC_MSG_CHECKING(various system-dependent things)
         SYSUNAME="`uname -s | tr 'A-Z' 'a-z'`"
 
         if test "$SYSUNAME" = "$HOST" ; then
@@ -316,7 +383,7 @@ EOF
                 linux)
                         echo "Konfiguriere fuer Linux..."
                         SYSTYPE=linux
-                       CFLAGS="$CFLAGS -Wall"
+                       CFLAGS="$CFLAGS -O2 -pipe -Wall"
                        PATHADD=$PATHADD:/usr/lib/news/bin:/usr/local/lib/news/bin
                 ;;
                 bsd/386)
@@ -406,7 +473,7 @@ else
 	fi
 fi
 
-AC_MSG_RESULT(fertig)
+dnl AC_MSG_RESULT(fertig)
 AC_SUBST(SYSTYPE)
 AC_SUBST(CFLAGS)
 AC_SUBST(LDFLAGS)
@@ -422,3 +489,8 @@ dnl AC_OUTPUT(etc/config.in include/config.h Makefile Makefile.global tools/Make
 AC_OUTPUT(Makefile Makefile.global helpers/subst)
 
 dnl AC_OUTPUT(etc/config.in Makefile Makefile.global helpers/subst)
+
+AC_MSG_RESULT([
+*** Konfiguration abgeschlossen. 
+*** Geben Sie \`make' ein, um Unix-Connect zu compilieren.
+])

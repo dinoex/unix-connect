@@ -60,7 +60,7 @@
 #include "lib.h"
 
 #ifndef DO_CRC
-static may_i_call_fatal = 1;
+static int may_i_call_fatal = 1;
 
 int rd_para_error = HEAD_NO_ERROR;
 
@@ -170,11 +170,12 @@ header_p rd_para(FILE *f)
 	      }
 	      hname[MAX_HEADER_NAME_LEN] = '\0'; /* Sentinel */
 
-              if ((hname[0] == '\r') || (hname[0] == '\n'))
+              if ((hname[0] == '\r') || (hname[0] == '\n')) {
                   if (start)
                      break;     /* Ende einer Header-Liste */
                   else
                      continue;  /* Leerzeile am Anfang einer Header-Liste */
+	      }
 
               /* Header-Name und Inhalt trennen */
               p = strchr(hname, ':');
