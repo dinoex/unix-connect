@@ -105,7 +105,7 @@ int import_all(char *arcer, char *sysname)
 				}
 				if(backindir) {
 				    if(backupnumber) {
-					if (!backup2(backindir,l->name,
+					if (backup2(backindir,l->name,
 							sysname,arcer)) {
 						newlog(ERRLOG,
 				"Backupin hat nicht funktioniert!");
@@ -187,7 +187,7 @@ int import_all(char *arcer, char *sysname)
 				myret = 0;
 				if(backindir) {
 				    if(backupnumber) {
-					if (!backup2(backindir,l->name,
+					if (backup2(backindir,l->name,
 							sysname,arcer)) {
 						newlog(ERRLOG,
 				"Backupin hat nicht funktioniert!");
