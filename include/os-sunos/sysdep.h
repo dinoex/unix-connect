@@ -28,9 +28,9 @@
  *  Christopher Creutzig, Im Samtfelde 19, 33098 Paderborn
  *
  *  There is a mailing-list for user-support:
- *   unix-connect@mailinglisten.im-netz.de,
+ *   unix-connect-users@lists.sourceforge.net,
  *  write a mail with subject "Help" to
- *   nora.e@mailinglisten.im-netz.de
+ *   unix-connect-users-request@lists.sourceforge.net
  *  for instructions on how to join this list.
  */
 
