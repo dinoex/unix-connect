@@ -2,6 +2,11 @@ $Id$
 
 Aenderungen an UnixConnect
 
+seit 0.89
+
+- onine/januslogin.c: (Andreas Barth)
+  #ifdef geaendert
+
 seit 0.88
 
 - lib/backup.c, online/xprog.c: (Dirk Meyer)

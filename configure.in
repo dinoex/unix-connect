@@ -57,7 +57,7 @@ dnl AC_TYPE_SIGNAL
 dnl AC_FUNC_STRFTIME
 dnl AC_FUNC_VPRINTF
 dnl AC_CHECK_FUNCS(getcwd getwd mkdir mktime rmdir strcspn strdup strerror strstr strtol)
-AC_CHECK_FUNCS(snprintf)
+AC_CHECK_FUNCS(snprintf asprintf)
 AC_REPLACE_FUNCS(strdup stccpy)
 
 dnl      checks for system services

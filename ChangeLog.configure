@@ -2,6 +2,10 @@ $Id$
 
 Änderungen an configure
 
+seit 0.89
+
+- configure sucht nach asprintf
+
 seit 0.88
 
 - CHANGES.configure => ChangeLog.configure

@@ -352,7 +352,7 @@ getsysname(char *sysname, char *passwd, int len) {
 
 static int
 initnames(const auth_t* s) {
-#ifndef HAVE_SNPRINTF
+#ifndef HAVE_ASPRINTF
 	char *x,*y;
 
 	if (!(x = (char *) malloc(
