@@ -1,10 +1,11 @@
 /* $Id$ */
 /*
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
- *  Copyright (C) 1993-94  Martin Husemann
- *  Copyright (C) 1995     Christopher Creutzig
- *  Copyright (C) 1999     Dirk Meyer
- *  Copyright (C) 1999     Matthias Andree
+ *  Copyright (C) 1993-1994  Martin Husemann
+ *  Copyright (C) 1995       Christopher Creutzig
+ *  Copyright (C) 1999       Matthias Andree
+ *  Copyright (C) 2000       Krischan Jodies
+ *  Copyright (C) 1999-2000  Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -118,8 +119,17 @@ int import_all(char *arcer, char *sysname)
 					myret = 0;
 				}
 				if(backindir) {
+				    if(backupnumber) {
+					if (!backup2(backindir,l->name,
+							sysname,arcer)) {
+						newlog(ERRLOG,
+				"Backupin hat nicht funktioniert!");
+						remove(l->name);
+					}
+				    } else {
 					backup(backindir, l->name,
 					       sysname, BACKUP_MOVE);
+				    }
 				} else {
 					remove(l->name);
 				}
@@ -186,10 +196,19 @@ int import_all(char *arcer, char *sysname)
 			perror(l->name);
 		} else {
 			if (S_ISREG(st.st_mode) && (nlink_t)1==st.st_nlink) {
+			    newlog(DEBUGLOG, "import.c ruft call_auspack" );
 			    rc = call_auspack(arcer, l->name);
 			    if (!rc) {
 				myret = 0;
-				    if(backindir) {
+				if(backindir) {
+				    if(backupnumber) {
+					if (!backup2(backindir,l->name,
+							sysname,arcer)) {
+						newlog(ERRLOG,
+				"Backupin hat nicht funktioniert!");
+						remove(l->name);
+					 }
+				    } else {
 					char backinname[FILENAME_MAX];
 					char *shortname;
 						
@@ -204,9 +223,13 @@ int import_all(char *arcer, char *sysname)
 					fflush(stderr);
 					remove(backinname);
 					rename(l->name, backinname);
-				    } else {
+				    }
+				} else {
 					remove(l->name);
 				}
+			    } else {
+				newlog(ERRLOG,
+				"call_auspack meldet Fehler Returncode:%d",rc);
 			    }
 			} else {
 			   fprintf(stderr,

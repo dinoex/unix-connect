@@ -1,9 +1,10 @@
 /* $Id$ */
 /*
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
- *  Copyright (C) 1993-94  Martin Husemann
- *  Copyright (C) 1995-96  Christopher Creutzig
- *  Copyright (C) 1999     Dirk Meyer
+ *  Copyright (C) 1993-1994  Martin Husemann
+ *  Copyright (C) 1995-1996  Christopher Creutzig
+ *  Copyright (C) 2000       Krischan Jodies
+ *  Copyright (C) 1999-2000  Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -62,6 +63,7 @@
 #include "utility.h"
 #include "xprog.h"
 #include "locknames.h"
+#include "calllib.h"
 
 jmp_buf timeout, nocarrier;
 static const char *tty = "/dev/tty";
@@ -224,13 +226,18 @@ main(int argc, char **argv)
 
 	alarm(45);
 ask_sysname:
+	fflush(stdout);
 	sleep(1); fflush(stdin);
-	fputs("Systemname: ", stdout); fflush(stdout);
+	fputs("\nSystemname: ", stdout); fflush(stdout);
 	getln(sysname);
 	if (!sysname[0]) goto ask_sysname;	/* z.B. bei Ctrl-X */
+	/* Strich am Anfang des Namens entefernen */
+	if ( sysname[ 0 ] == '-' )
+		strcpy(sysname,sysname+1);
 	strlwr(sysname);
 	if (strcmp(sysname, "zerberus") == 0) goto ask_sysname;
 	if (strcmp(sysname, "janus") == 0) goto ask_sysname;
+	if (strcmp(sysname, "janus2") == 0) goto ask_sysname;
 		/* Wenn schon, denn schon */
 ask_passwort:
 	sleep(1); fflush(stdin);
@@ -238,8 +245,16 @@ ask_passwort:
 	getsln(passwd);
 	if (stricmp(passwd, "zerberus") == 0) goto ask_sysname;
 	if (stricmp(passwd, "janus") == 0) goto ask_sysname;
+	if (stricmp(passwd, "janus2") == 0) goto ask_sysname;
 		/* Hier auch nochmal */
-	if (stricmp(sysname, passwd) == 0) goto ask_passwort;
+
+	/* Das soll auch funktionieren, wenn der - bei einem System
+	   ignoriert wurde. */ 
+	if ( passwd[ 0 ] == '-' ) {
+		if (stricmp(sysname+1, passwd+1) == 0) goto ask_passwort;
+	} else {
+		if (stricmp(sysname, passwd) == 0) goto ask_passwort;
+	};
 	alarm(0);
 
 	findsysfile(systemedir, sysname, filename);
@@ -302,6 +317,7 @@ ask_passwort:
 	      "Running ARC....\r\n"
 	      "Running ARC....\r\n"
 	      "Running ARC....\r\n", stdout);
+	fflush( stdout );
 	fprintf(deblogfile,
 		"%s: System %s erfolgreich eingeloggt [%s]\n",
 		argv[0], sysname, tty);
@@ -376,13 +392,16 @@ ask_passwort:
 
 	alarm(30);
 	for (i=1; i<7; i++) {
+		fprintf(deblogfile, "schleife: %d\n",i);
 		putchar(NAK); fflush(stdout);
 		z = 0;
 		for (j=0; j<4; j++)
 			sernr[j] = toupper(getchar());
 		serchk = getchar();
-/* Die Pruefsumme der Seriennummer zu pruefen, ist eigentlich unnoetig. ccr */
 #ifndef DISABLE_JANUS_CHECKSUM
+/* Die Pruefsumme der Seriennummer zu pruefen,
+   hilft Zmodem richtig zu starten (dm)
+ */
 		if ((sernr[0]+sernr[1]+sernr[2]+sernr[3]) == (serchk & 0x0ff))
 #endif
 		{
@@ -420,7 +439,10 @@ ask_passwort:
 
 			/* Netcall war erfolgreich, also Daten loeschen */
 			newlog(INCOMING, WHO " Netcall erfolgreich");
-			remove(outname);
+			if ( backoutdir != NULL )
+				backup2(backoutdir,outname,sysname,arcer);
+			else
+				remove(outname);
 
 			/*
 			 * Und empfangene Daten (im Hintergrund) einlesen,
@@ -470,7 +492,10 @@ cleanup:
 		chdir(netcalldir);
 		chdir(sysname);
 		call_auspack(arcer, outname);
-		remove(outname);
+		if ( backoutdir != NULL )
+			backup2(backoutdir,outname,sysname,arcer);
+		else
+			remove(outname);
 	}
 	chdir("/");
 	rmdir(tmpname);

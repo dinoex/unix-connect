@@ -55,6 +55,11 @@ Netcall-Dir:                       @SPOOLDIR@
 Backout-Dir:                       @SPOOLDIR@/backout
 Backin-Dir:                        @SPOOLDIR@/backin
 
+# Wieviele Backups sollen maximal gemacht werden?
+# Es wird selber rotiert, 1 ist die neueste,
+# und (z.B.) 10 die aelteste Datei.
+Backup-Zahl:                       10
+
 # Und ein Directory fuer die Verwaltungs-Daten der einzelnen Systeme
 
 Systeme-Dir:                       @ETCDIR@/systems

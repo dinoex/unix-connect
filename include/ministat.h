@@ -49,6 +49,7 @@ extern char *lockdir;
 extern char *netcalldir;
 extern char *backindir;
 extern char *backoutdir;
+extern char *backupnumber;
 extern char *systemedir;
 extern char *fileserverdir;
 extern char *fileserveruploads;

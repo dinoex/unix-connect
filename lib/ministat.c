@@ -1,9 +1,10 @@
 /* $Id$ */
 /*
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
- *  Copyright (C) 1993-94  Martin Husemann
- *  Copyright (C) 1995     Christopher Creutzig
- *  Copyright (C) 1999     Dirk Meyer
+ *  Copyright (C) 1993-1994  Martin Husemann
+ *  Copyright (C) 1995       Christopher Creutzig
+ *  Copyright (C) 2000       Krischan Jodies
+ *  Copyright (C) 1999-2000  Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -51,6 +52,7 @@
  * 22-Feb-1994	MH  Auf aktuellen Config-Stand angepasst
  * 23-Nov-1995  CC  ZNETZ-Unterstuetzung entfernt
  * 10-Oct-1996  CC  Dirk Meyers automatische Entscheidung Sommer/Winterzeit
+ * 13-Jan-2000  DM  Backup-Zahl Krischan
  *
  */
 
@@ -92,6 +94,7 @@ bs_st boxstat;
 char *systemedir;       /* Systeme-Dir:		*/
 char *backoutdir;	/* Backout-Dir:		*/
 char *backindir;	/* BackIn-Dir:		*/
+char *backupnumber;	/* Backup-Zahl:		*/
 char *fileserverdir;    /* Fileserver-Dir:	*/
 char *fileserveruploads;/* Fileserver-Upload-Dir:*/
 char *einpack;          /* Arc-Kommando:	*/
@@ -262,6 +265,12 @@ void minireadstat(void)
   p = find(HD_BACKIN_DIR, config);
   if (p)
     backindir = dstrdup(p->text);
+
+  /* Backup-Zahl: */
+  backupnumber = NULL; 
+  p = find(HD_BACKUP_NUMBER, config);
+  if (p)
+    backupnumber = dstrdup(p->text);
 
   /* Fileserver-Upload-Dir: */
   fileserveruploads = NULL;

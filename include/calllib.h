@@ -1,7 +1,8 @@
 /* $Id$ */
 /*
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
- *  Copyright (C) 1999     Matthias Andree
+ *  Copyright (C) 1999       Matthias Andree
+ *  Copyright (C) 2000       Krischan Jodies
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -54,6 +55,8 @@ extern ilist_p readonedir(const char *name);
 enum backup_type { BACKUP_MOVE, BACKUP_LINK };
 extern int backup(const char *backupdir, const char *file,
 		  const char *sysname, enum backup_type);
+extern int backup2(const char *backupdir, const char *file,
+		   const char *sysname, const char *arcer);
 
 #else
 #warning "online/calllib.h included twice"

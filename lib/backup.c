@@ -1,7 +1,9 @@
 /* $Id$ */
 /*
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
- *  Copyright (C) 1999     Matthias Andree
+ *  Copyright (C) 1999       Matthias Andree
+ *  Copyright (C) 2000       Krischan Jodies
+ *  Copyright (C) 2000       Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -41,6 +43,13 @@
  *
  */
 
+/* Changelog: 
+ *
+ * 11.1.99
+ * Logrotation dazugetan, Krischan 
+ *
+ */
+
 #include <errno.h>
 #include <ctype.h>
 #include <time.h>
@@ -76,11 +85,14 @@
 #endif
 #endif
 #include <stdio.h>
+#include <stdlib.h>
+
 
 #include "utility.h"
 #include "calllib.h"
 #include "uulog.h"
 #include "uudebug.h"
+#include "ministat.h"
 
 /* backup
  * inputs:
@@ -154,6 +166,80 @@ backup(const char *backupdir, const char *file,
 		} else {
 			return 0;
 		}
+	}
+	return -1;
+}
+
+int
+backup2(const char *backupdir, const char *file,
+	const char *sysname, const char *arcer)
+{
+	newlog(DEBUGLOG, "backup.c Anzahl Backups: %s",backupnumber);
+	if (backupdir && file && sysname) {
+		char backupname[FILENAME_MAX];
+		char subdir[FILENAME_MAX];
+		char backupnamenew[FILENAME_MAX];
+		int i;
+		int backupnr;
+		struct stat st;
+		
+		if(lstat(file, &st)) {
+			newlog(ERRLOG, "backup: cannot stat %s: %s",
+			       file, strerror(errno));
+			return 3;
+		}
+		if(!S_ISREG(st.st_mode)) {
+			newlog(ERRLOG,
+			       "backup: %s is not a regular file, mode: 0%o",
+			       file, st.st_mode);
+			return 2;
+		}
+
+		sprintf(subdir,"%s/%s",backupdir,sysname);
+		if (backupnumber == NULL) {
+			backupnr = 5;
+			newlog(ERRLOG,
+				"Warnung: Backup-Zahl ist nicht definiert.");
+		} else {
+			backupnr = atoi(backupnumber);	
+			if (backupnr < 1) {
+				backupnr = 5;
+				newlog(ERRLOG,
+			"Warnung: Backup-Zahl ist 0. Nehme stattdessen 5.");
+			}
+		}
+		mkdir (subdir, 0700); /* *** pruefen */
+		/* Rotieren */
+		for (i = (backupnr-1);i > 0;i--) {
+			sprintf(backupname,"%s/%s.%d.%s",
+				subdir, sysname, i, arcer );
+			sprintf(backupnamenew,"%s/%s.%d.%s",
+				subdir, sysname, i+1, arcer );
+			newlog(DEBUGLOG,"old: %s",backupname);
+			newlog(DEBUGLOG,"new: %s",backupnamenew); 
+			/* Wenns die Datei nicht gibt,
+			   oder sie eine normale Datei ist, ok */
+			if ( lstat(backupnamenew,&st) != ENOENT ) { 
+			     if  (!S_ISREG(st.st_mode) ) {
+				snprintf(backupname,sizeof(backupname)-1,
+					"%s/%s.%ld.%s",
+					subdir, sysname,
+					(long)time(NULL), arcer );
+				newlog(ERRLOG,
+		"Backup: Fehler %s ist keine regulaere Datei."
+		" Speichere Backup unter %s", backupnamenew, backupname );
+				break;
+			     }
+			}
+			rename(backupname,backupnamenew);
+		}
+		/* Wenn die Schleife durch ist,
+		   steht in backupname system.1.arcer, oder
+                   backupname hat einen Wert auf den geschrieben werden kann */
+		newlog(DEBUGLOG,"rename %s -> %s",file,backupname);
+		rename(file,backupname);
+		return 1;
+
 	}
 	return -1;
 }

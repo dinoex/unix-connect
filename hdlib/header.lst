@@ -12,6 +12,7 @@ Gate-Path-Env		GATE_PATH_ENV
 Netcall-Dir		NETCALL_DIR
 Backin-Dir		BACKIN_DIR
 Backout-Dir		BACKOUT_DIR
+Backup-Zahl		BACKUP_NUMBER
 Systeme-Dir		SYSTEME_DIR
 Arc-Kommando		ARC_KOMMANDO
 XArc-Kommando		XARC_KOMMANDO
