@@ -37,3 +37,5 @@
 
 - GATE sollte base64 statt uuencode kodieren.
 
+- stderr mit lrzsz, da ausgabeumleitung probleme macht.
+
