@@ -65,6 +65,7 @@
 #include "ministat.h"
 #include "hayes.h"
 #include "track.h"
+#include "line.h"
 
 /* Sende ein einzelnes Kommando an das Modem (siehe unten) */
 int do_hayes(const char *command, int modem);
@@ -135,6 +136,13 @@ redial (const char *anwahl, int modem, int maxtry)
 	error        = init_track("ERROR");
 
 	alarm(45);
+
+	/* Neuer Anfang einer Zeile senden,
+	   damit das erste "AT" gleich verstanden wird. */
+	write(modem, "\r\n", 2);
+	sleep( 1 );
+	flush_modem( modem );
+
 	/* Modem Reset */
 	conf = find(HD_MODEM_DIALOG, config);
 	while (conf) {
