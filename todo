@@ -30,3 +30,9 @@
 - Kein Date:-Header (legal) führt zu Nachricht ohne EDA (illegal).
 
 - News verwerfen, wenn ordnungsgemäße Wandlung nicht möglich.
+
+- Es kann nur ein Call-Dev. angegeben werden. Ich moechte aber mehrere angeben
+  koennen, deren locks dann in dieser Reihenfolge geprueft werden und dann zum
+  Anrufen genutzt werden.
+
+

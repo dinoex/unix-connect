@@ -31,7 +31,7 @@
  *  There is a mailing-list for user-support:
  *   unix-connect@mailinglisten.im-netz.de,
  *  write a mail with subject "Help" to
- *   unix-connect-request@mailinglisten.im-netz.de
+ *   nora.e@mailinglisten.im-netz.de
  *  for instructions on how to join this list.
  */
 
