@@ -4,7 +4,7 @@
  *  Copyright (C) 1993-1994  Martin Husemann
  *  Copyright (C) 1995-1998  Christopher Creutzig
  *  Copyright (C) 1999       Andreas Barth, Pfad bei Pointsystemen
- *  Copyright (C) 1999       Moritz Both
+ *  Copyright (C) 1999-2000  Moritz Both
  *  Copyright (C) 1996-2001  Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -143,6 +143,46 @@ valid_newsgroups( const char *data )
 	return 1;
 }
 
+/* get_pointuser():
+ * liefert einen mit malloc allozierten String, der die korrekte 
+ * Absender-Adresse eines Points darstellt. Die Adresse entspricht
+ * der uebergebenen Adresse, wenn diese in der Adressenliste des
+ * Points auftauscht.
+ */
+
+char *get_pointuser(const char *suggestion)
+{
+	header_p p = NULL;
+	char *result = NULL;
+
+	/* Avoid to dereference NULL */
+	if (suggestion)
+	for (p = pointuser; p; p=p->other)
+		if (adrmatch(suggestion, p->text))
+			break;
+
+	if (p == NULL)
+	{
+		/*
+		 *  Point mit falscher Absenderangabe: ersetzen durch
+		 *  den ersten Point-User: aus der Liste (das ist der Default-
+		 *  User)
+		 */
+		if (pointuser != NULL)
+			result = dstrdup(pointuser->text);
+	}
+	else 
+	{
+		/* Wenn er gefunden wurde, suggestion kopieren,
+		 * aber Adressteil durch unsere Schreibweise 
+		 * ersetzen.
+		 */
+		result = dstrdup(suggestion);
+		memcpy(result, p->text, strlen(p->text));
+	}
+	return result;
+}
+
 /*
  *  Liefert 1, wenn die beiden Adressteile (ohne Realname) identisch
  *  sind
@@ -219,9 +259,8 @@ convheader(header_p hd, FILE *f)
 	header_p p, t, to, cc, bcc;
 	char *s, *test, *habs, *oabs, *sender;
 	char *mime_name, *absname;
-	int org_from, pos, nokop;
+	int pos, nokop;
 
-	org_from = 0;
 	nokop = 0;
 	to = find(HD_UU_U_TO, hd);
 	cc = find(HD_UU_U_CC, hd);
@@ -419,25 +458,19 @@ convheader(header_p hd, FILE *f)
 			hd = del_header(HD_OAB, hd);
 		}
 	}
-	if (pointuser) {
-		for (t = pointuser; t; t=t->other)
-			if (adrmatch(habs, t->text)) {
-				/*
-				 * Ok, wegen Schreibweise aber durch unsere
-				 * Version ersetzen
-				 */
-				dfree(habs);
-				habs = dstrdup(t->text);
-				break;
-			}
-		/*
-		 *  Point mit falscher Absenderangabe: ersetzen durch
-		 *  den ersten Point-User: aus der Liste (das ist der Default-
-		 *  User)
-		 */
-		if (!t) {
+ 	if (pointuser) {
+		/* Bei Points ggf. Absender ersetzen */
+		char *pu;
+
+		if (sender) {
+			pu = get_pointuser(sender);
+			dfree(sender);
+			sender = pu;
+		}
+		else {
+			pu = get_pointuser(habs);
 			dfree(habs);
-			habs = dstrdup(pointuser->text);
+			habs = pu;
 		}
 	}
 	if(habs)
@@ -466,13 +499,13 @@ convheader(header_p hd, FILE *f)
 		oabs = dstrdup(habs);
 	} else
 		if (s) *s = ' ';
-	if (!org_from) {
-		pc2iso(oabs);
-		mime_name=mime_address(oabs);
-		foldputs(f, HN_UU_FROM, mime_name);
-		dfree(mime_name);
-		hd = del_header(HD_UU_U_FROM, hd);
-	}
+
+	pc2iso(oabs);
+	mime_name=mime_address(oabs);
+	foldputs(f, HN_UU_FROM, mime_name);
+	dfree(mime_name);
+	hd = del_header(HD_UU_U_FROM, hd);
+
 	if (sender) {
 		pc2iso(sender);
 		mime_name=mime_address(sender);
@@ -700,7 +733,7 @@ convheader(header_p hd, FILE *f)
  * (C) Moritz Both
  */
 
-void
+static void
 foldputs_no_eol(FILE *f, const char *inhalt, int *col)
 {
 #if ENABLE_NEW_BREAK
