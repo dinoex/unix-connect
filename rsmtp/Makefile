@@ -121,7 +121,7 @@ $(DESTDIR):
 
 $(SPOOLDIR)/rsmtp:
 	mkdir -p $(SPOOLDIR)/rsmtp
-	choen $(USER) $(SPOOLDIR)/rsmtp
+	chown $(USER) $(SPOOLDIR)/rsmtp
 	chmod 1777 $(SPOOLDIR)/rsmtp
 
 $(DESTDIR)/rsmtp: rsmtp
