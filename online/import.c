@@ -28,7 +28,7 @@
  *  Bugreports, suggestions for improvement, patches, ports to other systems
  *  etc. are welcome. Contact the maintainer by e-mail:
  *  dirk.meyer@dinoex.sub.org or snail-mail:
- *  Dirk Meyer, Im Grund 4, 34317 Habichstwald
+ *  Dirk Meyer, Im Grund 4, 34317 Habichtswald
  *
  *  There is a mailing-list for user-support:
  *   unix-connect@mailinglisten.im-netz.de,
@@ -82,6 +82,8 @@
 
 #include "calllib.h"
 #include "uudebug.h"
+
+#ifdef ENABLE_TESTING
 
 /*
  *  Alle Dateien im aktuellen Verzeichnis entpacken und einlesen...
@@ -139,3 +141,86 @@ int import_all(char *arcer, char *sysname)
 	return returncode;
 }
 
+#else
+
+/*
+ *  Alle Dateien im aktuellen Verzeichnis entpacken und einlesen...
+ */
+int import_all(char *arcer, char *sysname)
+{
+	int returncode = 0;
+
+	DIR *dir;
+	struct dirent *ent;
+	ilist_p l;		/* Liste der zu entpackenden Dateien */
+
+	if ((dir = opendir(".")) == NULL) {
+		perror(".");
+	}
+	l = NULL;
+	while ((ent = readdir(dir)) != NULL) {
+		ilist_p neu;
+
+		/* nur . und .. ignorieren */
+		if (ent->d_name[0] == '.') {
+			if (!ent -> d_name[1]) continue;
+			if (ent->d_name[1] == '.' 
+			    && !ent->d_name[2]) continue;
+		}
+		neu = dalloc(sizeof(ilist_t));
+		neu->name = dstrdup(ent->d_name);
+		neu->next = l;
+		l = neu;
+	}
+	closedir(dir);
+
+  	while (l) {
+  		ilist_p p;
+		int rc;
+		int myret = 1;
+		struct stat st;
+
+		fprintf(stderr, "Auspacken: %s (%s)\n", l->name, arcer);
+		fflush(stderr);
+		if(lstat(l->name, &st)) {
+			perror(l->name);
+		} else {
+			if (S_ISREG(st.st_mode) && (nlink_t)1==st.st_nlink) {
+			    rc = call_auspack(arcer, l->name);
+			    if (!rc) {
+				myret = 0;
+				    if(backindir) {
+					char backinname[FILENAME_MAX];
+					char *shortname;
+						
+					shortname = strrchr(l->name, '/');
+					if (!shortname) shortname = l->name;
+					sprintf(backinname, "%s/%s.%s.%ld",
+						backindir, sysname,
+						shortname,
+						(long)time(NULL));
+					fprintf(stderr, "BackIn: %s -> %s\n",
+						l->name, backinname);
+					fflush(stderr);
+					remove(backinname);
+					rename(l->name, backinname);
+				    } else {
+					remove(l->name);
+				}
+			    }
+			} else {
+			   fprintf(stderr,
+				"File hat falschen Link count "
+				"oder ist kein regulaeres File!\n");
+			}
+		}
+		returncode |= myret;
+		p = l; l = p->next;
+		dfree(p->name); dfree(p);
+	}
+
+	returncode |= call_import(sysname);
+	return returncode;
+}
+
+#endif
