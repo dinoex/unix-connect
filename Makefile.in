@@ -51,42 +51,42 @@ PATHADD  = @PATHADD@
 
 
 all:
-	(cd lib; make strlib.a)
-	(cd hdlib; make all)
+	(cd lib; $(MAKE) strlib.a)
+	(cd hdlib; $(MAKE) all)
 	shell/update hdlib/hd_nam.h include/hd_nam.h
 	shell/update hdlib/hd_def.h include/hd_def.h
-	(cd lib; make all)
-	(cd date; make all)
-	(cd online; make all)
-	(cd gate; make all)
-	(cd tools; make all)
-	(cd rsmtp; make all)
+	(cd lib; $(MAKE) all)
+	(cd date; $(MAKE) all)
+	(cd online; $(MAKE) all)
+	(cd gate; $(MAKE) all)
+	(cd tools; $(MAKE) all)
+	(cd rsmtp; $(MAKE) all)
 
 clean:
-	(cd lib; make clean)
-	(cd date; make clean)
-	(cd hdlib; make clean)
-	(cd online; make clean)
-	(cd gate; make clean)
-	(cd tools; make clean)
-	(cd rsmtp; make clean)
+	(cd lib; $(MAKE) clean)
+	(cd date; $(MAKE) clean)
+	(cd hdlib; $(MAKE) clean)
+	(cd online; $(MAKE) clean)
+	(cd gate; $(MAKE) clean)
+	(cd tools; $(MAKE) clean)
+	(cd rsmtp; $(MAKE) clean)
 
 install: install-dirs install-usr-lib-zcon
-	(cd online; make install)
-	(cd gate; make install)
-	(cd tools; make install)
-	(cd shell; make install)
-	(cd rsmtp; make install)
+	(cd online; $(MAKE) install)
+	(cd gate; $(MAKE) install)
+	(cd tools; $(MAKE) install)
+	(cd shell; $(MAKE) install)
+	(cd rsmtp; $(MAKE) install)
 	
 clobber:
 	-rm -f include/hd_nam.h
 	-rm -f include/hd_def.h
-	(cd lib; make clobber)
-	(cd date; make clobber)
-	(cd hdlib; make clobber)
-	(cd online; make clobber)
-	(cd gate; make clobber)
-	(cd tools; make clobber)
+	(cd lib; $(MAKE) clobber)
+	(cd date; $(MAKE) clobber)
+	(cd hdlib; $(MAKE) clobber)
+	(cd online; $(MAKE) clobber)
+	(cd gate; $(MAKE) clobber)
+	(cd tools; $(MAKE) clobber)
 
 tidy:	clobber
 	-rm -f */Makefile
@@ -94,7 +94,7 @@ tidy:	clobber
 	-rm -f include/sysdep.h include/config.h
 
 distrib:	tidy
-	(cd hdlib; make -f Makefile.hdlib SHELL=/bin/sh hash.c)
+	(cd hdlib; $(MAKE) -f Makefile.hdlib SHELL=/bin/sh hash.c)
 	-rm -f configure.dat
 	-rm -f *.orig
 	-rm -f */*.orig
