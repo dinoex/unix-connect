@@ -3,6 +3,37 @@ $Id$
 
 Aenderungen an UnixConnect
 
+seit 0.76b1
+
+Vorbemerkung: Die rcs/cvs-Id-Zeilen sind neu gestartet, weil ich das CVSROOT
+neu installieren muﬂte.
+
+- Code leicht aufger‰umt: Ein paar 'const' eingef¸gt und f¸r den gcc ein paar
+  Attribute definiert (weniger unnˆtige Warnungen, Syntaxcheck f¸r uufatal und
+  logfile). Return-Codes standardisiert, ein buffer-overflow (konnte der
+  ¸berhaupt auftreten?) in decode_mime_string beseitigt.
+
+- minireadstat bricht bei fehlerhaften Konfigurationsdateien ab (z.B. kein
+  Eintrag System-Name, beliebter Fehler...)
+
+- Die Erzeugung der Bcc:-Header aus KOP: bei STAT: NOKOP ist wieder
+  rausgeflogen. Stattdessen werden bei STAT: NOKOP die KOP:-Header gelˆscht,
+  die haben da eh nicht da zu sein. Korrekterweise m¸ﬂte das Gate bei
+  STAT:NOKOP die Mail aufsplitten, das ist leider nicht so ganz einfach zu
+  realisieren.
+
+- decode_mime_string verbessert, '_' -> ' ' fehlte.
+
+- Fehlermeldungen (STAT: ERR) in Mails erhalten einen leeren
+  Envelope-From. (vgl. rfc 821, Abschnitt 3.6, Absatz 8)
+
+- References werden nicht mehr umgebrochen, der Headertext enth‰lt per
+  definition keinen Whitespace.
+
+- inn/send-zcon und smail/zbatchsmtp jetzt mit Fehlerbehandlung
+
+- Neu: qmail-Skripte
+
 seit 0.76
 
 - neue Compile-Option: RCPT_WITH_BANG. Beeinfluﬂt, ob im
