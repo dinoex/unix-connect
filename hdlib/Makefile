@@ -40,7 +40,7 @@ include ../Makefile.global
 
 # Makefile fuer die Header-Verwaltung
 
-LIBS	= ../lib/ministat.o ../lib/strlib.a
+LIBS	= ../lib/ministat.o ../lib/uulog.o ../lib/strlib.a
 
 GFLAGS	= -L ANSI-C -C -D -G -K header -N predefd_header -t
 
