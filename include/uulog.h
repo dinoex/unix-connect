@@ -52,7 +52,7 @@
 
 
 #ifdef HAVE_SYSLOG
-#define SYSLOG_KANAL	LOG_MAIL
+#define SYSLOG_KANAL	LOG_LOCAL0
 #define SYSLOG_LOGNAME	"uconnect"
 #define FATALLOG_PRIO	LOG_CRIT
 

@@ -2,6 +2,10 @@
 $Id$
 
 Aenderungen an UnixConnect
+seit 0.80
+
+- Syslog ueber FACILITY=LOCAL0 statt MAIL
+
 seit 0.79
 
 - Makefiles weitgehend ueberarbeiet

@@ -49,3 +49,5 @@
 - Das ganze fork()-Gezumpel sollte mal in eine Unterfunktion verbannt und
   mit Fehlerhandling versehen werden.
 
+- Logtexte mit "%" in der Adresse werden interpretiert ....
+
