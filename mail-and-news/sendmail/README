@@ -40,3 +40,26 @@ In der Sendmail M4-Konfigurationsdatei muß dann
 
 eingetragen werden.
 
+----------------
+Tipp von Dirk Meyer:
+
+Wie finden wir die Konfigurationsdateien?
+
+$ locate uucp.m4
+/usr/share/sendmail/cf/feature/nouucp.m4
+/usr/share/sendmail/cf/mailer/uucp.m4
+
+Kopieren wir unsere m4-Datei in mailer:
+
+$ cp -pi mail-and-news/sendmail/uconnect.m4 /usr/share/sendmail/cf/mailer/
+
+Dann in dener sendmail.mc datei die Zeile einfuegen:
+
+MAILER(uconnect)dnl
+
+und die sendmail.cf neu bauen.
+
+Fuer ausgehende Mail gegebenfalls eintragen in:
+/etc/mail/mailertable:
+.           uconnect:systemname
+
