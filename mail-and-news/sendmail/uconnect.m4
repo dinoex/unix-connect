@@ -24,6 +24,6 @@ Muconnect,	P=UCONNECT_MAILER_PATH,
 		F=X, # Add extra dots in Body (BSMTP)
 		S=11/31, R=21, E=\r\n, M=UCONNECT_MAILER_MAX,
 		T=X-UUCP/X-UUCP/X-Unix,
-		U=news:news,
+		U=mbox:news,
 		A=mail.uconnect $h $f $u
 
