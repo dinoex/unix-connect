@@ -71,11 +71,11 @@ januslogin:	januslogin.o xprog.o lockdev.o lock.o import.o $(LIBS)
 	$(CC) -o januslogin januslogin.o xprog.o lockdev.o lock.o import.o $(LIBS) $(LDFLAGS)
 
 # automatic depend
-action.o: action.c ../include/config.h ../include/sysdep.h zconnect.h \
- ../include/header.h ../include/crc.h ../hdlib/hd_def.h \
- ../hdlib/hd_nam.h ../include/version.h ../include/track.h \
- ../include/line.h ../include/ministat.h ../include/boxstat.h \
- ../include/uulog.h ../include/xprog.h
+action.o: action.c ../include/config.h ../include/sysdep.h \
+ ../include/utility.h zconnect.h ../include/header.h ../include/crc.h \
+ ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/version.h \
+ ../include/track.h ../include/line.h ../include/ministat.h \
+ ../include/boxstat.h ../include/uulog.h ../include/xprog.h
 call.o: call.c ../include/config.h ../include/sysdep.h \
  ../include/utility.h zconnect.h ../include/header.h ../include/crc.h \
  ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/version.h \
@@ -97,27 +97,27 @@ filemaster.o: filemaster.c ../include/config.h ../include/sysdep.h \
  ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/version.h \
  ../include/track.h ../include/line.h ../include/ministat.h \
  ../include/boxstat.h ../include/uulog.h
-import.o: import.c ../include/config.h ../include/sysdep.h zconnect.h \
- ../include/header.h ../include/crc.h ../hdlib/hd_def.h \
- ../hdlib/hd_nam.h ../include/version.h ../include/track.h \
- ../include/line.h ../include/ministat.h ../include/boxstat.h \
- ../include/uulog.h ../include/xprog.h
+import.o: import.c ../include/config.h ../include/sysdep.h \
+ ../include/utility.h zconnect.h ../include/header.h ../include/crc.h \
+ ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/version.h \
+ ../include/track.h ../include/line.h ../include/ministat.h \
+ ../include/boxstat.h ../include/uulog.h ../include/xprog.h
 januslogin.o: januslogin.c ../include/config.h ../include/sysdep.h \
  ../include/utility.h zconnect.h ../include/header.h ../include/crc.h \
  ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/version.h \
  ../include/track.h ../include/line.h ../include/ministat.h \
  ../include/boxstat.h ../include/uulog.h ../include/xprog.h \
  locknames.h
-lock.o: lock.c ../include/config.h ../include/sysdep.h zconnect.h \
- ../include/header.h ../include/crc.h ../hdlib/hd_def.h \
- ../hdlib/hd_nam.h ../include/version.h ../include/track.h \
- ../include/line.h ../include/ministat.h ../include/boxstat.h \
- ../include/uulog.h ../include/policy.h
+lock.o: lock.c ../include/config.h ../include/sysdep.h \
+ ../include/utility.h zconnect.h ../include/header.h ../include/crc.h \
+ ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/version.h \
+ ../include/track.h ../include/line.h ../include/ministat.h \
+ ../include/boxstat.h ../include/uulog.h ../include/policy.h
 lockdev.o: lockdev.c ../include/config.h ../include/sysdep.h \
- zconnect.h ../include/header.h ../include/crc.h ../hdlib/hd_def.h \
- ../hdlib/hd_nam.h ../include/version.h ../include/track.h \
- ../include/line.h ../include/ministat.h ../include/boxstat.h \
- ../include/uulog.h ../include/policy.h
+ ../include/utility.h zconnect.h ../include/header.h ../include/crc.h \
+ ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/version.h \
+ ../include/track.h ../include/line.h ../include/ministat.h \
+ ../include/boxstat.h ../include/uulog.h ../include/policy.h
 myself.o: myself.c ../include/config.h ../include/sysdep.h zconnect.h \
  ../include/header.h ../include/crc.h ../hdlib/hd_def.h \
  ../hdlib/hd_nam.h ../include/version.h ../include/track.h \
@@ -135,8 +135,8 @@ prepare.o: prepare.c ../include/config.h ../include/sysdep.h \
  ../include/boxstat.h ../include/uulog.h ../include/xprog.h \
  locknames.h
 prologue.o: prologue.c ../include/config.h ../include/sysdep.h \
- ../include/version.h zconnect.h ../include/header.h ../include/crc.h \
- ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/track.h \
+ zconnect.h ../include/header.h ../include/crc.h ../hdlib/hd_def.h \
+ ../hdlib/hd_nam.h ../include/version.h ../include/track.h \
  ../include/line.h ../include/ministat.h ../include/boxstat.h \
  ../include/uulog.h
 receiver.o: receiver.c ../include/config.h ../include/sysdep.h \
