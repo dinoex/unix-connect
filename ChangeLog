@@ -8,6 +8,10 @@ seit 0.88
   Neuer Anfang einer Zeile senden,
   damit das erste "AT" gleich verstanden wird.
 
+- online/import.c: (Dirk Meyer)
+  Neue version von "import" getestet, alte entfernt
+  Fehlermeldungen reduziert.
+
 - online/call.c: (Dirk Meyer)
   Neue version von "anruf" getestet, alte entfernt
   Anfufdauer nur noch einmal ausgeben.
