@@ -34,5 +34,5 @@ tidy:
 	-rm -f subst.in subst
 
 subst.in: makesubst ../configure.in
-	./makesubst > subst.in
+	$(SHELL) ./makesubst > subst.in
 

@@ -58,11 +58,11 @@ clobber:	clean
 
 tidy:	clobber
 
-rehash-clean:	clobber
+newhash-clean:	clobber
 	-rm -f hd_def.h hd_nam.h hd_nlist.h
 	-rm -f testheader hash.c header.gperf
 
-rehash:	rehash-clean hash.c
+newhash:	newhash-clean hash.c
 
 uurd.o:	uurdpara.c
 	-rm -f uurd.c

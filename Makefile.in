@@ -74,7 +74,7 @@ tidy:	clobber
 	-rm -f config.cache config.log config.status
 	-rm -f include/sysdep.h include/policy.h
 
-rehash:
-	(cd hdlib; $(MAKE) rehash)
+newhash:
+	(cd hdlib; $(MAKE) newhash)
 
 # eof
