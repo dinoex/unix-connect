@@ -14,6 +14,8 @@ ac_default_prefix=/usr/local
 ac_help="$ac_help
  --with-path=path         Path innerhalb von UC (Default=PATH)."
 ac_help="$ac_help
+ --with-dir=dir           In welches Unterverzeichnis die Dateien kommen."
+ac_help="$ac_help
  --with-execdir=dir       In welches Verzeichnis die Programme kommen."
 ac_help="$ac_help
  --with-confdir=dir       In welches Verzeichnis die Konfiguration kommt."
@@ -31,6 +33,10 @@ ac_help="$ac_help
 ac_help="$ac_help
  --disable-real-gate      Nachrichten zurückkonvertieren erlauben."
 ac_help="$ac_help
+ --with-mail=typ          Welches Mailsystem wird verwendet?"
+ac_help="$ac_help
+ --with-news=typ          Welches Newssystem wird verwendet?"
+ac_help="$ac_help
  --with-apc               APC einkompilieren (meist unnötig)."
 ac_help="$ac_help
  --enable-bang            Bang-Pfade verwenden."
@@ -40,6 +46,10 @@ ac_help="$ac_help
  --with-ortswahl=code     Ortsvorwahl (Default=0)."
 ac_help="$ac_help
  --with-intwahl=code      Internationale Vorwahl (Default=00)."
+ac_help="$ac_help
+ --with-sys=sys           Systemname."
+ac_help="$ac_help
+ --with-domain=domain     Domainname."
 
 # Initialize some variables set by options.
 # The variables have the same names as the options, with
@@ -550,16 +560,12 @@ else
 fi
 
 
-
-prefix="/usr/local"
-exec_prefix="$prefix"
-libexecdir="${exec_prefix}/libexec"
-sysconfdir="${prefix}/etc"
+(cd helpers; make subst.in)
 
 
 
 echo $ac_n "checking Path""... $ac_c" 1>&6
-echo "configure:563: checking Path" >&5
+echo "configure:569: checking Path" >&5
 # Check whether --with-path or --without-path was given.
 if test "${with_path+set}" = set; then
   withval="$with_path"
@@ -571,8 +577,32 @@ fi
 echo "$ac_t""$path" 1>&6
 
 
-echo $ac_n "checking Unterverzeichnis für die Pogramme""... $ac_c" 1>&6
-echo "configure:576: checking Unterverzeichnis für die Pogramme" >&5
+echo $ac_n "checking Unterverzeichnis für die Dateien""... $ac_c" 1>&6
+echo "configure:582: checking Unterverzeichnis für die Dateien" >&5
+# Check whether --with-dir or --without-dir was given.
+if test "${with_dir+set}" = set; then
+  withval="$with_dir"
+   ZCDIR="$withval"
+if test x"$ZCDIR" != x; then
+	ZC="/$ZCDIR";
+fi
+
+else
+  
+ZCDIR=zconnect
+if test x"$ZCDIR" != x; then
+	ZC="/$ZCDIR";
+fi
+
+
+fi
+
+echo "$ac_t""$ZCDIR" 1>&6
+
+
+
+echo $ac_n "checking Unterverzeichnis für die Programme""... $ac_c" 1>&6
+echo "configure:606: checking Unterverzeichnis für die Programme" >&5
 # Check whether --with-execdir or --without-execdir was given.
 if test "${with_execdir+set}" = set; then
   withval="$with_execdir"
@@ -580,7 +610,7 @@ if test "${with_execdir+set}" = set; then
 
 else
   
-	BINDIR="$libexecdir/uconnect"
+       BINDIR="$libexecdir$ZC"
 
 fi
 
@@ -588,7 +618,7 @@ echo "$ac_t""$BINDIR" 1>&6
 
 
 echo $ac_n "checking Unterverzeichnis für die Konfiguration""... $ac_c" 1>&6
-echo "configure:592: checking Unterverzeichnis für die Konfiguration" >&5
+echo "configure:622: checking Unterverzeichnis für die Konfiguration" >&5
 # Check whether --with-confdir or --without-confdir was given.
 if test "${with_confdir+set}" = set; then
   withval="$with_confdir"
@@ -596,15 +626,16 @@ if test "${with_confdir+set}" = set; then
 
 else
   
-	ETCDIR="$sysconfdir/uconnect"
+       ETCDIR="$sysconfdir$ZC"
 
 fi
 
 echo "$ac_t""$ETCDIR" 1>&6
 
 
+
 echo $ac_n "checking spooldir""... $ac_c" 1>&6
-echo "configure:608: checking spooldir" >&5
+echo "configure:639: checking spooldir" >&5
 # Check whether --with-spooldir or --without-spooldir was given.
 if test "${with_spooldir+set}" = set; then
   withval="$with_spooldir"
@@ -621,6 +652,7 @@ fi
 fi
 
 echo "$ac_t""$SPOOLDIR" 1>&6
+
 
 
 # Check whether --with-user or --without-user was given.
@@ -660,7 +692,7 @@ fi
 
 
 echo $ac_n "checking Welcher Typ ist das Gateway""... $ac_c" 1>&6
-echo "configure:664: checking Welcher Typ ist das Gateway" >&5
+echo "configure:696: checking Welcher Typ ist das Gateway" >&5
 # Check whether --with-box or --without-box was given.
 if test "${with_box+set}" = set; then
   withval="$with_box"
@@ -691,8 +723,10 @@ fi
 
 
 
+
+
 echo $ac_n "checking Nachrichten zurückkonvertieren""... $ac_c" 1>&6
-echo "configure:696: checking Nachrichten zurückkonvertieren" >&5
+echo "configure:730: checking Nachrichten zurückkonvertieren" >&5
 # Check whether --enable-real-gate or --disable-real-gate was given.
 if test "${enable_real_gate+set}" = set; then
   enableval="$enable_real_gate"
@@ -715,8 +749,35 @@ else
 fi
 
 
+echo $ac_n "checking Mailsystem""... $ac_c" 1>&6
+echo "configure:754: checking Mailsystem" >&5
+# Check whether --enable-mail or --disable-mail was given.
+if test "${enable_mail+set}" = set; then
+  enableval="$enable_mail"
+   MAIL=$enableval 
+else
+  MAIL='no'
+fi
+
+echo "$ac_t""$MAIL" 1>&6
+
+
+echo $ac_n "checking Mailsystem""... $ac_c" 1>&6
+echo "configure:767: checking Mailsystem" >&5
+# Check whether --enable-news or --disable-news was given.
+if test "${enable_news+set}" = set; then
+  enableval="$enable_news"
+   NEWS=$enableval 
+else
+  NEWS='no'
+fi
+
+echo "$ac_t""$NEWS" 1>&6
+
+
+
 echo $ac_n "checking APC einkompilieren""... $ac_c" 1>&6
-echo "configure:720: checking APC einkompilieren" >&5
+echo "configure:781: checking APC einkompilieren" >&5
 # Check whether --enable-apc or --disable-apc was given.
 if test "${enable_apc+set}" = set; then
   enableval="$enable_apc"
@@ -743,8 +804,9 @@ fi
 
 
 
+
 echo $ac_n "checking Bang-Pfade""... $ac_c" 1>&6
-echo "configure:748: checking Bang-Pfade" >&5
+echo "configure:810: checking Bang-Pfade" >&5
 # Check whether --enable-bang or --disable-bang was given.
 if test "${enable_bang+set}" = set; then
   enableval="$enable_bang"
@@ -768,8 +830,10 @@ fi
 
 
 
+
+
 echo $ac_n "checking Dialcode""... $ac_c" 1>&6
-echo "configure:773: checking Dialcode" >&5
+echo "configure:837: checking Dialcode" >&5
 # Check whether --with-dialprae or --without-dialprae was given.
 if test "${with_dialprae+set}" = set; then
   withval="$with_dialprae"
@@ -782,7 +846,7 @@ echo "$ac_t""$ATDT" 1>&6
 
 
 echo $ac_n "checking Ortsvorwahl""... $ac_c" 1>&6
-echo "configure:786: checking Ortsvorwahl" >&5
+echo "configure:850: checking Ortsvorwahl" >&5
 # Check whether --with-ortswahl or --without-ortswahl was given.
 if test "${with_ortswahl+set}" = set; then
   withval="$with_ortswahl"
@@ -795,7 +859,7 @@ echo "$ac_t""$FERNWAHL" 1>&6
 
 
 echo $ac_n "checking Auslandsvorwahl""... $ac_c" 1>&6
-echo "configure:799: checking Auslandsvorwahl" >&5
+echo "configure:863: checking Auslandsvorwahl" >&5
 # Check whether --with-intwahl or --without-intwahl was given.
 if test "${with_intwahl+set}" = set; then
   withval="$with_intwahl"
@@ -807,15 +871,18 @@ fi
 echo "$ac_t""$INTERNATIONAL" 1>&6
 
 
+
+
+
 for ac_func in syslog
 do
 echo $ac_n "checking for $ac_func""... $ac_c" 1>&6
-echo "configure:814: checking for $ac_func" >&5
+echo "configure:881: checking for $ac_func" >&5
 if eval "test \"`echo '$''{'ac_cv_func_$ac_func'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 819 "configure"
+#line 886 "configure"
 #include "confdefs.h"
 /* System header to define __stub macros and hopefully few prototypes,
     which can conflict with char $ac_func(); below.  */
@@ -838,7 +905,7 @@ $ac_func();
 
 ; return 0; }
 EOF
-if { (eval echo configure:842: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:909: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   eval "ac_cv_func_$ac_func=yes"
 else
@@ -863,10 +930,10 @@ fi
 done
 
 if test $ac_cv_func_syslog = no; then
-	# syslog is not in the default libraries.  See if it's in some other.
-	for lib in bsd socket inet; do
-		echo $ac_n "checking for syslog in -l$lib""... $ac_c" 1>&6
-echo "configure:870: checking for syslog in -l$lib" >&5
+       # syslog is not in the default libraries.  See if it's in some other.
+       for lib in bsd socket inet; do
+               echo $ac_n "checking for syslog in -l$lib""... $ac_c" 1>&6
+echo "configure:937: checking for syslog in -l$lib" >&5
 ac_lib_var=`echo $lib'_'syslog | sed 'y%./+-%__p_%'`
 if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
@@ -874,7 +941,7 @@ else
   ac_save_LIBS="$LIBS"
 LIBS="-l$lib  $LIBS"
 cat > conftest.$ac_ext <<EOF
-#line 878 "configure"
+#line 945 "configure"
 #include "confdefs.h"
 /* Override any gcc2 internal prototype to avoid an error.  */
 /* We use char because int might match the return type of a gcc2
@@ -885,7 +952,7 @@ int main() {
 syslog()
 ; return 0; }
 EOF
-if { (eval echo configure:889: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:956: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
@@ -904,20 +971,51 @@ if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
 #define HAVE_SYSLOG 1
 EOF
 
-		LIBS="$LIBS $lib"; break
+               LIBS="$LIBS $lib"; break
 else
   echo "$ac_t""no" 1>&6
 fi
 
-	done
+       done
 fi
+
+echo $ac_n "checking Systemname""... $ac_c" 1>&6
+echo "configure:984: checking Systemname" >&5
+# Check whether --with-sys or --without-sys was given.
+if test "${with_sys+set}" = set; then
+  withval="$with_sys"
+  
+SYS=$withval;
+else
+  SYS=`hostname -s`
+fi
+
+echo "$ac_t""$SYS" 1>&6
+
+
+echo $ac_n "checking Domainname""... $ac_c" 1>&6
+echo "configure:998: checking Domainname" >&5
+# Check whether --with-domain or --without-domain was given.
+if test "${with_domain+set}" = set; then
+  withval="$with_domain"
+  
+DOMAIN=$withval;
+else
+  DOMAIN=`hostname -d`
+fi
+
+echo "$ac_t""$DOMAIN" 1>&6
+
+
+FQDN=$SYS.$DOMAIN
+
 
 for ac_prog in inews
 do
 # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:921: checking for $ac_word" >&5
+echo "configure:1019: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_prog_INEWS'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -951,7 +1049,7 @@ test -n "$INEWS" || INEWS="/usr/lib/news/inews"
 # Extract the first word of "gcc", so it can be a program name with args.
 set dummy gcc; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:955: checking for $ac_word" >&5
+echo "configure:1053: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_prog_CC'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -981,7 +1079,7 @@ if test -z "$CC"; then
   # Extract the first word of "cc", so it can be a program name with args.
 set dummy cc; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:985: checking for $ac_word" >&5
+echo "configure:1083: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_prog_CC'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -1032,7 +1130,7 @@ fi
       # Extract the first word of "cl", so it can be a program name with args.
 set dummy cl; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:1036: checking for $ac_word" >&5
+echo "configure:1134: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_prog_CC'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -1064,7 +1162,7 @@ fi
 fi
 
 echo $ac_n "checking whether the C compiler ($CC $CFLAGS $LDFLAGS) works""... $ac_c" 1>&6
-echo "configure:1068: checking whether the C compiler ($CC $CFLAGS $LDFLAGS) works" >&5
+echo "configure:1166: checking whether the C compiler ($CC $CFLAGS $LDFLAGS) works" >&5
 
 ac_ext=c
 # CFLAGS is not in ac_cpp because -g, -O, etc. are not valid cpp options.
@@ -1075,12 +1173,12 @@ cross_compiling=$ac_cv_prog_cc_cross
 
 cat > conftest.$ac_ext << EOF
 
-#line 1079 "configure"
+#line 1177 "configure"
 #include "confdefs.h"
 
 main(){return(0);}
 EOF
-if { (eval echo configure:1084: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:1182: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   ac_cv_prog_cc_works=yes
   # If we can't run a trivial program, we are probably using a cross compiler.
   if (./conftest; exit) 2>/dev/null; then
@@ -1106,12 +1204,12 @@ if test $ac_cv_prog_cc_works = no; then
   { echo "configure: error: installation or configuration problem: C compiler cannot create executables." 1>&2; exit 1; }
 fi
 echo $ac_n "checking whether the C compiler ($CC $CFLAGS $LDFLAGS) is a cross-compiler""... $ac_c" 1>&6
-echo "configure:1110: checking whether the C compiler ($CC $CFLAGS $LDFLAGS) is a cross-compiler" >&5
+echo "configure:1208: checking whether the C compiler ($CC $CFLAGS $LDFLAGS) is a cross-compiler" >&5
 echo "$ac_t""$ac_cv_prog_cc_cross" 1>&6
 cross_compiling=$ac_cv_prog_cc_cross
 
 echo $ac_n "checking whether we are using GNU C""... $ac_c" 1>&6
-echo "configure:1115: checking whether we are using GNU C" >&5
+echo "configure:1213: checking whether we are using GNU C" >&5
 if eval "test \"`echo '$''{'ac_cv_prog_gcc'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -1120,7 +1218,7 @@ else
   yes;
 #endif
 EOF
-if { ac_try='${CC-cc} -E conftest.c'; { (eval echo configure:1124: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }; } | egrep yes >/dev/null 2>&1; then
+if { ac_try='${CC-cc} -E conftest.c'; { (eval echo configure:1222: \"$ac_try\") 1>&5; (eval $ac_try) 2>&5; }; } | egrep yes >/dev/null 2>&1; then
   ac_cv_prog_gcc=yes
 else
   ac_cv_prog_gcc=no
@@ -1139,7 +1237,7 @@ ac_test_CFLAGS="${CFLAGS+set}"
 ac_save_CFLAGS="$CFLAGS"
 CFLAGS=
 echo $ac_n "checking whether ${CC-cc} accepts -g""... $ac_c" 1>&6
-echo "configure:1143: checking whether ${CC-cc} accepts -g" >&5
+echo "configure:1241: checking whether ${CC-cc} accepts -g" >&5
 if eval "test \"`echo '$''{'ac_cv_prog_cc_g'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -1172,7 +1270,7 @@ fi
 
 
 echo $ac_n "checking Various system-dependent things""... $ac_c" 1>&6
-echo "configure:1176: checking Various system-dependent things" >&5
+echo "configure:1274: checking Various system-dependent things" >&5
         SYSUNAME="`uname -s | tr 'A-Z' 'a-z'`"
 
         if test "$SYSUNAME" = "$HOST" ; then
@@ -1201,81 +1299,104 @@ EOF
                 freebsd)
                         echo "Konfiguriere fuer FreeBSD..."
                         SYSTYPE=freebsd
-			CFLAGS="$CFLAGS -O2 -Wall"
+                       CFLAGS="$CFLAGS -O2 -pipe -Wall"
                 ;;
                 netbsd)
                         echo "Konfiguriere fuer NetBSD..."
                         SYSTYPE=netbsd
-			CFLAGS="$CFLAGS -pipe -Wall"
+                       CFLAGS="$CFLAGS -O2 -pipe -Wall"
                 ;;
                 linux)
                         echo "Konfiguriere fuer Linux..."
                         SYSTYPE=linux
-			CFLAGS="$CFLAGS -Wall"
-                        PATHADD=$PATHADD:/usr/lib/news:/usr/local/lib/news/bin
+                       CFLAGS="$CFLAGS -Wall"
+                       PATHADD=$PATHADD:/usr/lib/news/bin:/usr/local/lib/news/bin
                 ;;
                 bsd/386)
                         echo "Konfiguriere fuer BSDI BSD/386..."
                         SYSTYPE=bsdi
-			CFLAGS="$CFLAGS -pipe -Wall"
+                       CFLAGS="$CFLAGS -O2 -pipe -Wall"
                 ;;
                 svr4)
                         SYSTYPE=svr4
-			CFLAGS="$CFLAGS -O"
+                       CFLAGS="$CFLAGS -O"
                 ;;
                 sco*)
                         echo "Konfiguriere fuer SCO UNIX..."
                         SYSTYPE=sco
-			LDFLAGS="$LDFLAGS -lPW"
+                       LDFLAGS="$LDFLAGS -lPW"
                 ;;
                 isc*)
                         echo "Konfiguriere fuer Interactive UNIX..."
                         SYSTYPE=isc
-			LDFLAGS="$LDFLAGS -cposix -lPW"
+                       LDFLAGS="$LDFLAGS -cposix -lPW"
                 ;;
                 unix)
                         echo "Konfiguriere fuer System V..."
                         SYSTYPE=sysv
-			LDFLAGS="$LDFLAGS -lPW"
+                       LDFLAGS="$LDFLAGS -lPW"
                 ;;
                 sunos)
                         echo "Konfiguriere fuer SunOS..."
                         echo "(ohne gcc sehe ich allerdings offen gesagt schwarz!)"
                         SYSTYPE=sunos
-			CFLAGS="$CFLAGS -O"
+                       CFLAGS="$CFLAGS -O"
                         ;;
                 *)
                         echo "Diesen Systemtyp kenne ich nicht, mal sehen ob POSIX"
                         echo "klappt..."
                         SYSTYPE=svr4
-			CFLAGS="$CFLAGS -O"
+                       CFLAGS="$CFLAGS -O"
                         ;;
         esac
-	CPPFLAGS="$CPPFLAGS -I../include"
+        CPPFLAGS="$CPPFLAGS -I../include"
 
-if test -f include/sysdep.h
-then
-        rm -f include/sysdep.h
-fi
-if test -f include/os-$SYSTYPE/sysdep.h
-then
-	echo "Linke include/os-$SYSTYPE/sysdep.h nach include/sysdep.h..."
-	cp -i include/os-$SYSTYPE/sysdep.h include/sysdep.h
+
+if test -f include/os-linux/policy.h; then
+	# neue Config
+	if test -f include/sysdep.h; then
+	    rm -f include/sysdep.h
+	fi
+
+	if test -f include/os-$SYSTYPE/sysdep.h; then
+	    echo "Linke include/os-$SYSTYPE/sysdep.h nach include/sysdep.h..."
+	    cp -i include/os-$SYSTYPE/sysdep.h include/sysdep.h
+	else
+	    echo "Unbekanntes System, verwende include/os-linux/sysdep.h"
+	    cp -i include/os-linux/sysdep.h include/sysdep.h
+	fi
+
+	if test -f include/policy.h; then
+	    rm -f include/policy.h
+	fi
+	if test -f include/os-$SYSTYPE/policy.h; then
+	    echo "Linke include/os-$SYSTYPE/policy.h nach include/policy.h..."
+	    cp -i include/os-$SYSTYPE/policy.h include/policy.h
+	else
+	    echo "Unbekanntes System, verwende include/os-linux/policy.h"
+	    cp -i include/os-linux/policy.h include/policy.h
+	fi
+
 else
-	echo "Unbekanntes System, verwende include/os-linux/sysdep.h"
-	cp -i include/os-linux/sysdep.h include/sysdep.h
-fi
-if test -f include/policy.h
-then
-        rm -f include/policy.h
-fi
-if test -f include/os-$SYSTYPE/policy.h
-then
-	echo "Linke include/os-$SYSTYPE/policy.h nach include/policy.h..."
-	cp -i include/os-$SYSTYPE/policy.h include/policy.h
-else
-	echo "Unbekanntes System, verwende include/os-linux/policy.h"
-	cp -i include/os-linux/policy.h include/policy.h
+	# alte Config
+
+	if test -f include/sysdep.h; then
+	        rm -f include/sysdep.h
+	fi
+	if ln -s `pwd`/include/systems/$SYSTYPE.h include/sysdep.h 2>/dev/null;	then
+	        :
+	else
+        	ln include/systems/$SYSTYPE.h include/sysdep.h
+	fi
+
+	if test -f include/policy.h.$SYSTYPE; then
+	        echo "Erzeuge include/policy.h..."
+	        cp include/policy.h.$SYSTYPE include/policy.h
+	else
+	        echo "Fuer dieses System ist kein include/policy.h bekannt."
+	        echo "Sie muessen es unbedingt von Hand editieren!"
+	        echo ""
+	fi
 fi
 
 echo "$ac_t""fertig" 1>&6
@@ -1284,12 +1405,10 @@ echo "$ac_t""fertig" 1>&6
 
 
 
-
-
 # Extract the first word of "ranlib", so it can be a program name with args.
 set dummy ranlib; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:1293: checking for $ac_word" >&5
+echo "configure:1412: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_prog_RANLIB'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -1322,7 +1441,7 @@ do
 # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:1326: checking for $ac_word" >&5
+echo "configure:1445: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_prog_shell'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -1351,6 +1470,7 @@ fi
 test -n "$shell" && break
 done
 test -n "$shell" || shell="/bin/sh"
+
 
 
 trap '' 1 2 15
@@ -1465,7 +1585,7 @@ done
 
 ac_given_srcdir=$srcdir
 
-trap 'rm -fr `echo "Makefile.global Makefile etc/config" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
+trap 'rm -fr `echo "etc/config.in Makefile Makefile.global helpers/subst" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
 EOF
 cat >> $CONFIG_STATUS <<EOF
 
@@ -1498,16 +1618,23 @@ s%@oldincludedir@%$oldincludedir%g
 s%@infodir@%$infodir%g
 s%@mandir@%$mandir%g
 s%@path@%$path%g
+s%@ZC@%$ZC%g
 s%@BINDIR@%$BINDIR%g
 s%@ETCDIR@%$ETCDIR%g
 s%@SPOOLDIR@%$SPOOLDIR%g
 s%@USER@%$USER%g
 s%@GROUP@%$GROUP%g
 s%@INSTTYPE@%$INSTTYPE%g
+s%@MAIL@%$MAIL%g
+s%@NEWS@%$NEWS%g
 s%@APCOBJS@%$APCOBJS%g
+s%@BANG@%$BANG%g
 s%@ATDT@%$ATDT%g
 s%@FERNWAHL@%$FERNWAHL%g
 s%@INTERNATIONAL@%$INTERNATIONAL%g
+s%@SYS@%$SYS%g
+s%@DOMAIN@%$DOMAIN%g
+s%@FQDN@%$FQDN%g
 s%@INEWS@%$INEWS%g
 s%@CC@%$CC%g
 s%@SYSTYPE@%$SYSTYPE%g
@@ -1555,7 +1682,7 @@ EOF
 
 cat >> $CONFIG_STATUS <<EOF
 
-CONFIG_FILES=\${CONFIG_FILES-"Makefile.global Makefile etc/config"}
+CONFIG_FILES=\${CONFIG_FILES-"etc/config.in Makefile Makefile.global helpers/subst"}
 EOF
 cat >> $CONFIG_STATUS <<\EOF
 for ac_file in .. $CONFIG_FILES; do if test "x$ac_file" != x..; then
@@ -1620,4 +1747,5 @@ EOF
 chmod +x $CONFIG_STATUS
 rm -fr confdefs* $ac_clean_files
 test "$no_create" = yes || ${CONFIG_SHELL-/bin/sh} $CONFIG_STATUS || exit 1
+
 
