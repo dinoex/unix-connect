@@ -131,7 +131,6 @@ do
 		else
 			rm -rf $TMP
 		fi
- 	fi
 	fi
 
 	# Ok, dieses System ist fertig - Lock wieder freigeben

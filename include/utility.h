@@ -4,6 +4,7 @@
  *  Copyright (C) 1993-1994  Martin Husemann
  *  Copyright (C) 1995       Christopher Creutzig
  *  Copyright (C) 1999-2000  Dirk Meyer
+ *  Copyright (C) 1999-2000  Matthias Andree
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -52,9 +53,10 @@ char * strlwr(char *);
 char * strupr(char *);
 
 #ifndef HAVE_STCCPY
-int stccpy(char *, const char *, int);
+size_t stccpy(char *, const char *, size_t);
 #endif
-void qstccpy(char *, const char *, int);
+void qstccpy(char *, const char *, size_t);
+char * strcdup(const char *, size_t);
 
 /*
  *  Pruefe ein lock-File und warte gegebenenfalls, bis es verschwindet.

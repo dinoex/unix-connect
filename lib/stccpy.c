@@ -1,7 +1,7 @@
 /* $Id$ */
 /*
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
- *  Copyright (C) 1999       Matthias Andree
+ *  Copyright (C) 1999-2000  Matthias Andree
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -47,27 +47,28 @@
  *
  * SYNOPSIS
  *   #include <utility.h>
- *   int stccpy(char *to, const char* from, int len)
+ *   size_t stccpy(char *to, const char* from, size_t len)
  *
  * DESCRIPTION
  *   Die Funktion kopiert bis zu len Bytes aus dem NUL-terminierten String
- *   from in den Zielstring to. Der Zielstring ist immer NUL-terminiert
+ *   from in den Zielstring to. Der Zielstring ist immer NUL-terminiert. 
+ *   Das NUL-Byte wird mitgezaehlt. 
  *
  * PARAMETER
  *   char *to - String, auf den kopiert werden soll.
  *   const char *from - zu kopierender String.
- *   int len - max. in to zu schreibende Laenge
+ *   size_t len - max. in to zu schreibende Laenge
  *
  * RESULT
- *  int - Anzahl der geschriebenen Bytes einschl. NUL-Byte
+ *  size_t - Anzahl der geschriebenen Bytes einschl. NUL-Byte
  *
  * BUGS
  *
  */
 
-int stccpy(char *to, const char *from, int len)
+size_t stccpy(char *to, const char *from, size_t len)
 {
-	int i=0;
+	size_t i=0;
 	if(!len) return 0;
 
 	while(len) {
@@ -91,16 +92,17 @@ int stccpy(char *to, const char *from, int len)
  *
  * SYNOPSIS
  *   #include <utility.h>
- *   void qstccpy(char *to, const char* from, int len)
+ *   void qstccpy(char *to, const char* from, size_t len)
  *
  * DESCRIPTION
  *   Die Funktion kopiert bis zu len Bytes aus dem NUL-terminierten String
- *   from in den Zielstring to. Der Zielstring ist immer NUL-terminiert
+ *   from in den Zielstring to. Der Zielstring ist immer NUL-terminiert.
+ *   Das NUL-Byte wird mitgezaehlt. 
  *
  * PARAMETER
  *   char *to - String, auf den kopiert werden soll.
  *   const char *from - zu kopierender String.
- *   int len - max. in to zu schreibende Laenge
+ *   size_t len - max. in to zu schreibende Laenge
  *
  * RESULT
  *  void 
@@ -109,7 +111,7 @@ int stccpy(char *to, const char *from, int len)
  *
  */
 
-void qstccpy(char *to, const char *from, int len)
+void qstccpy(char *to, const char *from, size_t len)
 {
 	if(!len) return;
 	while(len--) {
