@@ -2,7 +2,8 @@
 /*
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1993-94  Martin Husemann
- *  Copyright (C) 1995     Christopher Creutzig
+ *  Copyright (C) 1995-98  Christopher Creutzig
+ *  Copyright (C) 1999     Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,8 +26,8 @@
  *
  *  Bugreports, suggestions for improvement, patches, ports to other systems
  *  etc. are welcome. Contact the maintainer by e-mail:
- *  christopher@nescio.foebud.org or snail-mail:
- *  Christopher Creutzig, Im Samtfelde 19, 33098 Paderborn
+ *  dirk.meyer@dinoex.sub.org or snail-mail:
+ *  Dirk Meyer, Im Grund 4, 34317 Habichstwald
  *
  *  There is a mailing-list for user-support:
  *   unix-connect@mailinglisten.im-netz.de,
@@ -40,6 +41,9 @@
  *  uulog.h
  *
  *  Logfile-Routinen fÅr den ZCONNECT/RFC GateWay
+ *
+ *  Sat Jul  1 20:45:39 MET DST 1995 (P.Much)
+ *  - Erweitert zur Nutzung der syslog-facility mit -DLOGSYSLOG.
  */
 
 #ifndef SYSDEP_H
@@ -47,6 +51,33 @@
 #endif
 
 
+#ifdef LOGSYSLOG
+#define SYSLOG_KANAL	LOG_MAIL
+#define SYSLOG_LOGNAME	"uconnect"
+#define FATALLOG_PRIO	LOG_CRIT
+
+# define Z2ULOG		1
+# define Z2ULOG_NAME	"zc2mail"
+# define Z2ULOG_PRIO	LOG_INFO
+# define U2ZLOG		2
+# define U2ZLOG_NAME	"mail2zc"
+# define U2ZLOG_PRIO	LOG_INFO
+# define ERRLOG		3
+# define ERRLOG_NAME	"error"
+# define ERRLOG_PRIO	LOG_ERR
+# define INCOMING	4
+# define INCOMING_NAME	"caller"
+# define INCOMING_PRIO	LOG_NOTICE
+# define OUTGOING	5
+# define OUTGOING_NAME	"calling"
+# define OUTGOING_PRIO	LOG_INFO
+# define XTRACTLOG	6
+# define XTRACTLOG_NAME	"extract"
+# define XTRACTLOG_PRIO	LOG_INFO
+# define DEBUGLOG	7
+# define DEBUGLOG_NAME	"debug"
+# define DEBUGLOG_PRIO	LOG_DEBUG
+#else
 # define Z2ULOG		"import.log"
 # define U2ZLOG		"export.log"
 # define ERRLOG		"errors.log"
@@ -54,11 +85,16 @@
 # define OUTGOING	"telefon.log"
 # define XTRACTLOG	"extract.log"
 # define DEBUGLOG	"debug.log"
+#endif
 
 extern char *nomem;
 
 
+#ifdef LOGSYSLOG
+void logfile(int lchan, char *from, char *to, char *mid, char *format,...)
+#else
 void logfile(char *lfilename, char *from, char *to, char *mid, char *format,...)
+#endif
 #ifdef __GNUC__
 __attribute__ ((format(printf,5,6)))
 #endif

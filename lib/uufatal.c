@@ -2,7 +2,8 @@
 /*
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1993-94  Martin Husemann
- *  Copyright (C) 1995     Christopher Creutzig
+ *  Copyright (C) 1995-98  Christopher Creutzig
+ *  Copyright (C) 1999     Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,14 +26,14 @@
  *
  *  Bugreports, suggestions for improvement, patches, ports to other systems
  *  etc. are welcome. Contact the maintainer by e-mail:
- *  christopher@nescio.foebud.org or snail-mail:
- *  Christopher Creutzig, Im Samtfelde 19, 33098 Paderborn
+ *  dirk.meyer@dinoex.sub.org or snail-mail:
+ *  Dirk Meyer, Im Grund 4, 34317 Habichstwald
  *
  *  There is a mailing-list for user-support:
  *   unix-connect@mailinglisten.im-netz.de,
- *  to join, ask Nora Etukudo at
+ *  write a mail with subject "Help" to
  *   nora.e@mailinglisten.im-netz.de
- *
+ *  for instructions on how to join this list.
  */
 
 
@@ -45,11 +46,18 @@
  * ===========  ==  ===========
  * 15-Feb-1993  KK  Dokumentation erstellt.
  *
+ *
+ *  Sat Jul  1 20:45:39 MET DST 1995 (P.Much)
+ *  - Erweitert zur Nutzung der syslog-facility mit -DLOGSYSLOG. 
+ *  - Fehlende Datumsausgabe ergaenzt.                     
  */
 
 # include "config.h"
 # include <stdio.h>
 # include <stdarg.h>
+#ifdef LOGSYSLOG
+# include <syslog.h>
+#endif
 # include <time.h>
 # include "ministat.h"
 # include "uulog.h"
@@ -85,12 +93,28 @@ char *nomem = "Nicht genug Hauptspeicher!";
 
 void uufatal(char *prog, char *format, ...)
 {
+#ifndef LOGSYSLOG
 	FILE *f;
 	time_t now;
 	char buf[200];
+#endif
 	va_list ap;
 
 	minireadstat();
+#ifdef LOGSYSLOG
+	openlog(SYSLOG_LOGNAME, LOG_PID|LOG_CONS, SYSLOG_KANAL);
+	if(format == NULL || strlen(format) == 0)
+		syslog(FATALLOG_PRIO, "%s: (unknown)", prog);
+	else {
+		char tmpformat[3 + strlen(prog) + strlen(format)];
+
+		sprintf(tmpformat, "%s: %s", prog, format);
+		va_start(ap, format);
+		vsyslog(FATALLOG_PRIO, tmpformat, ap);
+		va_end(ap);
+	}
+	closelog();
+#else
 	sprintf(buf, "%s/" ERRLOG, logdir);
 	f = fopen(buf, "a");
 	if (!f) {
@@ -99,12 +123,13 @@ void uufatal(char *prog, char *format, ...)
 	}
 	now = time(NULL);
 	strftime(buf, 200, "%Y/%m/%d %H:%M:%S", localtime(&now));
-	fprintf(f, "%s:\t", prog);
+	fprintf(f, "%s\t%s:\t", buf, prog);
 	va_start(ap, format);
 	vfprintf(f, format, ap);
 	va_end(ap);
 	fputs("\n", f);
 	fclose(f);
+#endif
 	fprintf(stderr, "\n\n%s:\t", prog);
 	va_start(ap, format);
 	vfprintf(stderr, format, ap);
