@@ -17,7 +17,7 @@ include ../Makefile.global
 
 RSMTPSPOOL=$(SPOOLDIR)/rsmtp
 
-WARNALL	= \
+WARNALL?	= \
 	-W \
 	-Wimplicit \
 	-Wreturn-type \
@@ -30,32 +30,32 @@ WARNALL	= \
 	-Wuninitialized \
 	-Wparentheses
 
-WARNGCC24x = \
+WARNGCC24x? = \
 	-pedantic \
 	-Wconversion \
 	-Wtraditional \
 	-Wenum-clash \
 
-WARNGCC25x = \
+WARNGCC25x? = \
 	-Wconversion \
 	-Wenum-clash \
 
-WARNGCC26x = \
+WARNGCC26x? = \
 	-Wmissing-declarations \
 	-pedantic \
 	-Wtraditional \
 	-Wenum-clash \
 
-WARNGCC27x = \
+WARNGCC27x? = \
 	-Wmissing-declarations \
 	-pedantic
 
-WARNEGCS = \
+WARNEGCS? = \
 	-Wimplicit-int \
 	-Wimplicit-function-delcaration \
 	-Wmissing-declarations \
 
-WARNBASE = \
+WARNBASE? = \
 	$(WARNALL) \
 	-Wshadow \
 	-Wid-clash-30 \
@@ -70,7 +70,7 @@ WARNBASE = \
 	-Woverloaded-virtual \
 	-Winline
 
-WARN	= \
+WARN?	= \
 	$(WARNBASE) \
 	$(WARNEGCS)
 
