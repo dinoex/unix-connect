@@ -5,8 +5,8 @@ Aenderungen an UnixConnect
 seit 0.88
 
 - include/istring.h, include/idir.h,
-  */*.c: (Dirk Meyer)
-  includes vereinfacht.
+  */*.h, */*.c, */Makefile: (Dirk Meyer)
+  includes vereinfacht, Copyrights aktualisiert.
 
 - shell/auspack.in, shell/einpack.in: (Dirk Meyer)
   unrar und unarj eingebaut.

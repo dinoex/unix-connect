@@ -1,7 +1,7 @@
-# Dummy-Makefile fuer kein Mail- bzw. kein Newssystem zu konfigurieren
+# Makefile fuer das cnews-Subverzeichnis
 #
 #   UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
-#   Copyright (C) 1999     Dirk Meyer
+#   Copyright (C) 1999-2000  Dirk Meyer
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
