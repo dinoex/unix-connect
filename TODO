@@ -1,3 +1,5 @@
+Was kann noch getan werden?
+
 - JANUS: Bei Abbruch Datenverlust.
 
 - Backout
@@ -14,9 +16,7 @@
 
 - VIA <-> Received ?
 
-- Header auf ungueltige Zeichen pruefen
-
-- lange Nachrichten splitten (MIME) (?)
+- Header-Inhalt auf ungueltige Zeichen pruefen
 
 - ERR: in Body (?)
 
@@ -37,17 +37,25 @@
 
 - GATE sollte base64 statt uuencode kodieren.
 
-- stderr mit lrzsz, da ausgabeumleitung probleme macht
-  hier ist ein neues Logfile sinnvoll oder nicht?
-
-- die programme in gate/ sollten die Schleife abbrechen,
-  wenn das Zielverzeichnis nicht existiert.
-
 - BUG: anruf() initialisiert die Schnittstelle nicht richtig besteht
   weiter, wird durch meinen Patch NICHT behoben.
 
 - Das ganze fork()-Gezumpel sollte mal in eine Unterfunktion verbannt und
   mit Fehlerhandling versehen werden.
 
-- Logtexte mit "%" in der Adresse werden interpretiert ....
+- Warum klappt O_NONBLOCK unter NetBSD nicht?
+
+- isatty(2) benutzen, um die Ausgaben auf stderr einzuschränken, wenn
+  zcall von Cron gestartet wird...
+
+- Quoted-printable decodieren! Optional auch erzeugen?
+  Binaerfiles auch in Base64 dekodieren (oder mpack aufrufen?)
+
+- WAB: vernünftig behandeln, speziell beim ersetzen von Point-ABS: !!!
+
+- Batchfähige Verwaltungsroutinen mit perl
+  TCL/TK Frontend
+
+- TCP/IP support auch in zcall,
+  evtl. 'ftp' als Transfer-Protokoll integrieren
 
