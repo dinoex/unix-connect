@@ -80,7 +80,7 @@ clean:
 mostlyclean: clean
 
 distclean:
-	for dir in $(SUBDIRS); do \
+	for dir in $(SUBDIRS) mail-and-news; do \
 		(cd $$dir && $(MAKE) -$(MAKEFLAGS) distclean) done
 	-rm -f $(CLEANFILES)
 	-rm -f Makefile.global Makefile helpers/subst

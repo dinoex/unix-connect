@@ -22,6 +22,11 @@
 #  GNU General Public License finden Sie in der Datei README.1st.
 #  ------------------------------------------------------------------------
 
+SHELL=/bin/sh
+CLEANFILES = *.o *.a *.bak *.rej *.orig core *.core
+CDIRS = date hdlib lib gate online tools rsmtp
+SUBDIRS = $(CDIRS) etc shell mail-and-news
+
 all: subst.in ../configure
 
 install:
@@ -29,15 +34,45 @@ install:
 clean:
 
 distclean:
+	-rm -f $(CLEANFILES)
+	-rm -f subst
+	-cd .. && rm -f $(CLEANFILES)
+	-cd .. && cp -f Makefile.global.in Makefile.global
+	for dir in $(SUBDIRS); do \
+		(cd ../$$dir && $(MAKE) -$(MAKEFLAGS) distclean) done
+	-cd .. && rm -f Makefile.global Makefile subst
+	-cd .. && rm -f config.cache config.log config.status confdefs.h
+	-cd .. && rm -f include/sysdep.h include/policy.h
 
 maintainer-clean:
 	-rm -f subst subst.in ../configure
+	-cd .. && cp -f Makefile.global.in Makefile.global
+	cd ../hdlib && $(MAKE) -$(MAKEFLAGS) maintainer-clean
+
+dist:	all
+	-cd .. && cp -f Makefile.global.in Makefile.global
+	cd ../hdlib && $(MAKE) -$(MAKEFLAGS) hash.c
+	-cd .. && rm -f Makefile.global
 
 subst.in: makesubst ../configure.in
 	$(SHELL) ./makesubst > subst.in
 	chmod a+x subst.in
 
-../configure:	../configure.in
+../configure:	../configure.in subst.in
 	cd .. && autoconf
+
+# do or redo configuration
+../Makefile: ../Makefile.in ../config.status
+	cd .. && CONFIG_FILES=Makefile CONFIG_HEADERS= $(SHELL) ./config.status
+
+../Makefile.global: ../Makefile.global.in ../config.status
+	cd .. && CONFIG_FILES=Makefile.global CONFIG_HEADERS= $(SHELL) ./config.status
+
+subst: subst.in ../config.status
+	cd .. && CONFIG_FILES=helpers/subst CONFIG_HEADERS= $(SHELL) ./config.status
+
+# default only with the minimum parametes
+../config.status:	../configure
+	cd .. && sh configure --with-user=news --with-group=uucp
 
 # eof

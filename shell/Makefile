@@ -70,3 +70,13 @@ uninstall:
 distclean:	clean
 	-rm -f $(FILES)
 
+# BSD
+#
+#$(FILES): $(.PREFIX).in
+#	$(SHELL) ../helpers/subst < $(.PREFIX).in > $(.TARGET)
+#
+# GNU
+#
+#$(FILES): % : %.in
+#	$(SHELL) ../helpers/subst < $< > $@
+#
