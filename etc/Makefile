@@ -7,7 +7,7 @@ include ../Makefile.global
 FILES=config approved alias autoeintrag.zconnect myself.zconnect
 
 config: config.in ../Makefile.global
-	sed 's=@ETCDIR@=$(ETCDIR)=; s=@BINDIR@=$(BINDIR)=; s=@SPOOLDIR@=$(SPOOLDIR)=' < config.in > config
+	sed "s=@ETCDIR@=$(ETCDIR)=; s=@BINDIR@=$(BINDIR)=; s=@SPOOLDIR@=$(SPOOLDIR)=" < config.in > config
 
 all: config
 
