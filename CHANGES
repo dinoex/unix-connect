@@ -4,6 +4,10 @@ $Id$
 Aenderungen an UnixConnect
 seit 0.78
 
+- Option fuer syslogd -D LOGSYSLOG
+
+- Fehler bei bestimmten base64-Laengen behoben
+
 - erzeuge X-Header statt U-X-Header
   Altes Verhalten mit #define NO_PLUS_KEEP_X_HEADER
 
