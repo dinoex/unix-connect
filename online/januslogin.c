@@ -161,7 +161,7 @@ void reject(char *prog, char *sysname, char *passwd)
 
 /*
  *   Hauptprogramm, Gesamtstruktur
- */ 
+ */
 int main(int argc, char **argv)
 {
 	char sysname[FILENAME_MAX];
@@ -174,7 +174,7 @@ int main(int argc, char **argv)
 	int i, j, z, serchk;
 	FILE *f;
 	header_p hd, p;
-	
+
 	/*
 	 *  Da dieses Programm Login-Shell ist, muss die Fehlerausgabe
 	 *  irgendwo hin dirigiert werden...
@@ -188,11 +188,13 @@ int main(int argc, char **argv)
 		}
 	}
 
+	freopen("/tmp/januslogin-stderr.log", "w", stderr);
+
 	/*
 	 *  Konfiguration einlesen.
 	 */
 	minireadstat();
-	
+
 	/*
 	 *  Verschiedene Abbruch-Gruende vorbereiten
 	 */
@@ -360,11 +362,11 @@ ask_passwort:
 	 */
 	sleep(3);
 
-	alarm(30);	
+	alarm(30);
 	for (i=1; i<7; i++) {
 		putchar(NAK); fflush(stdout);
 		z = 0;
-		for (j=0; j<4; j++) 
+		for (j=0; j<4; j++)
 			sernr[j] = toupper(getchar());
 		serchk = getchar();
 /* Die Pruefsumme der Seriennummer zu pruefen, ist eigentlich unnoetig. ccr */

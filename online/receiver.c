@@ -105,10 +105,12 @@ int tcp = 0;
 
 /*
  *   Hauptprogramm, Gesamtstruktur
- */ 
+ */
 int main(int argc, char **argv)
 {
 	volatile int file_phase;
+
+	freopen("/tmp/receiver-stderr.log", "w", stderr);
 
 #ifdef TCP_SUPPORT
 	if (argc == 2 && strcmp(argv[1], "-l") == 0) {
@@ -116,7 +118,7 @@ int main(int argc, char **argv)
 		tcp = 1;
 	}
 #endif
-	
+
 	minireadstat();
 	/*
 	 *  Da dieses Programm Login-Shell ist, muss die Fehlerausgabe
