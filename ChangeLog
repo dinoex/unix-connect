@@ -4,6 +4,28 @@ Aenderungen an UnixConnect
 
 seit 0.90
 
+- gate/uursmtp.c: (Dirk Meyer)
+  Mails mit nur "\r" als Zeilenumbruch wuden ohne Warnung abgeschnitten.
+  Altes Verhalten mit der Option: ENABLE_MAIL_NEED_CRLF
+
+- gate/zconv.c: (Dirk Meyer)
+  Sender auch bei Mail erzeugen.
+
+- hdlib/hash.c: (Dirk Meyer)
+  mit gperf 2.7.2 erzeugt.
+
+- shell/einpack.in: (Matthias Andree)
+  lha-Optionsreihenfolge im LZH-Packer geändert, unnützerweise hat
+  wieder ein Japaner an den Optionen gefrickelt, o muß zwingend
+  von 5 oder 6 gefolgt werden oder am Ende stehen.
+  Behebt Inkompatiblität mit SuSE Linux 6.4.
+
+- Makefile.global.in: (Matthias Andree)
+  Compileraufrufe nicht mehr ausgeben.
+
+- online/call.c: (Matthias Andree)
+  Bugfix in anruf(): wiederanwahl jetzt erfolgreich.
+
 - gate/zconv.c: (Moritz Both)
   bricht RFC-Headerzeilen nicht mehr mitten in quoted-strings um.
 
