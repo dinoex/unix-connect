@@ -69,4 +69,8 @@ tidy:	clobber
 newhash:
 	(cd hdlib; $(MAKE) newhash)
 
+distrib:
+	(cd helpers; $(MAKE))
+	$(MAKE) tidy
+
 # eof
