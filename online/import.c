@@ -72,7 +72,7 @@
 /*
  *  Alle Dateien im aktuellen Verzeichnis entpacken und einlesen...
  */
-int import_all(char *arcer, char *sysname)
+int import_all(const char *arcer, const char *sysname)
 {
 	int returncode = 0;
 

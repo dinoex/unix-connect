@@ -3,8 +3,8 @@
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1993-1994  Martin Husemann
  *  Copyright (C) 1995-1996  Christopher Creutzig
- *  Copyright (C) 1999       Dirk Meyer
  *  Copyright (C) 1999-2000  Anderas Barth
+ *  Copyright (C) 1999-2000  Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -80,6 +80,15 @@
 #define NAK	0x15
 #define ACK	0x06
 
+#ifndef TRUE
+#define TRUE 1
+#endif
+#ifndef FALSE
+#define FALSE 0
+#endif
+
+FILE *deblogfile;
+
 static const char *tty = "/dev/tty";
 
 int has_syslock=FALSE, has_ttylock=FALSE, has_data=FALSE;
@@ -90,7 +99,7 @@ static char *spooldir;
 static auth_t* sys; /* Datem zu dem einzelnen System */
 
 static void abbruch(const int cause);
-static int getln (char *p, const boolean anzeige, const int max);
+static int getln (char *p, const int anzeige, const int max);
 
 struct call_t {
 	const char *sysspooldir; /* sysspooldir */
@@ -116,7 +125,7 @@ handle_nocarrier() {
 
 
 static int
-getln (char *p, const boolean i, const int y) {
+getln (char *p, const int i, const int y) {
 	int j=0;
 	int z;
 	int max=y;
@@ -146,8 +155,6 @@ static int getsysname(char *sysname, char *passwd, int len);
 static int mvtotmp(const auth_t *s);
 static int doonline(const auth_t *s);
 static int initnames(const auth_t *s);
-
-// extern int asprintf __P ((char **, const char *, ...));
 
 /*
  *   Hauptprogramm, Gesamtstruktur
@@ -239,6 +246,16 @@ init() {
 
 	initlog("januslogin");
 
+	deblogfile = fopen("/tmp/zlog", "a");
+	if (!deblogfile) {
+		deblogfile = fopen("/dev/null", "w");
+		if (!deblogfile) {
+			printf("Sorry - kann Logfile nicht schreiben...\n");
+			exit( 10 );
+		}
+	}
+ 
+
 	/*
 	 *  Da dieses Programm Login-Shell ist, muss die Fehlerausgabe
 	 *  irgendwo hin dirigiert werden...
@@ -289,7 +306,11 @@ getsysname(char *sysname, char *passwd, int len) {
 
 		if (sysname[0] &&
 			stricmp(sysname, "zerberus") &&
-			stricmp(sysname, "janus")) {
+			stricmp(sysname, "janus") &&
+			stricmp(sysname, "janus2")) {
+				/* Strich am Anfang des Namens entefernen */
+				if ( sysname[ 0 ] == '-' )
+					strcpy(sysname,sysname+1);
 				strlwr(sysname);
 				Status=1;
 		}
@@ -304,14 +325,24 @@ getsysname(char *sysname, char *passwd, int len) {
 		getln(passwd, FALSE, len);
 
 		if (!stricmp(passwd, "zerberus") ||
-		    !stricmp(passwd, "janus")) {
+		    !stricmp(passwd, "janus") ||
+		    !stricmp(passwd, "janus2")) {
 			Status=0;
+			break;
 		}
 
-		if (stricmp(sysname, passwd) && Status==1) {
-			Status=2;
-			alarm(0);
+		/* Das soll auch funktionieren, wenn der - bei einem System
+		   ignoriert wurde. */
+		if ( passwd[ 0 ] == '-' ) {
+			if (stricmp(sysname+1, passwd+1) == 0)
+				break;
+		} else {
+			if (stricmp(sysname, passwd) == 0)
+				break;
 		}
+
+		Status=2;
+		alarm(0);
 		break;
 	    }
 	}
@@ -321,7 +352,7 @@ getsysname(char *sysname, char *passwd, int len) {
 
 static int
 initnames(const auth_t* s) {
-#if 0
+#ifndef HAVE_SNPRINTF
 	char *x,*y;
 
 	if (!(x = (char *) malloc(
@@ -423,8 +454,17 @@ mvtotmp(const auth_t *s)
 		 * kann nie wissen ...
 		 */
 		if(backoutdir) {
+		    if(backupnumber) {
+			if (backup2(backoutdir, call.outname,
+					s->ssysname, sys->arcerout)) {
+				newlog(ERRLOG,
+					"Backupout hat nicht funktioniert!");
+				remove( call.outname );
+			}
+		    } else {
 			backup(backoutdir, call.outname,
 				s->ssysname, BACKUP_LINK);
+		    }
 		} /* XXX Die externen Variablen gehoeren noch weg */
 	}
 
@@ -435,6 +475,10 @@ static int
 doonline(const auth_t *s) {
 
 	int j,z;
+#ifndef DISABLE_JANUS_CHECKSUM
+	int i;
+	char sernr[6];
+#endif
 
 	/*
 	 *  Man glaubt es kaum, aber einige Programme schaffen es nicht,
@@ -446,9 +490,23 @@ doonline(const auth_t *s) {
 	alarm(30);
 	putchar(NAK); fflush(stdout);
 	z = 0;
+#ifdef DISABLE_JANUS_CHECKSUM
 	for (j=0; j<4; j++) {
 		getchar(); /* Die Seriennummer */
 	}
+#else
+	for ( i = 0; i < 5; i++ ) {
+		/* Die Pruefsumme der Seriennummer zu pruefen,
+		   hilft Zmodem richtig zu starten (dm)
+		 */
+		for (j=0; j<5; j++) {
+			sernr[j] = getchar(); /* Die Seriennummer */
+		}
+		sernr[5] = sernr[0]+sernr[1]+sernr[2]+sernr[3];
+		if ( sernr[5] == sernr[4] )
+			break;
+	}
+#endif
 	getchar(); /* Und die Pruefsumme */
 	putchar(ACK); /* schon ok ... ;-) */
 	fflush(stdout);

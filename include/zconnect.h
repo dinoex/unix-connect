@@ -3,7 +3,7 @@
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1993-1994  Martin Husemann
  *  Copyright (C) 1995-1998  Christopher Creutzig
- *  Copyright (C) 1999       Dirk Meyer
+ *  Copyright (C) 1999-2000  Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -241,7 +241,7 @@ header_p sysparam(header_p local, header_p remote, header_p sysfile);
 void bereitstellen(void);
 void aufraeumen(void);
 header_p get_myself(void);
-int import_all(char *arcer, char *sysname);
+int import_all(const char *arcer, const char *sysname);
 
 /*
  *  Paket-Routinen: phase ist 1 .. 4 (siehe ZCONNECT - Doku)
