@@ -34,7 +34,7 @@ case "$KENNUNG" in
  "ZIP1" )	ARC=`dirname $ARC`/`basename $ARC .zip`
 		zip -k $ARC.zip $*
 		EC=$? ;;
- "ZIP*" )	ARC=`dirname $ARC`/`basename $ARC .zip`
+ ZIP*)		ARC=`dirname $ARC`/`basename $ARC .zip`
 		zip $ARC.zip $*
 		EC=$? ;;
  "ARC" )	ARC=`dirname $ARC`/`basename $ARC .arc`
@@ -52,7 +52,7 @@ case "$KENNUNG" in
 		EC=$?
 		mv $ARC.lzh $ARC.lha
 		rm -f $ARC.bak	;;
- "NON*")	cat $* >> $ARC.non
+ NON*)		cat $* >> $ARC.non
 		EC=$? ;;
  *)		@SENDMAIL@ postmaster << EOF
 Subject: ZCONNECT Warnung: einpack falsch aufgerufen

@@ -28,8 +28,8 @@ ARC=$2
 shift; shift
 
 case "$KENNUNG" in
- "zip*" | \
- "ZIP*" )	name=`dirname $ARC`/`basename $ARC .zip`
+ zip* | \
+ ZIP* )	name=`dirname $ARC`/`basename $ARC .zip`
 		if [ -r $name.zip ]
 		then
 			ARC="$name".zip
@@ -92,8 +92,8 @@ case "$KENNUNG" in
 		fi
 		lha xi $ARC
 		EC=$? ;;
- "non*" | \
- "NON*")	name=`dirname $ARC`/`basename $ARC .non`
+ non* | \
+ NON*)	name=`dirname $ARC`/`basename $ARC .non`
 		if [ -r $name.non ]
 		then
 			ARC="$name".non
