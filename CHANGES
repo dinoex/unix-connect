@@ -3,6 +3,28 @@ $Id$
 
 Aenderungen an UnixConnect
 
+seit 0.77
+
+- port fuer BSD generish
+
+- Hardwarehandshake NEED_CRTSCTS bei Linux und FreeBSD
+
+- neuer gperf 2.7 zum erzeugen von hash.c
+
+- Korrektes Errechnen der Lokalzeit
+  wenn das Datum durch Sommerzeit verstellt wurde.
+
+- Robuster bei defekten newgroups/rmgroups
+
+- Vermeidung von doppelten ABS, MID, WAB
+  Der alte Code funktionierte nicht.
+
+- Vermeidung von doppleten ROT: Headern
+
+- Path-Header in Mails verwerfen.
+
+- mode-reset bei Verbindugsabbruch
+
 seit 0.76b1
 
 Vorbemerkung: Die rcs/cvs-Id-Zeilen sind neu gestartet, weil ich das CVSROOT

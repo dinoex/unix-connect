@@ -504,8 +504,14 @@ header_p convheader(header_p hd, FILE *f, char *host, char *from)
 	int has_wab=0;
 	header_p p, t;
 	char *s, *st, *e, *to;
+#ifndef USER_IN_ROT
+	char *sender;
+#endif
 
 	s = st = e = to = NULL;
+#ifndef USER_IN_ROT
+	sender = NULL;
+#endif
 	p = find(HD_X_GATEWAY, hd);
 	if (p) {
 		s = strstr(p->text, "NETCALL3.8");
@@ -609,6 +615,9 @@ header_p convheader(header_p hd, FILE *f, char *host, char *from)
 		 * zweiter kommen...
 		 */
 		 		has_wab=1;
+#ifndef USER_IN_ROT
+				sender = dstrdup( wab_name );
+#endif
 		   		hd = del_header(HD_UU_SENDER, hd);
 		   	}
 		}
@@ -630,6 +639,9 @@ header_p convheader(header_p hd, FILE *f, char *host, char *from)
 	 * wandeln wir nicht in einen WAB:.
 	 * Sender: mit zwei oder mehr @ auch nicht.
 	 */
+#ifndef USER_IN_ROT
+		sender = dstrdup( p->text );
+#endif
 		if(count(p->text,'@')==1 && 0==has_wab)
 		{
 			convaddr(HN_WAB, p->text, 1, f);
@@ -731,23 +743,39 @@ header_p convheader(header_p hd, FILE *f, char *host, char *from)
 			}
 		}
 		else if (strncasecmp(p->text,"newgroup ", strlen("newgroup "))==0) {
+			char *bname;
+
 			fputs(HN_CONTROL": ADD ", f);
 			brett = dstrdup(p->text + strlen("newgroup "));
 			/* Flags (z.B. unmoderated) abschneiden */
-			s = strchr( brett, ' ');
+			bname = brett;
+			if ( *bname == ' ' )
+				bname ++;
+			s = strchr( bname, ' ');
 			if ( s != NULL)
 				*s = '\0';
-			printbretter(brett, NULL, f);
+			if ( strlen( bname ) > 0 )
+				printbretter(bname, NULL, f);
+			else
+				fputs( "\r\n", f);
 			dfree(brett);
 		}
 		else if (strncasecmp(p->text,"rmgroup ", strlen("rmgroup "))==0) {
+			char *bname;
+
 			fputs(HN_CONTROL": DEL ", f);
 			brett = dstrdup(p->text + strlen("rmgroup "));
 			/* Flags (z.B. unmoderated) abschneiden */
-			s = strchr( brett, ' ');
+			bname = brett;
+			if ( *bname == ' ' )
+				bname ++;
+			s = strchr( bname, ' ');
 			if ( s != NULL)
 				*s = '\0';
-			printbretter(brett, NULL, f);
+			if ( strlen( bname ) > 0 )
+				printbretter(bname, NULL, f);
+			else
+				fputs( "\r\n", f);
 			dfree(brett);
 		}
 		hd = del_header(HD_UU_CONTROL, hd);
@@ -826,6 +854,29 @@ header_p convheader(header_p hd, FILE *f, char *host, char *from)
 		p = find(HD_UU_PATH, hd);
 		if (p) {
 	 		rot = dstrdup(p->text);
+#ifndef USER_IN_ROT
+			/* Schrittkette, keine Schleife */
+			while (main_is_mail) {
+				char *mailuser;
+	  			mailuser = strrchr(rot, '!');
+				if ( mailuser == NULL )
+					break;
+	  			s = strrchr(mailuser+1, '.');
+				if ( s == NULL ) {
+					/* Namen ohne '.' in Path sind User */
+					*mailuser = 0;
+					break;
+				};
+				/* User oder System ? */
+				if ( sender == NULL )
+					break;
+				if ( stricmp( sender, mailuser+1 ) == 0 ) {
+					*mailuser = 0;
+					break;
+				};
+				break;
+			};
+#endif
 			hd = del_header(HD_UU_PATH, hd);
 		} else {
 			rot = printpath(from);
@@ -843,6 +894,9 @@ header_p convheader(header_p hd, FILE *f, char *host, char *from)
 		fprintf(f, HN_ROT": %s\r\n", rot);
 		dfree(rot);
 	}
+#ifndef USER_IN_ROT
+	dfree(sender);
+#endif
 	p = find(HD_UU_RETURN_RECEIPT_TO, hd);
 	if (p) {
 		convaddr(HN_EB, p->text, 0, f);
@@ -935,27 +989,29 @@ header_p convheader(header_p hd, FILE *f, char *host, char *from)
 		to_pc(fto);
 		fprintf(f, HN_F_TO": %s\r\n", fto);
 		dfree(fto);
-		hd = del_header(HD_UU_X_COMMENT_TO, hd);
-	}
-	
-	/* eigentlich schöner wäre es, diese Header oben zuerst auszugeben
-	   und dann entsprechende Wandlungen zu unterbinden. */
+			hd = del_header(HD_UU_X_COMMENT_TO, hd);
+		}
+		
+		/* eigentlich schöner wäre es, diese Header oben zuerst auszugeben
+		   und dann entsprechende Wandlungen zu unterbinden. */
 
-	for (p = hd; p; p = t) {
-		if (  strncasecmp(p->header, "X-ZC-", 5) == 0
-		   || strncasecmp(p->header, "X-Z-", 6) == 0 ) {
-			s=index(index(p->header,'-'),'-');
-			if(NULL==s) continue;
-			s++;
-			if ( strcasecmp(s, "WAB") == 0
-			  || strcasecmp(s, "ABS") == 0
-			  || strcasecmp(s, "MID") == 0 ) {
-				t=p->next;
-				hd=del_header(p->code,hd);
-			} else { t=p->next; }
-		} else { t=p->next; }
+		for (p = hd; p; p = t) {
+			t=p->next;
+			if (  strncasecmp(p->header, "X-ZC-", 5) == 0
+			   || strncasecmp(p->header, "X-Z-", 6) == 0 ) {
+				s=index(p->header,'-');
+				if(NULL==s) continue;
+				s=index(++s,'-');
+				if(NULL==s) continue;
+				s++;
+				if ( strcasecmp(s, "WAB") == 0
+				  || strcasecmp(s, "ABS") == 0
+				  || strcasecmp(s, "ROT") == 0
+				  || strcasecmp(s, "MID") == 0 ) {
+					hd=del_header(p->code,hd);
+			}
+		}
 	}
-	
 
 	for (p = hd; p; p = t) {
 		if (strncasecmp(p->header, "X-ZC-", 5) == 0) {
@@ -967,18 +1023,20 @@ header_p convheader(header_p hd, FILE *f, char *host, char *from)
 			}
 			t = p->next;
 			hd = del_header(p->code, hd);
-		} else 
-			if (strncasecmp(p->header, "X-Z-", 4) == 0) {
-				for (t = p; t; t = t->other) {
-				  char *x=decode_mime_string(t->text);
-				  to_pc(x);
-				  fprintf(f, "%s: %s\r\n", t->header + 4, t->text);
-				  dfree(x);
-				}
-				t = p->next;
-				hd = del_header(p->code, hd);
-		} else
-		    if (strncasecmp(p->header, "X-FTN-", 6) == 0) {
+			continue;
+		}
+		if (strncasecmp(p->header, "X-Z-", 4) == 0) {
+			for (t = p; t; t = t->other) {
+			  char *x=decode_mime_string(t->text);
+			  to_pc(x);
+			  fprintf(f, "%s: %s\r\n", t->header + 4, t->text);
+			  dfree(x);
+			}
+			t = p->next;
+			hd = del_header(p->code, hd);
+			continue;
+		}
+		if (strncasecmp(p->header, "X-FTN-", 6) == 0) {
 			for (t = p; t; t = t->other) {
 			  char *x=decode_mime_string(t->text);
 			  to_pc(x);
@@ -987,8 +1045,9 @@ header_p convheader(header_p hd, FILE *f, char *host, char *from)
 			}
 			t = p->next;
 			hd=del_header(p->code, hd);
-		} else
-			t = p->next;
+			continue;
+		}
+		t = p->next;
 	}
 
 	return hd;

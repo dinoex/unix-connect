@@ -449,6 +449,13 @@ header_p convheader(header_p hd, FILE *f)
 	    dfree(absname);
 	  } 
 	}
+	else
+	{
+	  p = find(HD_ROT, hd);
+	  if (p) {
+	    hd=del_header(HD_ROT, hd);
+	  } 
+	}
 
 	p = find(HD_EB, hd);
 	if (p) {
@@ -456,8 +463,11 @@ header_p convheader(header_p hd, FILE *f)
 		for(t=p; t; t=t->other) {
 			if (*(t->text)) 
 			{
+			  pc2iso(t->text,strlen(t->text));
 			  mime_name=mime_address(t->text);
 			} else {
+			  /* abs wird hier zerstoert */
+			  pc2iso(abs,strlen(abs));
 			  mime_name=mime_address(abs);
 			}
 			fprintf(f, HN_UU_RETURN_RECEIPT_TO ": %s%s", mime_name, eol);

@@ -46,7 +46,7 @@
 #include "config.h"
 #include <stddef.h>
 #include <string.h>
-#include <malloc.h>
+#include <stdlib.h>
 #include <ctype.h>
 #include <stdio.h> /* nur fuer sprintf(...) */
 #include <string.h>

@@ -1,0 +1,170 @@
+
+From microbody@wirepool.free.de Wed Jul 15 19:27:22 1998
+Date: 23 Jan 1997 23:46:00 +0100
+From: Matthias Jordan <microbody@wirepool.free.de>
+Reply-To: Unix-Connect - ZConnect auch unter UNIX
+     <unix-connect@mailinglisten.im-Netz.de>
+To: Unix-Connect - ZConnect auch unter UNIX
+     <unix-connect@mailinglisten.im-Netz.de>
+Subject: HOWTO: Unix-Connect & CNews
+
+
+***  unix-connect@mailinglisten.im-Netz.de (Unix-Connect - ZConnect auch unter UNIX)
+***  diese Liste enthaelt z.Zt. 44 Adressen.
+
+
+Dieser Text beschreibt, wie man Unix-Connect V0.75 in CNews,
+Cleanup Release Patchlevel G, einbaut.
+
+Entstanden ist der Text, weil ich ziemliche Probleme hatte, das
+selber hinzufrickeln und mir vorstellen kann, daß noch andere
+Leute auf die veraltete Doku und die unpassenden/falschen
+Beispiel-Dateien für cnews hereingefallen sind.
+
+Nomenklatur:
+Systemname: Name des Systems ohne Domain
+FQDN: Name des Systems mit Domain.
+
+Fangen wir mal an.
+
+
+I. Unix/Connect
+---------------
+Wichtig ist das fehlerfreie compilieren der Programme von
+Unix/Connect. Das hört sich bescheuert an, aber ohne die hier
+veröffentlichten Patches hatte es bei mir nicht geklappt
+(sporadische segementation faults usw.).
+
+Zur Installation von UC geht man nach Schema F vor:
+1) ./configure
+2) Fragen beantworten (möglichst wahrheitsgemäß)
+3) make
+4) make install
+
+Bei Verwenden von sendmail muß nun in /usr/local/lib/zconnect
+das Script zbatchsmtp etwas verändert werden:
+
+Folgende Zeilen kann getrost gelöscht werden:
+(Wer sich nicht traut, kommentiert sie halt aus)
+
+SMAILSPOOL="`smail -bP spool_dirs`"
+if [ "x$SMAILSPOOL" = x ]; then SMAILSPOOL=/usr/spool/smail; fi
+
+In der darauffolgenden Zeile $SMAILSPOOL ersetzen durch das
+Spool-Verzeichnis für ZConnect:
+
+OUTQ=/var/spool/zconnect/z-outq
+
+
+In /var/spool/zconnect sollten alle Verzeichnisse die Owner
+mbox.news haben.
+
+
+I.1 System eintragen
+--------------------
+Ein File (siehe Handbuch) in /usr/local/lib/zconnect/systems
+anlegen mit dem FQDN des Systems.
+
+
+
+II. CNews
+---------
+Eine Bemerkung vorweg: CNews reagiert sehr sensibel auf
+Ungereimtheiten bei den File-Ownern und den Permissions. Daher
+auch beim Testen input/newsrun und batch/sendbatches nur (!)
+als news aufrufen. Das gilt auch für addgroup (sonst hat das
+Verzeichnis für die entsprechende Gruppe nämlich einen falschen
+Owner).
+
+In /var/spool/news sollten alle Verzeichnisse den Owner
+news.news haben.
+
+
+II.1 sys
+-------
+Eine Zeile hinzufügen:
+
+Systemname:all/all:f:
+
+(all/all ist natürlich Geschmackssache...)
+
+
+II.2 batchparms
+---------------
+Systemname z 500000 20 batcher | viazconnect FQDN
+
+("z" ist beliebig gewählt, könnte auch "u" sein. "z" hat den
+Vorteil, daß man dann bei Bedarf auch gezielt nur
+ZConnect-Systeme batchen kann. Bei "!" wird das Batching für
+diese Site ausgeschaltet.)
+
+Hier noch einmal der Hinweis: Das Beispiel dieser Datei in
+unix-connect*/mail-and-news/cnews ist falsch.
+
+II.3 out.going
+--------------
+Folgendes Verzeichnis anlegen mit Owner news.news:
+/var/spool/news/out.going/Systemname
+
+
+II.4 UUCP
+---------
+Weil CNews annimmt, daß niemand so doof ist und ein eigenes
+proprietäres Verfahren zur Nachrichtenübermittlung zu
+implementiert und stattdessen UUCP benutzt, ruft ein Script
+uustat auf, welches sich dann immer wundert, wenn das
+betreffende System, für das gerade gespoolt werden soll, nicht
+eingetragen ist. Daher tragen wir das einfach in der
+Systems-Datei von HDB-UUCP ein (wie das im Taylor-Mode geht,
+weiß ich nicht...):
+
+Systemname Never ACU 38400 666666
+
+
+III Testen
+----------
+Eine Nachricht schreiben in eine Newsgroup, die auch für das
+neue System gefeeded wird (bei all/all fällt die Wahl da
+schwer...).
+
+Danach liegt ein batch in news/in.coming
+
+Dann als news aufrufen:
+
+$ input/newsrun
+
+Das verteilt das batch in das richtige Verzeichnis und legt
+togo-Files an für die Systeme, die die Nachricht haben wollen.
+newsrun wartet am Ende mal eben 45 Sekunden. Die kann man
+abkürzen durch ein & am Ende oder man macht auf nem anderen VT
+weiter:
+
+$ batch/sendbatches
+
+Das verteilt dann nach den in batchparms eingestellten
+Parametern die Nachrichten, die in den togo-Files gemerkt
+wurden. Wenn man alles richtig gemacht hat, liegt jetzt eine
+*.brt in /var/spool/zconnect/FQDN.
+
+Jetzt als root:
+
+# /usr/local/lib/zconnect/prearc
+
+Dadurch werden die Nachrichten in den Spool-Verzeichnissen
+prearced.
+
+
+IV Fertig
+---------
+
+Kommentare, Verbesserungen bitte an:
+
+microbody@wirepool.free.de
+
+  MicroBody           |\?/|  SoziBits <----
+                      | I |  Falken im Netz
+                        ^
+RSA in   #!/bin/perl -sp0777i<X+d*lMLa^*lN%0]dsXx++lMlN/dsM0<j]dsj
+Perl     $/=unpack('H*',$_);$_=`echo 16dio\U$k"SK$/SM$n\EsN0p[lN*1
+=B)      lK[d2%Sa2/d0$^Ixp"|dc`;s/\W//g;$_=pack('H*',/((..)*)$/)
+

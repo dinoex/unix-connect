@@ -49,10 +49,10 @@
  *   Haupt-Version: gibt den Stand der Gateway-Routinen wieder und
  *   wird im X-Gateway: Header vermerkt.
  */
-#define	VERSION		"v0.76b1"
+#define	VERSION		"v0.78"
 
 #define	MAILER		"UNIX/Connect"
-#define	COPYRIGHT	"(c)1995-98 C.Creutzig, (C) 1993/94 M.Husemann"
+#define	COPYRIGHT	"(c)1999 D.Meyer, (c)1995-98 C.Creutzig, (C)1993/94 M.Husemann"
 
 /*
  *   Fuer die Online-Phase:

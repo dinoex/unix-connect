@@ -1,0 +1,137 @@
+$Id$
+
+Die Anbindung von UNIX/Connect an qmail
+=======================================
+
+(Diese Anleitung ist eine nur leicht veränderte und ergänzte
+Version einer Anleitung, die Mathias Zunterer <m.zunterer@link-m.de>
+im Februar 1998 auf die Mailingliste unix-connect@mailinglisten.im-netz.de
+geschickt hat.)
+
+ 
+qmail und UnixConnect:
+Zur Erklaerung zwei Worte voraus zu unserer Kontruktion:
+"link-m.de" ist eigentlich die Mailbox mit Infimail, saturn.link-m.de
+ist der FQDN des Rechners, wo infimail drauf laeuft. Damit die ZConnect-
+Seiten zufrieden ist, spoolen wir fuer das ZConnectsystem link-m.de, 
+auf der RFC-Seite wird immer von saturn gesprochen. Daher holen wir
+mails fuer das System saturn ab und schicken es der link-m.de.
+Alle mails fuer alle unsere Domains werden bei mail.link-m.de per SMTP 
+eingeliefert und qmail schickt sie an UnixConnect weiter. Mails von der 
+Mailbox bzw. von UnixConnect wird sofort per SMTP dahin geliefert, wo der 
+MX-Record zeigt.
+Wir nutzen den Online-Teil und alle Prepacking-Mechnismen von UnixConnect
+gar nicht, unser Zeil ist es, mails so schnell wie moeglich wieder von
+mail.link-m.de weg zu haben.
+
+[ Hier auf nescio.foebud.org ist die Situation komplett anders:
+Sämtliche Mail, die nicht lokal verteilt wird, geht via ZConnect an
+bionic.zerberus.de, und zwar über normale Netcall-Verfahren via
+Telephon. Auf mail.foebud.org läuft das Gateway ebensfalls mit
+qmail, und auch dort wird über prearc gepackt, allerdings ist dort
+die Pollfrequenz über Ethernet und Netware-Server mit 1 Netcall/wenige
+Minuten um einiges höher. ]
+
+Ansonsten gehts im Prinzip so:
+- UnixConnect wie gewohnt installieren.
+- qmail wie gewohnt installieren
+
+_Die Seite von qmail zu UnixConnect:_
+- Wir haben zuerst bsmtp von Olaf Titz <olaf@bigred.inka.de> installiert,
+  sind ein paar Perlscripte, gibts auf alle Faelle via www.qmail.org zu 
+  finden.
+
+[ Die Originalversion von Olaf Titz ignoriert leider alle auftretenden
+Fehler seitens des Konvertierungsprogramms. Eine Version, bei der
+dieser Fehler behoben ist, liegt in der Distribution von UNIX/Connect
+im Verzeichnis mail-and-news/qmail bei. Außerdem behebt diese
+Version ein Problem mit leeren Mails, da uursmtp nicht damit
+klarkommt, nach DATA direkt ohne Leerzeile einen . zu bekommen. ]
+
+- Wir nutzen den qmail-Mechanismus "virtualdomains", um zu selektieren, 
+  fuer welche Domains ein Transport via UUCP oder ZConnect vorgesehen ist.
+  In virtualdomains steht dann drinnen:
+
+link-m.de:alias-saturn
+.link-m.de:alias-saturn
+
+  Daraus folgt, es existiert eine Datei ~alias/.qmail-saturn-default,
+  wo bei uns es wie folgt drin steht:
+
+/var/qmail/bsmtp/saturn/
+
+  (Man kanns auch via users/assign mappen, habe ich aber noch zuwenig
+  Erfahrung damit.)
+  Es gibt also ein Verzeichniss /var/qmail/bsmtp/saturn/Maildir, wo alle
+  eingehende mail fuer dieses System hingeschaufelt wird.
+
+[ Dieses Verzeichnis muß mittels maildirmake angelegt worden
+sein. ]
+
+- Jetzt kommt Olaf Tietz´ maildir2bsmtp zum Zuge (im Paket bsmtp enthalten)
+  Wird bei uns in zbatchsmtp wie folgt aufgerufen:
+
+# Von qmail sich das Zeug holen...
+/usr/local/bin/maildir2bsmtp /var/qmail/bsmtp/saturn/ "alias-saturn-" > $BATCH
+
+cat $BATCH | /usr/local/lib/zconnect/uursmtp -f link-m.de
+if [ $? -eq 0 ]
+then
+        # remove batches that were sent
+        rm $BATCH
+else
+        # move the batches which failed
+        mv $BATCH ../errorbatch/
+        exit 1
+fi
+
+[ Mit dem verbesserten maildir2bsmtp aus der U/C-Distribution lautet
+der Aufruf auf meinen Rechnern schlicht
+
+maildir2bsmtp -s100000 /var/spool/zconnect/sys/bionic \
+        "alias-bionic-" "uursmtp -f bionic.zerberus.de"
+
+in der Datei zbatchsmtp. Wer mag, kann im Verzeichnis shell der
+Distribution zbatchsmtp.qmail.SH nach zbatchsmtp.SH umbenennen und
+'make install' aufrufen. Zu ändern sind dann noch die Zeile
+MAILSPOOL= und die beiden Einträge mit 'bionic' im Namen im
+maildir2bsmtp-Aufruf. ]
+
+  In der Summe gibt es noch kleine Probleme mit Mailinglisten u.ae.
+
+[ Bei uns erfreulicherweise nicht. Ich weiß auch nicht genau,
+welche Probleme Mathias meint. ]
+
+_Die Seite von UnixConnect zu qmail:_
+- Im /usr/local/lib/zconnect/import steht folgendes:
+
+#  Der Smail-Aufruf zum Einlesen der Mails (nach der Konvertierung in
+#  Batched-SMTP Format)
+#
+#RSMTP="smail -bm -bS -obq -oMs $1 -oMr zconnect"
+# de facto ein wrapper fuer qmail-inject
+RSMTP="/usr/local/bin/rsmtp"
+
+  Dieses rsmtp stammt wieder aus dem Paket bsmtp von Olaf Tietz.
+  Hier ist uns das Problem mit der Bang-Adressierung begegnet, wir
+  haben einfach etwas in uuwsmtp rumgepfuscht, damit es geht (siehe
+  oben).
+
+  Fuer UUCP mit qmail gibt es noch ein anderes Utility namens rmail,
+  welches selbst die Bangpaths wieder richtig dreht und dann dem 
+  qmail-inject in den Rachen schmeisst, aber ich habs nicht mit
+  Unix-Connect ausprobiert.
+
+[ Das Problem mit der Bang-Adressierung ist inzwischen behoben, beim
+configure-Aufruf muß angegeben werden, daß keine Bang-Pfade im
+Envelope erzeugt werden sollen und alles läuft wie geschmiert. ]
+
+Das wars so, ich hoffe, die Idee, wie man qmail und UnixConnect unter 
+einen Hut bekommt, ist klar geworden. Ansonsten uebernehme ich natuerlich
+fuer gar nichts eine Verantwortung.
+
+Viele Gruesse,
+
+Mathias Zunterer
+
+[störende Kommentare: Christopher Creutzig]
