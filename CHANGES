@@ -4,11 +4,13 @@ $Id$
 Aenderungen an UnixConnect
 seit 0.80
 
+- postfix Support (Matthias Andree) 
+
 - uufatal.c, ruft jetzt newlog() auf.
 
 - call.c: Anrufzeit vereinfacht.
 
-- Erweiterung des Log-Systems.
+- Erweiterung des Log-Systems. (Andreas Barth, Dirk Meyer)
 
 - lib, includes aufgeräumt. Fehlenede und doppelte Prototypen korregiert.
   sources includen ihr eigenes Interface.
