@@ -4,6 +4,10 @@ Aenderungen an UnixConnect
 
 seit 0.88
 
+- src/uuconv.c:
+  Option ENABLE_NOEMPTY_SUBJECT
+  Aus einem leeren Subject:-Header den Betreff "-" erzeugen
+
 - etc/zconnecthosts, etc/systems.sample: (Moritz Both)
   neu aufgenommen
 

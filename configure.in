@@ -427,6 +427,7 @@ AC_SUBST(ONLINE_DIR)
 AC_SUBST(SHELL_DIR)
 
 
+
 AC_MSG_CHECKING(Bang-Pfade)
 AC_ARG_ENABLE(bang,
 [ --enable-bang            Bang-Pfade verwenden.],
@@ -573,7 +574,7 @@ AC_ARG_ENABLE(slow-modem,
 
 AC_MSG_CHECKING(Erzeuge Spoolverzeichisse im Betrieb)
 AC_ARG_ENABLE(auto-create,
-[ --enable-auto-create    Erzeuge Spoolverzeichisse im Betrieb.],
+[ --enable-auto-create     Erzeuge Spoolverzeichisse im Betrieb.],
 [ case "$enableval" in
   yes)
         AC_MSG_RESULT(Ja)
@@ -587,9 +588,25 @@ AC_ARG_ENABLE(auto-create,
 ])
 
 
+AC_MSG_CHECKING(Fälsche das Subject wenn es leer ist)
+AC_ARG_ENABLE(online,
+[ --enable-noempty-subject Fälsche das Subject wenn es leer ist.],
+[ case "$enableval" in
+  no)
+        AC_MSG_RESULT(Nein)
+        AC_DEFINE(ENABLE_NOEMPTY_SUBJECT)
+        ;;
+  *)
+        AC_MSG_RESULT(Ja)
+        ;;
+  esac ],[
+  AC_MSG_RESULT(Ja)]
+)
+
+
 AC_MSG_CHECKING(Verwende neuen Onlinecode)
 AC_ARG_ENABLE(testing,
-[ --enable-testing        Verwende neuen Onlinecode.],
+[ --enable-testing         Verwende neuen Onlinecode.],
 [ case "$enableval" in
   yes)
         AC_MSG_RESULT(Ja)

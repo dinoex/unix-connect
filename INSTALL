@@ -272,12 +272,19 @@ Online-Programme und Scripte müssen von Hand angepaßt werden.
 Verzögerung für langsame Modem in Online-Teil.
 
 
---enable-auto-create    Erzeuge Spoolverzeichisse im Betrieb.
+--enable-auto-create     Erzeuge Spoolverzeichisse im Betrieb.
 
 Das Gateway erzeugt automatisch die Spoolverzeichnisse für die
 ZConnect-Systeme.
 
---enable-testing        Verwende neuen Onlinecode.
+
+--enable-noempty-subject Fälsche das Subject wenn es leer ist.
+
+NCB-Mail Systeme lehnen Nachricht ab wenn der Betreff leer ist.
+Der Betreff wird hier auf "-" geändert.
+
+
+--enable-testing         Verwende neuen Onlinecode.
 
 Neue Funktion in import.c und call.c verwenden.
 Noch in der Test-Phase.

@@ -4,6 +4,9 @@ $Id$
 
 seit 0.88
 
+- configure --enable-noempty-subject
+  Fälsche das Subject wenn es leer ist. 
+
 - configure --enable-auto-create
   Erzeuge Spoolverzeichisse im Betrieb.
 
