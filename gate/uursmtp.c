@@ -126,7 +126,7 @@ static cmd_list cmds[] = {
 	{ "QUIT", cmd_quit },
 	{ NULL, cmd_unknown }
 };
-	
+
 static char *bigbuffer	= NULL;		/* ist immer 2 * bufflen gross, bei APC_A2B 4 * buflen */
 static char *smallbuffer= NULL;		/* wird dynamisch vergroessert */
 static size_t bufflen = 0;		/* Groesse von smallbuffer */
@@ -147,7 +147,7 @@ int main(int argc, char **argv)
 
 /*	init_trap(argv[0]); */
 	filter = 0;
-	ulibinit();	
+	ulibinit();
 	minireadstat();
 	srand(time(NULL));
 	if (argc != 3) usage();
@@ -243,7 +243,7 @@ void usage(void)
 static char *smtp_gets(char *line, size_t s, FILE *f)
 {
 	char *p;
-	
+
 	if (!fgets(line, s, f)) return NULL;
 	p = strchr(line, '\n');
 	if (p) {
@@ -262,7 +262,7 @@ void convert(FILE *smtp, FILE *zconnect)
 	char *s, *q;
 
 	clear();
-	stop = 0;	
+	stop = 0;
 	while (!stop && !feof(smtp)) {
 		/*
 		 * Oberste Ebene: SMTP Kommando-Parser
@@ -313,7 +313,7 @@ void convert(FILE *smtp, FILE *zconnect)
 void clear(void)
 {
 	forward_p p, n;
-	
+
 	if (reverspath) dfree(reverspath);
 	reverspath = NULL;
 	for (n=NULL, p=fwdpaths; p; p=n) {
@@ -354,7 +354,7 @@ void convdata(char *smtpdomain, char *reverspath, forward_p fwdpaths,
 
 	/* MIME-Headerzeilen lesen. */
 	ismime = parse_mime_header(0, hd, &mime_info);
-	
+
 	/* Daten fuer das Logfile zusammenstellen: */
 	p = find(HD_UU_FROM, hd);
 	abs = p ? p->text : "-";
@@ -367,7 +367,7 @@ void convdata(char *smtpdomain, char *reverspath, forward_p fwdpaths,
 	while (!feof(smtp)) {
 		if (smtp_gets(n, bufflen, smtp) == NULL)
 			break;
-		if ((msglen+4) > bufflen) {
+		if ((msglen+4) > (long)bufflen) {
 			bufflen *= 2;
 			dfree(smallbuffer);
 			smallbuffer = bigbuffer;
@@ -380,7 +380,7 @@ void convdata(char *smtpdomain, char *reverspath, forward_p fwdpaths,
 							2
 #endif
 							  );
- 
+
 			memcpy(bigbuffer, smallbuffer, msglen + strlen(n)+1);
 			n = bigbuffer + msglen;
 		}
@@ -417,7 +417,7 @@ void convdata(char *smtpdomain, char *reverspath, forward_p fwdpaths,
 	}
 
 	splitaddr(reverspath, wab_name, wab_host, wab_domain, rna);
-	
+
 	/* Header konvertieren und ausgeben: */
 	hd = convheader(hd, zconnect, smtpdomain, reverspath);
 
@@ -491,7 +491,7 @@ void convdata(char *smtpdomain, char *reverspath, forward_p fwdpaths,
 	 * es steht daher in uuconv.c
 	 */
 
-	make_body(bigbuffer, msglen, &mime_info, binaer, 
+	make_body(bigbuffer, msglen, &mime_info, binaer,
 		smallbuffer, zconnect);
 
 	if (mime_info.filename)

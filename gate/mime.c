@@ -112,12 +112,12 @@ static int decode_quoted_printable(char *, long *, int *);
 int count(const char *s, char c)
 {
 	int i=0;
-	
+
 	for(;*s;s++)
 	{
 		if(*s==c){i++;}
 	}
-	
+
 	return i;
 }
 
@@ -170,8 +170,8 @@ int is_8_bit(const unsigned char *string)
 int count_8_bit(const unsigned char *string)
 {
 	int i;
-	static char specialchar[]="()<>@,;:\"/[]?.= "; 
-	
+	static char specialchar[]="()<>@,;:\"/[]?.= ";
+
 	for(i=0; *string; string++)
 	{
 		if((*string > 0x7E) || (strchr(specialchar,*string)!=0))
@@ -189,9 +189,9 @@ char *mime_encode(const char *iso)
 {
 	char *encoded, *enc;
 	unsigned char *p;
-	static char specialchar[]="()<>@,;:\"/[]?.= "; 
+	static char specialchar[]="()<>@,;:\"/[]?.= ";
 	int len;
-				 
+
 	p=(unsigned char*)iso;
 
 	/*
@@ -231,10 +231,10 @@ char *mime_encode(const char *iso)
 	}else{
 		enc = dstrdup(iso);
 	}
-	
+
 	return enc;
-}	
-	
+}
+
 /*
  * Diese Funktion sollte eigentlich nicht noetig sein.
  * Viele Leute verwenden aber im ZC-Bereich Umlaute und sonstige
@@ -246,7 +246,7 @@ char *mime_address(const char *zcon_ad)
 	char *mime_ad, *rn, *mime_ad_start;
 	char *klammer_auf;
 	int len;
-	
+
 	len = strlen(zcon_ad) + 2;
 
 	if (!is_8_bit(zcon_ad))
@@ -262,17 +262,17 @@ char *mime_address(const char *zcon_ad)
 		 * '=?ISO-8859-1?Q?' und '?=' eingefuegt werden.
 		 */
 	}
-	
+
 	mime_ad = dalloc(len * sizeof(char));
 	mime_ad_start = mime_ad;
-	
+
 	for(; (*zcon_ad!='\0') && (!isspace(*zcon_ad)) && (*zcon_ad !='(') ; zcon_ad++)
 		*mime_ad++=*zcon_ad;
 	if(zcon_ad) zcon_ad=klammer_auf;
 	if(zcon_ad)
 	{
 		int klammern, i;
-		
+
 		zcon_ad++;
 		*mime_ad++=' ';
 		*mime_ad++='(';
@@ -295,7 +295,7 @@ char *mime_address(const char *zcon_ad)
 				   den Rueckgabewert von index nicht zu pruefen. */
 		else
 			/* Es fehlen noch Klammern zu. */
-			for(i=0; i<klammern && strlen(mime_ad_start) < len; i++)
+			for(i=0; i<klammern && (long)strlen(mime_ad_start) < len; i++)
 				strcat(mime_ad,")");
 	}else{
 		*mime_ad=0;
@@ -304,7 +304,7 @@ char *mime_address(const char *zcon_ad)
 }
 
 /* Gibt 1 zurueck, wenn decodiert wurde */
-int decode_cte(char *msg, long *msglenp, int *eightbit, 
+int decode_cte(char *msg, long *msglenp, int *eightbit,
 	mime_header_info_struct *info)
 {
 	switch (info->encoding) {
@@ -366,7 +366,7 @@ static int decode_base64(char *msg, long *msglenp, int *eightbit) {
 				break;
 			b24l <<= 6;
 			if (v>-1)
-				b24l |= v; 
+				b24l |= v;
 			else
 			if (ch == '=')
 				equal++;
@@ -494,7 +494,7 @@ static int decode_quoted_printable(char *buf, long *msglen, int *eightbit)
  * ausgefuellt.
  */
 
-int parse_mime_header(int direction, header_p hd, 
+int parse_mime_header(int direction, header_p hd,
 				mime_header_info_struct *info) {
 	header_p p;
 
@@ -520,14 +520,14 @@ int parse_mime_header(int direction, header_p hd,
 				}
 			}
 		}
- 		p = find(direction ? HD_UU_U_CONTENT_TYPE : 
+ 		p = find(direction ? HD_UU_U_CONTENT_TYPE :
 					HD_UU_CONTENT_TYPE, hd);
 		if (p) {
 			/* Content-Type rauskriegen */
 			mime_cty_struct *mp;
 			char *type, *subtype, *para1name, *para1value;
 			int nfields, l;
-			
+
 			info->text_plain=0;
 			info->charset=0;
 			l = strlen(p->text);
@@ -589,7 +589,7 @@ int parse_mime_header(int direction, header_p hd,
 		return 0; /* kein MIME-Version: */
 }
 
-int decode_x_uuencode(char *msg, long *msglenp, int *eightbit, 
+int decode_x_uuencode(char *msg, long *msglenp, int *eightbit,
 	mime_header_info_struct *info) {
 		char tmpdir[FILENAME_MAX], sikdir[FILENAME_MAX], *src, *s;
 		long cnt;
@@ -644,7 +644,7 @@ int decode_x_uuencode(char *msg, long *msglenp, int *eightbit,
 		}
 		pclose(f);
 
-		
+
 		f = fopen("decoded.msg", "r");
 		if (!f) {
 			uufatal("mime.c", "uudecode failed (can't open file!): %s\n", strerror(errno));
@@ -757,7 +757,7 @@ char *decode_mime_string(const char *buf) {
 	strncat(ans, parts->start, parts->len);
 	break;
       }
-    } else 
+    } else
       strncat(ans, parts->start, parts->len);
     dfree(parts->charset);
     dfree(parts->text);

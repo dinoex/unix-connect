@@ -3,7 +3,7 @@
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1993-94  Martin Husemann
  *  Copyright (C) 1995-98  Christopher Creutzig
- *  Copyright (C) 1999     Dirk Meyer
+ *  Copyright (C) 1999     Dirk Meyer, Matthias Andree
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -53,6 +53,7 @@
 # include <strings.h>
 #endif
 #include <ctype.h>
+#include <errno.h>
 
 #include "utility.h"
 #include "lib.h"
@@ -82,7 +83,7 @@ static alias_list data = NULL;
 void insert(char *znetz, char *uucp, int v)
 {
 	alias_list p;
-	
+
 	p = dalloc(sizeof(alias_t));
 	p->u = dstrdup(uucp);
 	p->z = dstrdup(znetz);
@@ -93,11 +94,36 @@ void insert(char *znetz, char *uucp, int v)
 	data = p;
 }
 
+static void parse_alias(header_p p, int v)
+{
+	char *m, *n, *o;
+	const char *sep = " \t";
+	int ok;
+
+	ok=0;
+	if((m = dstrdup(p->text))) { /* strtok schiesst im String herum */
+		if((n = strtok(m, sep))) {
+			if((o = strtok(NULL, sep))) {
+				/* sauberer ist das nochmalige Umkopieren */
+				insert(dstrdup(n), dstrdup(o), v);
+				ok=1;
+			}
+		}
+		free(m);
+	}
+	if(!ok) {
+		fprintf(stderr,
+			__FILE__ ":%d ignored malformatted alias line in %s: \"%s\"\n",
+			__LINE__,
+			aliasliste, p->text);
+	}
+}
+
 static void init(void)
 {
 	char *s;
 
-	if (init_done) return;	
+	if (init_done) return;
 	init_done = 1;
 	data = NULL;
 	minireadstat();
@@ -106,7 +132,11 @@ static void init(void)
 		header_p hd, p;
 
 		f = fopen(aliasliste, "rb");
-		if (!f) return;
+		if (!f) {
+			fprintf(stderr, "cannot open %s: %s\n",
+				aliasliste, strerror(errno));
+			return;
+		}
 		hd = NULL;
 		while (!feof(f)) {
 			p = rd_para(f);
@@ -115,24 +145,13 @@ static void init(void)
 		}
 		fclose(f);
 		for (p=find(HD_ALIAS, hd); p; p=p->other) {
-			for (s=p->text; *s; s++)
-				if (isspace(*s)) break;
-			if (!*s) continue;
-			*s = '\0';
-			for (s++ ; *s && isspace(*s); s++)
-				;
-			insert(p->text, s, ALIAS);
+			parse_alias(p, ALIAS);
 		}
+
 		for (p=find(HD_MAP, hd); p; p=p->other) {
-			for (s=p->text; *s; s++)
-				if (isspace(*s)) break;
-			if (!*s) continue;
-			*s = '\0';
-			for (s++ ; *s && isspace(*s); s++)
-				;
-			insert(p->text, s, PREFIX);
+			parse_alias(p, PREFIX);
 		}
-	} 
+	}
 }
 
 char *z_search(char *gesucht, int v)
@@ -144,7 +163,7 @@ char *z_search(char *gesucht, int v)
  * Das gibt natuerlich unerwuenschte Effekte. Symptomkur:
  */
 	int error;
-	
+
 	if (!init_done) init();
 	do {
 		error = 0;
@@ -170,7 +189,7 @@ char *z_search(char *gesucht, int v)
 			}
 		}
 	} while(error != 0);
-	 
+
 	prefix_len = 0;
 	return NULL;
 }
@@ -178,7 +197,7 @@ char *z_search(char *gesucht, int v)
 char *u_search(char *gesucht, int v)
 {
 	alias_list p;
-	
+
 	if (!init_done) init();
 	if (!data) return NULL;
 	for (p = data; p; p = p->next) {
