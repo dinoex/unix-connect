@@ -1,8 +1,8 @@
 #!/bin/sh
 #
-#	Id$: batch/mail.uconnect	1.61	23.02.97
+#	Id$: batch/mail.uconnect	1.71	26.08.1999
 #
-#	(c) 1994-97, Dirk Meyer, Im Grund 4, 34317 Habichtswald
+#	(c) 1994-99, Dirk Meyer, Im Grund 4, 34317 Habichtswald
 #
 #
 #	BSMT in Dateien wandeln
@@ -12,7 +12,7 @@
 #
 trap "exit 75;" 0 1 2 3 4 5 6 7 8 11 13 14 15
 # EX_TEMPFAIL
-mailindir="/var/spool/zconnect/z-outq/$1"
+mailindir="@SPOOLDIR@/z-outq/$1"
 shift
 if [ ! -d ${mailindir} ]
 then

@@ -5,7 +5,7 @@ PUSHDIVERT(-1)
 
 ifdef(`UCONNECT_MAILER_PATH',,
         `define(`UCONNECT_MAILER_PATH',
-/usr/local/lib/zconnect/mail.uuconnect)')
+@BINDIR@/mail.uuconnect)')
 ifdef(`UCONNECT_MAILER_MAX',,
         `define(`UCONNECT_MAILER_MAX', 1000000)')
 POPDIVERT
@@ -24,6 +24,6 @@ Muconnect,	P=UCONNECT_MAILER_PATH,
 		F=X, # Add extra dots in Body (BSMTP)
 		S=11/31, R=21, E=\r\n, M=UCONNECT_MAILER_MAX,
 		T=X-UUCP/X-UUCP/X-Unix,
-		U=mbox:news,
+		U=@USER@:@GROUP@,
 		A=mail.uconnect $h $f $u
 
