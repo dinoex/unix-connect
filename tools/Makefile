@@ -33,7 +33,7 @@
 #  for instructions on how to join this list.
 #
 
-include ../.makefile.conf
+include ../Makefile.global
 
 LIBS	= ../lib/ministat.o ../hdlib/uuheader.a ../lib/gatelib.a
 

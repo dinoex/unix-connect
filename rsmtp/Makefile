@@ -13,7 +13,7 @@ DESTDIR	= /usr/local/libexec/unix-connect
 BINOWN	= -o root -g wheel
 BINMODE	= -m 755
 
-include ../.makefile.conf
+include ../Makefile.global
 
 RSMTPSPOOL=$(SPOOLDIR)/rsmtp
 
@@ -109,8 +109,11 @@ install:	${DESTDIR} \
 rsmtp:		rsmtp.o
 bsmtp:		bsmtp.o
 
-rsmtp.o:	rsmtp.c version.h
-bsmtp.o:	bsmtp.c version.h
+rsmtp:	rsmtp.o
+	$(CC) -o rsmtp rsmtp.o $(LIBS) $(LDFLAGS)
+
+bsmtp:	bsmtp.o
+	$(CC) -o bsmtp bsmtp.o $(LIBS) $(LDFLAGS)
 
 # install rules
 
@@ -123,12 +126,12 @@ $(SPOOLDIR)/rsmtp:
 	chmod 1777 $(SPOOLDIR)/rsmtp
 
 $(DESTDIR)/rsmtp: rsmtp
-	$(INSTALL) $(BINMODE) $(BINOWN) $(<) $(@)
-	$(INSTALL) $(BINMODE) $(BINOWN) $(<) $(DESTDIR)/rgsmtp
-	$(INSTALL) $(BINMODE) $(BINOWN) $(<) $(DESTDIR)/rcsmtp
+	$(INSTALL) $(BINMODE) $(BINOWN) rsmtp $@
+	$(INSTALL) $(BINMODE) $(BINOWN) rsmtp $(DESTDIR)/rgsmtp
+	$(INSTALL) $(BINMODE) $(BINOWN) rsmtp $(DESTDIR)/rcsmtp
 
 $(DESTDIR)/bsmtp: bsmtp
-	$(INSTALL) $(BINMODE) $(BINOWN) $(<) $(@)
+	$(INSTALL) $(BINMODE) $(BINOWN) bsmtp $@
 
 .c.o:
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<

@@ -1,48 +1,13 @@
 dnl Process this file with autoconf to produce a configure script.
+
 AC_INIT(mail-and-news)
+
+prefix="/usr/local"
+exec_prefix="$prefix"
+libexecdir="${exec_prefix}/libexec"
+sysconfdir="${prefix}/etc"
+
 dnl      checks for programs
-
-AC_PROG_ECHO_N
-AC_SUBST(ac_n)
-AC_SUBST(ac_c)
-AC_SUBST(ac_t)
-
-dnl Stty-Funktionen
-
-dnl AC_MSG_CHECKING(DDCOUNT)
-dnl system=`$UNAME`
-dnl case $system in
-dnl 	SunOS)
-dnl 		DDCOUNT=2
-dnl 		;;
-dnl 	*)
-dnl 		DDCOUNT=1
-dnl 		;;
-dnl esac
-dnl AC_MSG_RESULT($DDCOUNT)
-dnl AC_SUBST(DDCOUNT)
-dnl 
-dnl AC_MSG_CHECKING(stty)
-dnl STTY="stty -echo -icanon min 1"
-dnl
-dnl if $STTY >/dev/null 2>/dev/null
-dnl then
-dnl        :
-dnl else
-dnl
-dnl        STTY="stty -echo -icanon"
-dnl
-dnl        if $STTY >/dev/null 2>/dev/null
-dnl        then
-dnl                :
-dnl        else
-dnl                STTY=":"
-dnl        fi
-dnl fi
-dnl AC_MSG_RESULT()
-dnl AC_SUBST(STTY)
-
-
 
 dnl      checks for libraries
 dnl      checks for header files
@@ -52,8 +17,49 @@ dnl      checks for compiler characteristics
 dnl      checks for library functions
 dnl      checks for system services
 
+AC_MSG_CHECKING(Path)
+AC_ARG_WITH(path,
+[ --with-path=path         Path innerhalb von UC (Default=PATH).],
+[path=$withval],[path=$PATH])
+AC_MSG_RESULT($path)
+AC_SUBST(path)
+
+AC_MSG_CHECKING(Unterverzeichnis für die Pogramme)
+AC_ARG_WITH(execdir,
+[ --with-execdir=dir       In welches Verzeichnis die Programme kommen.],
+[ BINDIR="$withval"
+],[
+	BINDIR="$libexecdir/uconnect"
+])
+AC_MSG_RESULT($BINDIR)
+AC_SUBST(BINDIR)
+
+AC_MSG_CHECKING(Unterverzeichnis für die Konfiguration)
+AC_ARG_WITH(confdir,
+[ --with-confdir=dir       In welches Verzeichnis die Konfiguration kommt.],
+[ ETCDIR="$withval"
+],[
+	ETCDIR="$sysconfdir/uconnect"
+])
+AC_MSG_RESULT($ETCDIR)
+AC_SUBST(ETCDIR)
+
+AC_MSG_CHECKING(spooldir)
+AC_ARG_WITH(spooldir,
+[ --with-spooldir=dir      Spooldir.],
+[ SPOOLDIR="$withval" ],[
+if test -d /var/spool; then
+	SPOOLDIR=/var/spool/zconnect
+else
+	SPOOLDIR=/usr/spool/zconnect
+fi
+]
+)
+AC_MSG_RESULT($SPOOLDIR)
+AC_SUBST(SPOOLDIR)
+
 AC_ARG_WITH(user,
-[ --with-user=user          Userkennung für Unix-Connect.],[
+[ --with-user=user         Userkennung für Unix-Connect.],[
 if test $withval = no ; then
 	echo "Es muß eine Benutzerkennung gewählt werden"
 	exit 1;
@@ -66,7 +72,7 @@ fi],
 AC_SUBST(USER)
 
 AC_ARG_WITH(group,
-[ --with-group=group        Gruppenkennung für Unix-Connect.],[
+[ --with-group=group       Gruppenkennung für Unix-Connect.],[
 if test $withval = no ; then
 	echo "Es muß eine Gruppe gewählt werden"
 	exit 1;
@@ -80,10 +86,10 @@ AC_SUBST(GROUP)
 
 AC_MSG_CHECKING(Welcher Typ ist das Gateway)
 AC_ARG_WITH(box,
-[ --with-box=typ            point, gate, server
-                           Point: Unix-Connect ist Enduser-System
-                           Gate:  Kein Teil des Z-Netzes
-                           Box:   Alle ist möglich (default).],
+[ --with-box=typ           point, gate, server
+                          Point: Unix-Connect ist Enduser-System
+                          Gate:  Kein Teil des Z-Netzes
+                          Box:   Alle ist möglich (default).],
 [ case "$withval" in
   box)
         AC_MSG_RESULT(Box)
@@ -107,54 +113,54 @@ AC_ARG_WITH(box,
 )
 AC_SUBST(INSTTYPE)
 
-
-
 AC_MSG_CHECKING(Nachrichten zurückkonvertieren)
 AC_ARG_ENABLE(real-gate,
-[ --disable-real-gate       Nachrichten zurückkonvertieren erlauben.],
+[ --disable-real-gate      Nachrichten zurückkonvertieren erlauben.],
 [ case "$enableval" in
   yes)
         AC_MSG_RESULT(Ja)
-        REALGATE="yes"
-	REAL_GATE="#define REAL_GATE"
+	AC_DEFINE(REAL_GATE)
         ;;
   *)
         AC_MSG_RESULT(Nein)
-        REALGATE="no"
-	REAL_GATE="/* #define REAL_GATE */"
         ;;
   esac ],[
   AC_MSG_RESULT(Nein)
-  REALGATE="no"
-  REAL_GATE="/* #define REAL_GATE */" ]
-)
-AC_SUBST(REALGATE)
-AC_SUBST(REAL_GATE)
+])
 
-AC_MSG_CHECKING(Wohin mit den Dateien)
-AC_ARG_WITH(files,
-[ --with-files=dir          Wohin alle Dateien kommen (soll aufgeteilt werden).],
-[ DESTDIR="$withval" ],[
-dnl  DESTDIR=$libdir/zconnect
-  DESTDIR=/usr/local/lib/zconnect]
-)
-AC_MSG_RESULT($DESTDIR)
-AC_SUBST(DESTDIR)
+AC_MSG_CHECKING(APC einkompilieren)
+AC_ARG_ENABLE(apc,
+[ --with-apc               APC einkompilieren (meist unnötig).],
+[ case "$enableval" in
+  yes)
+        AC_MSG_RESULT(Ja)
+	AC_DEFINE(APC_A2B)
+	APCOBJS="apc_a2b.o atob.o"
+        ;;
+  *)
+        AC_MSG_RESULT(Nein)
+	APCOBJS=""
+        ;;
+  esac ],[
+  AC_MSG_RESULT(Nein)
+  APCOBJS=""
+])
+AC_SUBST(APCOBJS)
 
-
-AC_MSG_CHECKING(spooldir)
-AC_ARG_WITH(spooldir,
-[ --with-spooldir=dir       Spooldir.],
-[ SPOOLDIR="$withval" ],[
-if test -d /var/spool; then
-	SPOOLDIR=/var/spool/zconnect
-else
-	SPOOLDIR=/usr/spool/zconnect
-fi
-]
-)
-AC_MSG_RESULT($SPOOLDIR)
-AC_SUBST(SPOOLDIR)
+AC_MSG_CHECKING(Bang-Pfade)
+AC_ARG_ENABLE(bang,
+[ --enable-bang            Bang-Pfade verwenden.],
+[ case "$enableval" in
+  yes)
+	AC_MSG_RESULT(Ja)
+	AC_DEFINE(RCPT_WITH_BANG)
+        ;;
+  *)
+	AC_MSG_RESULT(Nein)
+        ;;
+  esac ],[
+  AC_MSG_RESULT(Nein)
+])
 
 dnl AC_MSG_CHECKING(Filserver)
 dnl AC_ARG_WITH(fileserver,
@@ -178,21 +184,21 @@ dnl         fi
 
 AC_MSG_CHECKING(Dialcode)
 AC_ARG_WITH(dialprae,
-[ --with-dialprae=code      Wählcode (Default=atdt).],
+[ --with-dialprae=code     Wählcode (Default=atdt).],
 [ATDT=$withval],[ATDT="ATDT"])
 AC_MSG_RESULT($ATDT)
 AC_SUBST(ATDT)
 
 AC_MSG_CHECKING(Ortsvorwahl)
 AC_ARG_WITH(ortswahl,
-[ --with-ortswahl=code      Ortsvorwahl (Default=0).],
+[ --with-ortswahl=code     Ortsvorwahl (Default=0).],
 [FERNWAHL=$withval],[FERNWAHL="0"])
 AC_MSG_RESULT($FERNWAHL)
 AC_SUBST(FERNWAHL)
 
 AC_MSG_CHECKING(Auslandsvorwahl)
 AC_ARG_WITH(intwahl,
-[ --with-intwahl=code       Internationale Vorwahl (Default=00).],
+[ --with-intwahl=code      Internationale Vorwahl (Default=00).],
 [INTERNATIONAL=$withval],[INTERNATIONAL="00"])
 AC_MSG_RESULT($INTERNATIONAL)
 AC_SUBST(INTERNATIONAL)
@@ -308,7 +314,7 @@ then
 	echo "Linke include/os-$SYSTYPE/sysdep.h nach include/sysdep.h..."
 	cp -i include/os-$SYSTYPE/sysdep.h include/sysdep.h
 else
-	echo "Unbeknates System verwende include/os-linux/sysdep.h"
+	echo "Unbekanntes System, verwende include/os-linux/sysdep.h"
 	cp -i include/os-linux/sysdep.h include/sysdep.h
 fi
 if test -f include/policy.h
@@ -320,7 +326,7 @@ then
 	echo "Linke include/os-$SYSTYPE/policy.h nach include/policy.h..."
 	cp -i include/os-$SYSTYPE/policy.h include/policy.h
 else
-	echo "Unbeknates System verwende include/os-linux/policy.h"
+	echo "Unbekanntes System, verwende include/os-linux/policy.h"
 	cp -i include/os-linux/policy.h include/policy.h
 fi
 
@@ -335,6 +341,5 @@ AC_SUBST(DEFS)
 AC_PROG_RANLIB
 
 AC_CHECK_PROGS(shell,sh,/bin/sh)
-dnl AC_MSG_RESULT($shell)
 
-AC_OUTPUT(misc/config include/config.h Makefile .makefile.conf tools/Makefile hdlib/Makefile date/Makefile online/Makefile lib/Makefile shell/Makefile gate/Makefile)
+AC_OUTPUT(Makefile.global Makefile etc/config)

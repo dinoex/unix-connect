@@ -1,0 +1,12 @@
+#
+#  /usr/local/lib/zconnect/autoeintrag.zconnect:
+#
+#	Wenn diese Datei existiert, wird sie beim Anruf eines unbekannten
+#	Systems als Muster fuer den Autoeintrag benutzt.
+#
+#	Existiert die Datei nicht, werden unbekannte Systeme abgelehnt.
+#
+ArcerOut:	ZIP
+ArcerIn:	ZIP
+Proto:		ZMODEM
+X-Call:		ZCONNECT

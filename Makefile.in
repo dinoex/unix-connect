@@ -36,7 +36,7 @@
 #   for instructions on how to join this list.
 #
 
-include .makefile.conf
+include Makefile.global
 
 all:
 	(cd lib; $(MAKE) strlib.a)
@@ -50,12 +50,16 @@ all:
 	(cd tools; $(MAKE) all)
 	(cd rsmtp; $(MAKE) all)
 
-install: install-dirs install-usr-lib-zcon
+install:
+	if test ! -d $(BINDIR); then mkdir $(BINDIR); chown $(USER) $(BINDIR); fi
+	if test ! -d $(ETCDIR); then mkdir $(ETCDIR); chown $(USER) $(ETCDIR); fi
+	if test ! -d $(ETCDIR)/systems; then mkdir $(ETCDIR)/systems; chown $(USER) $(ETCDIR)/systems; fi
 	(cd online; $(MAKE) install)
 	(cd gate; $(MAKE) install)
 	(cd tools; $(MAKE) install)
 	(cd shell; $(MAKE) install)
 	(cd rsmtp; $(MAKE) install)
+	(cd etc; $(MAKE) install)
 
 clean:
 	-rm -f $(CLEANFILES)
@@ -79,28 +83,16 @@ clobber:
 	(cd rsmtp; $(MAKE) clobber)
 
 tidy:	clobber
-	-rm -f lib/Makefile
-	-rm -f date/Makefile
-	-rm -f hdlib/Makefile
-	-rm -f online/Makefile
-	-rm -f gate/Makefile
-	-rm -f tools/Makefile
-	-rm -f shell/Makefile
-	-rm -f Makefile
+	-rm -f configure.dat
 	-rm -f .makefile.conf
+	-rm -f Makefile.global Makefile
 	-rm -f config.cache config.log config.status
-	-rm -f include/sysdep.h include/policy.h include/config.h
-	-rm -f misc/config
+	-rm -f include/sysdep.h include/policy.h
+	-rm -f etc/config
 
 distrib:	tidy
 	(cd hdlib; $(MAKE) -f Makefile.in tidy)
 	(cd hdlib; $(MAKE) -f Makefile.in SHELL=/bin/sh hash.c)
-	-rm -f configure.dat
 	-rm -f docs/unix-connect.{aux,log,toc,cp,fn,ky,pg,tp,vr}
 
-install-dirs:
-	if test ! -d $(DESTDIR); then mkdir $(DESTDIR); chown $(USER) $(DESTDIR); fi
-	if test ! -d $(DESTDIR)/systems; then mkdir $(DESTDIR)/systems; chown $(USER) $(DESTDIR)/systems; fi
 
-install-usr-lib-zcon:
-	install -o @USER@ -g @GROUP@ -m 660 usr-l-lib-zcon/* -b -S .old $(DESTDIR)/

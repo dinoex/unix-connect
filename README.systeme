@@ -1,0 +1,38 @@
+Points/Systeme anlegen
+----------------------
+
+Für jedes bekannte System (auch Points) muß eine Datei in 
+zcondir/systems vorhanden sein, die den FQDN dieses Systems trägt.
+Die Datei enthält (jeweils die Zeilen mit den "|", jedoch ohne die
+"| ")
+| Sys:            $SERVER
+Systemname, also beim Systemnamen foo.bar foo
+| Domain:         $Domain
+Der Rest für den FQDN, also beim Systemnamen foo.bar bar.
+| Passwd:         $PASSWD
+Das Passwort
+| ArcerOut:       $ArcerOut
+| ArcerIn:        $ArcerIn
+Die beiden Packer.
+| Tel:            1 $TEL
+Die Telephonnummer des Systems. Braucht nur eingetragen werden, wenn
+Unix-Connect anrufen soll.
+| Proto:          $Proto
+Übertragungsprotokoll (ZMODEM, XMODEM, YMODEM)
+| X-Call:         $XCall
+Anrufverfahren: ZCONNECT oder JANUS
+
+
+Außerdem müssen ein Verzeichnis mit dem Systemnamen im Spooldir angelegt
+werden.
+
+
+Bitte aktivieren der Mail- und Newsversorgung und anlegen der passenden
+Unterverzeichnisse nicht vergessen.
+
+Benutzer- und Gruppenkennung müssen sowohl bei den Verzeichnissen als
+auch bei der obigen Datei die bei configure angegebenen Kennungen sein.
+
+
+
+Andi Barth <aba@muenchen.pro-bahn.de>/8. August 1999

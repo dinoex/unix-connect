@@ -34,16 +34,20 @@
 #  for instructions on how to join this list.
 #
 
-include ../.makefile.conf
+include ../Makefile.global
 
-install:
-	for file in *.SH; do \
-		OUT=$(DESTDIR)/`basename $$file .SH`; \
-		sed -e 's:@DESTDIR@:'$(DESTDIR)':g' \
-		-e 's:@SPOOLDIR@:'$(SPOOLDIR)':g' \
-		-e 's/@FQDN@/'$(FQDN)'/g' \
-		-e 's#@PATHADD@#'$(PATHADD)'#g' \
-		< $$file > $$OUT; \
-		chmod a+x $$OUT; \
-		chown $(USER) $$OUT; \
-	done
+OBJS	= getindate.o datetok.o
+
+all:	$(OBJS)
+
+clean:
+	-rm -f $(CLEANFILES)
+
+clobber:	clean
+
+datetok.o : datetok.c datetok.h
+getindate.o : getindate.c datetok.h
+
+.c.o:
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
+

@@ -34,7 +34,7 @@
 #  for instructions on how to join this list.
 #
 
-include ../.makefile.conf
+include ../Makefile.global
 
 OBJS	= hayes.o pattern.o stricmp.o track.o uufatal.o utility.o strlwr.o \
 	  strupr.o strdup.o rawtty.o str2eda.o ministat.o lockwait.o uulog.o \

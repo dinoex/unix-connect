@@ -1,0 +1,254 @@
+# archiv-name: newsalias
+#
+# Datum der letzten Aenderung: 05.08.1999
+# 
+# Hinweise zu der Brett- bzw. Newsgroupnamen-Umsetzungsliste für ZConnect/ 
+# RFC-News-Gateways
+#
+# Begriffsklärung:
+#
+# "Liste" ist immer die "Brett- bzw. Newsgroupnamen-Umsetzungsliste für  
+# ZConnect/RFC-News-Gateways".
+#
+# "Brett" ist immer ein ZConnect-Brett bzw. eine RFC-(Usenet-) Newsgroup.
+#
+# Fragen:
+#
+# 1. Was ist die "Brett- bzw. Newsgroupnamen-Umsetzungsliste für ZConnect/ 
+# RFC-News-Gateways" ?
+# 2. Wie werden Brett/Newsgroup-Namen umgesetzt, die nicht in der Liste  
+# stehen?
+# 3. Wo gibt es die Liste wie oft?
+# 4. Wozu ist die Liste da?
+# 5. Was passiert, wenn ich die Liste nicht benutze?
+# 6. Ich führe die Bretter/Gruppen aus der Liste eh nicht. Kann ich sie dann  
+# weglassen?
+# 7. Was ist, wenn kein anderes System hinter meinem mehr kommt?
+# 8. Ich möchte etwas in die Liste eintragen/ändern/löschen lassen. An wen  
+# wende ich mich?
+#
+#
+#
+# Antworten:
+#
+# 1. Was ist die "Brett- bzw. Newsgroupnamen-Umsetzungsliste für ZConnect/ 
+# RFC-News-Gateways"?
+#
+# Diese Liste enthält Namen von Brettern bzw. Newsgoups, die sowohl in  
+# ZConnect- als auch im RFC-1036-Format (Usenet News) transportiert werden.  
+# Genauer gesagt, sie enthält die Namen der Bretter, die in den beiden  
+# technischen Verfahren abweichende Namen haben, und führt beide Namen auf.  
+# Das Format ist so gehalten, daß man die Liste direkt in den Formatumsetzer  
+# von Unix-Connect einbinden kann.
+#
+# 2. Wie werden Brett/Newsgroup-Namen umgesetzt, die nicht in der Liste  
+# stehen?
+#
+# "1:1". Von ZConnect nach RFC: 1. Zeichen (Schrägstrich) entfernen; alle  
+# verbleibenden Schrägstriche in Punkte wandeln; alle Buchstaben nach klein  
+# wandeln. Von RFC nach ZConnect: Alle Buchstaben nach groß wandeln; alle  
+# Punkte in Schrägstriche tauschen; einen Schrägstrich voranstellen.
+#
+# 3. Wo gibt es die Liste wie oft?
+#
+# Die Liste wird 1-mal im Monat im Brett /Z-NETZ/TELECOM/GATEWAY gepostet.
+#
+# Diese Liste kann auch per Mailing-Liste bezogen werden bei:
+# newsalias-request@ud.dinoex.sub.org
+#
+# 4. Wozu ist die Liste da?
+#
+# Sie wird von allem Gateways, die eine Format-Wandlung von News zwischen  
+# RFC und ZConnect durchführen, gebraucht, um die Namen aller Bretter/ 
+# Newsgroups korrekt umzusetzen. Sie stellt sicher, daß alle Gateways diese  
+# Umsetzung gleich vornehmen.
+#
+# 5. Was passiert, wenn ich die Liste nicht benutze?
+#
+# Wenn ein Gateway diese Liste nicht einbindet, besteht die Gefahr, daß  
+# Nachrichten zumindest teilweise verloren gehen. Das betroffene Gateway  
+# würde einige Brett-/Newsgroup-Namen anders umsetzen als alle anderen.  
+# Dadurch existiert die Nachricht in verschiedenen Versionen. Je nachdem,  
+# welche Version des Namens ein System benutzt, wird die Nachricht unter  
+# Umständen nicht in alle Bretter/Newsgroups einsortiert, in die sie sollte.  
+# Schlimmer noch: Kommt eine Nachricht unter einem falschen Brett/Newsgroup- 
+# Namen bei einem System A an, und bezieht ein weiteres System B dieses  
+# Brett von A, so würde die Nachricht gar nicht an B weitergeleitet.
+#
+# Kommt die Nachricht zu einem späteren Zeitpunkt noch einmal bei A an -  
+# diesmal womöglich auf einem anderern Weg unter richtigen Namen -, wird sie  
+# durch den Rekursionscheck weggeworfen.
+#
+# 6. Ich führe die Bretter/Gruppen aus der Liste eh nicht. Kann ich sie dann  
+# weglassen?
+#
+# Nein! Sie muß auf jeden Fall eingebunden werden. Auch, wenn die Bretter  
+# aus der Liste nicht geführt werden, können die entsprechenden Brettnamen  
+# in Cross-Postings auftauchen. Auch dann ist es nötig, sie richtig  
+# umzusetzen, damit dahinter liegende Systeme, die womöglich solche Gruppen  
+# führen, die korrekten Namen erhalten.
+#
+# 7. Was ist, wenn kein anderes System hinter meinem mehr kommt?
+#
+# Wenn es absolut sicher ist, daß die umgesetzten Daten an kein anderes  
+# System weitergegeben werden, und allen beteiligten die Konsequenzen klar  
+# sind, kann man auf die Liste eventuell doch verzichten. Trozdem: Selbst  
+# bei einer Antwort in einem Brett, die als Crossposting in mehrere Bretter  
+# geht, kann es dann Schwierigkeiten geben. So gibt es Zeichen, die in  
+# ZConnect-Brettnamen erlaubt, in RFC-Newsgroup-Namen aber verboten sind,  
+# wie "!" oder "&". Wenn es da keine eindeutigen Konvertierungsregeln gibt,  
+# gibt es Probleme beim hin- und herwandeln.
+#
+# 8. Ich möchte etwas in die Liste eintragen/ändern/löschen lassen. An wen  
+# wende ich mich?
+#
+# Solche Wünsche sind an <newsalias@dinoex.sub.org> zu richten.
+#
+# Dieser Text wurde geschrieben von Moritz Both  
+# <m.both@oln.comlink.apc.org>.
+#
+#--------------------------------------------------------------------
+#
+# Fuer einige Bretter gelten nicht die normalen Namensregeln, da es sich
+# um global vernetzte Gruppen handelt :
+# Diese Eintraege wurden am 21.11.97 entfernt
+#
+# Alias:	/Z-NETZ/TELECOM/GATEWAY		de.comm.gateways
+# Alias:	/Z-NETZ/FORUM/NETZWESEN		de.soc.netzwesen
+# Alias:	/Z-NETZ/ALT/GATE-BAU		de.comm.gatebau
+
+#
+# Nameskonflikte bei: '.&!\' 
+#
+Alias:	/AFF/!INFO				aff._info
+Alias:	/AMNET/C&C++				amnet.c+c++
+Alias:	/AMNET/AUTO&MOTORRAD			amnet.auto+motorrad
+Alias:	/AMNET/JOKES&STORIES			amnet.jokes+stories
+Alias:	/APC/!WICHTIG				apc._wichtig
+Alias:	/BINAER/!FILE_INFO			binaer._fileinfo
+Alias:	/BINAER/!KOORDINATION			binaer._koordination
+Alias:	/BINAER/!WICHTIG			binaer._wichtig
+Alias:	/BINAER/IBM/OS2_2.0			binaer.ibm.os2_20
+Alias:	/BRIDGE/USERTREFFEN!/TREFFEN		bridge.usertreffen_.treffen
+Alias:	/CDU/ALLG.MITTEILUNGEN			cdu.allg_mitteilungen
+Alias:	/CE-MARKT/M-V-S/MVS-USER&SYSOPS		ce-markt.m-v-s.mvs-user+sysops
+Alias:	/COMMIENET/HARD/1541			commienet.hard.f1541
+Alias:	/COMMIENET/HARD/1571			commienet.hard.f1571
+Alias:	/COMMIENET/HARD/1581			commienet.hard.f1581
+Alias:	/COMPAED/!WICHTIG			compaed._wichtig
+Alias:	/COMPAED/I+K/ARBUS/ALLG.-INFO		compaed.i+k.arbus.allg.-info
+Alias:	/COMPAED/I+K/CUM/ALLG.-INFO		compaed.i+k.cum.allg.-info
+Alias:	/COMPAED/I+K/NLI/ALLG.-INFO		compaed.i+k.nli.allg.-info
+Alias:	/COMPAED/REFERATE/!SUCHE		compaed.referate._suche
+Alias:	/COMPAED/SEARCH&PLAY/DATEN		compaed.search+play.daten
+Alias:	/COMPAED/SEARCH&PLAY/DISKUSSION		compaed.search+play.diskussion
+Alias:	/CONVOY/!WICHTIG			convoy._wichtig
+Alias:	/CONVOY/KOORDINATION/USER&SYSOP		convoy.koordination.user+sysop
+Alias:	/DISA/!FAHRSCHULE			disa._fahrschule
+Alias:	/DISA/!WICHTIG				disa._wichtig
+Alias:	/DISA/WISSEN&ERFAHRUNG			disa.wissen+erfahrung
+Alias:	/DSB-NETZ/!ALLGEMEINES			dsb-netz._allgemeines
+Alias:	/DSB-NETZ/!WICHTIG			dsb-netz._wichtig
+Alias:	/DSB-NETZ/PRESSE&BESCHLUESSE		dsb-netz.presse+beschluesse
+Alias:	/GRUENE/SH/KOPOV/!WICHTIG		gruene.sh.kopov._wichtig
+Alias:	/GRUENE_A/!WICHTIG			gruene_a._wichtig
+Alias:	/HANNOVER/!WICHTIG			hannover._wichtig
+Alias:	/HRNET/ASIA&PACIFIC			hrnet.asia+pacific
+Alias:	/HRNET/EUROPE&MIDEAST			hrnet.europe+mideast
+Alias:	/HRNET/RACISM&XENOPHOBIA		hrnet.racism+xenophobia
+Alias:	/HRNET/REFUGEES&MIGRATION		hrnet.refugees+migration
+Alias:	/JUSOS/WW/!INFO				jusos.ww._info
+Alias:	/JW/!DISKUSSION				jw._diskussion
+Alias:	/JW/!WICHTIG				jw._wichtig
+Alias:	/JUNGE/WELT/10/OEKO&OEKO		junge.welt.10.oeko+oeko
+Alias:	/JUNGE/WELT/11/KUNST&SZENE		junge.welt.11.kunst+szene
+Alias:	/JUNGE/WELT/12/SOUNDS&TRENDS		junge.welt.12.sounds+trends
+Alias:	/JUNGE/WELT/24/BILDUNG&BERUf		junge.welt.24.bildung+beruf
+Alias:	/JW/01.TITEL				jw.01.titel
+Alias:	/KATANA/!WICHTIG			katana._wichtig
+Alias:	/KAOS-NETZ/!WICHTIG			kaos-netz._wichtig
+Alias:	/L-NETZ/!AUTOEINTRAG			l-netz._autoeintrag
+Alias:	/L-NETZ/DUESSELDORF/TERMINE+VERANSTALT.	l-netz.duesseldorf.termine+veranstalt
+Alias:	/L-NETZ/DUISBURG/TERMINE+VERANSTALT.	l-netz.duisburg.termine+veranstalt
+Alias:	/L-NETZ/ESSEN/TERMINE+VERANSTALT.	l-netz.essen.termine+veranstalt
+Alias:	/L-NETZ/KREFELD/TERMINE+VERANSTALT.	l-netz.krefeld.termine+veranstalt
+Alias:	/L-NETZ/MGLADBACH/TERMINE+VERANSTALT.	l-netz.mgladbach.termine+veranstalt
+Alias:	/L-NETZ/MOERS/TERMINE+VERANSTALT.	l-netz.moers.termine+veranstalt
+Alias:	/L-NETZ/MUELHEIM/TERMINE+VERANSTALT.	l-netz.muelheim.termine+veranstalt
+Alias:	/L-NETZ/OBERHAUSEN/TERMINE+VERANSTALT.	l-netz.oberhausen.termine+veranstalt
+Alias:	/L-NETZ/VIERSEN/TERMINE+VERANSTALT.	l-netz.viersen.termine+veranstalt
+Alias:	/MEDIANET/!WICHTIG			medianet._wichtig
+Alias:	/NATUR/KOORDINATION/!WICHTIG		natur.koordination._wichtig
+Alias:	/NM/BIBLIOTHEK/!KOORDINATION		nm.bibliothek.koordination
+Alias:	/PDS/!DISKUSSION			pds.diskussion
+Alias:	/PDS/LOKAL/LEIPZIG/AKTUELLES&TERMINE	pds.lokal.leipzig.aktuelles+termine
+Alias:	/PEGASUS/FILM&VIDEO			pegasus.film+video
+Alias:	/PEGASUS/FRAGEN&ANTWORTEN		pegasus.fragen+antworten
+Alias:	/PEGASUS/JOKES&FUN			pegasus.jokes+fun
+Alias:	/PEGASUS/PN-SPORT&HOBBY			pegasus.pn-sport+hobby
+Alias:	/PEGASUS/WINDOWS&OS2			pegasus.windows+os2
+Alias:	/PRONET/BTX&TELEKOM			pronet.btx+telekom
+Alias:	/PRONET/MODEM&DFUE			pronet.modem+dfue
+Alias:	/PRONET/RSK-SUCH&FIND			pronet.rsk-such+find
+Alias:	/PRONET/SOUND&MUSIK			pronet.sound+musik
+Alias:	/RADIONET/!WICHTIG			radionet._wichtig
+Alias:	/SERVER/!FACT				server._fact
+Alias:	/SERVER/HEAVEN<->KDS			server.heaven-kds
+Alias:	/SPD/AKTUELL/ARBEIT_&_ARBEITSLOSIGKEIT	spd.aktuell.arbeit_+_arbeitslosigkeit
+Alias:	/SPD/AKTUELL/BUNDESWEHR_&_VERTEIDIGUNG	spd.aktuell.bundeswehr_+_verteidigung
+Alias:	/SPD/AKTUELL/FAMILIE_&_SENIOREN		spd.aktuell.familie_+_senioren
+Alias:	/SPD/AKTUELL/FRAUEN_&_GLEICHSTELLUNG	spd.aktuell.frauen_+_gleichstellung
+Alias:	/SPD/AKTUELL/JUGEND_&_BILDUNG		spd.aktuell.jugend_+_bildung
+Alias:	/SPD/AKTUELL/INTERVIEWS_&_PERSIONALIEN	spd.aktuell.interviews_+_persionalien
+Alias:	/SPD/AKTUELL/INTERVIEWS_&_PERSONALIEN	spd.aktuell.interviews_+_personalien
+Alias:	/SPD/AKTUELL/PARTEIEN_&_POSITIONEN	spd.aktuell.parteien_+_positionen
+Alias:	/SPD/AKTUELL/RECHT_&_INNERE_SICHERHEIT	spd.aktuell.recht_+_innere_sicherheit
+Alias:	/SPD/AKTUELL/SOZIALES_&_GESUNDHEIT	spd.aktuell.soziales_+_gesundheit
+Alias:	/SPD/AKTUELL/WIRTSCHAFT_&_FINANZEN	spd.aktuell.wirtschaft_+_finanzen
+Alias:	/SPD/AKTUELL/WOHNEN_&_BAUEN		spd.aktuell.wohnen_+_bauen
+Alias:	/SPD/SERVICE/LAENDERNEWS/BADEN-WUERTENB.	spd.service.laendernews.baden-wuertenb
+Alias:	/SPD/SERVICE/VOR_ORT__AKTIONEN_&_IDEEN	spd.service.vor_ort__aktionen_+_ideen
+Alias:	/SPD/SPD-WAHL_94/TRENDS_&_ERGEBNISSE	spd.spd-wahl_94.trends_+_ergebnisse
+Alias:	/SPD/TAKE.TIFF				spd.take.tiff
+Alias:	/SPD/THEMEN_&_PROGRAMM/SPD-THEMA	spd.themen_+_programm.spd-thema
+Alias:	/SPD/THEMEN_&_PROGRAMM/WAHLPROGRAMM	spd.themen_+_programm.wahlprogramm
+Alias:	/SPD/WAHLEN/ARGUMENTE_&_POSITIONEN	spd.wahlen.argumente_+_positionen
+Alias:	/SPD/WAHLEN/TRENDS_&_ERGEBNISSE		spd.wahlen.trends_+_ergebnisse
+Alias:	/SPD/WAHL_94/ARGUMENTE_&_POSITIONEN	spd.wahl_94.argumente_+_positionen
+Alias:	/SPD/WAHL_94/TRENDS_&_ERGEBNISSE	spd.wahl_94.trends_+_ergebnisse
+Alias:	/T-NETZ/!WICHTIG			t-netz._wichtig
+Alias:	/T-NETZ/AUTO/SCHNELLER&TIEFER		t-netz.auto.schneller+tiefer
+Alias:	/T-NETZ/PBEM/!WICHTIG			t-netz.pbem._wichtig
+Alias:	/T-NETZ/SUPPORT/NCBMAIL/!WICHTIG	t-netz.support.ncbmail._wichtig
+Alias:	/T-NETZ/SUPPORT/NCBMAIL/BATCH&SCRIPT	t-netz.support.ncbmail.batch+script
+Alias:	/T-NETZ/SUPPORT/TURBOMAIL/FRAGEN&BUGMELDUNGEN	t-netz.support.turbomail.fragen+bugmeldungen
+Alias:	/T-NETZ/SUPPORT/TURBOMAIL/FRAGEN&BUGMELD	t-netz.support.turbomail.fragen+bugmeldungen
+Alias:	/VISTA/!WICHTIG				vista._wichtig
+Alias:	/Z-NETZ/ALT/AUTO/SCHNELL&TIEFER		z-netz.alt.auto.schnell+tiefer
+Alias:	/Z-NETZ/ALT/AUTO/SCHNELLER&TIEFER	z-netz.alt.auto.schneller+tiefer
+Alias:	/Z-NETZ/ALT/SUPPORT/!WICHTIG		z-netz.alt.support._wichtig
+Alias:	/Z-NETZ/ALT/SUPPORT/NCBMAIL/!WICHTIG	z-netz.alt.support.ncbmail._wichtig
+Alias:	/Z-NETZ/ALT/SUPPORT/NCBMAIL/BATCH&SCRIPT	z-netz.alt.support.ncbmail.batch+script
+Alias:	/Z-NETZ/ALT/SUPPORT/ZERBERUS/!WICHTIG	z-netz.alt.support.zerberus._wichtig
+Alias:	/ZAK/FRAGEN&ANTWORTEN			zak.fragen+antworten
+Alias:	/ZAK/MESSE&NEWS				zak.messe+news
+
+#
+# Gruppen die technische Schwiereigkeiten haben:
+# Anfuehrungszeichen, Ulmaute, Grossschreibung in RFC
+# Alias:	/ALT/2600/AOL				alt.2600.AOL
+# Alias:	/ALT/AOL/HELL/AO-KITTY			alt.aol.hell.Ao-Kitty
+# Alias:	/ALT/CARS/FORD-PROBE			alt.cars.Ford-Probe
+# Alias:	/ALT/FAN/TEEN/IDOLS/JTT			alt.fan.teen.idols.JTT
+# Alias:	/ALT/NUKE/THE/USA			alt.nuke.the.USA
+# Alias:	/ALT/SPORTS/HOCKEY/NHL/QUE-NORDIQUES	alt.sports.hockey.nhl.Que-Nordiques
+Alias:	/JUSOS/NRW/LTW'95				jusos.nrw.ltw_95
+Alias:	/SERVER/RUDI`S-BOX				server.rudi-s-box
+Alias:	/SPD/ARCHIV/INNEN/KRIMINALIT„T		spd.archiv.innen.kriminalitt
+
+#
+# Gruppen die in absehbarer Zeit aus dieser Liste entfernt werden:
+Alias:	/FIDO/ORGANISATION/GEWERKSCHAFT.GER	fido.organisation.gewerkschaft.ger
+
+#
+# eof

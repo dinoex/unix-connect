@@ -38,9 +38,6 @@
 #include "sysdep.h"
 #endif
 
-
-#define CONFIG_FILE	"@DESTDIR@/config"
-
 #define BIGBUFFER	(256*1024)	/* Kopier-Puffer ( > 30k) */
 #define SMALLBUFFER	(64*1024)	/* unused? */
 #define	MAXLINE		8192		/* Z.B. in einem SMTP Batch */
@@ -175,7 +172,7 @@
  * RFC->ZC->RFC wieder ins Usenet gelangen. Haben wir eine Verbindung zum
  * Usenet?
  */
-@REAL_GATE@
+/* #define REAL_GATE */
 
 /****************************************************************************
  ***

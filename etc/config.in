@@ -1,0 +1,165 @@
+# Konfigurationsdatei zu "ZCONNECT fuer UNIX"
+# ===========================================
+#
+# automatisch erzeugt von 'configure'
+
+#--------------------------------------------------------------------------
+# 1. Abschnitt:
+#                    Beschreibung des lokalen Systems
+#--------------------------------------------------------------------------
+
+# Der Name des Systems
+
+System-Name:                      @SYS@
+
+# Dazu kommt dann die Domain.
+# Der komplette Internet-Name des Systems wird als
+# (System-Name).(Gate-Domain) gebildet. Das System sollte sich selbst
+# auch als (System-Name) ohne Domain kennen.
+
+Gate-Domain:                      @DOMAIN@
+
+# Alle ZCONNECT-Informationen ueber Ports etc. stehen in dieser
+# Datei:
+
+Who-Am-I:                         @ETCDIR@/myself.zconnect
+
+# Hier sollte die System-Zeitzone benutzt werden, wer kann das
+# hinreichend portabel mal einbauen? Zur Zeit wird die Zeitzone
+# in ZCONNECT Notation angegeben:
+
+Zeitzone:                          1
+
+# Wenn wir Sommerzeit haben: 1
+# Sonst: 0 (oder gar nicht eingetragen)
+
+Sommerzeit:                        0
+
+# Im Verlauf der Installation kann es hilfreich sein, wenn die Online-
+# Routinen einen Mittschnitt der uebertragenen Steuerinformationen 
+# erzeugen, im Nutzbetrieb waechst dadurch das Logfile aber recht schnell.
+# Debuglevel 0 --> normale Logfiles, keine spezielle Debuginfo
+# Debuglevel 1 --> zusaetzliche Ablaufinformationen der Online-Phase
+# Debuglevel 2 --> alle Steuerinformationen werden protokolliert
+
+Debuglevel:                        0
+
+#--------------------------------------------------------------------------
+# 2. Abschnitt:
+#                    Files und Directories
+#--------------------------------------------------------------------------
+
+# Wir brauchen ein Directory (muss existieren) fuer diverse Logbuecher:
+
+Logbuch-Dir:                       @SPOOLDIR@/logfiles
+
+# Sowie ein Directory fuer System-globale Locks:
+
+Lock-Dir:                          @SPOOLDIR@/locks
+
+# Und ein Spool-Directory fuer die Netcalls
+
+Netcall-Dir:                       @SPOOLDIR@
+
+# Sowie je eines fuer ein- und ausgehende Backups
+
+Backout-Dir:                       @SPOOLDIR@/backout
+Backin-Dir:                        @SPOOLDIR@/backin
+
+# Und ein Directory fuer die Verwaltungs-Daten der einzelnen Systeme
+
+Systeme-Dir:                       @ETCDIR@/systems
+
+# Umgebungsvariable PATH fuer die ZCONNECT-Programme (z.B. zum sz/rz
+# Aufruf)
+
+Gate-Path-Env:			   @path@
+
+## Das Directory, unter dem die Filserver-Dateien liegen (dort MUSS es
+## ein Unterverzeichnis "INFO" geben, in dem die Standard-Info-Texte
+## stehen). Der Index liegt dort unter INFO/INHALT
+#
+#Fileserver-Dir:                    $FILESDIR
+#Fileserver-Upload-Dir:             $FILESUPLOAD
+#
+
+#--------------------------------------------------------------------------
+# 3. Abschnitt:
+#                    Konfiguration der ZCONNECT Online-Routinen
+#--------------------------------------------------------------------------
+
+# Sollen fremde System automatisch eingetragen werden?
+# Wenn ja: diese Datei anlegen (wie eine Datei in .../systems) und dort
+# die relevanten Default-Angaben reinschreiben
+
+# Autoeintrag-Defaults:              @ETCDIR@/autoeintrag.zconnect
+# bitte nur verwenden, wenn man weiﬂ, was man tut!
+
+# Ein Kommando zum Einpacken (ARCen) und eines zum Auspacken:
+
+Arc-Kommando:                      @BINDIR@/einpack
+Xarc-Kommando:                     @BINDIR@/auspack
+
+# Ein Kommando zum Einlesen der empfangenen Dateien:
+
+Import-Kommando:                   @BINDIR@/import
+Inews-Kommando:                    @INEWS@ -h
+
+# Kann unsere OVSt schon Tonwahl?
+
+Modem-Dial:                        @ATDT@%s
+
+# Wie macht man aus Nummern in internationaler Notation tatsaechliche...
+Ortsnetz:                          @ORTSNETZ@
+Fernwahl:                          @FERNWAHL@
+International:                     @INTERNATIONAL@
+
+# Generische Initialisierung fuer alle installierten Modems (falls mehrere
+# zum rauswaehlen benutzt werden)
+
+Modem-Dialog:                      AT
+Modem-Dialog:                      ATZ
+Modem-Dialog:                      ATX4
+
+#--------------------------------------------------------------------------
+# 4. Abschnitt:
+#                    Konfiguration der Gateway-Routinen
+#--------------------------------------------------------------------------
+
+# Alias-Liste zur Umbenennung von einzelnen Brettern oder Hierachien:
+
+Gate-Alias-Liste:                  @ETCDIR@/alias
+
+# "Offene" Bretter, die in moderierte Newsgroups gegated werden, koennen
+# automatisch mit einem Approved: Header versehen werden. Die Liste dazu
+# steht in:
+
+Gate-Approved-Liste:               @ETCDIR@/approved
+
+#--------------------------------------------------------------------------
+# 5. Abschnitt ROUTING
+#                    Absenderabhaengiges Routing
+#--------------------------------------------------------------------------
+
+# Da Mails mit Absender ".sub.org" (u.a.) nicht ueber WIN-Leitungen
+# transportiert werden sollen, dies aber mit herkoemmlichen Routing-
+# Mechanismen nicht/schwer realisierbar ist (Matthias Urlichs nach ZMailer 
+# Patch fragen), wird im Gateway fuer solche Adressen gleich ein anderer
+# Ziel-Pfad erzeugt.
+# Der Gateway schreibt Adressen immer als (domain)!(user). Dieser Teil ist
+# im folgenden "%s", darumherum kann beliebiges angehaengt werden. Ich verwende
+# hier eine sehr einfache Unterscheidung: Absender mit .$DOMAIN werden
+# "normal" geroutet, alle anderen gehen Umwege.
+# Genaugenommen gehen sie keine Umwege, es sei denn, Sie tragen etwas
+# anderes als %s unter Path-Default ein.
+
+# Alle mit Path-Qualifier angegebenen Domains erhalten "%s" als Zieladresse.
+Path-Qualifier:         .@DOMAIN@
+
+# Alle uebrigen Domains bilden die Zieladresse folgendermassen:
+Path-Default:           %s
+
+# Ausnahmen sind Ziel-Adressen in einer der folgenden Domains (fuer die
+# gibt es hier "freie" Routings):
+Local-Domain:           @DOMAIN@
+

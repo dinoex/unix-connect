@@ -36,7 +36,7 @@
 #   for instructions on how to join this list.
 #
 
-include ../.makefile.conf
+include ../Makefile.global
 
 # Makefile fuer die Header-Verwaltung
 

@@ -1,3 +1,7 @@
+DESTDIR  = @BINDIR@
+BINDIR   = @BINDIR@
+ETCDIR   = @ETCDIR@
+SPOOLDIR = @SPOOLDIR@
 SHELL    = @shell@
 CC       = @CC@
 DEFS	 = @DEFS@
@@ -5,9 +9,10 @@ CPPFLAGS = @CPPFLAGS@ @DEFS@
 CFLAGS   = @CFLAGS@
 LDFLAGS  = @LDFLAGS@
 RANLIB   = @RANLIB@
-DESTDIR  = @DESTDIR@
-SPOOLDIR = @SPOOLDIR@
 #FQDN     = @HOST@
 USER     = @USER@
+GROUP    = @GROUP@
 PATHADD  = @PATHADD@
+APCOBJS	 = @APCOBJS@
+CPPFLAGS += -DCONFIG_FILE=\"@ETCDIR@/config\"
 CLEANFILES = *.o *.a *.bak *.rej *.orig core *.core

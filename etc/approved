@@ -1,0 +1,7 @@
+#
+# Approve - fÅr Bretter, die zur moderierten Newsgroup werden
+#
+# eine Liste der betroffenen Bretter in Z-NETZ Notation, ein Eintrag
+# pro Zeile.
+#
+/T-NETZ/GATE-BAU

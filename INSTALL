@@ -5,7 +5,7 @@ INSTALL - Anleitung zur Installation von UNIX-Connect
       zur Installation von UNIX-Connect ist im TeXinfo-Format in der Datei
       docs/uconn.texi zu finden.
 
-      Derzeit (v0.77) ist allerdings diese Datei bereits aktualisiert,
+      Derzeit (v0.79) ist allerdings diese Datei bereits aktualisiert,
       docs/uconn.texi aber noch auf Stand von v0.53...
 
       Diese Datei ist neu geschrieben zur Anpassung an das neue
@@ -13,7 +13,7 @@ INSTALL - Anleitung zur Installation von UNIX-Connect
       Der Fileserver und die Erweiterung für die APC Unix software
       stehen damit vorübergehend nicht zur Verfügung.
 
-      Datum: 7. August 1999
+      Datum: 8. August 1999
 
       Unix-Connect ist freie Software und unterliegt der GPL. Näheres
       in der Datei COPYING.
@@ -39,14 +39,40 @@ Im Gegensatz zu früher wird hier wirklich _nur_ konfiguriert,
 Dateien oder Verzeichnisse werden nur _im_ Quellcode-Baum
 angelegt.
 
-Die Parameter können bzw. müssen sein:
-
---with-user=user   Nutzerkennung für Unix-Connect
---with-group=group Gruppenkennung für Unix-Connect
+Die Parameter können sein:
 
 
+--with-path=path         Path innerhalb von UC (Default=PATH).
 
---with-box=typ            point, gate, server
+Welchen Wert die Variable PATH innerhalb von ZC-Programmen hat.
+Im Path müssen beispielsweise sz/rz gefunden werden können.
+
+--with-dir=dir           In welches Unterverzeichnis die Dateien kommen.
+
+In welches Unterverzeichnis die Dateien kommen.
+
+Alle Programme kommen nach <libexedir>/<dir>, alle Konfigurations-
+dateien nach <sysconfdir>/<dir>. Der Default ist: zconnect.
+Damit landen die Programme in /usr/local/libexec/zconnect.
+                                                 ^^^^^^^^
+(siehe auch --prefix, --exec-prefix, --libexecdir, --sysconfdir)
+
+
+--with-spooldir=dir      Spooldir.
+
+Wo die Spoolfiles hinkommen. 
+
+Default: /var/spool/zconnect, falls /var/spool existiert,
+sonst /usr/spool/zconnect
+
+
+--with-user=user         Nutzerkennung für Unix-Connect
+--with-group=group       Gruppenkennung für Unix-Connect
+
+Diese beiden Parameter _müssen_ angegeben werden.
+
+
+--with-box=typ           point, gate, server
 
 UNIX-Connect kann sehr vielseitig einsetzen werden. Die häufigsten
 Konfigurationen sind:
@@ -79,16 +105,18 @@ damit sie nicht wieder in das Usenet gesendet werden. Mit dieser Option
 kann das Rückkonvertieren wieder ermöglicht werden.
 
 
---with-files=dir          Wohin alle Dateien kommen (soll aufgeteilt werden).
+--with-apc               APC einkompilieren (meist unnötig).
 
-Der Default ist /usr/local/lib/zconnect/
-(im Nachfolgenden auch als zcondir bezeichnet)
+Hiermit wird eine sehr selten benoetigte Erweiterung fuer
+spezielle Binaermails hereincompiliert (fuer APC Unix software).
 
 
---with-spooldir=dir       Spooldir.
+--enable-bang            Keine Bang-Pfade verwenden.
 
-Wohin das Spoolverzeichnis kommen soll. 
-Default: /var/spool/zconnect/ bzw. /usr/spool/zconnect/
+UNIX-Connect erzeugt Nachrichten im BSMTP-Format. Für die
+Weiterverarbeitung mit UUCP-Programmen sollten die Envelope-Adressen
+in Bang-Notation erzeugt werden, für die Weiterverarbeitung mit qmail
+nicht. Den meisten Programmen ist es egal.
 
 
 --with-dialprae=code      Wählcode (Default=atdt).
@@ -104,8 +132,11 @@ Eigentlich selbsterklärend.
 
 
 Die Dateien include/policy.h, include/config.h, include/sysdep.h,
-Makefile und .makefile.conf können vor dem Übersetzen angeschaut
-und evtl. korregiert werden.
+Makefile und Makefile.global können vor dem Übersetzen angeschaut
+und evtl. korregiert werden. Vor dem Installieren sollen die
+Dateien in etc/, insbesondere etc/myself.zconnect und myself.config,
+angepasst werden. Diese Dateien werden nur installiert, wenn sie
+noch nicht vorhanden sind.
 
 
 3. Übersetzen
@@ -119,12 +150,6 @@ make
 
 make install
 
-
-Außerdem müssen die Dateien misc/myself.zconnect und misc/config ins
-zcondir kopiert und dort editiert werden.
-
-Diese Dateien müssen von der Nutzerkennung gelesen werden können.
-
 make install
 muß von Root ausgeführt werden.
 
@@ -134,31 +159,8 @@ muß von Root ausgeführt werden.
 -------------------------
 
 Für jedes bekannte System (auch Points) muß eine Datei in 
-zcondir/systems vorhanden sein, die den FQDN dieses Systems trägt.
-Die Datei enthält (jeweils die Zeilen mit den "|", jedoch ohne die
-"| ")
-| Sys:            $SERVER
-Systemname, also beim Systemnamen foo.bar foo
-| Domain:         $Domain
-Der Rest für den FQDN, also beim Systemnamen foo.bar bar.
-| Passwd:         $PASSWD
-Das Passwort
-| ArcerOut:       $ArcerOut
-| ArcerIn:        $ArcerIn
-Die beiden Packer.
-| Tel:            1 $TEL
-Die Telephonnummer des Systems. Braucht nur eingetragen werden, wenn
-Unix-Connect anrufen soll.
-| Proto:          $Proto
-Übertragungsprotokoll (ZMODEM, XMODEM, YMODEM)
-| X-Call:         $XCall
-Anrufverfahren: ZCONNECT oder JANUS
-
-
-Außerdem müssen je ein Verzeichnis mit dem Systemnamen im Spooldir und
-im Unterverzeichnis z-outq des Spooldirs angelegt werden. Benutzer- und
-Gruppenkennung müssen sowohl bei den Verzeichnissen als auch bei der
-obigen Datei die bei configure angegebenen Kennungen sein.
+zcondir/systems vorhanden sein. Das nähere dazu steht
+in README.systeme.
 
 
 
@@ -186,10 +188,11 @@ mgetty der Login realisiert werden.
 
 
 
-7. In das Mail- und Newssystem einrichten
------------------------------------------
+7. In das Mail- und Newssystem einbinden
+----------------------------------------
 
-[Das ist hier noch nicht beschrieben. Bitte in INSTALL.old nachschauen.]
+Bitte in den passenden READMEs in den Unterverzeichnissen von
+mail-and-news nachschauen, wie das beim jeweiligen System geht.
 
 
 
@@ -197,7 +200,7 @@ mgetty der Login realisiert werden.
 ----------------------------------
 
 Wenn andere Systeme anrufen, so müssen regelmäßig die Daten gepackt
-werden. Dies kann beispielsweise durch Aufruf von <zcondir>/prearc
+werden. Dies kann beispielsweise durch Aufruf von <bindir>/prearc
 aus der Root-Crontab erfolgen.
 
 Außerdem sollten hin und wieder die back*-Verzeichnisse aufgeräumt
@@ -208,3 +211,7 @@ werden.
 ---------
 
 Viel Spaß.
+
+
+
+Andi Barth <aba@muenchen.pro-bahn.de>
