@@ -1,8 +1,12 @@
-Systemname:	(undef)
-Domain:		(undef)
-Adresse:	Demo-Box, c/o Karl Meier, Schlosshof 1, 11599 Irgendwo
-Voice-Nummer:	+49-521-99113
-Modem-Nummer:	+49-521-99113
-Packer:		ARC ZOO LHA ZIP NONE
-Protokolle:	ZMODEM YMODEM XMODEM
-Verwalter:      postmaster
+Sys:           (undef)
+Domain:        (undef)
+Post:          Demo-Box, c/o Karl Meier, Schlosshof 1, 11599 Irgendwo
+Telefon:       +49-521-99113
+Tel:           +49-521-99113  
+Sysop:         postmaster
+Port:          1
+ARC:           1 ARC ZOO LHA ZIP NONE
+Proto:         1 ZMODEM YMODEM XMODEM
+Mailformat:    1 ZCONNECT JANUS UUCP
+ISO2:          1 V.32bis V.32 V.22bis V.22 V.21
+ISO3:          1 V.42bis V.42 MNP5 MNP

@@ -4,13 +4,19 @@ Aenderungen an UnixConnect
 
 seit 0.88
 
+- etc/zconnecthosts, etc/systems.sample: (Moritz Both)
+  neu aufgenommen
+
+- etc/myself.connect: (Moritz Both)
+  Altes Beispiel war fehlerhaft.
+
 - shell/import.in:
   exit wenn Verzeichnis nicht existiert.
 
 - shell/prearc.in: (Moritz Both)
   exit wenn Verzeichnis nicht existiert.
 
-- shell/cron.d.hourly.in, shell/logrotate.d.entry.in (Moritz Both)
+- shell/cron.d.hourly.in, shell/logrotate.d.entry.in: (Moritz Both)
   neu aufgenommen
 
 - mail-and-news/inn/send-zcon.in: (Moritz Both)
