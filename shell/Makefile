@@ -39,8 +39,6 @@ include ../Makefile.includes
 
 FILES = anruf auspack einpack import prearc uumlist
 
-SUFFIXES = .in
-
 all:	$(FILES)
 
 anruf: anruf.in  ../Makefile.global
@@ -65,7 +63,7 @@ install: $(FILES)
 	$(INSTALL_PROGRAM) $(FILES) $(BINDIR)
 
 uninstall:
-	-cd $(DESTDIR) && rm -f $(FILES)
+	-cd $(BINDIR) && rm -f $(FILES)
 
 distclean:	clean
 	-rm -f $(FILES)

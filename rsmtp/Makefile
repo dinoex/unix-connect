@@ -19,20 +19,20 @@ TARMIN	= \
 	bsmtp
 
 BINMIN	= \
-	$(DESTDIR)/rsmtp \
-	$(DESTDIR)/bsmtp
+	$(BINDIR)/rsmtp \
+	$(BINDIR)/bsmtp
 
 # rules
 
 all:	$(TARMIN)
 
-install:	${DESTDIR} \
+install:	${BINDIR} \
 		$(SPOOLDIR)/rsmtp \
 		$(TARMIN) \
 		$(BINMIN)
 
 uninstall:
-	-rm -f $(BINMIN) $(DESTDIR)/rgsmtp $(DESTDIR)/rcsmtp
+	-rm -f $(BINMIN) $(BINDIR)/rgsmtp $(BINDIR)/rcsmtp
 
 clean:
 	-rm -f $(CLEANFILES) $(TARMIN)
@@ -47,20 +47,20 @@ bsmtp:	bsmtp.o
 
 # install rules
 
-$(DESTDIR):
-	mkdir -p ${DESTDIR}
+$(BINDIR):
+	mkdir -p ${BINDIR}
 
 $(SPOOLDIR)/rsmtp:
 	mkdir -p $(SPOOLDIR)/rsmtp
 	chown $(USER) $(SPOOLDIR)/rsmtp
 	chmod 1777 $(SPOOLDIR)/rsmtp
 
-$(DESTDIR)/rsmtp: rsmtp
+$(BINDIR)/rsmtp: rsmtp
 	$(INSTALL_PROGRAM) rsmtp $@
-	$(INSTALL_PROGRAM) rsmtp $(DESTDIR)/rgsmtp
-	$(INSTALL_PROGRAM) rsmtp $(DESTDIR)/rcsmtp
+	$(INSTALL_PROGRAM) rsmtp $(BINDIR)/rgsmtp
+	$(INSTALL_PROGRAM) rsmtp $(BINDIR)/rcsmtp
 
-$(DESTDIR)/bsmtp: bsmtp
+$(BINDIR)/bsmtp: bsmtp
 	$(INSTALL_PROGRAM) rsmtp $@
 
 # end of makefile

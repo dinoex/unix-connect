@@ -58,7 +58,6 @@ WARN	= \
 
 prefix   = @prefix@
 exec_prefix = @exec_prefix@
-DESTDIR  = @BINDIR@
 BINDIR   = @BINDIR@
 ETCDIR   = @ETCDIR@
 SPOOLDIR = @SPOOLDIR@
@@ -81,7 +80,7 @@ INSTALL_PROGRAM = $(INSTALL) -o $(USER) -g $(GROUP)
 INSTALL_DATA = $(INSTALL) -o $(USER) -g $(GROUP) -m 640
 
 # jetzt die Definitionen übernehmen
-CFLAGS += -DDESTDIR=$(DESTDIR) -DBINDIR=$(BINDIR) -DETCDIR=$(ETCDIR)
+CFLAGS += -DBINDIR=$(BINDIR) -DETCDIR=$(ETCDIR)
 CFLAGS += -DCONFIG_FILE=\"$(ETCDIR)/config\"
 APCOBJS  = @APCOBJS@
 CLEANFILES = *.o *.a *.bak *.rej *.orig core *.core

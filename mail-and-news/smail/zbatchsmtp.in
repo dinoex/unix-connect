@@ -29,7 +29,7 @@ MAXSIZE=100000
 SMAILSPOOL="`smail -bP spool_dirs`"
 if [ "x$SMAILSPOOL" = x ]; then SMAILSPOOL=/usr/spool/smail; fi
 OUTQ=$SMAILSPOOL/z-outq
-PATH=$PATH:@PATHADD@:@DESTDIR@; export PATH
+PATH=$PATH:@PATHADD@:@BINDIR@; export PATH
 
 cd $OUTQ || exit 1
 

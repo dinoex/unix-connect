@@ -50,10 +50,10 @@ COBJS	= call.o sysmaster.o filemaster.o $(OBJS)
 all:	$(PROGS)
 
 install:	all
-	$(INSTALL_PROGRAM) $(PROGS) $(DESTDIR)
+	$(INSTALL_PROGRAM) $(PROGS) $(BINDIR)
 
 uninstall:
-	-cd $(DESTDIR) && rm -f $(PROGS)
+	-cd $(BINDIR) && rm -f $(PROGS)
 
 clean:
 	-rm -f $(CLEANFILES) $(PROGS)

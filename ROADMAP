@@ -32,11 +32,11 @@ tools/		Generelle ZCONNECT Hilfsmittel.
 net38/		Konvertierungsprogramme von und zu Netcall-3.8
 
 shell/		Vorlagen fuer Shell-Scripte, die von "make install" nach
-		$(DESTDIR) kopiert werden (und entsprechend angepasst).
+		$(BINDIR) kopiert werden (und entsprechend angepasst).
 
 mail-and-news	Konfigurationsdateien zur Eingliederung in das Gesamtsystem
 		(smail, cnews, ...)
 
-usr-l-lib-zcon/	Dateien, die nach /usr/local/lib/zconnect kopiert werden
+etc/		Dateien, die nach $(ETCDIR) kopiert werden
 		sollten. Sie sind ALLE manuell an die lokalen Verhaeltnisse
 		anzupassen! Achtung, beim Update diff erstellen...

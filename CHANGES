@@ -4,6 +4,8 @@ $Id$
 Aenderungen an UnixConnect
 seit 0.80
 
+- Sendmail/cnews jetzt generiert.
+
 - Makefiles weiter optimiert.
   install/uninstall jetzt verfügbar
 

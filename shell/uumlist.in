@@ -6,7 +6,7 @@
 #
 
 
-DESTDIR=@DESTDIR@
+DESTDIR=@BINDIR@
 FQDN=@FQDN@
 INEWS=/usr/local/bin/inews
 
