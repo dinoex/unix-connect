@@ -3,6 +3,7 @@
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1993-94  Martin Husemann
  *  Copyright (C) 1995     Christopher Creutzig
+ *  Copyright (C) 1999     Matthias Andree
  *  Copyright (C) 1999     Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -41,7 +42,7 @@
  * version.h
  */
 
-#define	VERSION		"0.87"
+#define	VERSION		"0.87-dm2"
 
 #define	MAILER		"UNIX/Connect"
 #define	COPYRIGHT	\

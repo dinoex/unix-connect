@@ -4,6 +4,7 @@
  *  Copyright (C) 1993-94  Martin Husemann
  *  Copyright (C) 1995     Christopher Creutzig
  *  Copyright (C) 1999     Dirk Meyer
+ *  Copyright (C) 1999     Matthias Andree
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -83,6 +84,7 @@
 #define ISET_CFLAG (CS8 | CREAD | HUPCL)
 #endif
 #endif
+
 /* specific */
 #ifdef HAS_SYSV_TERMIO
 #define ICLEAR_IFLAG (IGNBRK | BRKINT | IGNPAR | PARMRK | INPCK \
@@ -164,6 +166,7 @@ set_rawmode(int mfileno)
 #endif
 #ifdef HAS_POSIX_TERMIOS
 	struct termios term;
+
 	if (tcgetattr(mfileno, &term) !=0 )
 		return;
 	cfmakeraw(&term);
@@ -173,6 +176,7 @@ set_rawmode(int mfileno)
 #endif
 #ifdef HAS_BSD_SGTTY
 	struct sgttyb term;
+
 	if (gtty(mfileno, &term) !=0 )
 		return;
 	term.sg_flags = RAW;
@@ -406,5 +410,3 @@ restore_linesettings(int mfileno)
 	stty(mfileno, &save_term);
 #endif
 }
-
-

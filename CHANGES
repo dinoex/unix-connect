@@ -2,8 +2,6 @@ $Id$
 
 Aenderungen an UnixConnect
 
-seit 0.87-ma1
-
 - configure{,.in}: (Matthias Andree)
   sucht nach innshellvars
 

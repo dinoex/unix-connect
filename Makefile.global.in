@@ -24,7 +24,7 @@ LIBOBJS  = @LIBOBJS@
 SENDMAIL = @SENDMAIL@
 
 INSTALL = @INSTALL@
-# autoconf does a littel bit to much for us ....
+# autoconf does a little bit to much for us ....
 #INSTALL_PROGRAM = @INSTALL_PROGRAM@
 #INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = $(INSTALL) -o $(USER) -g $(GROUP) -m 555

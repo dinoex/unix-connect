@@ -3,7 +3,12 @@
 include ../../Makefile.global
 include ../../Makefile.includes
 
-all: send-zcon
+FILES = send-zcon 
+
+all: $(FILES)
+
+install: $(FILES)
+	$(INSTALL_PROGRAM) $(FILES) $(BINDIR)
 
 distclean:
 	-rm -f send-zcon

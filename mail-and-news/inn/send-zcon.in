@@ -3,7 +3,8 @@
 ##  SH script to send ZCONNECT batches out.
 
 ##  =()<. @<_PATH_SHELLVARS>@>()=
-. /usr/lib/news/innshellvars
+# . /usr/lib/news/innshellvars
+. @INNSHELLVARS@
 
 PROGNAME=`basename $0`
 LOCK=${LOCKS}/LOCK.${PROGNAME}
@@ -68,7 +69,12 @@ for SITE in ${LIST}; do
 
     time batcher -b0 -r -v -N ${MAXJOBS} \
 	-p"@BINDIR@/uurnews -f %s" \
-	${SITE} ${BATCHFILE} || \
+	${SITE} ${BATCHFILE} && \ 
+	 ( 
+	  # Batchen ok
+	        rm -f ${BATCHFILE} 
+		true
+	 ) || \
 	 (
 	  # Fehler beim Batchen
 		ERROR=$?

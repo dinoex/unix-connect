@@ -34,7 +34,7 @@ case "`tty`" in
 esac
 
 $ECHO "Packe die vorliegenden Daten..."
-su news -c "/usr/lib/news/send-zcon $ZCSYS"
+su news -c "@BINDIR@/send-zcon $ZCSYS"
 @BINDIR@/prearc
 
 $ECHO "Anruf beim Server..."

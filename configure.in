@@ -671,6 +671,7 @@ AC_PATH_PROGS(INEWS,inews,inews,/usr/local/bin:/usr/bin:/usr/lib/news:/usr/local
 if test ! -x "$INEWS" ; then
   echo "Kann inews nicht finden. uumlist wird nicht funktionieren."
 fi
+
 AC_PATH_PROGS(SENDMAIL,sendmail,/usr/sbin/sendmail,/usr/sbin:/usr/lib)
 if test ! -x "$SENDMAIL" ; then
   echo "Kann sendmail nicht finden. Bitte \$SENDMAIL auf den Pfad setzen,"
@@ -678,6 +679,15 @@ if test ! -x "$SENDMAIL" ; then
   exit 1
 fi
 
+if test "$NEWS" = "inn" ; then 
+   dnl das folgende muﬂ in der ersten Spalte beginnen, sonst wird es von
+   dnl makesubst nicht gefunden
+AC_PATH_PROGS(INNSHELLVARS,innshellvars,innshellvars,/usr/local/bin:/usr/bin:/usr/lib/news:/usr/local/lib/news:/usr/news:/usr/local/news:/usr/lib/news/lib)
+    if test ! -f "$INNSHELLVARS" ; then 
+	echo "Kann innshellvars nicht finden. send-zcon wird nicht funktionieren."
+    fi
+fi
+  
 AC_MSG_CHECKING(various system-dependent things)
 SYSUNAME="`uname -s | tr 'A-Z' 'a-z'`"
 
