@@ -35,4 +35,5 @@
   koennen, deren locks dann in dieser Reihenfolge geprueft werden und dann zum
   Anrufen genutzt werden.
 
+- GATE sollte base64 statt uuencode kodieren.
 

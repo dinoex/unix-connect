@@ -2,6 +2,13 @@
 $Id$
 
 Aenderungen an UnixConnect
+seit 0.78
+
+- erzeuge X-Header statt U-X-Header
+  Altes Verhalten mit #define NO_PLUS_KEEP_X_HEADER
+
+- U-Header nach ISO konvertieren,
+  war schon vorgesehen aber nicht aktiv.
 
 seit 0.77
 
