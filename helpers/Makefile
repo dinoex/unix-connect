@@ -53,6 +53,14 @@ dist:	all
 	-cd .. && cp -f Makefile.global.in Makefile.global
 	cd ../hdlib && $(MAKE) -$(MAKEFLAGS) hash.c
 	-cd .. && rm -f Makefile.global
+	dir=unix-connect-`awk '/VERSION/{gsub("\"",""); print $$3; exit}' \
+		../include/version.h` && \
+	/data/batch/xcopy-cvs .. /tmp/$${dir} && \
+	cd /tmp && \
+	rm -f $${dir}.tar $${dir}.tar.gz && \
+	tar -cf $${dir}.tar $${dir} && \
+	gzip -9 $${dir}.tar && \
+	rm -rf $${dir}
 
 subst.in: makesubst ../configure.in
 	$(SHELL) ./makesubst > subst.in
