@@ -1,0 +1,280 @@
+#! /usr/bin/perl -w
+
+# (C) Copyright 1999 by Matthias Andree
+
+# überprüft die Unix/Connect-Konfiguration in Postfix
+
+# Aufruf erfordert keine Parameter
+
+my $bindir='@BINDIR@';
+my $user='@USER@';
+my $group='@GROUP@';
+
+@checkargs=(
+	    [ 4, '^unix$$',   "type"],
+	    [ 5, '^-$$',      "private"], 
+	    [ 6, '^n$$',      "unpriv"],
+	    [ 7, '^n$$',      "chroot"],
+	    [ 8, '^-$$',      "wakeup"],
+	    [10, '^pipe\s*', "command + args"]
+	   );
+
+%as=(
+     -v => 'verbose', 
+     -q => 'quiet',
+     -f => 'fix',
+    );
+
+
+if ($bindir =~ /^\@/) {
+  die "\ndieses Programm muß erst seine AC_SUBST-Makros ersetzt bekommen\nexit";
+}
+
+# Trickse, it's Perl magic
+while($_ = shift @ARGV) {
+  if(/^-h/i or /^--help/i) {
+    &usage();
+  }
+  if (defined $as{$_}) {
+    ${"$as{$_}"}=1;
+  }
+}
+
+$verbose=0 if $fix;
+
+&check_master_cf;
+&check_main_cf;
+
+
+
+sub check_service($$$@) {
+  @args=@_;
+
+  if($verbose) {
+    print "+:master.cf:",join (" ",@args[3..$#args]),$args[2] ? $args[2] : "","\n";
+    
+
+  }
+  
+  if($args[0] eq "zconnect") {
+    foreach $i (@checkargs) {
+      if ($args[@$i[0]] !~ /@$i[1]/) {
+	print STDERR "!:master.cf:$args[0]: @$i[2] ist nicht korrekt ($args[@$i[0]])\n";
+      }
+    }
+    if($args[9] ne "-" and $args[9] < 1) {
+      print STDERR "!:master.cf:$args[0]: maxproc ist nicht korrekt ($args[9])\n";
+    }
+  }
+  if($args[2] and $args[2] =~ /flags=(\S+)/) {
+    @i = split /.{0}/, $1;
+    foreach $i (@i) {
+      if("FR>" !~ /$i/) {
+	printf "!:master.cf:$args[0]: flags=$i ist nicht erlaubt\n";	
+      }
+    }
+  }
+  if($args[2] and $args[2] =~ /argv=(\S+)/) {
+    if (!-x "$1") {
+      printf "!:master.cf:$args[0]: argv=$1 zeigt auf nicht existierendes Programm\n";
+    } else {
+      if($args[0] eq "zconnect") {
+	if($1 !~ /^$bindir/) {
+	  print "-:master.cf:$args[0]: argv=$1\n";
+	  print "-:master.cf:$args[0]:   liegt nicht im BINDIR \"$bindir\"\n";
+	}
+      }
+      printf "+:master.cf:$args[0] -> $args[10] -> $1\n" 
+	if $verbose or ($args[0] eq "zconnect" and !$quiet);
+    }
+  }
+}
+
+sub check_master_cf() {
+  $name="";
+  
+  if(!open(MASTER_CF,"</etc/postfix/master.cf")) {
+    print STDERR "!:/etc/postfix/master.cf: $!\n";
+    return (0);
+  };
+  
+  while(<MASTER_CF>) {
+    chop;
+    next if(/^\#/ || /^\s*$/);
+ 
+    if(/^\s+/) { # begins with space
+      if(!$name) {
+	printf "!:master.cf: Zeile \"$_\" gehört nicht zu einem Service\n";
+      } else {
+	($arg .= $_) =~ s/\s+/ /g;
+      }
+    } else { # does not begin with space
+      if($name) {
+	check_service($name, $srv, $arg, @args)
+      }
+      ($srv = $_) =~ tr(\r\n)()d;
+      @args=split(/\s+/,$_);
+      $name=$args[0];
+      if($name eq "zconnect") { 
+	$got_zc=1; 
+      }
+      if(@args < 8) {
+	print "!:master.cf: Zeile \"$_\" ist defekt\n";
+	undef $name;
+      }
+      undef $arg;
+    }
+  } # while(<MASTER_CF>)
+
+  if(!$got_zc) {
+    if(!$fix) {
+      print "!:master.cf: zconnect-Service ist nicht definiert\n";
+    } else {
+      open FILE, ">>/etc/postfix/master.cf" or die $!;
+      print FILE "# ZConnect transport service for Unix/Connect\n";
+      print FILE "zconnect  unix  -       n       n       -       1       pipe\n";
+      print FILE "    flags=R user=$user:$group argv=$bindir/uursmtp -s \${nexthop} \${sender} \${recipient}\n";
+      close(FILE);
+    }
+  }
+  close MASTER_CF;
+}  
+
+sub check_transport($) {
+  my $have_zc=0;
+  my $file=$_[0];
+  
+  if(!open(FILE,"<$file")) {
+    print "!:$file: $!\n";
+    return
+  }
+  foreach (grep !/^(\#|$)/, <FILE>) {
+    push @tr, [ split /\s+|:/,(chop $_,$_),3 ];
+  }
+  close FILE;
+  
+  foreach $i (@tr) {
+    printf "+:$file:%s %s:%s\n", @$i[0..1],@$i[2]?@$i[2]:"" 
+      if $verbose or (@$i[1] eq "zconnect" and not $quiet);
+
+    if (!@$i[0]) {
+      print "!:$file: keine Domain für @$i[1..$#$i] definiert\n";
+    }
+    
+    if (@$i[1] eq "zconnect") {
+      if(!@$i[2]) {
+	print "!:$file: zconnect transport hat keinen next_hop\n";
+      } else {
+	$have_zc=1;
+      }
+    }
+  }
+
+  if(!$have_zc) {
+    print "!:$file: kein zconnect-Transport\n";
+    &insert_zconnect($file);
+  }
+}
+
+sub check_main_cf() {
+  if(!open(MAIN_CF,"</etc/postfix/main.cf")) {
+    print STDERR "!:/etc/postfix/main.cf: $!\n";
+    return (0);
+  };
+  
+  while(<MAIN_CF>) {
+    chop;
+    next if(/^\#/ or /^\s*$/);
+    
+    if(/^\s+(.*)$/) {
+      if (!$name) {
+	printf "!:main.cf: Zeile \"$_\" ist falsch\n";
+      } else {
+	$parm{$name} .= $parm{$name} ? " ".$1 : $1;
+      }     
+    } else {
+      if($verbose and $name) {
+	print "+:main.cf: $name=$parm{$name}\n";
+      }
+      
+      /^([a-zA-Z0-9_]+)\s*=\s*(.*)/;
+      $parm{($name = $1)} = $2 if $1;
+    }
+  }
+  
+  if(!$parm{"transport_maps"} and $parm{default_transport} ne "zconnect") {
+    if($fix) { 
+      &install_transport_maps;
+    } else {
+      printf "!:main.cf: transport_maps nicht definiert und zconnect nicht default transport\n";
+    }
+  } else {
+    foreach $i (split /[ ,]/,$parm{"transport_maps"}) {
+      print "+:transport_maps: $i\n" if $verbose;
+      ($t, $j) = split /:/,$i;
+      if (!-r $j) {
+	printf "!:main.cf: transport_maps listet fehlende Datei $t:$j\n";
+      }
+      if (!scalar grep(/^$t$/, ('hash', 'dbm', 'pcre', 'btree'))) {
+	printf "!:main.cf: transport_maps enthält falschen filetyp $t:$j\n";
+      } else {
+	if(-r $j) {
+	  &check_transport($j);
+	}
+      }
+    } 
+  }
+  
+  if(!$fix and (!$parm{"zconnect_destination_concurrency_limit"} 
+     or $parm{"zconnect_destination_concurrency_limit"} ne "1")) {
+      print "-:main.cf: zconnect_destination_concurrency_limit ist nicht 1\n";
+  }
+  if($fix and !$parm{"zconnect_destination_concurrency_limit"}) {
+    open MAINCF, ">>/etc/postfix/main.cf" or die $!;
+    print MAINCF "zconnect_destination_concurrency_limit = 1\n";
+    close MAINCF;
+  }
+}
+
+sub insert_zconnect($) {
+  print "Sie MÜSSEN jetzt $_[0] editieren\nund Ihre ZConnect-Peers eintragen!\n";
+  sleep 5;
+  if ($ENV{"EDITOR"}) {
+    system($ENV{"EDITOR"} . " $_[0]");
+  } else {
+    system("vi" , "$_[0]");
+  }
+  &check_main_cf();
+}
+
+sub install_transport_maps() {
+  if(! (-f "/etc/postfix/transport")) {
+    open FILE, ">/etc/postfix/transport" or die $!;
+    print FILE "# transport map for use with Postfix mailer\n";
+    print FILE "# add your transport lines here in a format like this:\n\n";
+    print FILE "# .line.org zconnect:tribal.line.org\n";
+    print FILE "# .uni-dortmund.de smtp:[nx5.hrz.uni-dortmund.de]\n";
+    print FILE "# some-host.moon.nix smtp:[relay.moon.nix:225]\n\n";
+    close FILE;
+    insert_zconnect("/etc/postfix/transport"); 
+    system("postmap /etc/postfix/transport");
+  }
+
+  open FILE, ">>/etc/postfix/main.cf" or die $!;
+  print FILE "transport_maps=hash:/etc/postfix/transport\n";
+  close FILE;
+  
+  &check_main_cf;
+}
+
+sub usage() {
+  print <<EOT ;
+usage: $0 [options]
+  options are one or more of:
+  -v: be verbose (switched off if -f used)
+  -q: be quiet
+  -f: autofix, install
+EOT
+
+  exit 0;
+}

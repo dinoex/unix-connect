@@ -1,0 +1,115 @@
+WARNUNG! Dieses File muß zunächst gefiltert werden, bevor die
+Pfadangaben richtig sind. Sinnvollerweise wird es nach make und vor make
+install gelesen.
+
+ *** Integration von Unix/Connect in Postfix ***
+
+Warnung: der Autor dieses Dokumentes benutzt Postfix in der Version vom 
+1. Juni 1999, Unix/Connect ist mit älteren Versionen von Postfix nicht
+getestet worden.
+
+Autor und (C) Copyright: 1999 by Matthias Andree
+	<ma@dt.e-technik.uni-dortmund.de>
+
+
+
+Übersicht:
+----------
+
+Unix -> ZConnect
+
+Postfix bekommt einen Transport "zconnect" (in master.cf) verpaßt.
+Dieser ruft durch eine Pipeline uursmtp -r auf und erzeugt so
+unmittelbar ein ZConnect-File im Spoolverzeichnis. 
+
+Bild: 
+
+Postfix -> qmgr -> pipe argv=uursmtp -> ZConnect-*.prv-Puffer
+					im Netcalldir. 
+
+
+
+ZConnect -> Unix
+
+Da Postfix ESMTP-PIPELINING (im Gegensatz zu neueren Sendmail)
+unterstützt, kann die Ausgabe von uuwsmtp direkt in Postfix'
+Sendmail-Kompatibilitätsinterface in /usr/sbin/sendmail gesteckt werden.
+Man braucht dabei nicht zu befürchten, daß alle Mails außer der ersten
+verlorengehen, Postfix ist nicht Sendmail.
+
+Bild:
+
+import -> uuwsmtp -> "sendmail" 
+
+
+
+Installation in Postfix:
+------------------------
+
+(1) Zunächst ist in /etc/postfix/master.cf ein pipe(8)-Service namens
+"zconnect" zum Transport einzurichten, dazu sind die folgenden Zeilen
+einzufügen (alles, was nach flags kommt, steht in EINER Zeile):
+
+# ZConnect service 
+zconnect  unix  -       n       n       -       1       pipe
+    flags=R user=mbox:news argv=@BINDIR@/uursmtp -s ${nexthop} ${sender} ${recipient}
+
+
+
+(2) Änderungen an /etc/postfix/main.cf:
+
+(2a) zunächst ist sicherzustellen, daß /etc/postfix/transport gelesen
+wird. Das kann geschehen durch (jeweils am Zeilenanfang)
+
+	transport_maps = hash:/etc/postfix/transport
+
+oder bei Systemen, die kein GNU db haben, mit:
+
+	transport_maps = dbm:/etc/postfix/transport
+
+wer PCRE (perl compatible regular expressions) braucht (Postfix-19990601
+und neuer), benutzt:
+
+	transport_maps = pcre:/etc/postfix/transport
+
+
+
+(2b) Da es wenig Sinn macht, uursmtp parallel aufzurufen, ist noch
+eine Rate Control einzutragen, nämlich (am Zeilenanfang)
+
+	zconnect_destination_concurrency_limit = 1
+
+(Anmerkung: das ist auch durch die "1" im zconnect-Eintrag in master.cf
+gewährleistet, dennoch empfehle ich beide Einträge)
+
+
+
+(3) Ferner ist in /etc/postfix/transport anzugeben, welche Domains über
+zconnect geroutet werden sollen. Dabei ist die Lektüre von transport(5)
+dringend empfohlen. Zu PCRE (ab Postfix-19990601) bitte auch PCRE_README
+und die HISTORY im Postfix-Verzeichnis und die Hinweise oben beachten. 
+
+Beispieleinträge für /etc/postfix/transport: 
+
+.line.org zconnect:tribal.line.org
+line.org  zconnect:tribal.line.org
+
+Nach Änderung des transport-Files sind wie gehabt `postmap
+/etc/postfix/transport' und `postfix reload' aufzurufen. 
+
+
+
+(4) Der Rückweg braucht nicht besonders installiert zu werden, dies ist
+durch das RSMTP in diesem Verzeichnis gewährleistet. Was hier in RSMTP
+eingetragen ist, wird in @BINDIR@/import als RSMTP= eingetragen und von
+dort aufgerufen.
+
+
+
+HILFEN ZUR INSTALLATION:
+------------------------
+
+Nach make steht in mail-and-news/postfix ein Perl-Skript namens ucpf.pl
+zur Verfügung, das durch simplen Aufruf den für Unix-Connect relevanten
+Teil der Postfix-Konfiguration überprüft. WARNUNG: das Skript geht davon 
+aus, daß Postfix ansonsten korrekt installiert ist und läuft.
