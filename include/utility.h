@@ -77,3 +77,5 @@ int waitnolock(const char *lockname, long ltimeout);
 #define GET_NEXT_DATA(x)	{ argv++; argc--; x = *argv;	\
 				if (x == NULL) usage(); }
 
+#define dfree(x)	{ free(x); (x) = NULL; }
+

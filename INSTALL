@@ -96,20 +96,6 @@ installiert.
 Für (1) bitte point, für (2) gate und für (3) server verwenden.
 
 
-
---disable-real-gate       Nachrichten zurückkonvertieren erlauben.
-
-Falls Sie Verbindungen ins Usenet haben, die nicht über ZConnect-Strecken
-laufen, dürfen Sie Nachrichten, die aus dem Usenet stammen, nicht mehr nach
-RFC zurückwandeln, da diese (prinzipbedingt) verändert worden sind.
-
-UNIX/Connect unterbindet die Rückkonvertierung von Usenet-Artikeln, indem
-beim Konvertieren nach ZConnect ein entsprechender Header gesetzt wird,
-damit sie nicht wieder in das Usenet gesendet werden. Mit dieser Option
-kann das Rückkonvertieren wieder ermöglicht werden.
-
-
-
 --with-mail=typ          Welches Mailsystem wird verwendet?
 --with-news=typ          Welches Newssystem wird verwendet?
 
@@ -124,11 +110,32 @@ ein Minimal-System installiert. Bitte die READMEs in
 mail-and-news/<...> beachten.
 
 
-
 --with-apc               APC einkompilieren (meist unnötig).
 
 Hiermit wird eine sehr selten benoetigte Erweiterung fuer
 spezielle Binaermails hereincompiliert (fuer APC Unix software).
+
+
+--disable-full-gate       Nachrichten zurückkonvertieren verbieten.
+
+Falls Sie Verbindungen ins Usenet haben, die nicht über ZConnect-Strecken
+laufen, dürfen Sie Nachrichten, die aus dem Usenet stammen, nicht mehr nach
+RFC zurückwandeln, da diese (prinzipbedingt) verändert worden sind.
+
+UNIX/Connect unterbindet die Rückkonvertierung von Usenet-Artikeln, indem
+beim Konvertieren nach ZConnect ein entsprechender Header gesetzt wird,
+damit sie nicht wieder in das Usenet gesendet werden. Mit dieser Option
+kann das Rückkonvertieren wieder ermöglicht werden.
+
+
+--disable-log-xheader    Fehler nicht in X-Header protokollieren.
+
+Ein Fehler beim Parsing wird in eine X-Header geschrieben,
+so bleibt die Information erhalten, die nicht konvertiert wurde.
+X-Bogus-Newsgroups-*:
+X-Gate-Error:
+X-Date-Error:
+Mit dieser Option wird keiner cwder Header erzeugt.
 
 
 --enable-bang            Bang-Pfade erzeugen.
@@ -138,12 +145,14 @@ Weiterverarbeitung mit UUCP-Programmen sollten die Envelope-Adressen
 in Bang-Notation erzeugt werden, für die Weiterverarbeitung mit qmail
 nicht. Den meisten Programmen ist es egal.
 
+
 --enable-uxheader        Erzeuge aus X-Headern => U-X-Header.
 
 Vor Gatebau97 wurden alle X-Header als U-X-Header gegagetet.
 Sie werden auch weiterhin zurückkonvertiert.
 Nach dem Gatebau Beschuß, werden X- Header nun nicht mehr
 verändert, sondern 1:1 durchgereicht.
+
 
 --enable-badheader       Ignoriere defekte Header.
 
@@ -152,6 +161,17 @@ dieser Option ignoriert. Header-Namen mit 8-Bit Zeichen oder
 Leerzeichen werden so aus den Nachrichten entfert.
 Nach RFC1034 sollten solche Artikel nicht verändert werden,
 sondern einfach entsorgt werden.
+
+
+--enable-zmodemhack      Ignoriere Zmodem Fehler.
+
+Leider hat das normalerweise verwendete rz von Omen Technologies
+die Eigenart, einen unmotivierten Fehlerwert von 128 zurueckzugeben,
+dem ich noch keinen Fehler zuordnen konnte. UNIX/Connect kann diesen
+Wert (nur die 128) auf Wunsch ignorieren.
+Dies ist normalerweise ein Abbruch, dieser Hack
+kann zu Datenverlusten führen.
+
 
 --with-dialprae=code     Wählcode (Default=atdt).
 

@@ -316,7 +316,8 @@ bd_table_t bd_table[] = {
 	{ NULL,		0 }
 };
 
-void set_speed(int mfileno, char *speed)
+void
+set_speed(int mfileno, const char *speed)
 {
 	bd_table_t *p;
 #ifdef HAS_SYSV_TERMIO
@@ -333,7 +334,8 @@ void set_speed(int mfileno, char *speed)
 		if (strcmp(speed, p->name) == 0) break;
 	if (p->name) {
 	} else {
-		fprintf (stderr, "FATAL: unbekannte Geschwindigkeit: %s\n", speed);
+		fprintf (stderr, "FATAL: unbekannte Geschwindigkeit: %s\n",
+			speed);
 		exit(1);
 	}
 #ifdef HAS_SYSV_TERMIO

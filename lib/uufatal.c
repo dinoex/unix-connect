@@ -49,9 +49,9 @@
 
 #include <stdio.h>
 #include <stdarg.h>
-#include <sysexits.h>
 
 #include "uulog.h"
+#include "sysexits2.h"
 
 #define	MAX_LOG_LINE	200
 

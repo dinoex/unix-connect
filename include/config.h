@@ -50,27 +50,21 @@
 #define TCP_SUPPORT
 
 /*
- *   Definiert, falls ZCONNECT-Systeme Daten auch wieder an RFC-
+ *   Definiert, falls ZCONNECT-Systeme Daten nicht wieder an RFC-
  *   Systeme zurueckgeben.
- *   Nicht benoetigte UUCP-Header werden dann komplett transportiert.
+ *   Nicht benoetigte UUCP-Header werden sonst komplett transportiert.
+ *
+ *	DISABLE_UUCP_SERVER
  */
-#define	UUCP_SERVER
-
-/*
- *   Wenn diese Option definiert ist, werden Fehler beim Parsen
- *   von Headern in speziellen X- Headern mitgeschrieben.
- *   Das betrifft bislang Datum und Newsgroups beim Konvertieren
- *   von RFC nach ZConnect.
- */
-#define LOG_ERRORS_IN_HEADERS
 
 /*
  *   Die folgenden Flags legen fest, bei welchen Konvertierungen eine
- *   Umlautwandlung PC437 --> ISO-8859-1 stattfindet.
- *   Wird das entsprechende Flag nicht definiert, wird ae, oe, ue benutzt...
+ *   Umlautwandlung PC437 --> ISO-8859-1 nicht stattfindet.
+ *   Wird das entsprechende Flag definiert, wird ae, oe, ue benutzt...
+ *
+ *	DISABLE_ISO_IN_MAIL
+ *	DISABLE_ISO_IN_NEWS
  */
-#define	USE_ISO_IN_MAILS	/* Bei PMs */
-#define	USE_ISO_IN_NEWS		/* Bei oeffentlichen Nachrichten */
 
 /*
  *   Das folgende Flag definiert, ob beim Uebergang von RFC -> ZCONNECT
@@ -111,35 +105,6 @@
 
 #define	NO_Z38_CROSS_ROUTING
 
-/*
- * Hier koennen im Moment noch Headerverstuemmelungen eingeschaltet
- * werden. Das kann aber sehr schnell zu Problemen fuehren und wird
- * voraussichtlich sehr bald entfernt.
- */
-
-/*
- * Bei Crosspostings werden nur EMP:s fuer eine der folgenden Top-Level-
- * hierachien kopiert:
- */
-/* #define SOME_CROSSPOST "/DE/:/COMP/:/ALT/:/SOC/" */
-/*
- * Das gleiche aber nur fuer hier angeschlossene Points:
- */
-/* #define SOME_POINTS_CROSSPOST "/DE/:/COMP/:/ALT/:/SOC/" */
-
-/*
- * Standard: alles kopieren
- */
-#define	ANY_CROSSPOST
-
-/* Leider hat das normalerweise verwendete rz von Omen Technologies
- * die Eigenart, einen unmotivierten Fehlerwert von 128 zurueckzugeben,
- * dem ich noch keinen Fehler zuordnen konnte. UNIX/Connect kann diesen
- * Wert (nur die 128) auf Wunsch ignorieren.
- */
-
-#define DIRTY_ZMODEM_HACK
-
 /* Der ZConnect-Standard schreibt fuer Message-IDs von Points eine bestimmte
  * Form vor ( <lokalteil>@<point>.<server>.<do>.<main> ). Diese Form
  * kann vom Gateway erzwungen werden. Das kann aber dazu fuehren,
@@ -159,17 +124,3 @@
  */
 #define CLIP_MAPS_ROT
 
-/* Nachrichten, die aus dem Usenet stammen, duerfen nicht nach einer Wandlung
- * RFC->ZC->RFC wieder ins Usenet gelangen. Haben wir eine Verbindung zum
- * Usenet?
- */
-/* #define REAL_GATE */
-
-/****************************************************************************
- ***
- ***   No changes beyond this line should be necessary!
- ***
- ****************************************************************************/
-
-#define free_para(x)	{ do_free_para(x); (x) = NULL; }
-#define dfree(x)	{ free(x); (x) = NULL; }

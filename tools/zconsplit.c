@@ -66,6 +66,7 @@
 #include "hd_nam.h"
 #include "boxstat.h"
 #include "ministat.h"
+#include "utility.h"
 
 
 static char *buffer;		/* Nachrichten-Buffer */

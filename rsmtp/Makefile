@@ -65,6 +65,6 @@ $(BINDIR)/bsmtp: bsmtp
 
 # end of makefile
 # automatic depend
-bsmtp.o: bsmtp.c version.h
-rsmtp.o: rsmtp.c version.h
+bsmtp.o: bsmtp.c ../include/sysexits2.h version.h
+rsmtp.o: rsmtp.c ../include/sysexits2.h version.h
 # eof

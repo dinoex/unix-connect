@@ -68,7 +68,6 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#include <sysexits.h>
 
 #include "utility.h"
 #include "crc.h"
@@ -76,6 +75,7 @@
 #include "mime.h"
 #include "hd_def.h"
 #include "uulog.h"
+#include "sysexits2.h"
 
 mime_cte_struct mime_ctes[] = {
 	{ "7bit",		cte_7bit },

@@ -81,9 +81,6 @@ extern const char *hd_crlf;
 	/* Muss vom main() definiert werden, um fuer dieses */
 	/* Programm die Zeilenendekonvention festzulegen */
 
-/* void wr_para (header_p, FILE *); */
-#define wr_para(p,f) { wr_para_continue(p,f); fputs(hd_crlf, f); }
-
 int set_rd_para_reaction (int new_reaction);
 header_p uu_rd_para(FILE *);
 header_p smtp_rd_para(FILE *);
@@ -112,9 +109,11 @@ header_p del_header(unsigned int, header_p);
 header_p copy_one_header(header_p p);
 header_p join_header(header_p, header_p);
 header_p unify_header(header_p, header_p);
-#define copy_header(p) join_header(p,NULL)
 int identify(const char *);
 
-# define new_header(text, code) add_header(text, code, NULL)
-# define for_header(par, code, h) for(par=find(code, h); par; par=par->other)
+#define wr_para(p,f) { wr_para_continue(p,f); fputs(hd_crlf, f); }
+#define copy_header(p) join_header(p,NULL)
+#define new_header(text, code) add_header(text, code, NULL)
+#define for_header(par, code, h) for(par=find(code, h); par; par=par->other)
+#define free_para(x)	{ do_free_para(x); (x) = NULL; }
 

@@ -75,7 +75,6 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <errno.h>
-#include <sysexits.h>
 
 #include "utility.h"
 #include "crc.h"
@@ -89,6 +88,7 @@
 #include "lib.h"
 #include "uuconv.h"
 #include "gtools.h"
+#include "sysexits2.h"
 
 #ifdef APC_A2B
 #include "apc_a2b.h"
@@ -468,7 +468,7 @@ convdata(FILE *news, FILE *zconnect)
                 hd = del_header(HD_UU_CONTENT_TRANSFER_ENCODING, hd);
         }
 
-#ifdef UUCP_SERVER
+#ifndef DISABLE_UUCP_SERVER
 	hd = del_header(HD_UU_XREF, hd);
 	if (!dont_gate)
 	   for (p=hd; p; p=p->next) {
@@ -489,7 +489,7 @@ convdata(FILE *news, FILE *zconnect)
 	     p=t;
 	   }
 #endif
-#ifdef REAL_GATE
+#ifdef DISABLE_FULL_GATE
 /* Artikel, die von Usenet-Seite aus hereinkommen, duerfen nicht wieder
    herausgeschickt werden. */
 	fprintf(zconnect, HN_X_DONT_GATE_IT": \r\n");

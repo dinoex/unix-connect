@@ -65,7 +65,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <sysexits.h>
 #include <errno.h>
 
 #include "utility.h"
@@ -81,6 +80,7 @@
 #include "mime.h"
 #include "zconv.h"
 #include "gtools.h"
+#include "sysexits2.h"
 
 int main_is_mail = 0;	/* Nein, wir erzeugen keine Mails */
 const char eol[] = "\n";
@@ -93,7 +93,7 @@ char *pointsys;		/* Name des Point-Systems (fuer die Message-Id) */
 
 static char *bigbuffer	= NULL;
 static char *smallbuffer= NULL;
-#ifndef USE_ISO_IN_NEWS
+#ifdef DISABLE_ISO_IN_NEWS
 extern char umlautstr[], convertstr[];
 #endif
 
@@ -427,7 +427,7 @@ convert(FILE *zconnect, FILE *news)
 		return;
 	}
 
-#ifdef REAL_GATE
+#ifdef DISABLE_FULL_GATE
 	pst = find(HD_X_DONT_GATE_IT, hd);
 	if (pst) {
 		skip = 1;
@@ -591,7 +591,7 @@ convert(FILE *zconnect, FILE *news)
 		for (c=smallbuffer; *c; c++) {
 			if (buffree < 5) {
 				*bufende = '\0';
-#ifdef USE_ISO_IN_NEWS
+#ifndef DISABLE_ISO_IN_NEWS
 				if(charset == 0 && mime_info.text_plain)
 					pc2iso(bigbuffer);
 #endif
@@ -599,7 +599,7 @@ convert(FILE *zconnect, FILE *news)
 				bufende = bigbuffer;
 				buffree = BIGBUFFER;
 			}
-#ifndef USE_ISO_IN_NEWS
+#ifdef DISABLE_ISO_IN_NEWS
 			if (charset == 0 && !isascii(*c)) {
 				ul = strchr(umlautstr, *c);
 				if (ul) {
@@ -757,7 +757,7 @@ convert(FILE *zconnect, FILE *news)
                                 fputs(HN_UU_CONTENT_TRANSFER_ENCODING": 8bit\n", tmphd);
         }
 
-#ifdef USE_ISO_IN_NEWS
+#ifndef DISABLE_ISO_IN_NEWS
 	if (charset == 0 && mime_info.text_plain)
 		pc2iso(bigbuffer);
 #endif

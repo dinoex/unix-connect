@@ -76,7 +76,6 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <errno.h>
-#include <sysexits.h>
 
 #include "boxstat.h"
 #include "ministat.h"
@@ -90,6 +89,7 @@
 #include "lib.h"
 #include "uuconv.h"
 #include "gtools.h"
+#include "sysexits2.h"
 
 #ifdef APC_A2B
 #include "apc_a2b.h"
@@ -678,7 +678,7 @@ convdata(FILE *smtp, FILE *zconnect)
 		hd = del_header(HD_UU_CONTENT_TRANSFER_ENCODING, hd);
 	}
 
-#ifdef UUCP_SERVER
+#ifndef DISABLE_UUCP_SERVER
 	for (p=hd; p; p=p->next) {
 	    header_p t;
 	    for(;p;t=p, p=p->other) {

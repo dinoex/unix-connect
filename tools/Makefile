@@ -60,10 +60,11 @@ zconsplit:	zconsplit.o $(LIBS)
 
 # automatic depend
 list-systems.o: list-systems.c ../include/config.h ../include/sysdep.h \
- ../include/utility.h ../include/header.h ../include/crc.h \
- ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/ministat.h \
- ../include/boxstat.h
+ ../include/utility.h ../include/crc.h ../include/header.h \
+ ../hdlib/hd_def.h ../hdlib/hd_nam.h ../include/boxstat.h \
+ ../include/ministat.h
 zconsplit.o: zconsplit.c ../include/config.h ../include/sysdep.h \
- ../include/header.h ../include/crc.h ../hdlib/hd_def.h \
- ../hdlib/hd_nam.h ../include/boxstat.h ../include/ministat.h
+ ../include/crc.h ../include/header.h ../hdlib/hd_def.h \
+ ../hdlib/hd_nam.h ../include/boxstat.h ../include/ministat.h \
+ ../include/utility.h
 # eof

@@ -52,6 +52,7 @@
 
 #include "crc.h"
 #include "header.h"
+#include "utility.h"
 
 header_p
 del_header(unsigned int code, header_p ptr)

@@ -1,11 +1,22 @@
 
 Änderungen seit 0.83:
 
+- configure --enable-zmodemhack
+  setzt Compiler-Option DIRTY_ZMODEM_HACK
+
+- configure --disable-log-xheader
+  setzt Compiler-Option DISABLE_LOG_X_HEADER
+
+- configure --disable-full-gate
+  statt --disable-real-gate
+
+- etc/passwd nur durchsuchen wenn auch vorhanden.
+
 - configure --enable-badheaders
-  setzt Compiler-Option PLUS_IGNORE_BAD_HEADERS
+  setzt Compiler-Option ENABLE_IGNORE_BAD_HEADERS
 
 - configure --enable-uxheader
-  setzt Compiler-Option PLUS_KEEP_U_X_HEADER
+  setzt Compiler-Option ENABLE_U_X_HEADER
 
 Änderungen seit 0.82:
 

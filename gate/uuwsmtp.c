@@ -65,7 +65,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <sysexits.h>
 #include <errno.h>
 
 #include "utility.h"
@@ -80,6 +79,7 @@
 #include "mime.h"
 #include "zconv.h"
 #include "gtools.h"
+#include "sysexits2.h"
 
 
 int main_is_mail = 1;	/* Ja, wir sind fuer Mail's zustaendig */
@@ -94,7 +94,7 @@ char *pointsys;		/* Name des Point-Systems */
 static char *bigbuffer	= NULL;
 static char *smallbuffer= NULL;
 
-#ifndef USE_ISO_IN_MAILS
+#ifdef DISABLE_ISO_IN_MAIL
 extern char umlautstr[], convertstr[];
 #endif
 
@@ -491,13 +491,13 @@ convert(FILE *zconnect, FILE *smtp)
 					}
 				dfree(pbufferlow);
 			}
-#ifdef PLUS_RCPT_WITH_BANG
-			strcat(pbuffer, "!");
-			strcat(pbuffer, buffer);
-#else
+#ifndef ENABLE_RCPT_WITH_BANG
                         strcat(buffer, "@");
                         strcat(buffer, pbuffer);
                         strcpy(pbuffer,buffer);
+#else
+			strcat(pbuffer, "!");
+			strcat(pbuffer, buffer);
 #endif
 		} else {
 			local = 1;
@@ -629,7 +629,7 @@ convert(FILE *zconnect, FILE *smtp)
 				/* Pufferueberlauf, in tmp-File schreiben */
 				if (!tmp) tmp = tmpfile();
 				*bufende = '\0';
-#ifdef USE_ISO_IN_MAILS
+#ifndef DISABLE_ISO_IN_MAIL
 				if (mime_info.text_plain && charset == 0)
 					pc2iso(bigbuffer);
 #endif
@@ -637,7 +637,7 @@ convert(FILE *zconnect, FILE *smtp)
 				bufende = bigbuffer;
 				buffree = BIGBUFFER;
 			}
-#ifndef USE_ISO_IN_MAILS
+#ifdef DISABLE_ISO_IN_MAIL
 			if (charset == 0 && mime_info.text_plain
 			&& !isascii(*c)) {
 				ul = strchr(umlautstr, *c);
@@ -836,7 +836,7 @@ convert(FILE *zconnect, FILE *smtp)
 	if (tmp) {
 		size_t readlen;
 
-#ifdef USE_ISO_IN_MAILS
+#ifndef DISABLE_ISO_IN_MAIL
 		if (charset==0 && mime_info.text_plain)
 			pc2iso(bigbuffer);
 #endif
@@ -849,7 +849,7 @@ convert(FILE *zconnect, FILE *smtp)
 		}
 		fclose(tmp);
 	} else {
-#ifdef USE_ISO_IN_MAILS
+#ifndef DISABLE_ISO_IN_MAIL
 		if (charset == 0 && mime_info.text_plain)
 			pc2iso(bigbuffer);
 #endif

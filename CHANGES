@@ -3,6 +3,28 @@ $Id$
 Aenderungen an UnixConnect
 seit 0.83
 
+- lib/syslog.c:
+  Bei "%" in der Mailadresse, jetzt auch im Syslog sauber.
+
+- include/version.h:
+  VERSION entfert, steht in Makefile.global
+
+- include/config.h:
+  USE_ISO_IN_NEWS USE_ISO_IN_MAIL immer default
+  DISABLE_ISO_IN_NEWS DISABLE_ISO_IN_MAIL kann gesetzt werden.
+
+- online/xprog.c:
+  arg jetzt immer const.
+
+- online/call.c: include/line.h: lib/rawtty.c
+  main hat jetzt const Pointer.
+
+- online/call.c: (Matthias Andree)
+  doppletes stat() entfernt
+
+- include/sysexits2.h:
+  fuer Portabilitaet.
+
 - Doukumentation in INSTALL für neue Optionen.
 
 - Includes in den Includefiles weitgehend entfernt.

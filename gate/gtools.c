@@ -64,10 +64,10 @@
 #include <dirent.h>
 #endif
 #include <errno.h>
-#include <sysexits.h>
 
 #include "gtools.h"
 #include "version.h"
+#include "sysexits2.h"
 
 char datei[2000];
 char baseid[20];

@@ -66,12 +66,12 @@
 #endif
 #endif
 #include <ctype.h>
-#include <sysexits.h>
 
 #include "utility.h"
 #include "crc.h"
 #include "header.h"
 #include "uulog.h"
+#include "sysexits2.h"
 
 static char *uugets(char *s, int n, FILE *stream);
 
@@ -113,7 +113,7 @@ header_p smtp_rd_para(FILE *f)
 	char buffer[MAX_HEADER_NAME_LEN+1], hname[MAX_HEADER_NAME_LEN+1];
 	int was_malloc;
 	unsigned code;
-#if PLUS_IGNORE_BAD_HEADERS
+#ifdef ENABLE_IGNORE_BAD_HEADERS
 	int line_bad;
 #endif
 
@@ -124,7 +124,7 @@ header_p smtp_rd_para(FILE *f)
 	      /* naechste Header-Zeile holen */
 	      if (!uugets(hname, MAX_HEADER_NAME_LEN, f)) break;
 	      hname[MAX_HEADER_NAME_LEN] = '\0'; /* Sentinel */
-#if PLUS_IGNORE_BAD_HEADERS
+#ifdef ENABLE_IGNORE_BAD_HEADERS
 		line_bad = 0;
 #endif
 
@@ -142,9 +142,7 @@ header_p smtp_rd_para(FILE *f)
 		newlog( ERRLOG,
 			__FILE__ " Header ohne Doppelpunkt: %s",
 			hname);
-#ifndef PLUS_IGNORE_BAD_HEADERS
 		exit( EX_DATAERR );
-#endif
               }
 	      *p++ = '\0'; /* p zeigt auf Anfang des Headers. */
 
@@ -155,7 +153,7 @@ header_p smtp_rd_para(FILE *f)
 			newlog( ERRLOG,
 				__FILE__ " Nicht-ASCII-Zeichen im Header: %s",
 				hname);
-#ifdef PLUS_IGNORE_BAD_HEADERS
+#ifdef ENABLE_IGNORE_BAD_HEADERS
 			line_bad = 1;
 			break;
 #else
@@ -167,7 +165,7 @@ header_p smtp_rd_para(FILE *f)
 			newlog( ERRLOG,
 				__FILE__ " Leerzeichen im Headernamen: %s",
 				hname);
-#ifdef PLUS_IGNORE_BAD_HEADERS
+#ifdef ENABLE_IGNORE_BAD_HEADERS
 			line_bad = 1;
 			break;
 #else
@@ -176,7 +174,7 @@ header_p smtp_rd_para(FILE *f)
                  }
               }
 
-#ifdef PLUS_IGNORE_BAD_HEADERS
+#ifdef ENABLE_IGNORE_BAD_HEADERS
 		if ( line_bad )
 			continue;
 #endif

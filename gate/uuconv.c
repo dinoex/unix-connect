@@ -191,7 +191,7 @@ printbretter(const char *newsgroups, const char *zc_header, FILE *f)
 				fprintf(f, "%s\r\n", s);
 				break;
 			};
-#ifdef LOG_ERRORS_IN_HEADERS
+#ifndef DISABLE_LOG_X_HEADER
 			if (zc_header) {
 				fprintf(f, "X-Bogus-Newsgroups-%s: ",
 					zc_header);
@@ -582,7 +582,6 @@ convheader(header_p hd, FILE *f, char *from)
 			if (e) *e = '\0';
 			fprintf(f, HN_ZNETZ_CONV": %s\r\n", s);
 		}
-/*		hd = del_header(HD_X_GATEWAY, hd); */
 	}
 	p = find(HD_UU_FOLLOWUP_TO, hd);
 	if (p) {
@@ -732,7 +731,7 @@ convheader(header_p hd, FILE *f, char *from)
 		char *datum;
 
 		fprintf(f, HN_UU_U_DATE": %s\r\n", p->text);
-#ifdef LOG_ERRORS_IN_HEADERS
+#ifndef DISABLE_LOG_X_HEADER
 		datum = date2eda( p->text, f );
 #else
 		datum = date2eda( p->text, NULL );
@@ -850,7 +849,7 @@ convheader(header_p hd, FILE *f, char *from)
 	if (p) {
 		to = decode_mime_string(p->text);
 		iso2pc(to);
-#ifdef UUCP_SERVER
+#ifndef DISABLE_UUCP_SERVER
 		fprintf(f, HN_UU_U_TO": %s\r\n", to);
 #endif
 		if (!main_is_mail)
@@ -859,7 +858,7 @@ convheader(header_p hd, FILE *f, char *from)
 	}
 	p = find(HD_UU_CC, hd);
 	if (p) {
-#ifdef UUCP_SERVER
+#ifndef DISABLE_UUCP_SERVER
 	        char *kop=decode_mime_string(p->text);
 		iso2pc(kop);
 		fprintf(f, HN_UU_U_CC": %s\r\n", kop);
@@ -870,7 +869,7 @@ convheader(header_p hd, FILE *f, char *from)
 	}
 	p = find(HD_UU_BCC, hd);
 	if (p) {
-#ifdef UUCP_SERVER
+#ifndef DISABLE_UUCP_SERVER
 	        char *bcc=decode_mime_string(p->text);
 		iso2pc(bcc);
 		fprintf(f, HN_UU_U_BCC": %s\r\n", bcc);
@@ -972,7 +971,7 @@ convheader(header_p hd, FILE *f, char *from)
 		char *datum;
 
 		fprintf(f, HN_UU_U_EXPIRES": %s\r\n", p->text);
-#ifdef LOG_ERRORS_IN_HEADERS
+#ifndef DISABLE_LOG_X_HEADER
 		datum = date2eda( p->text, f );
 #else
 		datum = date2eda( p->text, NULL );
@@ -1133,9 +1132,7 @@ make_body(char *bigbuffer, size_t msglen,
 		}
 		if (latob > 0) {
 			/* Text, der der Nachricht vorangestellt ist */
-#ifndef NO_CONVERT_ISO_IN_KOM
 			iso2pc_size(start, latob);
-#endif
 			fprintf(zconnect, HN_KOM": %ld\r\n", latob);
 		}
 		fprintf(zconnect, HN_LEN": %ld\r\n\r\n", msglen);
@@ -1184,9 +1181,7 @@ make_body(char *bigbuffer, size_t msglen,
 			msglen = p2-p1+1;
 			memcpy(smallbuffer, p1, msglen);
 			/* CHARSET gilt fuer KOM:-Teil nicht */
-#ifndef NO_CONVERT_ISO_IN_KOM
 			iso2pc_size(smallbuffer, msglen);
-#endif
 			fprintf (zconnect, HN_KOM": %d\r\n", msglen);
 
 			/* Ende der Boaderzeile */

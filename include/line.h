@@ -59,7 +59,7 @@ void hangup(int);
 /*
  * setzt filed-desc. auf die angegebene Geschwindigkeit
  */
-void set_speed(int, char *);
+void set_speed(int, const char *);
 
 /*
  * speichert die tty-Einstellungen

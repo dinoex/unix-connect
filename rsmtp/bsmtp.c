@@ -48,7 +48,6 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <errno.h>
-#include <sysexits.h>
 #include <sys/types.h>
 #include <sys/file.h>
 #include <sys/stat.h>
@@ -56,6 +55,8 @@
 /*---------------------------------------------------------------------------*
  *	configuration
  *---------------------------------------------------------------------------*/
+
+#include "sysexits2.h"
 
 #ifndef MAILDIR
 #define MAILDIR		"/var/spool/dinoex/u/mailin"

@@ -20,8 +20,6 @@ Was kann noch getan werden?
 
 - ERR: in Body (?)
 
-- Umlautwandelung einstellbar: RFC1522/aeoeue (Kompilieroption)
-
 - Duerfen Path:-Header umgebrochen werden?
 
 - Wenn in der config kein Name gesetzt ist: gethostname() verwenden füer
@@ -59,9 +57,6 @@ Was kann noch getan werden?
 - TCP/IP support auch in zcall,
   evtl. 'ftp' als Transfer-Protokoll integrieren
 
-- PLUS_OLD_MKTIME automatisch erkennen
-
 - Ausgehende Puffer beim Janus-Netcall gehen manchmal verloren!!
-
-- % Zeichen in den Logs führen zu Problemen ...
+  Zmodem hack?
 

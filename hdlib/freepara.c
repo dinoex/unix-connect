@@ -51,6 +51,7 @@
 
 #include "crc.h"
 #include "header.h"
+#include "utility.h"
 
 
 void

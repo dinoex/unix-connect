@@ -455,7 +455,7 @@ convheader(header_p hd, FILE *f)
 		oabs = dstrdup(habs);
 	else /* fehlerhafte Eingabedatei, kein ABS:-Header */
 	{
-#ifdef LOG_ERRORS_IN_HEADERS
+#ifndef DISABLE_LOG_X_HEADER
 		fprintf(f, "X-Gate-Error: No ABS%s", eol);
 #endif
 		oabs = dstrdup("");

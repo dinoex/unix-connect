@@ -68,13 +68,13 @@
    Warnung: Pfad muss mit angegeben werden! */
 static int runcommand(const char *file, ...)
 {
-	char *arg[20];
+	const char *arg[20];
 	va_list ap;
 	pid_t c_pid;
 	size_t i;
 
 	i = 0;
-	arg[i++] = dstrdup( file );
+	arg[i++] = file;
 	va_start(ap, file);
 	while((i < sizeof(arg))
 	      && (arg[i] = va_arg(ap, char *))) {
@@ -89,7 +89,7 @@ static int runcommand(const char *file, ...)
 	case 0: /* child */
 		fprintf(stderr, "running %s ", file);
 		{
-			char **x;
+			const char * const *x;
 			for (x = arg; *x; x++)
 				fprintf(stderr, "%s ", *x);
 			fprintf(stderr, "\n");
@@ -106,7 +106,6 @@ static int runcommand(const char *file, ...)
 			int stat;
 #endif
 			wait(&stat);
-			dfree(arg[0]);
 
 			if (WIFEXITED(stat)) {
 #ifdef DIRTY_ZMODEM_HACK

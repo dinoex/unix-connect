@@ -149,7 +149,7 @@ newlog(int lchan, const char *format, ...)
 	va_end (arg);
 
 #ifdef HAVE_SYSLOG
-	syslog(prio, buf);
+	syslog(prio, "%s", buf);
 #else
 	if( lchan == DEBUGLOG ) {
 		if ( uudeblogfile == NULL ) {

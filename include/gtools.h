@@ -43,8 +43,23 @@
 extern char datei[2000];
 extern char baseid[20];
 
-void usage(void);
-void do_version( const char *name );
-void do_help(void);
+void usage(void)
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+;
+
+void do_version( const char *name )
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+;
+
+void do_help(void)
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+;
+
 FILE *open_new_file( const char *name, const char *dir, const char *ext );
 

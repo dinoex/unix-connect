@@ -67,12 +67,12 @@ AC_ARG_WITH(dir,
 [ --with-dir=dir           In welches Unterverzeichnis die Dateien kommen.],
 [ ZCDIR="$withval"
 if test x"$ZCDIR" != x; then
-	ZC="/$ZCDIR";
+  ZC="/$ZCDIR";
 fi
 ],[
 ZCDIR=zconnect
 if test x"$ZCDIR" != x; then
-	ZC="/$ZCDIR";
+  ZC="/$ZCDIR";
 fi
 ]
 )
@@ -106,9 +106,9 @@ AC_ARG_WITH(spooldir,
 [ --with-spooldir=dir      Spooldir.],
 [ SPOOLDIR="$withval" ],[
 if test -d /var/spool; then
-	SPOOLDIR=/var/spool/zconnect
+  SPOOLDIR=/var/spool/zconnect
 else
-	SPOOLDIR=/usr/spool/zconnect
+  SPOOLDIR=/usr/spool/zconnect
 fi
 ]
 )
@@ -118,34 +118,44 @@ AC_SUBST(SPOOLDIR)
 AC_MSG_CHECKING(Benutzerkennung für Unix-Connect)
 AC_ARG_WITH(user,
 [ --with-user=user         Benutzerkennung für Unix-Connect.],[
-if ! grep "^$withval:" /etc/passwd >/dev/null ; then
-	echo
-	echo "Es muß eine gültige Benutzerkennung gewählt werden"
-	exit 1;
+if test -f /etc/passwd ; then
+  if ! grep "^$withval:" /etc/passwd >/dev/null ; then
+    echo
+    echo "Es muß eine gültige Benutzerkennung gewählt werden"
+    exit 1;
+  else
+    echo $withval
+    USER=$withval;
+  fi
 else
-	echo $withval
-	USER=$withval;
+  echo $withval
+  USER=$withval;
 fi],
-[	echo
-	echo "Es muß eine gültige Benutzerkennung gewählt werden"
-	exit 1]
+[ echo
+  echo "Es muß eine gültige Benutzerkennung gewählt werden"
+  exit 1]
 )
 AC_SUBST(USER)
 
 AC_MSG_CHECKING(Gruppenkennung für Unix-Connect)
 AC_ARG_WITH(group,
 [ --with-group=group       Gruppenkennung für Unix-Connect.],[
-if ! grep "^$withval:" /etc/group >/dev/null ; then
-	echo
-	echo "Es muß eine gültige Gruppe gewählt werden"
-	exit 1;
+if test -f /etc/group ; then
+  if ! grep "^$withval:" /etc/group >/dev/null ; then
+    echo
+    echo "Es muß eine gültige Gruppe gewählt werden"
+    exit 1;
+  else
+    echo $withval
+    GROUP=$withval;
+  fi
 else
-	echo $withval
-	GROUP=$withval;
+  echo $withval
+  GROUP=$withval;
 fi],
-[	echo
-	echo "Es muß eine gültige Gruppe gewählt werden"
-	exit 1]
+[ echo
+  echo "Es muß eine gültige Gruppe gewählt werden"
+  exit 1]
 )
 AC_SUBST(GROUP)
 
@@ -170,7 +180,7 @@ AC_ARG_WITH(box,
         ;;
   *)
         AC_MSG_RESULT(Fehler!)
-	exit 1
+        exit 1
         ;;
   esac ],[
   AC_MSG_RESULT(box)
@@ -178,22 +188,6 @@ AC_ARG_WITH(box,
 )
 AC_SUBST(INSTTYPE)
 
-
-
-AC_MSG_CHECKING(Nachrichten zurückkonvertieren)
-AC_ARG_ENABLE(real-gate,
-[ --disable-real-gate      Nachrichten zurückkonvertieren verbieten.],
-[ case "$enableval" in
-  yes)
-        AC_MSG_RESULT(Ja)
-	AC_DEFINE(REAL_GATE)
-        ;;
-  *)
-        AC_MSG_RESULT(Nein)
-        ;;
-  esac ],[
-  AC_MSG_RESULT(Nein)]
-)
 
 dnl Mail- und Newssystem
 dnl in den zweiten Teil sollen mal Heuristiken eingebaut werden
@@ -208,13 +202,14 @@ else
   	MAIL=$withval
   else
   	echo "es gibt kein Mailsystem \"$withval\"."
-	AC_MSG_RESULT(Fehler!)
-	exit 1
+        AC_MSG_RESULT(Fehler!)
+        exit 1
   fi
 fi
 ], [MAIL='no'])
 AC_MSG_RESULT($MAIL)
 AC_SUBST(MAIL)
+
 
 AC_MSG_CHECKING(Newssystem)
 AC_ARG_WITH(news,
@@ -224,8 +219,8 @@ if test -d "mail-and-news/$withval" ; then
   	NEWS=$withval
 else
   	echo "es gibt kein Newssystem \"$withval\"."
-	AC_MSG_RESULT(Fehler!)
-	exit 1
+        AC_MSG_RESULT(Fehler!)
+        exit 1
 fi
 ], [NEWS='no'])
 AC_MSG_RESULT($NEWS)
@@ -238,12 +233,12 @@ AC_ARG_ENABLE(apc,
 [ case "$enableval" in
   yes)
         AC_MSG_RESULT(Ja)
-	AC_DEFINE(APC_A2B)
-	APCOBJS="apc_a2b.o atob.o"
+        AC_DEFINE(APC_A2B)
+        APCOBJS="apc_a2b.o atob.o"
         ;;
   *)
         AC_MSG_RESULT(Nein)
-	APCOBJS=""
+        APCOBJS=""
         ;;
   esac ],[
   AC_MSG_RESULT(Nein)
@@ -252,16 +247,48 @@ AC_ARG_ENABLE(apc,
 AC_SUBST(APCOBJS)
 
 
+AC_MSG_CHECKING(Nachrichten zurückkonvertiereni verbieten)
+AC_ARG_ENABLE(full-gate,
+[ --disable-full-gate      Nachrichten zurückkonvertieren verbieten.],
+[ case "$enableval" in
+  yes)
+        AC_MSG_RESULT(Ja)
+        AC_DEFINE(DISABLE_FULL_GATE)
+        ;;
+  *)
+        AC_MSG_RESULT(Nein)
+        ;;
+  esac ],[
+  AC_MSG_RESULT(Nein)]
+)
+
+
+AC_MSG_CHECKING(Fehler nicht in X-Header protokollieren)
+AC_ARG_ENABLE(log-xheader,
+[ --disable-log-xheader    Fehler nicht in X-Header protokollieren.],
+[ case "$enableval" in
+  yes)
+        AC_MSG_RESULT(Ja)
+        AC_DEFINE(DISABLE_LOG_X_HEADER)
+        ;;
+  *)
+        AC_MSG_RESULT(Nein)
+        ;;
+  esac ],[
+  AC_MSG_RESULT(Nein)]
+)
+
+
 AC_MSG_CHECKING(Bang-Pfade)
 AC_ARG_ENABLE(bang,
 [ --enable-bang            Bang-Pfade verwenden.],
 [ case "$enableval" in
   yes)
-	AC_MSG_RESULT(Ja)
-	AC_DEFINE(PLUS_RCPT_WITH_BANG)
+        AC_MSG_RESULT(Ja)
+        AC_DEFINE(ENABLE_RCPT_WITH_BANG)
         ;;
   *)
-	AC_MSG_RESULT(Nein)
+        AC_MSG_RESULT(Nein)
         ;;
   esac ],[
   AC_MSG_RESULT(Nein)
@@ -272,11 +299,11 @@ AC_ARG_ENABLE(uxheader,
 [ --enable-uxheader        Erzeuge U-X-Header, veraltet.],
 [ case "$enableval" in
   yes)
-	AC_MSG_RESULT(Ja)
-	AC_DEFINE(PLUS_KEEP_U_X_HEADER)
+        AC_MSG_RESULT(Ja)
+        AC_DEFINE(ENABLE_U_X_HEADER)
         ;;
   *)
-	AC_MSG_RESULT(Nein)
+        AC_MSG_RESULT(Nein)
         ;;
   esac ],[
   AC_MSG_RESULT(Nein)
@@ -288,11 +315,27 @@ AC_ARG_ENABLE(badheader,
 [ --enable-badheader       Ignoriere defekte Header.],
 [ case "$enableval" in
   yes)
-	AC_MSG_RESULT(Ja)
-	AC_DEFINE(PLUS_IGNORE_BAD_HEADERS)
+        AC_MSG_RESULT(Ja)
+        AC_DEFINE(ENABLE_IGNORE_BAD_HEADERS)
         ;;
   *)
-	AC_MSG_RESULT(Nein)
+        AC_MSG_RESULT(Nein)
+        ;;
+  esac ],[
+  AC_MSG_RESULT(Nein)
+])
+
+
+AC_MSG_CHECKING(Ignoriere Zmodem Fehler)
+AC_ARG_ENABLE(zmodemhack,
+[ --enable-zmodemhack      Ignoriere Zmodem Fehler.],
+[ case "$enableval" in
+  yes)
+        AC_MSG_RESULT(Ja)
+        AC_DEFINE(DIRTY_ZMODEM_HACK)
+        ;;
+  *)
+        AC_MSG_RESULT(Nein)
         ;;
   esac ],[
   AC_MSG_RESULT(Nein)
@@ -348,11 +391,11 @@ AC_SUBST(INTERNATIONAL)
 
 AC_CHECK_FUNCS(syslog)
 if test $ac_cv_func_syslog = no; then
-       # syslog is not in the default libraries.  See if it's in some other.
-       for lib in bsd socket inet; do
-               AC_CHECK_LIB($lib, syslog, [AC_DEFINE(HAVE_SYSLOG)
-               LIBS="$LIBS $lib"; break])
-       done
+  # syslog is not in the default libraries.  See if it's in some other.
+  for lib in bsd socket inet; do
+    AC_CHECK_LIB($lib, syslog, [AC_DEFINE(HAVE_SYSLOG)
+    LIBS="$LIBS $lib"; break])
+  done
 fi
 
 AC_MSG_CHECKING(Systemname)
@@ -367,16 +410,16 @@ AC_ARG_WITH(domain,
 [ --with-domain=domain     Domainname.],[
 DOMAIN=$withval;],[
 if hostname | grep '\.' >/dev/null ; then
-	DOMAIN=`hostname | sed 's/^[[^\.]]*\.//'`
+  DOMAIN=`hostname | sed 's/^[[^\.]]*\.//'`
 else
-	if hostname -f | grep '\.' >/dev/null ; then
-		DOMAIN=`hostname -f | sed 's/^[[^\.]]*\.//'`
-	else
-		echo "Kann Domainnamen nicht ermitteln."
-		echo "Bitte mit --with-domain angeben."
-		AC_MSG_RESULT(Fehler!)
-		exit 1
-	fi
+  if hostname -f | grep '\.' >/dev/null ; then
+    DOMAIN=`hostname -f | sed 's/^[[^\.]]*\.//'`
+  else
+    echo "Kann Domainnamen nicht ermitteln."
+    echo "Bitte mit --with-domain angeben."
+    AC_MSG_RESULT(Fehler!)
+    exit 1
+  fi
 fi
 ])
 AC_MSG_RESULT($DOMAIN)
@@ -387,7 +430,7 @@ AC_SUBST(FQDN)
 
 AC_PATH_PROGS(INEWS,inews,inews,/usr/local/bin:/usr/bin:/usr/lib/news:/usr/local/lib/news:/usr/news:/usr/local/news:/usr/lib/news/bin)
 if test ! -x "$INEWS" ; then
-   echo "Kann inews nicht finden. uumlist wird nicht funktionieren."
+  echo "Kann inews nicht finden. uumlist wird nicht funktionieren."
 fi
 AC_PATH_PROGS(SENDMAIL,sendmail,/usr/sbin/sendmail,/usr/sbin:/usr/lib)
 if test ! -x "$SENDMAIL" ; then
@@ -411,13 +454,13 @@ Ist dieses System
 
 EOF
   while : ; do
-          readchar
-          case "$ERG" in
-           1) SYSUNAME=svr4;      break;;
-           2) SYSUNAME=isc;       break;;
-           3) SYSUNAME=sco;       break;;
-           4) SYSUNAME=sysv;      break;;
-          esac
+    readchar
+    case "$ERG" in
+    1) SYSUNAME=svr4;      break;;
+    2) SYSUNAME=isc;       break;;
+    3) SYSUNAME=sco;       break;;
+    4) SYSUNAME=sysv;      break;;
+    esac
   done
 fi
 
@@ -540,29 +583,29 @@ if test "$GCC" = yes; then
 fi
 
 
-	# neue Config
-	if test -f include/sysdep.h; then
-	    rm -f include/sysdep.h
-	fi
+# neue Config
+if test -f include/sysdep.h; then
+  rm -f include/sysdep.h
+fi
 
-	if test -f include/os-$SYSTYPE/sysdep.h; then
-	    echo "Linke include/os-$SYSTYPE/sysdep.h nach include/sysdep.h..."
-	    cp -i include/os-$SYSTYPE/sysdep.h include/sysdep.h
-	else
-	    echo "Unbekanntes System, verwende include/os-linux/sysdep.h"
-	    cp -i include/os-linux/sysdep.h include/sysdep.h
-	fi
+if test -f include/os-$SYSTYPE/sysdep.h; then
+  echo "Linke include/os-$SYSTYPE/sysdep.h nach include/sysdep.h..."
+  cp -i include/os-$SYSTYPE/sysdep.h include/sysdep.h
+else
+  echo "Unbekanntes System, verwende include/os-linux/sysdep.h"
+  cp -i include/os-linux/sysdep.h include/sysdep.h
+fi
 
-	if test -f include/policy.h; then
-	    rm -f include/policy.h
-	fi
-	if test -f include/os-$SYSTYPE/policy.h; then
-	    echo "Linke include/os-$SYSTYPE/policy.h nach include/policy.h..."
-	    cp -i include/os-$SYSTYPE/policy.h include/policy.h
-	else
-	    echo "Unbekanntes System, verwende include/os-linux/policy.h"
-	    cp -i include/os-linux/policy.h include/policy.h
-	fi
+if test -f include/policy.h; then
+  rm -f include/policy.h
+fi
+if test -f include/os-$SYSTYPE/policy.h; then
+  echo "Linke include/os-$SYSTYPE/policy.h nach include/policy.h..."
+  cp -i include/os-$SYSTYPE/policy.h include/policy.h
+else
+  echo "Unbekanntes System, verwende include/os-linux/policy.h"
+  cp -i include/os-linux/policy.h include/policy.h
+fi
 
 dnl AC_MSG_RESULT(fertig)
 AC_SUBST(SYSTYPE)

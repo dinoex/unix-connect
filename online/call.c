@@ -159,9 +159,9 @@ anrufdauer( void )
 }
 
 int
-main(int argc, char **argv)
+main(int argc, const char **argv)
 {
-	char *sysname, *speed;
+	const char *sysname, *speed;
 	char sysfile[FILENAME_MAX], deblogname[FILENAME_MAX];
 	FILE *f;
 	header_p sys, ich, p;
@@ -174,12 +174,11 @@ main(int argc, char **argv)
 	atexit(cleanup);
 
 	if (argc < 4 || argc > 5) usage();
-	sysname = argv[1];
+	sysname = strlwr( dstrdup( argv[1] ));
 	if (!strchr(argv[2], '/'))
 		sprintf(tty, "/dev/%s", argv[2]);
 	else
 		strcpy(tty, argv[2]);
-	strlwr(sysname);
 	speed = argv[3];
 	if (argc > 4)
 		maxtry = atoi(argv[4]);
@@ -697,7 +696,6 @@ anruf(char *intntl, header_p sys, header_p ich, int lmodem)
 		sprintf(outname, "caller.%s", arcer);
 
 		st.st_size = 0;
-		stat(outname, &st);
 		if(stat(outname, &st)) {
 			fprintf(stderr,
 				"Zugriff auf %s fehlgeschlagen: %s\n",

@@ -55,8 +55,6 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <errno.h>
-#include <sysexits.h>
-#include <paths.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 
@@ -64,7 +62,13 @@
  *	configuration
  *---------------------------------------------------------------------------*/
 
+#include "sysexits2.h"
+
+#ifndef _PATH_SENDMAIL
+#include <paths.h>
+#endif
 #define SENDMAIL	_PATH_SENDMAIL
+
 #ifndef GZIP
 #define GZIP		"/usr/bin/gzip"
 #endif
