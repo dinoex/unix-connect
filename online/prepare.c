@@ -243,7 +243,7 @@ void aufraeumen(void)
 		
 		/* Ich bin child */
 		sleep(5);	/* Gib dem 'parent' Zeit sich zu beenden */
-#ifdef LOGSYSLOG
+#ifdef HAVE_SYSLOG
 		sprintf(logfname, "%s/" XTRACTLOG_NAME, logdir);
 #else
 		sprintf(logfname, "%s/" XTRACTLOG, logdir);

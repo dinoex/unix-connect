@@ -94,7 +94,7 @@
  * wir das UNIX-interne Zeilenende.
  */
 char *hd_crlf = "\n";
-#ifdef LOGSYSLOG
+#ifdef HAVE_SYSLOG
 int logname = OUTGOING;
 #else
 char *logname = OUTGOING;
@@ -172,7 +172,7 @@ int main(int argc, char **argv)
 	else
 		maxtry = 1;
 	minireadstat();
-#ifdef LOGSYSLOG
+#ifdef HAVE_SYSLOG
 	sprintf(deblogname, "%s/" DEBUGLOG_NAME, logdir);
 #else
 	sprintf(deblogname, "%s/" DEBUGLOG, logdir);

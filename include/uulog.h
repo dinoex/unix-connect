@@ -43,7 +43,7 @@
  *  Logfile-Routinen fÅr den ZCONNECT/RFC GateWay
  *
  *  Sat Jul  1 20:45:39 MET DST 1995 (P.Much)
- *  - Erweitert zur Nutzung der syslog-facility mit -DLOGSYSLOG.
+ *  - Erweitert zur Nutzung der syslog-facility mit -DHAVE_SYSLOG.
  */
 
 #ifndef SYSDEP_H
@@ -51,7 +51,7 @@
 #endif
 
 
-#ifdef LOGSYSLOG
+#ifdef HAVE_SYSLOG
 #define SYSLOG_KANAL	LOG_MAIL
 #define SYSLOG_LOGNAME	"uconnect"
 #define FATALLOG_PRIO	LOG_CRIT
@@ -90,7 +90,7 @@
 extern char *nomem;
 
 
-#ifdef LOGSYSLOG
+#ifdef HAVE_SYSLOG
 void logfile(int lchan, char *from, char *to, char *mid, char *format,...)
 #else
 void logfile(char *lfilename, char *from, char *to, char *mid, char *format,...)

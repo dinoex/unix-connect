@@ -43,14 +43,14 @@
  *  Logfile-Routinen für den ZCONNECT/RFC GateWay
  *
  *  Sat Jul  1 20:45:39 MET DST 1995 (P.Much)
- *  - Erweitert zur Nutzung der syslog-facility mit -DLOGSYSLOG. 
+ *  - Erweitert zur Nutzung der syslog-facility mit -DHAVE_SYSLOG. 
  */
 
 
 # include "config.h"
 # include <stdio.h>
 # include <stdarg.h>
-#ifdef LOGSYSLOG
+#ifdef HAVE_SYSLOG
 # include <syslog.h>
 #endif
 # include <time.h>
@@ -61,14 +61,14 @@ extern char *logdir;
 
 
 void
-#ifdef LOGSYSLOG
+#ifdef HAVE_SYSLOG
 logfile(int lchan, char *from, char *to, char *mid, char *format, ...)
 #else
 logfile(char *lfilename, char *from, char *to, char *mid, char *format, ...)
 #endif
 {
 	va_list ap;
-#ifdef LOGSYSLOG
+#ifdef HAVE_SYSLOG
 	int prio;
 	char text[20];
 #else
@@ -78,7 +78,7 @@ logfile(char *lfilename, char *from, char *to, char *mid, char *format, ...)
 #endif
 
 	minireadstat();
-#ifdef LOGSYSLOG
+#ifdef HAVE_SYSLOG
 	switch(lchan) {
 	    case Z2ULOG	:
 		prio = Z2ULOG_PRIO;

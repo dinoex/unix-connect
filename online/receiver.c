@@ -76,7 +76,7 @@
  * wir das UNIX-interne Zeilenende.
  */
 char *hd_crlf = "\n";
-#ifdef LOGSYSLOG
+#ifdef HAVE_SYSLOG
 int logname = INCOMING;
 #else
 char *logname = INCOMING;

@@ -203,7 +203,7 @@ extern int auflegen_empfangen;
 
 extern jmp_buf timeout, nocarrier;
 extern FILE *deblogfile;
-#ifdef LOGSYSLOG
+#ifdef HAVE_SYSLOG
 extern int logname;
 #else
 extern char *logname;

@@ -48,14 +48,14 @@
  *
  *
  *  Sat Jul  1 20:45:39 MET DST 1995 (P.Much)
- *  - Erweitert zur Nutzung der syslog-facility mit -DLOGSYSLOG. 
+ *  - Erweitert zur Nutzung der syslog-facility mit -DHAVE_SYSLOG. 
  *  - Fehlende Datumsausgabe ergaenzt.                     
  */
 
 # include "config.h"
 # include <stdio.h>
 # include <stdarg.h>
-#ifdef LOGSYSLOG
+#ifdef HAVE_SYSLOG
 # include <syslog.h>
 #endif
 # include <time.h>
@@ -93,7 +93,7 @@ char *nomem = "Nicht genug Hauptspeicher!";
 
 void uufatal(char *prog, char *format, ...)
 {
-#ifndef LOGSYSLOG
+#ifndef HAVE_SYSLOG
 	FILE *f;
 	time_t now;
 	char buf[200];
@@ -101,7 +101,7 @@ void uufatal(char *prog, char *format, ...)
 	va_list ap;
 
 	minireadstat();
-#ifdef LOGSYSLOG
+#ifdef HAVE_SYSLOG
 	openlog(SYSLOG_LOGNAME, LOG_PID|LOG_CONS, SYSLOG_KANAL);
 	if(format == NULL || strlen(format) == 0)
 		syslog(FATALLOG_PRIO, "%s: (unknown)", prog);
