@@ -4,6 +4,9 @@ $Id$
 Aenderungen an UnixConnect
 seit 0.78
 
+- stderr umleiten in Datei, um tty nicht zu stoeren
+  in januslogin und receiver
+
 - "!not-for-mail" im Pfad erzeugen, wenn point dies nicht sendet.
 
 - References wieder mit Whitespaces
