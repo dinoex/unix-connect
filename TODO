@@ -43,3 +43,9 @@
 - die programme in gate/ sollten die Schleife abbrechen,
   wenn das Zielverzeichnis nicht existiert.
 
+- BUG: anruf() initialisiert die Schnittstelle nicht richtig besteht
+  weiter, wird durch meinen Patch NICHT behoben.
+
+- Das ganze fork()-Gezumpel sollte mal in eine Unterfunktion verbannt und
+  mit Fehlerhandling versehen werden.
+
