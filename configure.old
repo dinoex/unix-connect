@@ -1,0 +1,1444 @@
+:
+# (use /bin/sh - but some Systems can't grok #!/bin/sh)
+# $Id$
+#
+#	Shell-Script zum Installieren von Unix-Connect
+#
+# Als erstes Parameter auswerten.
+# Defaults:
+APC_A2B=N
+for PARAM in ${*}
+do
+	case $PARAM in
+	-APC)
+		APC_A2B=J
+		;;
+	*)
+		cat << EOF
+Aufruf: $0 [-APC]
+
+configure fragt alles noetige.
+Mit '-APC' wird eine sehr selten benoetigte Erweiterung fuer
+spezielle Binaermails hereincompiliert (fuer APC Unix software).
+
+EOF
+		exit 1
+		;;
+	esac
+done
+
+#
+#	Echo-Stil ermitteln
+#	BSD:  	echo -n "..."
+#	SysV:	echo "...." '\c'
+#
+C='\c'
+N=''
+if [ `( echo $N One $C; echo Two ) | wc -l` = 1 ]; then
+	clear
+else
+	C=''
+	N='-n'
+	if [ `( echo $N One $C; echo Two ) | wc -l` = 1 ]; then
+		clear
+	else
+		C=''
+		N=''
+		echo "Das 'echo' ist unbekannt, Ausgabeformatierung nicht moeglich"
+	fi
+fi
+
+#
+#	Pruefe die verfuegbaren stty-Optionen
+#
+
+# Fuer SunOS muss -count bei dd 2 sein...
+DDCOUNT=1
+if uname >/dev/null 2>&1
+then
+	if [ `uname` = SunOS ]
+	then
+		DDCOUNT=2
+	fi
+fi
+
+STTY="stty -echo -icanon min 1"
+
+if $STTY >/dev/null 2>/dev/null
+then
+	:
+else
+
+	STTY="stty -echo -icanon"
+
+	if $STTY >/dev/null 2>/dev/null
+	then
+		:
+	else
+		STTY=":"
+	fi
+fi
+
+#
+#	Eine Routine, um ein einzelnes Zeichen zu lesen
+#
+readchar () {
+	$STTY
+	ERG="`dd if=/dev/tty bs=1 count=${DDCOUNT} 2>/dev/null`"
+	stty echo icanon
+}
+
+#
+#	Eine (j/n) Frage-Routine
+#
+janein () {
+	echo $N $QUERY '(j/n) ? ' $C
+	while : ; do
+		readchar
+		if [ x$ERG = xj -o x$ERG = xJ ]; then
+			ERG="j"
+			echo "ja"
+			return
+		fi
+		if [ x$ERG = xn -o x$ERG = xN ]; then
+			ERG="n"
+			echo "nein"
+			return
+		fi
+	done
+}
+
+#
+#	Lieblings-Editor und Pager ermitteln
+#
+PAGER=${PAGER-more}
+EDITOR=${EDITOR-vi}
+
+#
+#	Wo bin ich?
+#
+if [ x$HOST = x ]; then
+	HOST=`hostname||uname -n||uuname -l||smail -bP visible_name`
+fi
+
+#
+# *****************************************************************************
+#
+#	Und jetzt geht's richtig los...
+#
+# *****************************************************************************
+#
+
+# Alte Konfiguration benutzen?
+if [ -r configure.dat ]; then
+	clear
+	cat <<EOF
+
+   UNIX-Connect Installation: Alte Konfiguration
+   =============================================
+
+	(C) Copyright 1992-94 Martin Husemann, martin@euterpe.owl.de
+	(C) Copyright fuer ZCONNECT 1992 Zerberus GmbH, Friedland
+
+
+	Es sind noch Konfigurationsdaten von einer vorherigen Installation
+	gespeichert in der Datei configure.dat .
+
+	Sie koennen diese Daten wiederverwenden oder aber ein
+	neue Konfiguration einstellen. Im letzteren Falle
+	werden die alten Daten geloescht.
+
+EOF
+	QUERY="Moechten Sie diese Daten verwenden"; janein
+	if [ $ERG = n ] ; then
+		rm -f configure.dat
+	fi
+fi
+
+OLDDATA=""
+if [ -r configure.dat ] ; then
+	echo "Lese alte Konfigurationsdaten..."
+	. ./configure.dat
+	OLDDATA=yes
+fi
+
+if [ -z "$OLDDATA" ] ; then
+	clear
+	cat <<EOF
+
+   Willkommen bei der UNIX-Connect Installation
+   ============================================
+
+	(C) Copyright 1995 Christopher Creutzig,
+				christopher@nescio.zerberus.de
+	(C) Copyright 1992-94 Martin Husemann, martin@euterpe.owl.de
+	(C) Copyright fuer ZCONNECT 1992 Zerberus GmbH, Friedland
+
+	Achtung: Diese Software ist freie Software. Sie unterliegt dem
+		 GNU Copyleft. Sie haben viele Rechte, nichts bezahlt 
+		 und dafuer auch gewisse Pflichten.
+
+		 Die Lizenzbedingungen finden Sie in Englisch in der
+		 Datei 'COPYRIGHT', sowie eine deutsche Uebersetzung
+		 in der Datei docs/lizenz.deutsch.
+
+	Wichtig: Da Sie diese Software umsonst bekommen, ist mit ihr
+		 keinerlei Haftung verbunden. Benutzen Sie sie, wenn
+		 sie Ihnen nuetzt; aber machen Sie niemanden ausser
+		 sich selbst dafuer verantwortlich, wenn sie Ihnen
+		 nicht nuetzt.
+
+EOF
+
+	QUERY="Moechten Sie jetzt die Lizenzbedingungen lesen"; janein
+
+	if [ $ERG = j ]; then
+		QUERY="Im Original (englisch)"; janein
+		if [ $ERG = j ]; then
+			FILE=COPYRIGHT
+		else
+			FILE=docs/lizenz.deutsch
+		fi
+		while : ; do
+			$PAGER $FILE
+			QUERY="Noch einmal"; janein
+			if [ $ERG = n ]; then break; fi
+		done
+	fi
+
+	clear
+	cat <<EOF
+
+   UNIX-Connect Installation: Ueberblick
+   =====================================
+
+	(C) Copyright 1995 Christopher Creutzig,
+				christopher@nescio.zerberus.de
+	(C) Copyright 1992-94 Martin Husemann, martin@euterpe.owl.de
+	(C) Copyright fuer ZCONNECT 1992 Zerberus GmbH, Friedland
+
+	'configure' installiert UNIX-Connect bzw. bereitet
+	seine Installation vor. Der Gesamtablauf ist dabei folgender:
+
+	 1) 'configure' erfragt interaktiv die notwendigen Details
+	 2) 'configure' erzeugt das Installationsverzeichnis mit den
+	    dort benoetigten Dateien
+	 3) 'configure' erzeugt das Spool-Verzeichnis mit Unterverzeichnissen
+	 4) 'configure' erzeugt die Makefiles sowie die systemabhaengigen
+	    Include-Dateien include/config.h und include/sysdep.h
+	 5) Auf Wunsch startet 'configure' anschliessend ein "make"
+
+	 Falls alles klappt, koennen Sie anschliessend mit "make install"
+	 die erzeugten Programme an ihren Platz befoerdern.
+
+EOF
+
+	QUERY="Moechten Sie UNIX-Connect jetzt installieren"; janein
+
+	if [ $ERG = n ]; then
+		echo "Ok, vielleicht spaeter einmal..."
+		exit 0
+	fi
+
+	#
+	#	Default-Werte
+	#
+	DESTDIR=/usr/local/lib/zconnect
+	USER=mbox
+	NORANLIB=0
+	PATHADD=/usr/local/bin
+
+	clear
+	cat <<EOF
+
+   UNIX-Connect Installation: User-ID festlegen
+   ============================================
+
+	(C) Copyright 1995 Christopher Creutzig,
+				christopher@nescio.zerberus.de
+	(C) Copyright 1992-94 Martin Husemann, martin@euterpe.owl.de
+	(C) Copyright fuer ZCONNECT 1992 Zerberus GmbH, Friedland
+
+UNIX-Connect benoetigt eine User-ID, unter der die Gateway-Programme
+arbeiten und Daten an das News-System bzw. Smail weitergeben. Auch die
+Logfiles gehoeren diesem User und sollten nur von ihm lesbar sein,
+da ansonsten rudimentaere Datenschutzbestimmungen missachtet werden.
+Aus diesem Grund ist auch 'uucp' keine gute Wahl fuer diesen User.
+
+Ich empfehle die Einrichtung eines speziellen Pseudo-Users fuer diesen
+Zweck, historisch bedingt hat dieser meist den Namen 'mbox'.
+
+Bevor 'configure' weiterarbeiten kann, muss ein solcher User existieren.
+Richten Sie ihn gegebenenfalls jetzt ein und machen Sie dann weiter...
+EOF
+
+	while : ; do
+		if [ -n "$TMP" ] ; then
+			break
+		fi
+
+		echo " "
+		if grep "^$USER:" /etc/passwd >/dev/null
+		then
+			echo "User $USER existiert."
+			QUERY="Moechten Sie ihn als Besitzer der Programme und Logfiles benutzen"; janein
+			if [ $ERG = j ]; then break; fi
+		else
+			echo "Es gibt keine User $USER."
+		fi
+		echo " "
+		echo "Geben Sie den Namen eines anderen Benutzers ein:"
+		read USER
+	done
+
+	echo " "
+	echo "Benutzer $USER ist Besitzer der Programme und Logfiles..."
+
+	while : ; do
+		clear
+		cat <<EOF
+
+   UNIX-Connect Installation: Installations-Parameter festlegen
+   ============================================================
+
+	(C) Copyright 1995 Christopher Creutzig,
+				christopher@nescio.zerberus.de
+	(C) Copyright 1992-94 Martin Husemann, martin@euterpe.owl.de
+	(C) Copyright fuer ZCONNECT 1992 Zerberus GmbH, Friedland
+
+Sie koennen UNIX-Connect sehr vielseitig einsetzen. Die haeufigsten
+Konfigurationen sind:
+
+   1) Point:	$HOST ist Ihr persoenliches System und Sie
+		wollen mit Hilfe von UNIX-Connect als Point an einer
+		Z-NETZ MailBox teilnehmen.
+   2) Gateway:	$HOST hat nichts mit dem Z-NETZ zu tun,
+		aber andere Systeme moechten von Ihnen Mail/News
+		per ZCONNECT (bzw. JANUS) beziehen.
+   3) MailBox:	$HOST ist eine MailBox im Z-Netz und Sie 
+		moechten mit UNIX-Connect Verbindungen zu anderen
+		MailBoxen sowie zu Ihren Points unterhalten.
+
+Wenn Sie unsicher sind, waehlen Sie die (3). Damit wird eine Vollversion
+installiert.
+EOF
+
+		echo $N "Welche Konfiguration kommt Ihrer am naechsten ? " $C; readchar
+		if [ "x$ERG" = x ] ; then
+			continue
+		fi
+		case "$ERG" in
+		  1) INSTTYPE=point; break
+			;;
+		  2) INSTTYPE=gate; break
+			;;
+		  3) INSTTYPE=server; break
+			;;
+		  *)	;;
+		esac
+	done
+
+	clear
+	cat <<EOF
+
+   UNIX-Connect Installation: Usenet-Artikel zurückgaten
+   =====================================================
+
+	(C) Copyright 1995-96 Christopher Creutzig,
+				christopher@nescio.zerberus.de
+	(C) Copyright 1992-94 Martin Husemann, martin@euterpe.owl.de
+	(C) Copyright fuer ZCONNECT 1992 Zerberus GmbH, Friedland
+
+
+Falls Sie Verbindungen ins Usenet haben, die nicht über ZConnect-Strecken
+laufen, dürfen Sie Nachrichten, die aus dem Usenet stammen, nicht mehr nach
+RFC zurückwandeln, da diese (prinzipbedingt) verändert worden sind.
+
+UNIX/Connect kann die Rückkonvertierung von Usenet-Artikeln unterbinden
+und Usenet-Nachrichten beim Konvertieren nach ZConnect einen entsprechenden
+Header setzen, damit sie nicht wieder in das Usenet gesendet werden.
+
+EOF
+
+	QUERY="Soll dies geschehen"; janein
+	if [ $ERG = "j" ]; then
+		REALGATE="#define REAL_GATE"
+	else
+		REALGATE="/* #define REAL_GATE */"
+	fi
+
+clear
+cat <<EOF
+
+   UNIX-Connect Installation: Envelope-Adressformat
+   ================================================
+
+	(C) Copyright 1995-98 Christopher Creutzig,
+				christopher@nescio.zerberus.de
+	(C) Copyright 1992-94 Martin Husemann, martin@euterpe.owl.de
+	(C) Copyright fuer ZCONNECT 1992 Zerberus GmbH, Friedland
+
+UNIX-Connect erzeugt Nachrichten im BSMTP-Format. Für die
+Weiterverarbeitung mit UUCP-Programmen sollten die Envelope-Adressen
+in Bang-Notation erzeugt werden, für die Weiterverarbeitung mit qmail 
+nicht. Den meisten Programmen ist es egal.
+
+EOF
+
+	QUERY="Möchten Sie das Bang-Format erzeugen lassen"; janein
+	if [ $ERG = "j" ]; then
+		ENVBANG="#define RCPT_WITH_BANG"
+	else
+		ENVBANG="/* #define RCPT_WITH_BANG */"
+	fi
+
+
+	clear
+	cat <<EOF
+
+   UNIX-Connect Installation: Installations-Verzeichnis erstellen
+   ==============================================================
+
+	(C) Copyright 1995 Christopher Creutzig,
+				christopher@nescio.zerberus.de
+	(C) Copyright 1992-94 Martin Husemann, martin@euterpe.owl.de
+	(C) Copyright fuer ZCONNECT 1992 Zerberus GmbH, Friedland
+
+EOF
+
+	if [ -d $DESTDIR ]; then
+		cat <<EOF
+$DESTDIR existiert bereits, falls Sie eine aeltere 
+Version als v0.74 benutzt haben, sollten Sie 'configure' eine neue
+Verzeichnisstruktur einrichten lassen - das alte Verzeichnis wird
+dazu in $DESTDIR.old umbenannt.
+
+EOF
+
+		QUERY="Existierendes Verzeichnis sichern und neu anlegen"; janein
+		if [ $ERG = j ]; then
+			mv $DESTDIR $DESTDIR.old || exit 1
+			echo "Altes Verzeichnis ist gesichert."
+		fi
+	fi
+fi
+
+if [ -d $DESTDIR ]; then
+	echo "$DESTDIR bleibt unveraendert."
+	SYS=`grep '^Gate-ZNETZ-Name:' $DESTDIR/config | awk '{print $2}'`
+	DOMAIN=`grep '^Gate-Domain:' $DESTDIR/config | awk '{print $2}'`
+else
+	echo "OK, richte $DESTDIR ein..."
+	mkdir $DESTDIR || exit 1
+	chown $USER $DESTDIR || exit 1
+	mkdir $DESTDIR/systems || exit 1
+	chown $USER $DESTDIR/systems || exit 1
+	for file in `(cd usr-l-lib-zcon; echo *)`
+	do
+	    if test -f usr-l-lib-zcon/$file
+	    then
+		cp usr-l-lib-zcon/$file $DESTDIR || exit 1
+		chown $USER $DESTDIR/$file || exit 1
+	    fi
+	done
+	for file in `(cd $DESTDIR; echo *)`
+	do
+	    if [ -r $DESTDIR.old/$file ]; then
+		if [ -f $DESTDIR/$file ]; then
+		    cp $DESTDIR.old/$file $DESTDIR/$file
+		fi
+	    fi
+	done
+	for file in $DESTDIR.old/systems/*
+	do
+	    if [ -r $file ]; then
+		cp $file $DESTDIR/systems/
+	    fi
+	done
+	if [ -r $DESTDIR.old/myself.zconnect ]; then
+	    if [ ! -f $DESTDIR/myself.zconnect ]; then
+		cp $DESTDIR.old/myself.zconnect $DESTDIR/myself.zconnect
+	    fi
+	fi
+fi
+
+if [ ! -r $DESTDIR/myself.zconnect ]; then
+
+clear
+cat <<EOF
+
+   UNIX-Connect Installation: Erzeuge Konfigurationsdateien
+   ========================================================
+
+	(C) Copyright 1995 Christopher Creutzig,
+				christopher@nescio.zerberus.de
+	(C) Copyright 1992-94 Martin Husemann, martin@euterpe.owl.de
+	(C) Copyright fuer ZCONNECT 1992 Zerberus GmbH, Friedland
+
+
+Sie muessen einige Daten ueber Ihr eigenes System in die ZCONNECT-
+Konfigurationsdateien eintragen. Sie haben gleich mehrfach Gelegenheit,
+die Daten zu korrigieren.
+EOF
+
+
+SYS=`echo $HOST | sed 's/\..*$//'`
+DOMAIN=`echo $HOST | sed 's/^[^.]*\.//'`
+
+if [ x$DOMAIN = x ]; then
+	DOMAIN=nowhere.cyberspace.nil
+fi
+
+SYSOP=postmaster
+POST="Demo-Box, c/o Karl Meier, Schlosshof 1, 11599 Irgendwo"
+TELEFON="+49-521-99113"
+PROT="ZMODEM YMODEM XMODEM"
+TEL="+49-521-99113"
+ARC="ARC ZOO LHA ZIP NONE"
+POSTMASTER="postmaster"
+
+while : ; do
+
+cat <<EOF
+
+Bisherige Einstellungen:
+
+Systemname:	$SYS
+Domain:		$DOMAIN
+Adresse:	$POST
+Voice-Nummer:	$TELEFON
+Modem-Nummer:	$TEL
+Packer:		$ARC
+Protokolle:	$PROT
+Verwalter:      $POSTMASTER
+
+EOF
+
+QUERY="Einstellungen aendern"; janein
+
+if [ $ERG = n ]; then
+	break
+fi
+
+echo " "
+echo $N "Systemname:    [$SYS] " $C; read a
+if [ "x$a" != x ]; then SYS="$a"; fi
+echo $N "Domain:        [$DOMAIN] " $C; read a
+if [ "x$a" != x ]; then DOMAIN="$a"; fi
+echo    "Adresse:       [$POST] "; read a
+if [ "x$a" != x ]; then POST="$a"; fi
+echo $N "Voice-Nummer:  [$TELEFON] " $C; read a
+if [ "x$a" != x ]; then TELEFON="$a"; fi
+echo $N "Modem-Nummer:  [$TEL] " $C; read a
+if [ "x$a" != x ]; then TEL="$a"; fi
+echo $N "Packer:        [$ARC] " $C; read a
+if [ "x$a" != x ]; then ARC="$a"; fi
+echo $N "Protokolle:    [$PROT] " $C; read a
+if [ "x$a" != x ]; then PROT="$a"; fi
+echo $N "Verwalter:     [$POSTMASTER] " $C; read a
+if [ "x$a" != x ]; then POSTMASTER="$a"; fi
+
+done
+
+cat > $DESTDIR/myself.zconnect << EOF
+Sys:		$SYS
+Domain:		$DOMAIN
+Post:		$POST
+Telefon:	$TELEFON
+Tel:		$TEL
+Sysop:		$POSTMASTER
+Port:		1
+ARC:		1 $ARC
+Proto:		1 $PROT
+Mailformat:	1 ZCONNECT JANUS UUCP
+ISO2:		1 V.32bis V.32 V.22bis V.22 V.21
+ISO3:		1 V.42bis V.42 MNP5 MNP
+EOF
+
+fi
+
+SPOOLDIR=/usr/spool/zconnect
+if [ -d /var ]; then
+    if [ -d /var/spool ]; then
+	if [ -d /var/spool/uucp -o -d /var/spool/zconnect ]; then
+	   SPOOLDIR=/var/spool/zconnect
+	else
+	   QUERY="Moechten Sie /var/spool/zconnect als Spool-Verzeichnis benutzen"
+	   janein
+	   if [ $ERG = j ]; then
+		SPOOLDIR=/var/spool/zconnect
+	   else
+	  	echo -n "Spool-Verzeichnis: [$SPOOLDIR] "; read a
+		if [ "x$a" != "x" ]; then SPOOLDIR = "$a"; fi
+	   fi
+	fi
+    fi
+fi
+
+TST=`echo $SPOOLDIR | sed 's:/[^/]*$::'`
+while [ ! -d $TST ]; do
+	echo "$TST existiert nicht,"
+	echo "bitte geben Sie ein Spool-Verzeichnis ein:"
+	read SPOOLDIR
+	TST=`echo $SPOOLDIR | sed 's:/[^/]*$::'`
+done
+
+if [ -z "${OLDDATA}" ] ; then
+	cat << EOF
+
+Wenn Sie einen anonymous-FTP Server betreiben oder nuucp-Accounts auf
+Ihrem System haben, koennen Sie diese Verzeichnisse auch fuer ZCONNECT
+File-Requests zur Verfuegung stellen.
+
+EOF
+
+	FILESERVER=nein
+	QUERY="Moechten Sie den ZCONNECT File-Server installieren"; janein
+	if [ $ERG = j ]; then
+		FILESERVER=ja
+		echo "Welches Verzeichnis ist das Wurzelverzeichnis des Fileservers?"
+		read FILESDIR
+		echo "Welches Verzeichnis ist das Uploadverzeichnis?"
+		read FILESUPLOAD
+	fi
+
+	cat <<EOF
+
+Das Modem waehlt entweder mit dem Befehl 'ATDT <nummer>' oder mit
+'ATDP <nummer>', je nachdem, ob Ihre Vermittlungsstelle Tonwahl oder
+Pulswahl benoetigt.
+
+EOF
+	QUERY="Kann ich Tonwahl (ATDT) benutzen"; janein
+	if [ $ERG = j ]; then
+		ATDT="ATDT"
+	else
+		ATDT="ATDP"
+	fi
+	QUERY="Ist das Modem an eine Nebenstellenanlage angeschschlossen"; janein
+	if [ $ERG = j ]; then
+		cat <<EOF
+Die meisten Nebenstellenanlagen erfordern das Vorwaehlen einer 0, um eine
+Amtsleitung zu belegen. Einige Anlagen verwenden eine andere Ziffer, manchmal
+sind auch spezielle Modem-Befehle noetig. Eventuell muessen Sie nach dem
+Vorwaehlen der 0 einen Moment auf den Waehlton warten, indem Sie "," angeben.
+
+Gute Telefonanlagen koennen Modemanschluesse direkt beim Abheben des
+Modems auf eine Amtsleitung schalten und erfordern daher hier gar keine
+Angaben.
+
+EOF
+		echo $N "Amtsholung [0,] : " $C
+		read amt
+		if [ "x$amt" = x ]; then
+			amt="0,"
+		fi
+		ATDT="${ATDT}${amt}"
+	fi
+	cat <<EOF
+Bitte geben Sie Ihr Ortsnetz in internationaler Schreibweise an,
+also z.B. fuer das Ortsnetz (0521) Bielefeld:
+
+	+49-521
+
+UNIX-Connect wird bei Anrufen innerhalb dieses Ortsnetzes keine Vorwahl
+waehlen.
+
+EOF
+	echo $N "Ihr Ortsnetz : " $C; read ORTSNETZ
+
+	cat <<EOF
+Die folgenden Fragen moegen Ihnen ueberfluessig erscheinen - dann antworten
+Sie einfach mit ENTER...
+
+Geben Sie bitte an, wie Sie Vorwahlen und internationale Vorwahlen
+zusammensetzen. Die haeufigste Methode ist
+
+Fernwahl:	0
+International:	00
+
+Damit wird (wenn Sie selbst in Deutschland sind) aus +49-521-68000
+die tatsaechliche Nummer 0521-68000; aus +33-981-788865 wird
+0033-981-788865.
+EOF
+	echo $N "Fernwahl      [0]  : " $C; read FERNWAHL
+	echo $N "International [00] : " $C; read INTERNATIONAL
+	if [ "x$FERNWAHL" = x ]; then
+		FERNWAHL="0"
+	fi
+	if [ "x$INTERNATIONAL" = x ]; then
+		INTERNATIONAL="00"
+	fi
+
+	for dir in /usr/lib/news /usr/local/lib/news /usr/news /usr/local/news; do
+		if [ -r $dir/inews ]; then
+			INEWS="$dir/inews"
+			break
+		fi
+	done
+
+fi # if -z $OLDDATA
+
+CONFIG=$DESTDIR/config
+
+cat > $CONFIG <<EOF
+# Konfigurationsdatei zu "ZCONNECT fuer UNIX"
+# ===========================================
+#
+# automatisch erzeugt von 'configure'
+
+#--------------------------------------------------------------------------
+# 1. Abschnitt:
+#                    Beschreibung des lokalen Systems
+#--------------------------------------------------------------------------
+
+# Der Name des Systems
+
+System-Name:                      $SYS
+
+# Dazu kommt dann die Domain.
+# Der komplette Internet-Name des Systems wird als
+# (System-Name).(Gate-Domain) gebildet. Das System sollte sich selbst
+# auch als (System-Name) ohne Domain kennen.
+
+Gate-Domain:                       $DOMAIN
+
+# Alle ZCONNECT-Informationen ueber Ports etc. stehen in dieser
+# Datei:
+
+Who-Am-I:                          $DESTDIR/myself.zconnect
+
+# Hier sollte die System-Zeitzone benutzt werden, wer kann das
+# hinreichend portabel mal einbauen? Zur Zeit wird die Zeitzone
+# in ZCONNECT Notation angegeben:
+
+Zeitzone:                          1
+
+# Wenn wir Sommerzeit haben: 1
+# Sonst: 0 (oder gar nicht eingetragen)
+
+Sommerzeit:                        0
+
+# Im Verlauf der Installation kann es hilfreich sein, wenn die Online-
+# Routinen einen Mittschnitt der uebertragenen Steuerinformationen 
+# erzeugen, im Nutzbetrieb waechst dadurch das Logfile aber recht schnell.
+# Debuglevel 0 --> normale Logfiles, keine spezielle Debuginfo
+# Debuglevel 1 --> zusaetzliche Ablaufinformationen der Online-Phase
+# Debuglevel 2 --> alle Steuerinformationen werden protokolliert
+
+Debuglevel:                        0
+
+#--------------------------------------------------------------------------
+# 2. Abschnitt:
+#                    Files und Directories
+#--------------------------------------------------------------------------
+
+# Wir brauchen ein Directory (muss existieren) fuer diverse Logbuecher:
+
+Logbuch-Dir:                       $SPOOLDIR/logfiles
+
+# Sowie ein Directory fuer System-globale Locks:
+
+Lock-Dir:                          $SPOOLDIR/locks
+
+# Und ein Spool-Directory fuer die Netcalls
+
+Netcall-Dir:                       $SPOOLDIR
+
+# Sowie je eines fuer ein- und ausgehende Backups
+
+Backout-Dir:                       $SPOOLDIR/backout
+Backin-Dir:                        $SPOOLDIR/backin
+
+# Und ein Directory fuer die Verwaltungs-Daten der einzelnen Systeme
+
+Systeme-Dir:                       $DESTDIR/systems
+
+# Umgebungsvariable PATH fuer die ZCONNECT-Programme (z.B. zum sz/rz
+# Aufruf)
+
+Gate-Path-Env:			   $PATH
+
+EOF
+if [ $FILESERVER = ja ]; then
+cat >> $CONFIG <<EOF
+# Das Directory, unter dem die Filserver-Dateien liegen (dort MUSS es
+# ein Unterverzeichnis "INFO" geben, in dem die Standard-Info-Texte
+# stehen). Der Index liegt dort unter INFO/INHALT
+
+Fileserver-Dir:                    $FILESDIR
+Fileserver-Upload-Dir:             $FILESUPLOAD
+
+EOF
+fi
+cat >> $CONFIG <<EOF
+#--------------------------------------------------------------------------
+# 3. Abschnitt:
+#                    Konfiguration der ZCONNECT Online-Routinen
+#--------------------------------------------------------------------------
+
+# Sollen fremde System automatisch eingetragen werden?
+# Wenn ja: diese Datei anlegen (wie eine Datei in .../systems) und dort
+# die relevanten Default-Angaben reinschreiben
+
+Autoeintrag-Defaults:              $DESTDIR/autoeintrag.zconnect
+
+# Ein Kommando zum Einpacken (ARCen) und eines zum Auspacken:
+
+Arc-Kommando:                      $DESTDIR/einpack
+Xarc-Kommando:                     $DESTDIR/auspack
+
+# Ein Kommando zum Einlesen der empfangenen Dateien:
+
+Import-Kommando:                   $DESTDIR/import
+Inews-Kommando:                    ${INEWS-inews} -h
+
+# Kann unsere OVSt schon Tonwahl?
+
+Modem-Dial:                        ${ATDT}%s
+
+# Wie macht man aus Nummern in internationaler Notation tatsaechliche...
+Ortsnetz:                          $ORTSNETZ
+Fernwahl:                          $FERNWAHL
+International:                     $INTERNATIONAL
+
+# Generische Initialisierung fuer alle installierten Modems (falls mehrere
+# zum rauswaehlen benutzt werden)
+
+Modem-Dialog:                      AT
+Modem-Dialog:                      ATZ
+Modem-Dialog:                      ATX4
+
+#--------------------------------------------------------------------------
+# 4. Abschnitt:
+#                    Konfiguration der Gateway-Routinen
+#--------------------------------------------------------------------------
+
+# Alias-Liste zur Umbenennung von einzelnen Brettern oder Hierachien:
+
+Gate-Alias-Liste:                  $DESTDIR/alias
+
+# "Offene" Bretter, die in moderierte Newsgroups gegated werden, koennen
+# automatisch mit einem Approved: Header versehen werden. Die Liste dazu
+# steht in:
+
+Gate-Approved-Liste:               $DESTDIR/approved
+
+#--------------------------------------------------------------------------
+# 5. Abschnitt ROUTING
+#                    Absenderabhaengiges Routing
+#--------------------------------------------------------------------------
+
+# Da Mails mit Absender ".sub.org" (u.a.) nicht ueber WIN-Leitungen
+# transportiert werden sollen, dies aber mit herkoemmlichen Routing-
+# Mechanismen nicht/schwer realisierbar ist (Matthias Urlichs nach ZMailer 
+# Patch fragen), wird im Gateway fuer solche Adressen gleich ein anderer
+# Ziel-Pfad erzeugt.
+# Der Gateway schreibt Adressen immer als (domain)!(user). Dieser Teil ist
+# im folgenden "%s", darumherum kann beliebiges angehaengt werden. Ich verwende
+# hier eine sehr einfache Unterscheidung: Absender mit .$DOMAIN werden
+# "normal" geroutet, alle anderen gehen Umwege.
+# Genaugenommen gehen sie keine Umwege, es sei denn, Sie tragen etwas
+# anderes als %s unter Path-Default ein.
+
+# Alle mit Path-Qualifier angegebenen Domains erhalten "%s" als Zieladresse.
+Path-Qualifier:         .$DOMAIN
+
+# Alle uebrigen Domains bilden die Zieladresse folgendermassen:
+Path-Default:           %s
+
+# Ausnahmen sind Ziel-Adressen in einer der folgenden Domains (fuer die
+# gibt es hier "freie" Routings):
+Local-Domain:           $DOMAIN
+
+EOF
+
+a=`ls $DESTDIR/systems`
+if [ -z "$a" ]; then
+	case "$INSTTYPE" in
+	 point)	
+	cat <<EOF
+
+Geben Sie nun die Daten der MailBox an, von der Sie als Point angeschlossen
+werden moechten...
+
+EOF
+	 ;;
+	 gate)
+	cat <<EOF
+
+Geben Sie die Daten eines Systems an, dass bei Ihnen per ZCONNECT Daten
+abholen moechte. Weitere koennen Sie spaeter ergaenzen. Falls Sie niemals
+selbst anrufen, brauchen Sie die Telefonnumer nicht anzugeben.
+
+EOF
+	 ;;
+	 server)
+	cat <<EOF
+
+Geben Sie die Daten eines Ihrer Server an. Weitere koennen Sie spaeter
+ergaenzen.
+
+EOF
+	 ;;
+	 *) ;;
+	esac
+
+
+	SERVER=DEMO
+	PASSWD=GEHEIM
+	ArcerOut=ZIP
+	ArcerIn=ZIP
+	TEL="+49-521-99999"
+	Proto=ZMODEM
+	XCall=ZCONNECT
+	Domain=zerberus.de
+
+	while : ; do
+		SERVER="`echo "$SERVER" | tr 'A-Z' 'a-z'`"
+		Domain="`echo "$Domain" | tr 'A-Z' 'a-z'`"
+		ArcerIn="`echo "$ArcerIn" | tr 'a-z' 'A-Z'`"
+		ArcerOut="`echo "$ArcerOut" | tr 'a-z' 'A-Z'`"
+		Proto="`echo "$Proto" | tr 'a-z' 'A-Z'`"
+		cat <<EOF
+
+Aktuelle Einstellungen:
+
+MailBox:        $SERVER
+Domain:         $Domain
+Passwort:       $PASSWD
+Einpacken mit:  $ArcerOut
+Auspacken mit:  $ArcerIn
+Telefon:        $TEL
+Protokoll:      $Proto
+Verfahren:      $XCall
+
+EOF
+		QUERY="Einstellungen aendern"; janein
+		if [ $ERG = n ]; then
+			break
+		fi
+		echo $N "MailBox:        [$SERVER] " $C; read a
+		if [ "x$a" != x ]; then SERVER="$a"; fi
+		echo $N "Domain:         [$Domain] " $C; read a
+		if [ "x$a" != x ]; then Domain="$a"; fi
+		echo $N "Passwort:       [$PASSWD] " $C; read a
+		if [ "x$a" != x ]; then PASSWD="$a"; fi
+		echo $N "Einpacken mit:  [$ArcerOut] " $C; read a
+		if [ "x$a" != x ]; then ArcerOut="$a"; fi
+		echo $N "Auspacken mit:  [$ArcerIn] " $C; read a
+		if [ "x$a" != x ]; then ArcerIn="$a"; fi
+		echo $N "Telefon:        [$TEL] " $C; read a
+		if [ "x$a" != x ]; then TEL="$a"; fi
+		echo $N "Protokoll:      [$Proto] " $C; read a
+		if [ "x$a" != x ]; then Proto="$a"; fi
+		echo    "Verfahren:      [$XCall]"
+		echo $N "1) ZCONNECT, 2) JANUS ? " $C; readchar
+		case "$ERG" in
+		 1) XCall=ZCONNECT;;
+		 2) XCall=JANUS;;
+		 *) ;;
+		esac
+		echo "$XCall"
+	done
+
+	cat > $DESTDIR/systems/$SERVER.$Domain <<EOF
+Sys:            $SERVER
+Domain:         $Domain
+Passwd:         $PASSWD
+ArcerOut:       $ArcerOut
+ArcerIn:        $ArcerIn
+Tel:            1 $TEL
+Proto:          $Proto
+X-Call:         $XCall
+EOF
+
+	echo "Richte Spool-Verzeichnis fuer $SERVER.$Domain ein..."
+	for dir in $SPOOLDIR $SPOOLDIR/$SERVER.$Domain $SPOOLDIR/logfiles $SPOOLDIR/locks $SPOOLDIR/backin $SPOOLDIR/backout
+	do 
+		if [ ! -d $dir ]; then
+			mkdir $dir || exit 1
+			chown $USER $dir 2>/dev/null
+			chgrp news $dir 2>/dev/null
+			chmod 1777 $dir
+		fi
+	done
+fi
+
+if [ -z "${OLDDATA}" ] ; then
+	clear
+	cat <<EOF
+
+   UNIX-Connect Installation: Erforsche Systemumgebung
+   ===================================================
+
+	(C) Copyright 1995 Christopher Creutzig,
+				christopher@nescio.zerberus.de
+	(C) Copyright 1992-94 Martin Husemann, martin@euterpe.owl.de
+	(C) Copyright fuer ZCONNECT 1992 Zerberus GmbH, Friedland
+
+EOF
+
+	SYSUNAME="`uname -s | tr 'A-Z' 'a-z'`"
+
+	if [ "$SYSUNAME" = $HOST ]; then
+		cat <<EOF
+Ah, der beruechtigte AT&T 'uname' Bug...
+Ist dieses System
+
+  1) System V R4 oder hoeher
+  2) Interactive Unix 3.2
+  3) SCO Unix
+  4) ein anderes System V vor R4.0
+
+EOF
+		while : ; do
+			readchar
+			case "$ERG" in
+			 1) SYSUNAME=svr4;	break;;
+			 2) SYSUNAME=isc;	break;;
+			 3) SYSUNAME=sco;	break;;
+			 4) SYSUNAME=sysv;	break;;
+			esac
+		done
+	fi
+
+	case "$SYSUNAME" in
+		netbsd)
+			echo "Konfiguriere fuer NetBSD..."
+			SYSTYPE=netbsd
+			CC=gcc
+			CFLAGS="-O2 -g -pipe -Wall"
+			LDFLAGS=""
+		;;
+		linux)
+			echo "Konfiguriere fuer Linux..."
+			SYSTYPE=linux
+			CC=gcc
+			CFLAGS="-g -Wall"
+			PATHADD=$PATHADD:/usr/lib/news:/usr/local/lib/news/bin
+		;;
+		bsd/386)
+			echo "Konfiguriere fuer BSDI BSD/386..."
+			SYSTYPE=bsdi
+			CC=gcc
+			CFLAGS="-O2 -g -pipe -Wall"
+			LDFLAGS=""
+		;;
+		svr4)
+			SYSTYPE=svr4
+			CC=cc
+			CFLAGS="-O"
+			LDFLAGS=""
+		;;
+		sco*)
+			echo "Konfiguriere fuer SCO UNIX..."
+			SYSTYPE=sco
+			CC=cc
+			CFLAGS=""
+			LDFLAGS="-lPW"
+			NORANLIB=1
+		;;
+		isc*)
+			echo "Konfiguriere fuer Interactive UNIX..."
+			SYSTYPE=isc
+			CC=cc
+			CFLAGS=""
+			LDFLAGS="-lcposix -lPW"
+		;;
+		unix)
+			echo "Konfiguriere fuer System V..."
+			SYSTYPE=sysv
+			CC=cc
+			CFLAGS=""
+			LDFLAGS="-lPW"
+		;;
+		sunos)
+			echo "Konfiguriere fuer SunOS..."
+			echo "(ohne gcc sehe ich allerdings offen gesagt schwarz!)"
+			SYSTYPE=sunos
+			CC=cc
+			CFLAGS="-O"
+			LDFLAGS=""
+			;;
+		*)
+			echo "Diesen Systemtyp kenne ich nicht, mal sehen ob POSIX"
+			echo "klappt..."
+			SYSTYPE=svr4
+			CC=cc
+			CFLAGS="-O"
+			LDFLAGS=""
+			;;
+	esac
+
+	if test "$CC" != "gcc" 
+	then
+		echo Suche nach gcc...
+		saveifs="$IFS"; IFS="${IFS}:"
+		for dir in $PATH; do
+			test x"$dir" = "x" && dir=.
+			if test -f $dir/gcc; then
+				CC="gcc"
+				version=`$dir/gcc -v 2>&1 | tail -1 | sed -e 's/^gcc version \(.\)\..\../\1/'`
+				echo " ... gcc Version $version gefunden"
+				if test x"$version" = x1
+				then
+					CFLAGS="-O"
+				else
+					CFLAGS="-g -Wall"
+				fi
+			fi
+		done
+		IFS="$saveifs"
+	fi
+
+	echo "Mein Vorschlag: Benutzen Sie '$CC' als C-Compiler"
+	echo "und '$CFLAGS' als Optionen (der gcc hat ernste Probleme"
+	echo "beim Optimieren, Verwendung von -O auf eigene Gefahr):"
+	echo " "
+	echo $N "C Compiler [$CC] ? " $C; read antw
+	if [ "x$antw" != x ]; then
+		CC=$antw
+	fi
+
+        echo $N "Optionen [$CFLAGS] ? " $C; read antw
+        if [ "x$antw" != x ]; then
+                CFLAGS=$antw
+        fi
+fi # $OLDDATA
+
+RANLIB="@:"
+
+if [ $NORANLIB -eq 0 ]; then
+	echo Suche nach ranlib...
+	saveifs="$IFS"; IFS="${IFS}:"
+	for dir in $PATH; do
+		test x"$dir" = "x" && dir=.
+		if test -f $dir/ranlib; then
+			RANLIB="ranlib"
+			echo "Benutze ranlib."
+			break
+		fi
+	done
+	IFS="$saveifs"
+fi
+
+echo Suche nach sh...
+saveifs="$IFS"; IFS="${IFS}:"
+for dir in $PATH; do
+	test x"$dir" = "x" && dir=.
+	if test -f $dir/sh; then
+		shell=$dir/sh
+		break
+	fi
+done
+IFS="$saveifs"
+
+echo "Linke include/systems/$SYSTYPE.h nach include/sysdep.h..."
+if test -f include/sysdep.h
+then
+	rm -f include/sysdep.h
+fi 
+if ln -s `pwd`/include/systems/$SYSTYPE.h include/sysdep.h 2>/dev/null
+then
+	:
+else
+	ln include/systems/$SYSTYPE.h include/sysdep.h
+fi
+
+if test -f include/policy.h.$SYSTYPE
+then
+	echo "Erzeuge include/policy.h..."
+	cp include/policy.h.$SYSTYPE include/policy.h
+else
+	echo "Fuer dieses System ist kein include/policy.h bekannt."
+	echo "Sie muessen es unbedingt von Hand editieren!"
+	echo ""
+	while : ; do
+		QUERY="Moechten Sie jetzt include/policy.h editieren"; janein
+		if [ $ERG = n ]; then break; fi
+		$EDITOR include/policy.h
+	done
+
+fi 
+
+SRC=`ls -l COPYRIGHT | awk '{print $3}'`
+
+if [ $APC_A2B = J ]; then
+	APCTEXT="apc_a2b.o atob.o"
+else
+	APCTEXT=""
+fi
+
+for dir in . lib gate date online tools hdlib shell
+do
+	echo "Erzeuge $dir/Makefile"
+	echo '# Makefile zu "ZCONNECT fuer UNIX"
+# zustaendig fuer das Directory '$dir'
+
+SHELL    = '"$shell"'
+
+CC       = '"$CC"'
+CFLAGS   = '"$CFLAGS"'
+LDFLAGS  = '"$LDFLAGS"'
+RANLIB   = '"$RANLIB"'
+DESTDIR  = '"$DESTDIR"'
+SPOOLDIR = '"$SPOOLDIR"'
+FQDN     = '"$HOST"'
+USER     = '"$USER"'
+PATHADD	 = '"$PATHADD"'
+APCOBJS  = '"$APCTEXT"'
+
+' > $dir/Makefile
+	cat $dir/Makefile.$dir >> $dir/Makefile
+	chown $SRC $dir/Makefile
+
+done
+
+echo " "
+echo "Erzeuge include/config.h"
+if [ $APC_A2B = J ]; then
+	APCTEXT="#define APC_A2B"
+fi
+
+sed 's+^X++' > include/config.h <<EOF
+X/*
+X *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
+X *  Copyright (C) 1993-94  Martin Husemann
+X *  Copyright (C) 1995     Christopher Creutzig
+X *
+X *  This program is free software; you can redistribute it and/or modify
+X *  it under the terms of the GNU General Public License as published by
+X *  the Free Software Foundation; either version 2 of the License, or
+X *  (at your option) any later version.
+X *
+X *  This program is distributed in the hope that it will be useful,
+X *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+X *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+X *  GNU General Public License for more details.
+X *
+X *  You should have received a copy of the GNU General Public License
+X *  along with this program; if not, write to the Free Software
+X *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+X *
+X * ------------------------------------------------------------------------
+X * Eine deutsche Zusammenfassung zum Copyright dieser Programme sowie der
+X * GNU General Public License finden Sie in der Datei README.1st.
+X * ------------------------------------------------------------------------
+X *
+X *  Bugreports, suggestions for improvement, patches, ports to other systems
+X *  etc. are welcome. Contact the maintainer by e-mail:
+X *  christopher@nescio.foebud.org or snail-mail:
+X *  Christopher Creutzig, Im Samtfelde 19, 33098 Paderborn
+X *
+X *  There is a mailing-list for user-support:
+X *   unix-connect@mailinglisten.im-netz.de,
+X *  write a mail with subject "Help" to
+X *   nora.e@mailinglisten.im-netz.de
+X *  for instructions on how to join this list.
+X */
+X
+X#ifndef SYSDEP_H
+X#include "sysdep.h"
+X#endif
+X
+X
+X#define CONFIG_FILE	"$DESTDIR/config"
+X
+X#define BIGBUFFER	(256*1024)	/* Kopier-Puffer ( > 30k) */
+X#define SMALLBUFFER	(64*1024)	/* unused? */
+X#define	MAXLINE		8192		/* Z.B. in einem SMTP Batch */
+X
+X/*
+X *   receiver und zcall erhalten die Faehigkeit, per TCP/IP miteinander
+X *   zu kommunizieren. Dazu muessen BSD sockets vorhanden sein.
+X */
+X#define TCP_SUPPORT
+X
+X/*
+X *   Definiert, falls ZCONNECT-Systeme Daten auch wieder an RFC-
+X *   Systeme zurueckgeben.
+X *   Nicht benoetigte UUCP-Header werden dann komplett transportiert.
+X */
+X#define	UUCP_SERVER
+X
+X/*
+X *   Die folgenden Flags legen fest, bei welchen Konvertierungen eine
+X *   Umlautwandlung PC437 --> ISO-8859-1 stattfindet. 
+X *   Wird das entsprechende Flag nicht definiert, wird ae, oe, ue benutzt...
+X */
+X#define	USE_ISO_IN_MAILS	/* Bei PMs */
+X#define	USE_ISO_IN_NEWS		/* Bei oeffentlichen Nachrichten */
+X
+X/*
+X *   Das folgende Flag definiert, ob beim Uebergang von RFC -> ZCONNECT
+X *   eine ISO-8859-1 --> PC437 Konvertierung stattfindet, wenn die RFC-
+X *   Nachricht ISO-8859-1-Zeichen enthält.
+X *
+X *  Das Ganze führt dazu, daß Nachrichten nicht mehr unbedingt unverändert
+X *  durch ZConnect hindurchgereicht werden und sollte mit Vorsicht genossen
+X *  werden. Andererseits können viele Leute keine ISO-8859-1-Nachrichten
+X *  lesen, weil ihre ZConnect-Programme den entsprechenden ZConnect-Header
+X *  nicht auswerten.
+X */
+X#define	CONVERT_ISO		/* Bei allen Nachrichten von RFC -> ZCONNECT */
+X
+X
+X/*
+X *   Das folgende ist eine politische Entscheidung und nicht ganz einfach
+X *   zu treffen. Ist NO_Z38_CROSS_ROUTING gesetzt, werden News geloescht,
+X *   wenn sie
+X *
+X *      a) Ueber ein Z3.8 System transportiert wurden
+X *      b) aber nicht auf einem Z3.8 System geschrieben wurden
+X *
+X *   Der Normalfall ( RFC -> Z3.8 -> ZCONNECT -> RFC ) ist einsichtig,
+X *   leider(?) werden dadurch aber auch Mini-Netze, die nur ueber ein
+X *   Z3.8-Gateway angeschlossen sind ausgeschaltet, wenn sie ein Nachrichten-
+X *   format benutzen, das nicht transparent nach Z3.8 konvertiert werden
+X *   kann.
+X *
+X *   Diese Option MUSS eingeschaltet werden, wenn auf dem System Bretter
+X *   global vernetzt sind (/Z-NETZ/TELEKOM/GATEWAY u.ae.).
+X *
+X *   Sie darf nicht eingeschaltet werden, wenn dieses System
+X *
+X *    a) keine Verbindungen ausser der ZCONNECT-Verbindung hat oder
+X *    b) es sich hier um einen Point handelt.
+X */
+X
+X#define	NO_Z38_CROSS_ROUTING
+X
+X/*
+X *   Wenn diese Option definiert ist, werden Fehler beim Parsen
+X *   von Headern in speziellen X- Headern mitgeschrieben.
+X *   Das betrifft bislang Datum und Newsgroups beim Konvertieren
+X *   von RFC nach ZConnect.
+X */
+X#define LOG_ERRORS_IN_HEADERS
+X
+X/* Leider hat das normalerweise verwendete rz von Omen Technologies
+X * die Eigenart, einen unmotivierten Fehlerwert von 128 zurueckzugeben,
+X * dem ich noch keinen Fehler zuordnen konnte. UNIX/Connect kann diesen
+X * Wert (nur die 128) auf Wunsch ignorieren.
+X */
+X
+X#define DIRTY_ZMODEM_HACK
+X
+X/* Der ZConnect-Standard schreibt fuer Message-IDs von Points eine bestimmte
+X * Form vor ( <lokalteil>@<point>.<server>.<do>.<main> ). Diese Form
+X * kann vom Gateway erzwungen werden. Das kann aber dazu fuehren,
+X * dass die Bezugsverkettung im Point nicht mehr sauber funktioniert...
+X */
+X/* #define CARE_FOR_POINT_MIDS */
+X
+X/* Es gibt in der Behandlung des Routstrings Unterschiede zwischen
+X * ZConnect und RFC. Die allgemeine Einigung sieht so aus, daß die
+X * RFC-Notation einfach in den ZC-ROT:-Header kopiert wird. Das vermeidet
+X * Probleme nach dem Zurueckgaten, auch wenn die Routstrings streng nach
+X * ZC falsch sind (der letzte Eintrag muesste verworfen werden).
+X * Leider fuehrt das dazu, dass Nachrichten an den Pseudouser MAPS eines
+X * Zerberus-Systems nicht anerkannt werden. Daher gibt es die Option,
+X * bei Nachrichten an MAPS@* den Routstring auf ZConnect-Format zu stutzen.
+X * Das sollte eigentlich keine Probleme machen.
+X */
+X#define CLIP_MAPS_ROT
+X
+X/* Nachrichten, die aus dem Usenet stammen, dürfen nicht nach einer Wandlung
+X * RFC->ZC->RFC wieder ins Usenet gelangen. Haben wir eine Verbindung zum
+X * Usenet?
+X */
+X$REALGATE
+X
+X/* Soll in Envelope-Adressen ein BANG-Path verwendet werden?
+X */
+X$ENVBANG
+X
+X$APCTEXT
+X
+X/****************************************************************************
+X ***
+X ***   No changes beyond this line should be necessary!
+X ***
+X ****************************************************************************/
+X
+X#define free_para(x)	{ do_free_para(x); (x) = NULL; }
+X#define dfree(x)	{ free(x); (x) = NULL; }
+EOF
+
+clear
+cat <<EOF
+
+   UNIX-Connect Installation: Konfiguration beendet
+   ================================================
+
+	(C) Copyright 1995 Christopher Creutzig, 
+				christopher@nescio.zerberus.de
+	(C) Copyright 1992-94 Martin Husemann, martin@euterpe.owl.de
+	(C) Copyright fuer ZCONNECT 1992 Zerberus GmbH, Friedland
+
+
+Die Konfiguration von UNIX-Connect ist hiermit beendet. Was Sie jetzt noch
+tun muessen:
+
+   1) make
+   2) make install
+   3) Wie in 'INSTALL' beschrieben, die Einbindung in 'smail' und das
+      von Ihnen verwendete News-System vornehmen
+   4) Testen...
+
+EOF
+
+if [ -z "${OLDDATA}" ] ; then
+	echo "Speichere Konfiguration..."
+	echo "# Konfiguration fuer unix-connect; erstellt: `date` durch ${LOGNAME}" > configure.dat
+	cat >> configure.dat << EOF_EOF_EOF
+APC_A2B="${APC_A2B}"
+DESTDIR="${DESTDIR}"
+USER="${USER}"
+NORANLIB="${NORANLIB}"
+PATHADD="${PATHADD}"
+INSTTYPE="${INSTTYPE}"
+FILESERVER="${FILESERVER}"
+FILESDIR="${FILESDIR}"
+FILESUPLOAD="${FILESUPLOAD}"
+ATDT="${ATDT}"
+ORTSNETZ="${ORTSNETZ}"
+FERNWAHL="${FERNWAHL}"
+INTERNATIONAL="${INTERNATIONAL}"
+INEWS="${INEWS}"
+MACID="${MACID}"
+SERVER="${SERVER}"
+PASSWD="${PASSWD}"
+ArcerOut="${ArcerOut}"
+ArcerIn="${ArcerIn}"
+TEL="${TEL}"
+Proto="${Proto}"
+XCall="${XCall}"
+Domain="${Domain}"
+CC="${CC}"
+CFLAGS="${CFLAGS}"
+LDFLAGS="${LDFLAGS}"
+SYSUNAME="${SYSUNAME}"
+SYSTYPE="${SYSTYPE}"
+REALGATE="${REALGATE}"
+EOF_EOF_EOF
+
+fi
+
+QUERY="Soll ich 'make' starten"; janein
+
+if [ $ERG = j ]; then
+	make
+fi
+
+
+
+
+
+
+
+
+
+
+

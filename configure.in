@@ -1,0 +1,328 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(mail-and-news)
+dnl      checks for programs
+
+AC_PROG_ECHO_N
+AC_SUBST(ac_n)
+AC_SUBST(ac_c)
+AC_SUBST(ac_t)
+
+dnl Stty-Funktionen
+
+dnl AC_MSG_CHECKING(DDCOUNT)
+dnl system=`$UNAME`
+dnl case $system in
+dnl 	SunOS)
+dnl 		DDCOUNT=2
+dnl 		;;
+dnl 	*)
+dnl 		DDCOUNT=1
+dnl 		;;
+dnl esac
+dnl AC_MSG_RESULT($DDCOUNT)
+dnl AC_SUBST(DDCOUNT)
+dnl 
+dnl AC_MSG_CHECKING(stty)
+dnl STTY="stty -echo -icanon min 1"
+dnl
+dnl if $STTY >/dev/null 2>/dev/null
+dnl then
+dnl        :
+dnl else
+dnl
+dnl        STTY="stty -echo -icanon"
+dnl
+dnl        if $STTY >/dev/null 2>/dev/null
+dnl        then
+dnl                :
+dnl        else
+dnl                STTY=":"
+dnl        fi
+dnl fi
+dnl AC_MSG_RESULT()
+dnl AC_SUBST(STTY)
+
+
+
+dnl      checks for libraries
+dnl      checks for header files
+dnl      checks for typedefs
+dnl      checks for structures
+dnl      checks for compiler characteristics
+dnl      checks for library functions
+dnl      checks for system services
+
+AC_ARG_WITH(user,
+[ --with-user=user          Userkennung für Unix-Connect.],[
+if test $enableval = no ; then
+	echo "Es muß eine Benutzerkennung gewählt werden"
+	exit 1;
+else
+	USER=$enableval;
+fi],
+[	echo "Es muß eine Benutzerkennung gewählt werden"
+	exit 1]
+)
+AC_SUBST(USER)
+
+AC_ARG_WITH(group,
+[ --with-group=group        Gruppenkennung für Unix-Connect.],[
+if test $enableval = no ; then
+	echo "Es muß eine Gruppe gewählt werden"
+	exit 1;
+else
+	GROUP=$enableval;
+fi],
+[	echo "Es muß eine Gruppe gewählt werden"
+	exit 1]
+)
+AC_SUBST(GROUP)
+
+AC_MSG_CHECKING(Welcher Typ ist das Gateway)
+AC_ARG_WITH(box,
+[ --with-box=typ            point, gate, server
+                           Point: Unix-Connect ist Enduser-System
+                           Gate:  Kein Teil des Z-Netzes
+                           Box:   Alle ist möglich (default).],
+[ case "$withval" in
+  box)
+        AC_MSG_RESULT(Box)
+        INSTTYPE="box"
+        ;;
+  point)
+        AC_MSG_RESULT(Point)
+        INSTTYPE="point"
+        ;;
+  gate)
+        AC_MSG_RESULT(Gate)
+        INSTTYPE="gate"
+        ;;
+  *)
+        AC_MSG_RESULT(Fehler!)
+	exit 1
+        ;;
+  esac ],[
+  AC_MSG_RESULT(box)
+  INSTTYPE="box"]
+)
+AC_SUBST(INSTTYPE)
+
+
+
+AC_MSG_CHECKING(Nachrichten zurückkonvertieren)
+AC_ARG_ENABLE(real-gate,
+[ --disable-real-gate       Nachrichten zurückkonvertieren erlauben.],
+[ case "$enableval" in
+  yes)
+        AC_MSG_RESULT(Ja)
+        REALGATE="yes"
+	REAL_GATE="#define REAL_GATE"
+        ;;
+  *)
+        AC_MSG_RESULT(Nein)
+        REALGATE="no"
+	REAL_GATE="/* #define REAL_GATE */"
+        ;;
+  esac ],[
+  AC_MSG_RESULT(Nein)
+  REALGATE="no"
+  REAL_GATE="/* #define REAL_GATE */" ]
+)
+AC_SUBST(REALGATE)
+AC_SUBST(REAL_GATE)
+
+AC_MSG_CHECKING(Wohin mit den Dateien)
+AC_ARG_WITH(files,
+[ --with-files=dir          Wohin alle Dateien kommen (soll aufgeteilt werden).],
+[ DESTDIR="$withval" ],[
+dnl  DESTDIR=$libdir/zconnect
+  DESTDIR=/usr/local/lib/zconnect]
+)
+AC_MSG_RESULT($DESTDIR)
+AC_SUBST(DESTDIR)
+
+
+AC_MSG_CHECKING(spooldir)
+AC_ARG_WITH(spooldir,
+[ --with-spooldir=dir       Spooldir.],
+[ SPOOLDIR="$withval" ],[
+if test -d /var/spool; then
+	SPOOLDIR=/var/spool/zconnect
+else
+	SPOOLDIR=/usr/spool/zconnect
+fi
+]
+)
+AC_MSG_RESULT($SPOOLDIR)
+AC_SUBST(SPOOLDIR)
+
+dnl AC_MSG_CHECKING(Filserver)
+dnl AC_ARG_WITH(fileserver,
+dnl [ --with-fileserver=dir      Fileserverdir.],
+dnl [ 
+dnl Wenn Sie einen anonymous-FTP Server betreiben oder nuucp-Accounts auf
+dnl Ihrem System haben, koennen Sie diese Verzeichnisse auch fuer ZCONNECT
+dnl File-Requests zur Verfuegung stellen.
+dnl 
+dnl EOF
+dnl 
+dnl         FILESERVER=nein
+dnl         QUERY="Moechten Sie den ZCONNECT File-Server installieren"; janein
+dnl         if [ $ERG = j ]; then
+dnl                 FILESERVER=ja
+dnl                 echo "Welches Verzeichnis ist das Wurzelverzeichnis des Fileservers?"
+dnl                 read FILESDIR
+dnl                 echo "Welches Verzeichnis ist das Uploadverzeichnis?"
+dnl                 read FILESUPLOAD
+dnl         fi
+
+AC_MSG_CHECKING(Dialcode)
+AC_ARG_WITH(dialprae,
+[ --with-dialprae=code      Wählcode (Default=atdt).],
+[ATDT=$withval],[ATDT="ATDT"])
+AC_MSG_RESULT($ATDT)
+AC_SUBST(ATDT)
+
+AC_MSG_CHECKING(Ortsvorwahl)
+AC_ARG_WITH(ortswahl,
+[ --with-ortswahl=code      Ortsvorwahl (Default=0).],
+[FERNWAHL=$withval],[FERNWAHL="0"])
+AC_MSG_RESULT($FERNWAHL)
+AC_SUBST(FERNWAHL)
+
+AC_MSG_CHECKING(Auslandsvorwahl)
+AC_ARG_WITH(intwahl,
+[ --with-intwahl=code       Internationale Vorwahl (Default=00).],
+[INTERNATIONAL=$withval],[INTERNATIONAL="00"])
+AC_MSG_RESULT($INTERNATIONAL)
+AC_SUBST(INTERNATIONAL)
+
+dnl AC_MSG_CHECKING(Finding inews)
+AC_CHECK_PROGS(INEWS,inews,/usr/lib/news/inews,/usr/lib/news /usr/local/lib/news /usr/news /usr/local/news)
+dnl	if test -x $dir/inews; then
+dnl		INEWS="$dir/inews"
+dnl			break
+dnl		fi
+dnl	done
+dnl AC_MSG_RESULT($INEWS)
+dnl AC_SUBST(INEWS)
+
+AC_PROG_CC
+
+AC_MSG_CHECKING(Various system-dependent things)
+        SYSUNAME="`uname -s | tr 'A-Z' 'a-z'`"
+
+        if test "$SYSUNAME" = $HOST ; then
+                cat <<EOF
+Ah, der beruechtigte AT&T 'uname' Bug...
+Ist dieses System
+
+  1) System V R4 oder hoeher
+  2) Interactive Unix 3.2
+  3) SCO Unix
+  4) ein anderes System V vor R4.0
+
+EOF
+                while : ; do
+                        readchar
+                        case "$ERG" in
+                         1) SYSUNAME=svr4;      break;;
+                         2) SYSUNAME=isc;       break;;
+                         3) SYSUNAME=sco;       break;;
+                         4) SYSUNAME=sysv;      break;;
+                        esac
+                done
+        fi
+
+        case "$SYSUNAME" in
+                netbsd)
+                        echo "Konfiguriere fuer NetBSD..."
+                        SYSTYPE=netbsd
+                        CFLAGS="-O2 -g -pipe -Wall"
+                        LDFLAGS=""
+                ;;
+                linux)
+                        echo "Konfiguriere fuer Linux..."
+                        SYSTYPE=linux
+                        CFLAGS="-g -Wall"
+                        PATHADD=$PATHADD:/usr/lib/news:/usr/local/lib/news/bin
+                ;;
+                bsd/386)
+                        echo "Konfiguriere fuer BSDI BSD/386..."
+                        SYSTYPE=bsdi
+                        CFLAGS="-O2 -g -pipe -Wall"
+                        LDFLAGS=""
+                ;;
+                svr4)
+                        SYSTYPE=svr4
+                        CFLAGS="-O"
+                        LDFLAGS=""
+                ;;
+                sco*)
+                        echo "Konfiguriere fuer SCO UNIX..."
+                        SYSTYPE=sco
+                        CFLAGS=""
+                        LDFLAGS="-lPW"
+                ;;
+                isc*)
+                        echo "Konfiguriere fuer Interactive UNIX..."
+                        SYSTYPE=isc
+                        CFLAGS=""
+                        LDFLAGS="-lcposix -lPW"
+                ;;
+                unix)
+                        echo "Konfiguriere fuer System V..."
+                        SYSTYPE=sysv
+                        CFLAGS=""
+                        LDFLAGS="-lPW"
+                ;;
+                sunos)
+                        echo "Konfiguriere fuer SunOS..."
+                        echo "(ohne gcc sehe ich allerdings offen gesagt schwarz!)"
+                        SYSTYPE=sunos
+                        CFLAGS="-O"
+                        LDFLAGS=""
+                        ;;
+                *)
+                        echo "Diesen Systemtyp kenne ich nicht, mal sehen ob POSIX"
+                        echo "klappt..."
+                        SYSTYPE=svr4
+                        CFLAGS="-O"
+                        LDFLAGS=""
+                        ;;
+        esac
+
+echo "Linke include/systems/$SYSTYPE.h nach include/sysdep.h..."
+if test -f include/sysdep.h
+then
+        rm -f include/sysdep.h
+fi
+if ln -s `pwd`/include/systems/$SYSTYPE.h include/sysdep.h 2>/dev/null
+then
+        :
+else
+        ln include/systems/$SYSTYPE.h include/sysdep.h
+fi
+
+if test -f include/policy.h.$SYSTYPE
+then
+        echo "Erzeuge include/policy.h..."
+        cp include/policy.h.$SYSTYPE include/policy.h
+else
+        echo "Fuer dieses System ist kein include/policy.h bekannt."
+        echo "Sie muessen es unbedingt von Hand editieren!"
+        echo ""
+fi
+
+AC_MSG_RESULT(fertig)
+AC_SUBST(SYSTYPE)
+AC_SUBST(CFLAGS)
+AC_SUBST(LDFLAGS)
+AC_SUBST(PATHADD)
+
+AC_PROG_RANLIB
+
+AC_CHECK_PROGS(shell,sh,/bin/sh)
+dnl AC_MSG_RESULT($shell)
+
+AC_OUTPUT(misc/config include/config.h Makefile .makefile.conf tools/Makefile hdlib/Makefile date/Makefile online/Makefile lib/Makefile shell/Makefile gate/Makefile)

@@ -1,0 +1,10 @@
+SHELL    = @shell@
+CC       = @CC@
+CFLAGS   = @CFLAGS@
+LDFLAGS  = @LDFLAGS@
+RANLIB   = @RANLIB@
+DESTDIR  = @DESTDIR@
+SPOOLDIR = @SPOOLDIR@
+#FQDN     = @HOST@
+USER     = @USER@
+PATHADD  = @PATHADD@
