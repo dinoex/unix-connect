@@ -191,12 +191,7 @@ static int dofile(const char *proto, const char *file, int upload)
 	int needsfile;
 
 	if ((cmd = findcmd (proto, upload, &needsfile))) {
-#ifdef HAVE_SNPRINTF
 		snprintf(buf, sizeof(buf), cmd, file);
-#else
-#warning "sprintf is insecure"
-		sprintf(buf, cmd, file);
-#endif
 		if(needsfile)
 			return runcommand(cmd, "-vv", file, NULL);
 		else

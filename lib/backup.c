@@ -193,9 +193,11 @@ backup2(const char *backupdir, const char *file,
 
 	/* Rotieren */
 	for (i = (backupnr-1);i > 0;i--) {
-		sprintf(backupname,"%s/%s.%ld.%s",
+		snprintf(backupname,sizeof(backupname),
+			"%s/%s.%ld.%s",
 			backupdir, sysname, i, arcer );
-		sprintf(backupnamenew,"%s/%s.%ld.%s",
+		snprintf(backupnamenew,sizeof(backupnamenew),
+			"%s/%s.%ld.%s",
 			backupdir, sysname, i+1, arcer );
 		/* Wenns die Datei nicht gibt,
 		   oder sie eine normale Datei ist, ok */
