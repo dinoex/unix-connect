@@ -2,7 +2,7 @@
 /*
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1993-1994  Martin Husemann
- *  Copyright (C) 1999       Matthias Andree
+ *  Copyright (C) 1999-2000  Matthias Andree
  *  Copyright (C) 1999-2000  Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -714,15 +714,16 @@ anruf( header_p sys, header_p ich, int lmodem, int tries )
 		if(!p) p = find(HD_TEL, sys);
 		make_dialstr(dialstr, sizeof(dialstr), p->text);
 
-		fprintf(stderr, "%3d. Anwahlversuch: %-.25s\n", 
-			dial_cnt++, dialstr);
+		fprintf(stderr, "%3d. Anwahlversuch (noch %d): %-.25s\n",
+			dial_cnt++, tries, dialstr);                     
 
 		if (redial(dialstr, lmodem, 1) != 0 ) {
 			tries--;
 			p = p->other;
+		} else {
+			/* connect */
+			break;
 		}
-		/* connect */
-		break;
 	}
 
 	set_local(lmodem, 0);
