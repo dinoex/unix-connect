@@ -1,13 +1,13 @@
 dnl Process this file with autoconf to produce a configure script.
+dnl (c) Andreas Barth <aba@muenchen.pro-bahn.de> 1999
+dnl gehört zum Packet unix-connect
+dnl und unterliegt der GPL (siehe COPYING)
 
 AC_INIT(mail-and-news)
-
-prefix="/usr/local"
-exec_prefix="$prefix"
-libexecdir="${exec_prefix}/libexec"
-sysconfdir="${prefix}/etc"
-
+dnl AC_CONFIG_HEADER(include/config.h)
+dnl AC_DEFINE_UNQUOTED(CONFIG_FILE,$sysconfdir)
 dnl      checks for programs
+(cd helpers; make subst.in)
 
 dnl      checks for libraries
 dnl      checks for header files
@@ -17,6 +17,7 @@ dnl      checks for compiler characteristics
 dnl      checks for library functions
 dnl      checks for system services
 
+
 AC_MSG_CHECKING(Path)
 AC_ARG_WITH(path,
 [ --with-path=path         Path innerhalb von UC (Default=PATH).],
@@ -24,12 +25,30 @@ AC_ARG_WITH(path,
 AC_MSG_RESULT($path)
 AC_SUBST(path)
 
-AC_MSG_CHECKING(Unterverzeichnis für die Pogramme)
+AC_MSG_CHECKING(Unterverzeichnis für die Dateien)
+AC_ARG_WITH(dir,
+[ --with-dir=dir           In welches Unterverzeichnis die Dateien kommen.],
+[ ZCDIR="$withval"
+if test x"$ZCDIR" != x; then
+	ZC="/$ZCDIR";
+fi
+],[
+ZCDIR=zconnect
+if test x"$ZCDIR" != x; then
+	ZC="/$ZCDIR";
+fi
+]
+)
+AC_MSG_RESULT($ZCDIR)
+AC_SUBST(ZC)
+
+
+AC_MSG_CHECKING(Unterverzeichnis für die Programme)
 AC_ARG_WITH(execdir,
 [ --with-execdir=dir       In welches Verzeichnis die Programme kommen.],
 [ BINDIR="$withval"
 ],[
-	BINDIR="$libexecdir/uconnect"
+       BINDIR="$libexecdir$ZC"
 ])
 AC_MSG_RESULT($BINDIR)
 AC_SUBST(BINDIR)
@@ -39,10 +58,11 @@ AC_ARG_WITH(confdir,
 [ --with-confdir=dir       In welches Verzeichnis die Konfiguration kommt.],
 [ ETCDIR="$withval"
 ],[
-	ETCDIR="$sysconfdir/uconnect"
+       ETCDIR="$sysconfdir$ZC"
 ])
 AC_MSG_RESULT($ETCDIR)
 AC_SUBST(ETCDIR)
+
 
 AC_MSG_CHECKING(spooldir)
 AC_ARG_WITH(spooldir,
@@ -57,6 +77,7 @@ fi
 )
 AC_MSG_RESULT($SPOOLDIR)
 AC_SUBST(SPOOLDIR)
+
 
 AC_ARG_WITH(user,
 [ --with-user=user         Userkennung für Unix-Connect.],[
@@ -113,6 +134,8 @@ AC_ARG_WITH(box,
 )
 AC_SUBST(INSTTYPE)
 
+
+
 AC_MSG_CHECKING(Nachrichten zurückkonvertieren)
 AC_ARG_ENABLE(real-gate,
 [ --disable-real-gate      Nachrichten zurückkonvertieren erlauben.],
@@ -125,8 +148,25 @@ AC_ARG_ENABLE(real-gate,
         AC_MSG_RESULT(Nein)
         ;;
   esac ],[
-  AC_MSG_RESULT(Nein)
-])
+  AC_MSG_RESULT(Nein)]
+)
+
+dnl Mail- und Newssystem
+dnl in den zweiten Teil sollen mal Heuristiken eingebaut werden
+AC_MSG_CHECKING(Mailsystem)
+AC_ARG_ENABLE(mail,
+[ --with-mail=typ          Welches Mailsystem wird verwendet?],
+[ MAIL=$enableval ], [MAIL='no'])
+AC_MSG_RESULT($MAIL)
+AC_SUBST(MAIL)
+
+AC_MSG_CHECKING(Mailsystem)
+AC_ARG_ENABLE(news,
+[ --with-news=typ          Welches Newssystem wird verwendet?],
+[ NEWS=$enableval ], [NEWS='no'])
+AC_MSG_RESULT($NEWS)
+AC_SUBST(NEWS)
+
 
 AC_MSG_CHECKING(APC einkompilieren)
 AC_ARG_ENABLE(apc,
@@ -147,6 +187,7 @@ AC_ARG_ENABLE(apc,
 ])
 AC_SUBST(APCOBJS)
 
+
 AC_MSG_CHECKING(Bang-Pfade)
 AC_ARG_ENABLE(bang,
 [ --enable-bang            Bang-Pfade verwenden.],
@@ -161,6 +202,8 @@ AC_ARG_ENABLE(bang,
   esac ],[
   AC_MSG_RESULT(Nein)
 ])
+AC_SUBST(BANG)
+
 
 dnl AC_MSG_CHECKING(Filserver)
 dnl AC_ARG_WITH(fileserver,
@@ -203,41 +246,36 @@ AC_ARG_WITH(intwahl,
 AC_MSG_RESULT($INTERNATIONAL)
 AC_SUBST(INTERNATIONAL)
 
+
+
+
 AC_CHECK_FUNCS(syslog)
 if test $ac_cv_func_syslog = no; then
-	# syslog is not in the default libraries.  See if it's in some other.
-	for lib in bsd socket inet; do
-		AC_CHECK_LIB($lib, syslog, [AC_DEFINE(HAVE_SYSLOG)
-		LIBS="$LIBS $lib"; break])
-	done
+       # syslog is not in the default libraries.  See if it's in some other.
+       for lib in bsd socket inet; do
+               AC_CHECK_LIB($lib, syslog, [AC_DEFINE(HAVE_SYSLOG)
+               LIBS="$LIBS $lib"; break])
+       done
 fi
 
 AC_MSG_CHECKING(Systemname)
-AC_ARG_WITH(sys,           
+AC_ARG_WITH(sys,
 [ --with-sys=sys           Systemname.],[
-SYS=$withval;],[SYS=`hostname -s`])      
-AC_MSG_RESULT($SYS)      
-AC_SUBST(SYS)      
+SYS=$withval;],[SYS=`hostname -s`])
+AC_MSG_RESULT($SYS)
+AC_SUBST(SYS)
 
 AC_MSG_CHECKING(Domainname)
-AC_ARG_WITH(domain,        
+AC_ARG_WITH(domain,
 [ --with-domain=domain     Domainname.],[
 DOMAIN=$withval;],[DOMAIN=`hostname -d`])
 AC_MSG_RESULT($DOMAIN)
 AC_SUBST(DOMAIN)
 
 FQDN=$SYS.$DOMAIN
-AC_SUBST(FQDN)   
+AC_SUBST(FQDN)
 
-dnl AC_MSG_CHECKING(Finding inews)
 AC_CHECK_PROGS(INEWS,inews,/usr/lib/news/inews,/usr/lib/news /usr/local/lib/news /usr/news /usr/local/news)
-dnl	if test -x $dir/inews; then
-dnl		INEWS="$dir/inews"
-dnl			break
-dnl		fi
-dnl	done
-dnl AC_MSG_RESULT($INEWS)
-dnl AC_SUBST(INEWS)
 
 AC_PROG_CC
 
@@ -270,93 +308,119 @@ EOF
                 freebsd)
                         echo "Konfiguriere fuer FreeBSD..."
                         SYSTYPE=freebsd
-			CFLAGS="$CFLAGS -O2 -Wall"
+                       CFLAGS="$CFLAGS -O2 -pipe -Wall"
                 ;;
                 netbsd)
                         echo "Konfiguriere fuer NetBSD..."
                         SYSTYPE=netbsd
-			CFLAGS="$CFLAGS -pipe -Wall"
+                       CFLAGS="$CFLAGS -O2 -pipe -Wall"
                 ;;
                 linux)
                         echo "Konfiguriere fuer Linux..."
                         SYSTYPE=linux
-			CFLAGS="$CFLAGS -Wall"
-                        PATHADD=$PATHADD:/usr/lib/news:/usr/local/lib/news/bin
+                       CFLAGS="$CFLAGS -Wall"
+                       PATHADD=$PATHADD:/usr/lib/news/bin:/usr/local/lib/news/bin
                 ;;
                 bsd/386)
                         echo "Konfiguriere fuer BSDI BSD/386..."
                         SYSTYPE=bsdi
-			CFLAGS="$CFLAGS -pipe -Wall"
+                       CFLAGS="$CFLAGS -O2 -pipe -Wall"
                 ;;
                 svr4)
                         SYSTYPE=svr4
-			CFLAGS="$CFLAGS -O"
+                       CFLAGS="$CFLAGS -O"
                 ;;
                 sco*)
                         echo "Konfiguriere fuer SCO UNIX..."
                         SYSTYPE=sco
-			LDFLAGS="$LDFLAGS -lPW"
+                       LDFLAGS="$LDFLAGS -lPW"
                 ;;
                 isc*)
                         echo "Konfiguriere fuer Interactive UNIX..."
                         SYSTYPE=isc
-			LDFLAGS="$LDFLAGS -cposix -lPW"
+                       LDFLAGS="$LDFLAGS -cposix -lPW"
                 ;;
                 unix)
                         echo "Konfiguriere fuer System V..."
                         SYSTYPE=sysv
-			LDFLAGS="$LDFLAGS -lPW"
+                       LDFLAGS="$LDFLAGS -lPW"
                 ;;
                 sunos)
                         echo "Konfiguriere fuer SunOS..."
                         echo "(ohne gcc sehe ich allerdings offen gesagt schwarz!)"
                         SYSTYPE=sunos
-			CFLAGS="$CFLAGS -O"
+                       CFLAGS="$CFLAGS -O"
                         ;;
                 *)
                         echo "Diesen Systemtyp kenne ich nicht, mal sehen ob POSIX"
                         echo "klappt..."
                         SYSTYPE=svr4
-			CFLAGS="$CFLAGS -O"
+                       CFLAGS="$CFLAGS -O"
                         ;;
         esac
-	CPPFLAGS="$CPPFLAGS -I../include"
+        CPPFLAGS="$CPPFLAGS -I../include"
 
-if test -f include/sysdep.h
-then
-        rm -f include/sysdep.h
-fi
-if test -f include/os-$SYSTYPE/sysdep.h
-then
-	echo "Linke include/os-$SYSTYPE/sysdep.h nach include/sysdep.h..."
-	cp -i include/os-$SYSTYPE/sysdep.h include/sysdep.h
+
+if test -f include/os-linux/policy.h; then
+	# neue Config
+	if test -f include/sysdep.h; then
+	    rm -f include/sysdep.h
+	fi
+
+	if test -f include/os-$SYSTYPE/sysdep.h; then
+	    echo "Linke include/os-$SYSTYPE/sysdep.h nach include/sysdep.h..."
+	    cp -i include/os-$SYSTYPE/sysdep.h include/sysdep.h
+	else
+	    echo "Unbekanntes System, verwende include/os-linux/sysdep.h"
+	    cp -i include/os-linux/sysdep.h include/sysdep.h
+	fi
+
+	if test -f include/policy.h; then
+	    rm -f include/policy.h
+	fi
+	if test -f include/os-$SYSTYPE/policy.h; then
+	    echo "Linke include/os-$SYSTYPE/policy.h nach include/policy.h..."
+	    cp -i include/os-$SYSTYPE/policy.h include/policy.h
+	else
+	    echo "Unbekanntes System, verwende include/os-linux/policy.h"
+	    cp -i include/os-linux/policy.h include/policy.h
+	fi
+
 else
-	echo "Unbekanntes System, verwende include/os-linux/sysdep.h"
-	cp -i include/os-linux/sysdep.h include/sysdep.h
-fi
-if test -f include/policy.h
-then
-        rm -f include/policy.h
-fi
-if test -f include/os-$SYSTYPE/policy.h
-then
-	echo "Linke include/os-$SYSTYPE/policy.h nach include/policy.h..."
-	cp -i include/os-$SYSTYPE/policy.h include/policy.h
-else
-	echo "Unbekanntes System, verwende include/os-linux/policy.h"
-	cp -i include/os-linux/policy.h include/policy.h
+	# alte Config
+
+	if test -f include/sysdep.h; then
+	        rm -f include/sysdep.h
+	fi
+	if ln -s `pwd`/include/systems/$SYSTYPE.h include/sysdep.h 2>/dev/null;	then
+	        :
+	else
+        	ln include/systems/$SYSTYPE.h include/sysdep.h
+	fi
+
+	if test -f include/policy.h.$SYSTYPE; then
+	        echo "Erzeuge include/policy.h..."
+	        cp include/policy.h.$SYSTYPE include/policy.h
+	else
+	        echo "Fuer dieses System ist kein include/policy.h bekannt."
+	        echo "Sie muessen es unbedingt von Hand editieren!"
+	        echo ""
+	fi
 fi
 
 AC_MSG_RESULT(fertig)
 AC_SUBST(SYSTYPE)
-AC_SUBST(CPPFLAGS)
 AC_SUBST(CFLAGS)
 AC_SUBST(LDFLAGS)
 AC_SUBST(PATHADD)
-AC_SUBST(DEFS)
 
 AC_PROG_RANLIB
 
 AC_CHECK_PROGS(shell,sh,/bin/sh)
+dnl AC_MSG_RESULT($shell)
 
-AC_OUTPUT(Makefile.global Makefile etc/config)
+dnl AC_OUTPUT(etc/config.in include/config.h Makefile Makefile.global tools/Makefile hdlib/Makefile date/Makefile online/Makefile lib/Makefile shell/Makefile gate/Makefile etc/Makefile)
+
+AC_OUTPUT(etc/config.in Makefile Makefile.global helpers/subst)
+
+dnl AC_OUTPUT(etc/config.in Makefile Makefile.global helpers/subst)

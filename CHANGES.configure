@@ -1,0 +1,52 @@
+
+Änderungen seit configure-19990809b:
+
+- Die Shellskripte sind überarbeitet und sauber getrennt.
+- PATHADD fängt stets mit einem Doppelpunkt an, wenn es nicht leer ist.
+  Ansonsten ergibt dies eine Sicherheitslücke
+- In allen mail-and-news-Verzeichnissen befinden sich jetzt Makefiles.
+- Die verschiedenen import-Skripte sind zusammengefasst.
+
+Änderungen seit configure-19990809a:
+
+- Den unten angesprochenen Teilpatch zu den systemabhängigen Dateien
+  (policy.h, sysdep.h) habe ich so eingebaut, daß er sowohl für die
+  alte als auch neue Verzeichnisstruktur funktioniert.
+
+Änderungen seit configure-19990809:
+
+- Die Makefiles kommen auch wieder mit einem Nicht-GNU-make zurecht. (Andi)
+- Dirks weitere Makefile-Überarbeitungen (zB CLEANFILES) sind drinnen
+- Bin- und Configdir lassen sich extra einstellen. (Dirk/Andi)
+- Mail- und Newssysteme werden gefragt. Damit soll später die automatische
+  Konfiguration erfolgen. (Andi)
+- Gate, Bang-Path, APC werden nicht mehr über config.h, sondern über
+  Defines übergeben. (Dirk) Damit braucht include/config.h nicht mehr
+  automatisch geändert werden. (Andi)
+- Die Reihenfolge der Optionen ist geändert. (Dirk)
+- Die Systemabhängige Konfiguration ist anders. (Dirk)
+- Noch zu tun: Die Verzeichnisstruktur der systemabhängigen Dinge wird
+  sich ändern. Diesen Teilpatch habe ich (Andi) nicht integriert, da er
+  nicht zu uc < 0.80 passt.
+- Viele kleine Bugfixes. (Andi)
+
+Änderungen seit configure-19990808:
+
+- Die Makefiles sind komplett überarbeitet. Es wird jetzt mit einer Liste
+  der Subdirs gearbeitet, die alle gleichmäßig bearbeitet werden. Es gibt
+  jetzt überall Makefiles, die (außer im Hauptdirectory) fest sind.
+- System- und Domainname werden automatisch festgestellt
+- Es ist ein prä-Ersetzer für die Shellskripte vorhanden
+- Die LDFLAGS und CFLAGS werden immer ergänzt (Dirk)
+- Es wird automatisch entschieden, ob Syslog verwendet wird (Dirk)
+- update ist von shell/ nach helpers/ verschoben
+- Ich habe angefangen, die Änderungen in CHANGES einzutragen
+- Die APC-Dinge sind nach Makefile.global.in verschoben
+
+Änderungen seit configure:
+
+- Die Patches von Dirk, die Freebsd, einbeziehen, sind drinnen
+- Die trivialen echten Fehler sind draußen
+- Makefiles angepasst
+- APC funktioniert (zumindest in der Theorie)
+

@@ -1,0 +1,65 @@
+#! /bin/bash
+
+# (c) Andreas Barth <aba@muenchen.pro-bahn.de> 1999
+# Dieses Programm ermöglicht "von Hand" die configure-Änderungen zu machen
+# und steht unter der GPL
+
+echo "#! /bin/bash"
+echo
+echo
+echo '# automatisch erzeugt von makesubst'
+echo
+echo 'path=`echo $0 | sed "s|[^/]*$||"`'
+echo
+echo 'RSMTP="`cat $path../mail-and-news/@MAIL@/RSMTP`"'
+echo 'CPPFLAGS="@CPPFLAGS@"'
+echo 'CXXFLAGS="@CXXFLAGS@"'
+echo 'DEFS="@DEFS@"'
+echo 'LIBS="@LIBS@"'
+echo 'prefix="@prefix@"'
+echo 'exec_prefix="@exec_prefix@"'
+echo 'program_transform_name="@program_transform_name@"'
+echo 'bindir="@bindir@"'
+echo 'sbindir="@sbindir@"'
+echo 'libexecdir="@libexecdir@"'
+echo 'datadir="@datadir@"'
+echo 'sysconfdir="@sysconfdir@"'
+echo 'sharedstatedir="@sharedstatedir@"'
+echo 'localstatedir="@localstatedir@"'
+echo 'libdir="@libdir@"'
+echo 'includedir="@includedir@"'
+echo 'oldincludedir="@oldincludedir@"'
+echo 'infodir="@infodir@"'
+echo 'mandir="@mandir@"'
+echo 'CC="@CC@"'
+echo 'RANLIB="@RANLIB@"'
+
+egrep '^AC_SUBST|^AC_CHECK_PROGS' ../configure.in | sed 's/\(AC_CH.*([^,]*\),.*/\1)/; s/AC_.*(\(.*\))/\1=\"@\1@\"/'
+#grep ^AC_SUBST ../configure.in | sed 's/AC_SUBST(\(.*\))/\1=@\1@/'
+#grep ^AC_SUBST ../configure.in | sed 's/AC_SUBST(\(.*\))/s%[@]\1@%$\1%g/'
+
+echo sed \"
+echo 's%[@]RSMTP@%$RSMTP%g'
+echo 's%[@]CPPFLAGS@%$CPPFLAGS%g;'
+echo 's%[@]CXXFLAGS@%$CXXFLAGS%g;'
+echo 's%[@]DEFS@%$DEFS%g;'
+echo 's%[@]LIBS@%$LIBS%g;'
+echo 's%[@]exec_prefix@%$exec_prefix%g;'
+echo 's%[@]prefix@%$prefix%g;'
+echo 's%[@]program_transform_name@%$program_transform_name%g;'
+echo 's%[@]bindir@%$bindir%g;'
+echo 's%[@]sbindir@%$sbindir%g;'
+echo 's%[@]libexecdir@%$libexecdir%g;'
+echo 's%[@]datadir@%$datadir%g;'
+echo 's%[@]sysconfdir@%$sysconfdir%g;'
+echo 's%[@]sharedstatedir@%$sharedstatedir%g;'
+echo 's%[@]localstatedir@%$localstatedir%g;'
+echo 's%[@]libdir@%$libdir%g;'
+echo 's%[@]includedir@%$includedir%g;'
+echo 's%[@]oldincludedir@%$oldincludedir%g;'
+echo 's%[@]infodir@%$infodir%g;'
+echo 's%[@]mandir@%$mandir%g;'
+echo 's%[@]CC@%$CC%g;'
+echo 's%[@]RANLIB@%$RANLIB%g;'
+egrep '^AC_SUBST|^AC_CHECK_PROGS' ../configure.in | sed 's/\(AC_CH.*([^,]*\),.*/\1)/; s/AC_.*(\(.*\))/s%[@]\1@%$\1%g;/'
+echo \"
