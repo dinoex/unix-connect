@@ -34,18 +34,36 @@
  *  for instructions on how to join this list.
  */
 
-#ifdef HAVE_STRING_H
-# include <string.h>
-#else
-#ifdef HAVE_STRINGS_H
-# include <strings.h>
-#endif
-#endif
 
-#ifndef HAVE_STRDUP
-char * strdup(const char *);
-#endif
+/*
+ * snprintf Bibliotheksroutine
+ *
+ */
+
+#include "config.h"
+
+#include <stdio.h>
+#include "istring.h"
+#include <stdarg.h>
+
+#include "utility.h"
+#include "uulog.h"
+
 #ifndef HAVE_SNPRINTF
-int snprintf(char *str, size_t size, const char *format, ...)
+
+int
+snprintf(char *str, size_t size, const char *format, ...)
+{
+	int rc;
+	va_list ap;
+
+	/* we don't check size */
+	va_start(ap, format);
+	rc = vsprintf(str, format, ap);
+	va_end(ap);
+	return rc;
+}
+
 #endif
 
+/* EOF */

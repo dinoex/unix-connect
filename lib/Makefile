@@ -43,6 +43,7 @@ GATEOBJS= hayes.o pattern.o track.o rawtty.o lockwait.o \
 MINIOBJS= ministat.o
 
 STROBJS	= utility.o stricmp.o strlwr.o strupr.o strdup.o stccpy.o \
+	  snprintf.o \
 	  uufatal.o uulog.o
 
 all:	strlib.a ministat.a $(ONLINE_LIB)
@@ -91,6 +92,8 @@ rawtty.o: rawtty.c ../include/config.h ../include/sysdep.h \
  ../include/line.h
 readonedir.o: readonedir.c ../include/idir.h ../include/istring.h \
  ../include/utility.h ../include/calllib.h ../include/uulog.h
+snprintf.o: snprintf.c ../include/config.h ../include/sysdep.h \
+ ../include/istring.h ../include/utility.h ../include/uulog.h
 stccpy.o: stccpy.c ../include/config.h ../include/sysdep.h \
  ../include/utility.h
 strdup.o: strdup.c ../include/config.h ../include/sysdep.h \

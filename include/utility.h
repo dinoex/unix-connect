@@ -50,12 +50,7 @@ char * str2dup(const char *);
 int stricmp(const char *a, const char *b);
 char * strlwr(char *);
 char * strupr(char *);
-#ifndef HAVE_STRDUP
-char * strdup(const char *);
-#endif
-#ifndef HAVE_STRDUP
-char * strdup(const char *);
-#endif
+
 #ifndef HAVE_STCCPY
 int stccpy(char *, const char *, int);
 #endif
