@@ -47,7 +47,7 @@ case "$KENNUNG" in
 		then
 			ARC="$name".zip
 		fi
-		unzip $ARC
+		unzip -j $ARC
 		EC=$? ;;
  "arc" | \
  "ARC" )	name=`dirname $ARC`/`basename $ARC .arc`
