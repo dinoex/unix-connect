@@ -49,11 +49,12 @@
    systems the lock files are placed in /etc/locks.  On some they are
    placed in /usr/spool/locks.  On the NeXT they are placed in
    /usr/spool/uucp/LCK.  */
-#define LOCKDIR "/usr/spool/uucp"
+/* #define LOCKDIR "/usr/spool/uucp" */
 /* #define LOCKDIR "/usr/local/uucp/lock" */
 /* #define LOCKDIR "/etc/locks" */
 /* #define LOCKDIR "/usr/spool/locks" */
 /* #define LOCKDIR "/usr/spool/uucp/LCK" */
+#define LOCKDIR "/var/lock"
 
 /* You must also specify the format of the lock files by setting
    exactly one of the following macros to 1.  Check an existing lock
