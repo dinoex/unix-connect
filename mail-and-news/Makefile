@@ -1,8 +1,6 @@
 # $Id$
 #
 #   UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
-#   Copyright (C) 1993-94  Martin Husemann
-#   Copyright (C) 1995-98  Christopher Creutzig
 #   Copyright (C) 1999     Dirk Meyer
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -36,7 +34,7 @@
 #   for instructions on how to join this list.
 #
 
-SUBDIRS = no cnews inn qmail sendmail smail
+SUBDIRS = no cnews inn qmail sendmail smail postfix
 
 all:
 	for dir in $(SUBDIRS); do \
