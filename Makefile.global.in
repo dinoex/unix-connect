@@ -58,6 +58,12 @@ MAIL     = @MAIL@
 NEWS     = @NEWS@
 LIBOBJS  = @LIBOBJS@
 SENDMAIL = @SENDMAIL@
+LRZ      = @LRZ@
+LSZ      = @LSZ@
+LRB      = @LRB@
+LSB      = @LSB@
+LRX      = @LRX@
+LSX      = @LSX@
 
 INSTALL = @INSTALL@
 # autoconf does a little bit to much for us ....
@@ -70,6 +76,12 @@ INSTALL_DATA = $(INSTALL) -o $(USER) -g $(GROUP) -m 0640
 CFLAGS += -DBINDIR=$(BINDIR) -DETCDIR=$(ETCDIR)
 CFLAGS += -DCONFIG_FILE=\"$(ETCDIR)/config\"
 CFLAGS += -D_PATH_SENDMAIL=\"$(SENDMAIL)\"
+CFLAGS += -DPATH_LRZ=\"$(LRZ)\"
+CFLAGS += -DPATH_LSZ=\"$(LSZ)\"
+CFLAGS += -DPATH_LRB=\"$(LRB)\"
+CFLAGS += -DPATH_LSB=\"$(LSB)\"
+CFLAGS += -DPATH_LRX=\"$(LRX)\"
+CFLAGS += -DPATH_LSX=\"$(LSX)\"
 APCOBJS  = @APCOBJS@
 CLEANFILES = *.o *.a *.bak *.BAK *.rej *.orig core *.core
 

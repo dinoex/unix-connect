@@ -42,7 +42,7 @@
  * version.h
  */
 
-#define	VERSION		"0.89"
+#define	VERSION		"0.89-dm1"
 
 #define	MAILER		"UNIX/Connect"
 #define	COPYRIGHT	\

@@ -37,6 +37,7 @@ fi
 if eval "test \"`echo '$ac_cv_header_limits_h'`\" = no"; then
   AC_CHECK_HEADERS(values.h)
 fi
+AC_CHECK_HEADERS(stdarg.h varargs.h)
 
 dnl      checks for typedefs, structures and compiler characteristics
 dnl AC_C_CONST
@@ -57,8 +58,8 @@ dnl AC_TYPE_SIGNAL
 dnl AC_FUNC_STRFTIME
 dnl AC_FUNC_VPRINTF
 dnl AC_CHECK_FUNCS(getcwd getwd mkdir mktime rmdir strcspn strdup strerror strstr strtol)
-AC_CHECK_FUNCS(snprintf asprintf)
-AC_REPLACE_FUNCS(strdup stccpy)
+AC_CHECK_FUNCS(asprintf)
+AC_REPLACE_FUNCS(strdup stccpy snprintf vsnprintf)
 
 dnl      checks for system services
 
@@ -386,7 +387,7 @@ AC_ARG_ENABLE(janus-checksum,
 EXTRA_CDIR="rsmtp"
 AC_MSG_CHECKING(Batched SMTP lesen und Schreiben)
 AC_ARG_ENABLE(rsmtp,
-[ --disable-rsmtp          Batched SMTP lesen und Schreiben.],
+[ --disable-rsmtp          Eigene Programme für Batched SMTP.],
 [ case "$enableval" in
   no)
         AC_MSG_RESULT(Nein)
@@ -708,11 +709,62 @@ if test ! -x "$INEWS" ; then
   echo "Kann inews nicht finden. uumlist wird nicht funktionieren."
 fi
 
-AC_PATH_PROGS(SENDMAIL,sendmail,/usr/sbin/sendmail,/usr/sbin:/usr/lib)
+AC_PATH_PROGS(SENDMAIL,sendmail,/usr/sbin/sendmail,$PATH:/usr/sbin:/usr/lib)
 if test ! -x "$SENDMAIL" ; then
   echo "Kann sendmail nicht finden. Bitte \$SENDMAIL auf den Pfad setzen,"
   echo "das Executable muß die Option -t akzeptieren."
   exit 1
+fi
+
+if ! test "$ONLINE_DIR" = "" ; then
+  AC_PATH_PROGS(LRZ,lrz,/usr/bin/lrz,$PATH:/usr/bin:/usr/local/bin)
+  if test ! -x "$LRZ" ; then
+    AC_PATH_PROGS(LRZ,rz,/usr/bin/rz,$PATH:/usr/bin:/usr/local/bin)
+    if test ! -x "$LRZ" ; then
+      echo "Kann lrz,rz nicht finden. Bitte \$LRZ auf den Pfad setzen,"
+      exit 1
+    fi
+  fi
+  AC_PATH_PROGS(LRB,lrb,/usr/bin/lrb,$PATH:/usr/bin:/usr/local/bin)
+  if test ! -x "$LRB" ; then
+    AC_PATH_PROGS(LRB,rb,/usr/bin/rb,$PATH:/usr/bin:/usr/local/bin)
+    if test ! -x "$LRB" ; then
+      echo "Kann lrb,rb nicht finden. Bitte \$LRB auf den Pfad setzen,"
+      exit 1
+    fi
+  fi
+  AC_PATH_PROGS(LRX,lrx,/usr/bin/lrx,$PATH:/usr/bin:/usr/local/bin)
+  if test ! -x "$LRX" ; then
+    AC_PATH_PROGS(LRX,rx,/usr/bin/rx,$PATH:/usr/bin:/usr/local/bin)
+    if test ! -x "$LRX" ; then
+      echo "Kann lrx,rx nicht finden. Bitte \$LRX auf den Pfad setzen,"
+      exit 1
+    fi
+  fi
+  AC_PATH_PROGS(LSZ,lsz,/usr/bin/lsz,$PATH:/usr/bin:/usr/local/bin)
+  if test ! -x "$LSZ" ; then
+    AC_PATH_PROGS(LSZ,sz,/usr/bin/sz,$PATH:/usr/bin:/usr/local/bin)
+    if test ! -x "$LSZ" ; then
+      echo "Kann lsz,sz nicht finden. Bitte \$LSZ auf den Pfad setzen,"
+      exit 1
+    fi
+  fi
+  AC_PATH_PROGS(LSB,lsb,/usr/bin/lsb,$PATH:/usr/bin:/usr/local/bin)
+  if test ! -x "$LSB" ; then
+    AC_PATH_PROGS(LSB,sb,/usr/bin/sb,$PATH:/usr/bin:/usr/local/bin)
+    if test ! -x "$LSB" ; then
+      echo "Kann lsb,sb nicht finden. Bitte \$LSB auf den Pfad setzen,"
+      exit 1
+    fi
+  fi
+  AC_PATH_PROGS(LSX,lsx,/usr/bin/lsx,$PATH:/usr/bin:/usr/local/bin)
+  if test ! -x "$LSX" ; then
+    AC_PATH_PROGS(LSX,sx,/usr/bin/sx,$PATH:/usr/bin:/usr/local/bin)
+    if test ! -x "$LSX" ; then
+      echo "Kann lsx,sx nicht finden. Bitte \$LSX auf den Pfad setzen,"
+      exit 1
+    fi
+  fi
 fi
 
 if test "$NEWS" = "inn" ; then 

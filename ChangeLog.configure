@@ -4,7 +4,14 @@ $Id$
 
 seit 0.89
 
-- configure sucht nach asprintf
+- Suche nack Zmodem eingebaut.
+
+- Text für --disbale-rsmtp geändert.
+
+- configure sucht nach stdarg.h und varargs.h
+  fuer snprintf und vsnprintf.
+
+- configure sucht nach asprintf()
 
 seit 0.88
 

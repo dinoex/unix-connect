@@ -147,21 +147,12 @@ static struct {
 	const char *cmd;
 	int needfile;
 } transports[] = {
-#ifndef _FreeBSD_
-	{ "ZMODEM", 0, "/usr/local/bin/lrz", 0 },
-	{ "ZMODEM", 1, "/usr/local/bin/lsz", 1 },
-	{ "YMODEM", 0, "/usr/local/bin/lrb", 0 },
-	{ "YMODEM", 1, "/usr/local/bin/lsb", 1 },
-	{ "XMODEM", 0, "/usr/local/bin/lrx", 1 },
- 	{ "XMODEM", 1, "/usr/local/bin/lsz -X", 1 },
-#else
-	{ "ZMODEM", 0, "/usr/bin/rz", 0 },
-	{ "ZMODEM", 1, "/usr/bin/sz", 1 },
-	{ "YMODEM", 0, "/usr/bin/rb", 0 },
-	{ "YMODEM", 1, "/usr/bin/sb", 1 },
-	{ "XMODEM", 0, "/usr/bin/rx", 1 },
- 	{ "XMODEM", 1, "/usr/bin/sz -X", 1 },
-#endif
+	{ "ZMODEM", 0, PATH_LRZ, 0 },
+	{ "ZMODEM", 1, PATH_LSZ, 1 },
+	{ "YMODEM", 0, PATH_LRB, 0 },
+	{ "YMODEM", 1, PATH_LSB, 1 },
+	{ "XMODEM", 0, PATH_LRX, 1 },
+ 	{ "XMODEM", 1, PATH_LSX " -X", 1 },
 	{ 0,0,0,0 }
 };
 

@@ -1,7 +1,6 @@
 Was muß noch getan werden?
 
-- sprintf gehört abgeschafft. Alternativcode kann "irgendwo" gestohlen
-  werden, müßte dann mal angesehen werden. 
+- sprintf gehört abgeschafft. Alternativcode ist da!
 
 - Zcall: Bei Abbruch bleibt das Empfangsdirectory mit dem caller.zip da.
 - Zcall: Abbruchcodes sollten nochmal überarbeitet werden                
@@ -35,6 +34,11 @@ Was muß noch getan werden?
 - generell Fehlerhafte Nachrichten überspringen.
   ohne das der ganze Puffer verworfen werden muß.
 
+- Maps-Nachrichten enthalten den Header 'STAT: CTL'. Nachrichten, die diesen
+  Header enthalten, dürfen niemals gebounced (schreckliches Wort) werden.
+  Wissen die ZConnect<->RFC Konverterbastler, daß sie bei einer "STAT:
+  CTL" Zeile den Envelope-Absender auf <> setzen müssen?
+
 ### Extensions:
 
 - Passworte case-sensitiv pruefen.
@@ -51,8 +55,6 @@ Was muß noch getan werden?
   Binaerfiles auch in Base64 dekodieren (oder mpack aufrufen?)
 
 - WAB: vernünftig behandeln, speziell beim ersetzen von Point-ABS: !!!
-
-- configure nach rz/sz suchen lassen.
 
 - Wenn eine rfc-Mail - einige Mailer machen das anscheinend so, ich habe es
   bei verschiedenen beobachtet - sowohl den Header In-Reply-To:<Bezugs-ID>

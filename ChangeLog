@@ -4,6 +4,12 @@ Aenderungen an UnixConnect
 
 seit 0.89
 
+- Makefile.global, online/xprog.c: (Dirk Meyer)
+  #defines fuer Pfade von Zmodem.
+
+- lib/snprintf.c: (Patrick Powell)
+  Funktion von mutt/samba eingebaut.
+
 - onine/januslogin.c: (Andreas Barth)
   #ifdef geaendert
 
