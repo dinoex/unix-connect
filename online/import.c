@@ -60,7 +60,7 @@
 #else
 #include <dirent.h>
 #endif
-#ifdef HAS_SYS_FCNTL_H
+#ifdef HAVE_SYS_FCNTL_H
 #include <sys/fcntl.h>
 #endif
 #ifdef HAVE_UNISTD_H

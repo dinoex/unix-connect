@@ -57,7 +57,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#ifdef HAS_SYS_FCNTL_H
+#ifdef HAVE_SYS_FCNTL_H
 #include <sys/fcntl.h>
 #endif
 #include <fcntl.h>

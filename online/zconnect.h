@@ -64,10 +64,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#ifdef HAS_STRING_H
+#ifdef HAVE_STRING_H
 # include <string.h>
 #endif
-#ifdef HAS_STRINGS_H
+#ifdef HAVE_STRINGS_H
 # include <strings.h>
 #endif
 #include <setjmp.h>
