@@ -1,3 +1,21 @@
+Änderungen seit configure-19990810:
+
+- Viele Bug-Fixes, damit es auch auf Nicht-GNU und Nicht-Linux
+  läuft (manche GNU-Erweiterungen sind _wirklich_ angenehm :). (Dirk/Andi)
+- etc/config wird direkt bei "make all" erzeugt. (Andi)
+- Makefiles weiter aufgeräumt (Dirk)
+
+Änderungen seit configure-19990809c:
+
+- Dokumentation in INSTALL angepasst, mail-and-news/README verfasst.
+- Alle Makefiles aufgeräumt, die Abhängigkeiten aus dem Toplevel-
+  Makefile in die Unter-Makefiles verschoben. Zugleich die Anzahl
+  der ausgeschriebenen Ziele in den Sub-Makefiles auf das notwendige
+  reduziert und Gemeinsamkeiten zusammengefasst. Die wurde mittels
+  Makefile.includes realisiert.
+- Eine Datei POLICY eingebaut, die grundlegende Dinge beschreibt.
+- Die Datei helpers/subst.in wird jetzt bei "make distrib" erzeugt,
+  damit kann das "make" in configure entfernt werden.
 
 Änderungen seit configure-19990809b:
 
