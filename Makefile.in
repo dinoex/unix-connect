@@ -56,7 +56,7 @@ all:
 install:
 	for dir in $(TARGETDIRS); do \
 		if test ! -d $$dir; then \
-			mkdir $$dir; chown $(USER).$(GROUP) $$dir; fi \
+			mkdir $$dir; chown $(USER):$(GROUP) $$dir; fi \
 	done
 	if test ! -d $(SPOOLDIR)/netcall; then \
 		mkdir $(SPOOLDIR)/netcall; \
