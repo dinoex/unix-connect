@@ -426,11 +426,16 @@ header_p convheader(header_p hd, FILE *f)
 	      }
 	      dfree(absname);
 	    } else {
-	      s = strchr(p->text, '!');
-	      if(s)
-		fprintf(f, HN_UU_PATH": %s%s", p->text, eol);
-	      else
-		fprintf(f, HN_UU_PATH": %s!not-for-mail%s", p->text, eol);
+              if (!(strlen(p->text))) {
+                 extern char *pointsys;
+                 fprintf(f, HN_UU_PATH": %s!not-for-mail%s", pointsys, eol);
+              } else {
+                 s = strchr(p->text, '!');
+                 if(s)
+                   fprintf(f, HN_UU_PATH": %s%s", p->text, eol);
+                 else
+                   fprintf(f, HN_UU_PATH": %s!not-for-mail%s", p->text, eol);
+              }
 	    }
 	    hd=del_header(HD_ROT, hd);
 	  } else {
