@@ -30,8 +30,7 @@
 
 #include "config.h"
 
-#include <time.h>
-#include <string.h>
+#include "istring.h"
 
 #include "utility.h"
 
@@ -80,7 +79,3 @@ char *strcdup(const char *from, size_t len)
 	return mem;
 }
 
-/* Local Variables: */
-/* mode: c */
-/* c-basic-offset: 8 */
-/* End: */
