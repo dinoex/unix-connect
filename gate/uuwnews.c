@@ -91,7 +91,7 @@ char *pointsys;		/* Name des Point-Systems (fuer die Message-Id) */
 
 static char *bigbuffer	= NULL;
 static char *smallbuffer= NULL;
-static char datei[1024];
+static char datei[2000];
 #ifndef USE_ISO_IN_NEWS
 extern char umlautstr[], convertstr[];
 #endif
@@ -222,6 +222,7 @@ int main(int argc, const char *const *argv)
 			};
 			remove_me = cptr;
 			ready ++;
+			continue;
 		};
 		/* zweites freies Argument */
 		if ( ready < 2 ) {
@@ -244,6 +245,7 @@ int main(int argc, const char *const *argv)
 			close(fh);
 			fout = fopen(datei, "wb");
 			ready ++;
+			continue;
 		};
 		/* dittes freies Argument */
 		if ( pointsys == NULL ) {
@@ -288,7 +290,6 @@ int main(int argc, const char *const *argv)
 	init_approved();
 	while (!feof(fin))
 		convert(fin, fout);
-	fputs("QUIT\r\n", fout);
 
 	/* stdin/stdout nicht schiessen, das mach der parent */
 	if ( fin != stdin )

@@ -91,7 +91,7 @@ char *pointsys;		/* Name des Point-Systems */
 
 static char *bigbuffer	= NULL;
 static char *smallbuffer= NULL;
-static char datei[1024];
+static char datei[2000];
 static char *id;
 
 #ifndef USE_ISO_IN_MAILS
@@ -227,6 +227,7 @@ int main(int argc, const char *const *argv)
 			};
 			remove_me = cptr;
 			ready ++;
+			continue;
 		};
 		/* zweites freies Argument */
 		if ( ready < 2 ) {
@@ -251,6 +252,7 @@ int main(int argc, const char *const *argv)
 			close(fh);
 			fout = fopen(datei, "wb");
 			ready ++;
+			continue;
 		};
 		/* dittes freies Argument */
 		if ( pointsys == NULL ) {

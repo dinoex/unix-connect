@@ -82,6 +82,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <errno.h>
+#include <sysexits.h>
 
 #include "utility.h"
 #include "header.h"
@@ -108,37 +110,153 @@ extern int dont_gate;
  */
 long readlength = 0;
 
-void usage(void);
 void convert(FILE *, FILE *);
 void convdata(FILE *news, FILE *zconnect);
 
 
 static char *bigbuffer	= NULL;
 static char *readbuffer	= NULL;
+static char datei[2000];
 long buffsize = 0;	/* gegenwaertig allokierte Buffer-Groesse */
 
 extern char *netcalldir;
 
-char *fqdn = NULL;
+const char *fqdn = NULL;
 int main_is_mail = 0;	/* Nein, wir sind nicht fuer PM EMP:s zustaendig */
 
-int main(int argc, char **argv)
+void usage(void);
+void usage(void)
+{
+	fputs(
+"UUrnews  -  RFC1036 Batch nach ZCONNECT konvertieren\n"
+"Aufrufe:\n"
+"        uurnews (NEWS-Datei) (ZCONNECT-Datei)\n"
+"          alter Standard, Eingabedatei wird gelöscht\n"
+"        uurnews -f (FQDN-ZCONNECT-Host)\n"
+"          alter Standard, Eingabe von stdin,\n"
+"          Ausgabedatei wird im Verzeichns des Systems erzeugt.\n"
+"        uurnews -d (NEWS-Datei) (ZCONNECT-Datei)\n"
+"          Modus mit höchster Sicherheit, oder zum Testen.\n"
+"        uurnews -p [ (FQDN-ZCONNECT-Host) ]\n"
+"          Echte Pipe\n"
+, stderr);
+	exit( EX_USAGE );
+}
+
+int main(int argc, const char *const *argv)
 {
 	FILE *fin, *fout;
-	int filter;
-	char datei[2000];
+	const char *cptr;
+	const char *name;
+	const char *remove_me;
+	int ready;
+	char ch;
 
 /*	init_trap(argv[0]); */
-	filter = 0;
 	ulibinit();
 	minireadstat();
 	srand(time(NULL));
-	if (argc != 3) usage();
-	if (strcmp(argv[1], "-p") == 0) {
-		fin = stdin;
-		fout= stdout;
-	} else
-	if (strcmp(argv[1], "-f") == 0) {
+
+	name = argv[ 0 ];
+	remove_me = NULL;
+	fin = NULL;
+	fout = NULL;
+	ready = 0;
+
+	/* check for commandline */
+	while ( --argc > 0 ) {
+		cptr = *(++argv);
+		if ( *cptr == '-' ) {
+			ch = *(++cptr);
+			switch ( tolower( ch ) ) {
+			case 'd':
+				if ( ready != 0 )
+					usage();
+				/* Beide Argumente sind Dateien */
+				GET_NEXT_DATA( cptr );
+				fin = fopen( cptr, "rb");
+				if ( fin == NULL ) {
+					fprintf( stderr,
+					"%s: error open file %s: %s\n",
+					name, cptr, strerror( errno ) );
+					exit( EX_CANTCREAT );
+				};
+				ready ++;
+				GET_NEXT_DATA( cptr );
+				fout = fopen(cptr, "ab");
+				if ( fout == NULL ) {
+					fprintf( stderr,
+					"%s: error writing file %s: %s\n",
+					name, cptr, strerror( errno ) );
+					exit( EX_CANTCREAT );
+				};
+				ready ++;
+				break;
+			case 'p':
+				if ( ready != 0 )
+					usage();
+				/* echte Pipe */
+				fin = stdin;
+				fout = stdout;
+				ready += 2;
+				/* Ein Argument ist Systenmane */
+				argv++; argc--; cptr = *argv;
+				if ( cptr != NULL ) {
+					/* Optional */
+					fqdn = cptr;
+					ready ++;
+				};
+				break;
+			case 'f':
+				if ( ready != 0 )
+					usage();
+				fin = stdin;
+				ready += 2;
+				/* Ein Argument ist Systenmane */
+				GET_NEXT_DATA( cptr );
+				fqdn = cptr;
+				ready ++;
+				break;
+			default:
+				usage();
+				break;
+			};
+			continue;
+		};
+		/* erstes freies Argument */
+		if ( ready < 1 ) {
+			/* Argument ist Eingabe-Datei */
+			fin = fopen( cptr, "rb");
+			if ( fin == NULL ) {
+				fprintf( stderr,
+					"%s: error open file %s: %s\n",
+					name, cptr, strerror( errno ) );
+				exit( EX_CANTCREAT );
+			};
+			remove_me = cptr;
+			ready ++;
+			continue;
+		};
+		/* zweites freies Argument */
+		if ( ready < 2 ) {
+			/* Argument ist Ausgabe-Datei */
+			fout = fopen(cptr, "ab");
+			if ( fout == NULL ) {
+				fprintf( stderr,
+					"%s: error writing file %s: %s\n",
+					name, cptr, strerror( errno ) );
+				exit( EX_CANTCREAT );
+			};
+			ready ++;
+			continue;
+		};
+		/* weitere Argumente */
+		usage();
+	};
+	if ( ready == 0 ) {
+		usage();
+	};
+	if ( fqdn != NULL ) {
 		time_t j;
 		char tmp[20];
 		char *tmp2;
@@ -147,12 +265,7 @@ int main(int argc, char **argv)
 		char *p, *p1;
 #endif
 
-		filter = 1;
-		fin = stdin;
-		fqdn = argv[2];
-
 		j = time(NULL);
-		sprintf(tmp, "%08lx.brt", (long)j);
 		strcpy(datei, netcalldir);
 		strcat(datei, "/");
 		strcat(datei, fqdn);
@@ -164,63 +277,56 @@ int main(int argc, char **argv)
 		}
 #endif
 		strcat(datei, "/");
+		sprintf(tmp, "%08lx.brt", (long)j);
 		tmp2 = dstrdup(datei);
 		strcat(datei, tmp);
-/* Um sicherzugehen, dass wr keine Datei ueberschreiben,
+/* Um sicherzugehen, dass wir keine Datei ueberschreiben,
  * oeffnen wir sie zunaechst mit O_EXCL. Um weiter unten
  * einen FILE* zu haben, schliessen wir sie anschliessend
  * wieder und oeffnen sie mit fopen() erneut. Potentielles
  * Sicherheitsproblem. */
-		fh = open(datei,O_WRONLY|O_CREAT|O_EXCL, S_IRUSR|S_IWUSR|S_IRGRP);
+		fh = open(datei, O_WRONLY|O_CREAT|O_EXCL,
+				S_IRUSR|S_IWUSR|S_IRGRP);
 		while(fh<0)
 		{
 			((long)j)++;
 			sprintf(tmp,"%08lx.brt",(long)j);
 			strcpy(datei,tmp2);
 			strcat(datei,tmp);
-			fh=open(datei,O_WRONLY|O_CREAT|O_EXCL,S_IRUSR|S_IWUSR|S_IRGRP);
+			fh = open(datei, O_WRONLY|O_CREAT|O_EXCL,
+					S_IRUSR|S_IWUSR|S_IRGRP);
 		}
 		close(fh);
 		fout = fopen(datei, "ab");
 		free(tmp2);
-	} else {
-		fin = fopen(argv[1], "rb");
-		fout = fopen(argv[2], "ab");
-		strcpy(datei, argv[2]);
-	}
-	if (!fin) {
-		perror(argv[1]);
-		exit(1);
-	}
-	if (!fout) {
-		perror(datei);
-		exit(1);
-	}
-	convert(fin, fout);
-	fclose(fout);
+	};
+	if ( fin == NULL ) {
+		fprintf( stderr,
+			"%s: no file to read\n",
+			name );
+		exit( EX_CANTCREAT );
+	};
+	if ( fout == NULL ) {
+		fprintf( stderr,
+			"%s: no file to write\n",
+			name );
+		exit( EX_CANTCREAT );
+	};
 
-	if (!filter) {
+	while (!feof(fin))
+		convert(fin, fout);
+
+	/* stdin/stdout nicht schiessen, das mach der parent */
+	if ( fin != stdin )
 		fclose(fin);
-		remove(argv[1]);
-	}
-
+	if ( fout != stdout )
+		fclose(fout);
+	if ( remove_me != NULL )
+		remove(remove_me);
+	exit( EX_OK );
 	return 0;
 }
 
-void usage(void)
-{
-	fputs(	"UUrnews  -  RFC1036 Batch nach ZCONNECT konvertieren\n"
-		"Aufruf:\n"
-		"        uurnews (NEWS-Datei) (ZCONNECT-Datei)\n"
-		"oder    uurnews -f (FQDN-ZCONNECT-Host)\n"
-		"           (News Batch von stdin)\n"
-		"           (ZCONNECT in das entsprechende Netcall-Dir)\n"
-		"oder    uurnews -p (FQDN-ZCONNECT-Host)\n"
-		"           (News Batch von stdin)\n"
-		"           (ZCONNECT nach stdout)\n"
-		, stderr);
-	exit(1);
-}
 
 void convert(FILE *news, FILE *zconnect)
 {
@@ -232,7 +338,7 @@ void convert(FILE *news, FILE *zconnect)
 		 sscanf(line, "#! rnews %ld", &readlength);
 		 if (readlength < 1) {
 		 	fprintf(stderr, "\n\nABBRUCH: Batch-Laenge \"%s\"\n", line);
-			exit(1);
+			exit( EX_DATAERR );
 		 }
 		 convdata(news, zconnect);
 	}
