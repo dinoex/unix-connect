@@ -160,7 +160,6 @@ unsigned queue_maske(action_p p)
 void do_transfers(void)
 {
 	action_p doit, last;
-	int old_stderr;
 
 	alarm(0);
 	for (last = NULL, doit = todo; doit; last = doit, doit = doit->next) {
@@ -174,7 +173,6 @@ void do_transfers(void)
 	  	else
 	  		sprintf(fname, "rcv%ld", (long)time(NULL));
 	  	fprintf(stderr, "EMPFANGEN %s\n", connection.proto); fflush(stderr);
-		/* old_stderr = dup(fileno(stderr)); close(fileno(stderr)); dup(modem); DMLOG("dup modem to stderr"); */
 		if ( waittime > 0 )
 		{
 			header_p dummy;
@@ -188,7 +186,7 @@ void do_transfers(void)
 			free_para(dummy);
 		}
 		erg = recvfile(connection.proto, fname);
-		/* close(fileno(stderr)); dup(old_stderr); close(old_stderr); DMLOG("undup stderr"); */
+
 		fprintf(stderr, "\n  ---> %d\n", erg);
 		fprintf(deblogfile, "RECEIVE %s --> %d\n", connection.proto, erg);
 		logfile(logname, connection.proto, "EMPFANG", "-", erg ? "FEHLER\n" : "OK\n");
@@ -200,9 +198,8 @@ void do_transfers(void)
 	  	
 	  	chdir(doit->dir ? doit->dir : "/tmp");
 		fprintf(stderr, "SENDEN %s\n", connection.proto); fflush(stderr);
-		/* old_stderr = dup(fileno(stderr)); close(fileno(stderr)); dup(modem); DMLOG("dup modem to stderr"); */
 		erg = sendfile(connection.proto, doit->file ? doit->file : "");
-		/* close(fileno(stderr)); dup(old_stderr); close(old_stderr); DMLOG("undup stderr"); */
+
 		fprintf(stderr, "\n  ---> %d\n", erg);
 		fprintf(deblogfile, "SEND %s --> %d\n", connection.proto, erg);
 		logfile(logname, connection.proto, "VERSAND", "-", erg ? "FEHLER\n" : "OK\n");
