@@ -48,8 +48,8 @@ TPROGS	= testeda testmime
 all:	$(PROGS)
 
 install:	all
-	$(INSTALL_PROGRAM) uursmtp uuwsmtp $(BINDIR)
-	$(INSTALL_PROGRAM) -m 4755 uurnews uuwnews $(BINDIR)
+	$(INSTALL_PROGRAM) uursmtp uuwsmtp uuwnews $(BINDIR)
+	$(INSTALL_PROGRAM) -m 4555 uurnews $(BINDIR)
 
 uninstall:
 	-cd $(BINDIR) && rm -f $(PROGS)
