@@ -5,12 +5,15 @@
 include ../Makefile.global
 
 FILES=	config approved alias autoeintrag.zconnect myself.zconnect \
-	systems.sample zconnecthosts
+	systems.sample zconnecthosts xprogs
 
-all: config
+all: config xprogs
 
 config: config.in ../Makefile.global
 	$(SHELL) ../helpers/subst < config.in > config
+
+xprogs: xprogs.in ../Makefile.global
+	$(SHELL) ../helpers/subst < xprogs.in > xprogs
 
 install:
 	for i in $(FILES); do \
@@ -24,5 +27,5 @@ clean:
 	-rm -f $(CLEANFILES)
 
 distclean:	clean
-	-rm -f config
+	-rm -f config xprogs
 

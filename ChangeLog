@@ -4,6 +4,26 @@ Aenderungen an UnixConnect
 
 seit 0.89
 
+- install-sh: (Dirk Meyer)
+  Tabs und Spaces entfernt.
+
+- Makefile.global: (Dirk Meyer)
+  obsolete Definitionen entfernt.
+
+- etc/xprogs.in, etc/config.in, etc/Makefile, hdlib/header.lst,
+  include/ministat.h, lib/ministat.c, online/xprog.c: (Dirk Meyer)
+  Neue Konfigurationsdatei, um xprog frei zu konfigurieren.
+
+- lib/strcdup.c, include/utility.h, lib/Makefile: (Matthias Andree)
+  strcdup eingefügt.
+
+- lib/stccpy.c, include/utility.h: (Matthias Andree)
+  (qstccpy): Typen von int auf size_t umgestellt
+  (stccpy): Typen von int auf size_t umgestellt
+
+- shell/prearc.in: (Matthias Andree)
+  überzähliges "fi" entfernt
+
 - Makefile.global, online/xprog.c: (Dirk Meyer)
   #defines fuer Pfade von Zmodem.
 
@@ -62,7 +82,7 @@ seit 0.88
 - Makefile.includes: (Dirk Meyer)
   aufgelöst.
 
-- shell/auspack.in: (Krischan Jodies) 
+- shell/auspack.in: (Krischan Jodies)
   bei unzip Option "-j" einsetzten.
 
 - CHANGES => ChangeLog
@@ -136,7 +156,7 @@ seit 0.88
 
 seit 0.87
 
-- Makefile.global.in, configure.in, mail-and-news/cnews/Makefile, 
+- Makefile.global.in, configure.in, mail-and-news/cnews/Makefile,
   mail-and-news/no/Makefile, mail-and-news/sendmail/Makefile
   Copyrights
 

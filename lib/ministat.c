@@ -105,6 +105,7 @@ char *path_qualifier;	/* Path-Qualifier:	*/
 char *default_path;	/* Path-Default:	*/
 int  debuglevel;	/* Debuglevel:		*/
 char *inewscmd;         /* Inews incl. Parameter*/
+char *xprogsfile;       /* Konfig for xprog.c   */
 char *ortsnetz;		/* Lokale Vorwahl 	*/
 char *fernwahl;		/* vor einer Fernzone-Nummer (0) */
 char *international;	/* vor einer internationalen Nummer (00) */
@@ -261,7 +262,7 @@ void minireadstat(void)
     backindir = dstrdup(p->text);
 
   /* Backup-Zahl: */
-  backupnumber = NULL; 
+  backupnumber = NULL;
   p = find(HD_BACKUP_NUMBER, config);
   if (p)
     backupnumber = dstrdup(p->text);
@@ -315,6 +316,12 @@ void minireadstat(void)
   p = find(HD_DEBUGLEVEL, config);
   if (p)
     debuglevel = atoi(p->text);
+
+  /* Xprogs_Konfig: */
+  xprogsfile = NULL;
+  p = find(HD_XPROGS_CONFIG, config);
+  if (p)
+    xprogsfile = dstrdup(p->text);
 
   /* Ortsnetz: */
   ortsnetz = NULL;

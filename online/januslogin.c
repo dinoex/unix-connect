@@ -52,7 +52,7 @@
  * Andreas Barth <aba@muenchen.pro-bahn.de> im Herbst 1999
  *
  */
- 
+
 #define _GNU_SOURCE
 #include "auth.h"
 #include "config.h"
@@ -254,7 +254,7 @@ init() {
 			exit( 10 );
 		}
 	}
- 
+
 
 	/*
 	 *  Da dieses Programm Login-Shell ist, muss die Fehlerausgabe
@@ -526,7 +526,7 @@ doonline(const auth_t *s) {
 
 	return 0;
 }
-	
+
 
 static void
 abbruch(const int cause) {
@@ -578,7 +578,7 @@ abbruch(const int cause) {
 		/* link statt rename, rename ueberschreibt einfach, was schon
 		 * da ist :-(
 		 */
-		 
+
 		/*
 		 * Der einfache Fall geht nicht: es ist schon was neues da,
 		 * wir koennen die ARC Datei nicht an die urspruengliche

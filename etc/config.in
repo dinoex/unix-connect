@@ -82,6 +82,9 @@ Gate-Path-Env:			   @path@
 #                    Konfiguration der ZCONNECT Online-Routinen
 #--------------------------------------------------------------------------
 
+# Konfigurationsdatei mit Programmen zum Datenaustausch
+Xprogs-Konfig:                     @ETCDIR@/xprogs
+
 # Sollen fremde System automatisch eingetragen werden?
 # Wenn ja: diese Datei anlegen (wie eine Datei in .../systems) und dort
 # die relevanten Default-Angaben reinschreiben

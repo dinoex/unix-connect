@@ -1,0 +1,11 @@
+running /bin/echo /bin/echo 
+
+(null): returned 0
+
+running /bin/echo /bin/echo -n A 
+A(null): returned 0
+
+running /bin/echo /bin/echo -n A 
+-n A
+(null): returned 0
+

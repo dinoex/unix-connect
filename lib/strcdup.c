@@ -48,7 +48,7 @@
  *
  * DESCRIPTION
  *   Die Funktion kopiert bis zu len Bytes aus dem NUL-terminierten String
- *   from in einen neu mit malloc angeforderten Speicherbereich. 
+ *   from in einen neu mit malloc angeforderten Speicherbereich.
  *   Wichtig: Das Nullbyte zaehlt mit. Hinweis: es zaehlt die kuerzere Laenge.
  *
  * PARAMETER
@@ -57,7 +57,7 @@
  *
  * RESULT
  *   Pointer auf die Kopie des Strings, muss mit free() freigegeben werden.
- *   NULL bei Fehler (kein Speicher). 
+ *   NULL bei Fehler (kein Speicher).
  *
  * BUGS
  *

@@ -4,7 +4,17 @@ $Id$
 
 seit 0.89
 
-- Suche nack Zmodem eingebaut.
+- helpers/makesubst:
+  Ausdrücke erweitert.
+
+- Programmcheck nach Matthias Andree
+  mit Veränderungen übernommen.
+
+- Suche nach Kermit eingebaut.
+
+- PATH fuer verschiedene Programme berücksichtigen.
+
+- Suche nach Zmodem eingebaut.
 
 - Text für --disbale-rsmtp geändert.
 
@@ -18,7 +28,7 @@ seit 0.88
 - CHANGES.configure => ChangeLog.configure
 
 - configure --enable-noempty-subject
-  Fälsche das Subject wenn es leer ist. 
+  Fälsche das Subject wenn es leer ist.
 
 - configure --enable-auto-create
   Erzeuge Spoolverzeichisse im Betrieb.

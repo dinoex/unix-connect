@@ -37,7 +37,7 @@
 #if HAVE_SYS_WAIT_H
 # include <sys/wait.h>
 #endif
-#ifndef WEXITSTATUS 
+#ifndef WEXITSTATUS
 # define WEXITSTATUS(stat_val) ((unsigned)(stat_val) >> 8)
 #endif
 #ifndef WIFEXITED

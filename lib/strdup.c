@@ -85,7 +85,7 @@
 
 char *strdup(const char *a)
 {
-	int len; 
+	int len;
 	char *p;
 
 	if(!a) return NULL;

@@ -1,8 +1,8 @@
-Sys:            demo  
+Sys:            demo
 Domain:         do.main
 Passwd:         GE HEIM
 ArcerOut:       ZIP
 ArcerIn:        ZIP
 Tel:            1 +49-521-99999
 Proto:          ZMODEM
-X-Call:         ZCONNECT 
+X-Call:         ZCONNECT

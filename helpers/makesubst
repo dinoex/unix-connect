@@ -34,9 +34,7 @@ echo 'mandir="@mandir@"'
 echo 'CC="@CC@"'
 echo 'RANLIB="@RANLIB@"'
 
-egrep '^AC_SUBST|^AC_CHECK_PROGS|^AC_PATH_PROGS' ../configure.in | sed 's/\(AC_.*([^,]*\),.*/\1)/; s/AC_.*(\(.*\))/\1=\"@\1@\"/'
-#grep ^AC_SUBST ../configure.in | sed 's/AC_SUBST(\(.*\))/\1=@\1@/'
-#grep ^AC_SUBST ../configure.in | sed 's/AC_SUBST(\(.*\))/s%[@]\1@%$\1%g/'
+egrep '^[ ]*AC_SUBST|^[ ]*AC_CHECK_PROGS|^[ ]*AC_PATH_PROGS' ../configure.in | sed 's/\(^[ ]*AC_.*([^,]*\),.*/\1)/; s/^[ ]*AC_.*(\(.*\))/\1=\"@\1@\"/'
 
 echo sed \"
 echo 's%[@]RSMTP@%$RSMTP%g'
@@ -61,5 +59,6 @@ echo 's%[@]infodir@%$infodir%g;'
 echo 's%[@]mandir@%$mandir%g;'
 echo 's%[@]CC@%$CC%g;'
 echo 's%[@]RANLIB@%$RANLIB%g;'
-egrep '^AC_SUBST|^AC_CHECK_PROGS|^AC_PATH_PROGS' ../configure.in | sed 's/\(AC_.*([^,]*\),.*/\1)/; s/AC_.*(\(.*\))/s%[@]\1@%$\1%g;/'
+
+egrep '^[ ]*AC_SUBST|^[ ]*AC_CHECK_PROGS|^[ ]*AC_PATH_PROGS' ../configure.in | sed 's/\(^[ ]*AC_.*([^,]*\),.*/\1)/; s/^[ ]*AC_.*(\(.*\))/s%[@]\1@%$\1%g;/'
 echo \"

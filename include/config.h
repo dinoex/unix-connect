@@ -39,7 +39,7 @@
 #include "sysdep.h"
 #endif
 
-/*  
+/*
  *  Die Online-Empfangsprogramme koennen ohne Passwortabfrage des
  *  Systems eingebunden werden, sie fragen daher selbst nach einem
  *  Passwort:

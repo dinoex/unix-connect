@@ -97,7 +97,7 @@ readsysfile(const char *sysdir, const char *sysname)
 }
 
 
-static char* 
+static char*
 lwrdup(const header_p hd, const int hzahl, const char *hname)
 {
 	char *x;

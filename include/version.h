@@ -3,8 +3,8 @@
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1993-1994  Martin Husemann
  *  Copyright (C) 1995       Christopher Creutzig
- *  Copyright (C) 1999       Matthias Andree
- *  Copyright (C) 1999-2000  Dirk Meyer
+ *  Copyright (C) 1997-2000  Matthias Andree
+ *  Copyright (C) 1995-2000  Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -42,13 +42,13 @@
  * version.h
  */
 
-#define	VERSION		"0.89-dm1"
+#define	VERSION		"0.89-dm2"
 
 #define	MAILER		"UNIX/Connect"
 #define	COPYRIGHT	\
 "(C) 1993-1994 Martin Husemann,\n" \
 "(C) 1995-1998 Christopher Creutzig, (C) 1995-1999 Moritz Both,\n" \
-"(C) 1997-1998 Detlef Wuerkner, (C) 1997-1999 Matthias Andree,\n" \
+"(C) 1997-1998 Detlef Wuerkner, (C) 1997-2000 Matthias Andree,\n" \
 "(C) 1997-2000 Andreas Barth, (C) 1999-2000 Krischan Jodies,\n" \
 "(C) 1995-2000 Dirk Meyer."
 

@@ -1,0 +1,22 @@
+#
+# Programme die bei der Verbindung aufgerufen werden.
+#
+#
+ZMODEM-RECV,"@LRZMODEM@ -vv"
+ZMODEM-SEND,"@LSZMODEM@ -vv %s"
+YMODEM-RECV,"@LRZMODEM@ -vv --ymodem"
+YMODEM-SEND,"@LSZMODEM@ -vv --ymodem %s"
+XMODEM-RECV,"@LRZMODEM@ -vv --xmodem %s"
+XMODEM-SEND,"@LSZMODEM@ -vv --xmodem %s"
+#
+#
+# YMODEM-RECV,"@LRBMODEM@ -vv"
+# YMODEM-SEND,"@LSBMODEM@ -vv %s"
+# XMODEM-RECV,"@LRXMODEM@ -vv %s"
+# XMODEM-SEND,"@LSXMODEM@ -vv %s"
+#
+#
+# KERMIT-RECV,"@KERMIT@ -r -a %s"
+# KERMIT-SEND,"@KERMIT@ -s %s"
+#
+# eof

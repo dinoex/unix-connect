@@ -51,8 +51,8 @@
  *
  * DESCRIPTION
  *   Die Funktion kopiert bis zu len Bytes aus dem NUL-terminierten String
- *   from in den Zielstring to. Der Zielstring ist immer NUL-terminiert. 
- *   Das NUL-Byte wird mitgezaehlt. 
+ *   from in den Zielstring to. Der Zielstring ist immer NUL-terminiert.
+ *   Das NUL-Byte wird mitgezaehlt.
  *
  * PARAMETER
  *   char *to - String, auf den kopiert werden soll.
@@ -97,7 +97,7 @@ size_t stccpy(char *to, const char *from, size_t len)
  * DESCRIPTION
  *   Die Funktion kopiert bis zu len Bytes aus dem NUL-terminierten String
  *   from in den Zielstring to. Der Zielstring ist immer NUL-terminiert.
- *   Das NUL-Byte wird mitgezaehlt. 
+ *   Das NUL-Byte wird mitgezaehlt.
  *
  * PARAMETER
  *   char *to - String, auf den kopiert werden soll.
@@ -105,7 +105,7 @@ size_t stccpy(char *to, const char *from, size_t len)
  *   size_t len - max. in to zu schreibende Laenge
  *
  * RESULT
- *  void 
+ *  void
  *
  * BUGS
  *

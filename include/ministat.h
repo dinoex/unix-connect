@@ -64,6 +64,7 @@ extern char *uucpspool;
 extern char *aliasliste;
 extern char *approvedliste;
 extern char *inewscmd;
+extern char *xprogsfile;
 extern int  debuglevel;
 #ifdef MAX_HEADER_NAME_LEN
 extern header_p config;
