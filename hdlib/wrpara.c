@@ -67,7 +67,7 @@ wr_para_continue(header_p ptr, FILE *fp)
 	char *p;
 #endif
 
-	crc = ~0;
+	crc = ~0u;
         while (ptr) {
                 fputs(ptr->header, fp);
 #ifdef DO_CRC

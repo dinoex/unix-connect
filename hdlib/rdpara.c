@@ -157,7 +157,7 @@ rd_para(FILE *f)
         rd_para_error = HEAD_NO_ERROR;
         start = NULL;
 #ifdef DO_CRC
-        crc = ~0;
+        crc = ~0u;
 #endif
 	while(!feof(f)) {
 
