@@ -112,7 +112,7 @@ char *findport(int port, int hd_code, header_p hd)
 /*
  *   Ist in der Liste "menge" das Element "elem" enthalten?
  */
-int ist_in(char *menge, char *elem)
+int ist_in(char *menge, const char *elem)
 {
 	char *s;
 
@@ -160,8 +160,8 @@ header_p sysparam(header_p local, header_p remote, header_p sysfile)
 {
 	header_p p, erg, d;
 	char	*r_arc, *r_arcerout, *r_proto, *domain,
-		*my_arc, *my_arcerout, *my_proto, *my_protos, *proto,
-		*common_arc;
+		*my_arc, *my_proto, *my_protos, *proto;
+	const char	*my_arcerout, *common_arc;
 	char buffer[FILENAME_MAX], fname[FILENAME_MAX], r_sys[FILENAME_MAX];
 	int r_port;
 
@@ -215,7 +215,7 @@ header_p sysparam(header_p local, header_p remote, header_p sysfile)
 	p = find(HD_ARCEROUT, sysfile);
 	my_arcerout = p ? p->text : "ARC";
 	p = find(HD_PROTO, sysfile);
-	my_proto = p ? p->text : "ZMODEM";
+	my_proto = p ? p->text : dstrdup( "ZMODEM" );
 
 	if (!ist_in(r_arc, my_arcerout)) {
 		/*

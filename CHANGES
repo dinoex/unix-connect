@@ -4,6 +4,8 @@ $Id$
 Aenderungen an UnixConnect
 seit 0.80
 
+- Code aufgrund von Warnings gesaeubert.
+
 - uursmtp/uurnews schiesst die Datein richtig,
   und versucht nicht die Pipe zu loeschen.
   Systemname bei Pipe ist obsolete.

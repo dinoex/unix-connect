@@ -78,23 +78,25 @@ static jmp_buf timeout, nocarrier;
 static char *tty = "/dev/tty";
 
 FILE *deblogfile;
-static int ist_net38 = 0;
 
 #define	WHO	"JANUS"
 
 #define NAK	0x15
 #define ACK	0x06
 
+void handle_timeout(int code);
 void handle_timeout(int code)
 {
 	longjmp(timeout, 1);
 }
 
+void handle_nocarrier(int code);
 void handle_nocarrier(int code)
 {
 	longjmp(nocarrier, 1);
 }
 
+void getsln(char *p);
 void getsln(char *p)
 {
 	int z;
@@ -109,6 +111,7 @@ void getsln(char *p)
 	fputs("\r\n", stdout);
 }
 
+void getln(char *p);
 void getln(char *p)
 {
 	int z;
@@ -149,6 +152,7 @@ findsysfile(const char *sysdir, char *sysname, char *filename)
 	sprintf(filename, "%s/%s", sysdir, sysname);
 }
 
+void reject(char *prog, char *sysname, char *passwd);
 void reject(char *prog, char *sysname, char *passwd)
 {
 	fputs("Netzzugriff verweigert.\r\n", stdout);

@@ -96,6 +96,7 @@ void logoff(const char *msg)
  *   send_ack(phase) :	sendet ein Acknowledge fuer einen korrekt empfangenen
  *			Block aus der angegebenen Phase [1 .. 4]
  */
+void send_ack(int phase);
 void send_ack(int phase)
 {
 	char tmp[5];
@@ -111,6 +112,7 @@ void send_ack(int phase)
  *   send_tme(phase) :	sendet ein Transmission End fuer einen korrekt gesendeten
  *			Block aus der angegebenen Phase [1 .. 4]
  */
+void send_tme(int phase);
 void send_tme(int phase)
 {
 	char tmp[5];
@@ -130,6 +132,7 @@ void send_tme(int phase)
  *		  weiss immer genau, welches Paket jetzt vom Sender kommen
  *		  muss.
  */
+void send_nak(void);
 void send_nak(void)
 {
 	header_p p;
@@ -232,7 +235,7 @@ header_p get_blk(int phase)
 header_p put_blk(header_p block, int phase)
 {
 	header_p p, c, s;
-	char blk[6], ack[6];
+	char blk[6], lack[6];
 	crc_t crc;
 	unsigned int crc_hd;
 
@@ -240,7 +243,7 @@ header_p put_blk(header_p block, int phase)
 	 *  Erwartete Antworten:
 	 */
 	sprintf(blk, "BLK%d", phase);
-	sprintf(ack, "ACK%d", phase);
+	sprintf(lack, "ACK%d", phase);
 
 	/*
 	 *  BLK-Nr. in das Paket eintragen
@@ -299,7 +302,7 @@ header_p put_blk(header_p block, int phase)
 			continue;
 		}
 
-		if (stricmp(s->text, ack) == 0)
+		if (stricmp(s->text, lack) == 0)
 			break;	/* Das Paket wurde positiv bestaetigt... */
 
 		/*
@@ -341,6 +344,7 @@ header_p put_blk(header_p block, int phase)
  *   send_eot(phase) :	sendet ein Acknowledge fuer einen korrekt empfangenen
  *			Block aus der angegebenen Phase [5 .. 6] (3 Bloecke)
  */
+void send_eot(int phase);
 void send_eot(int phase)
 {
 	char tmp[5];

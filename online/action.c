@@ -99,11 +99,11 @@ void queue_action(char *dir, char *file, unsigned work, unsigned grade, int dele
  *  Loescht die Aktions-Warteschlange (z.B. nach EXECUTE:N). Setzt todo auf
  *  NULL.
  */
-action_p clear_queue(action_p todo)
+action_p clear_queue(action_p atodo)
 {
 	action_p p, next;
 
-	for (p=next=todo; p; p=next) {
+	for (p=next=atodo; p; p=next) {
 		next = p->next;
 		if (p->dir) dfree(p->dir);
 		if (p->file) dfree(p->file);
@@ -158,6 +158,7 @@ unsigned queue_maske(action_p p)
 	return erg;
 }
 
+void do_transfers(void);
 void do_transfers(void)
 {
 	action_p doit, last;

@@ -75,7 +75,7 @@
  * Da hier nur interne Konfigurationsdateien geschrieben werden, benutzen
  * wir das UNIX-interne Zeilenende.
  */
-char *hd_crlf = "\n";
+const char *hd_crlf = "\n";
 #ifdef HAVE_SYSLOG
 int logname = INCOMING;
 #else
@@ -89,11 +89,13 @@ jmp_buf timeout, nocarrier;
 
 FILE *deblogfile;
 
+void handle_timeout(int code);
 void handle_timeout(int code)
 {
 	longjmp(timeout, 1);
 }
 
+void handle_nocarrier(int code);
 void handle_nocarrier(int code)
 {
 	longjmp(nocarrier, 1);

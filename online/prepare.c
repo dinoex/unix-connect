@@ -146,6 +146,8 @@ void bereitstellen(void)
 	}
 }
 
+extern char tty[];
+
 /*
  *  Entfernt den uebrigen Schrott, schiebt nicht-uebertragene Dateien
  *  zurueck und liest schliesslich die empfangenen Daten ein.
@@ -154,7 +156,6 @@ void aufraeumen(void)
 {
 	char buffer[FILENAME_MAX], buffer2[FILENAME_MAX], arc[20];
 	char lockname[FILENAME_MAX];
-	extern char tty[];
 
 	strncpy(arc, connection.local_arc, sizeof arc);
 	arc[sizeof arc -1] = '\0';

@@ -56,8 +56,9 @@
 # include <strings.h>
 #endif
 #include "lib.h"
+#include "xprog.h"
 
-int recvfile(char *proto, char *file)
+int recvfile(const char *proto, const char *file)
 {
 	char cmd[20], arg[20];
 	pid_t c_pid;
@@ -102,7 +103,7 @@ int recvfile(char *proto, char *file)
 	}
 }
 
-int sendfile(char *proto, char *file)
+int sendfile(const char *proto, const char *file)
 {
 	char cmd[20], arg[20];
 	pid_t c_pid;
@@ -139,7 +140,7 @@ int sendfile(char *proto, char *file)
 }
 
 
-int call_auspack(char *arcer, char *arcfile)
+int call_auspack(const char *arcer, const char *arcfile)
 {
 	char arg[20];
 	pid_t c_pid;
@@ -168,7 +169,7 @@ int call_auspack(char *arcer, char *arcfile)
 }
 
 
-int call_import(char *sysname, int net38format)
+int call_import(const char *sysname, int net38format)
 {
 	pid_t c_pid;
 

@@ -88,9 +88,9 @@
 void import_all(char *arcer, char *sysname, int ist_net38)
 {
 	typedef struct list_st {
-		char *name;
+		char *name; 
 		struct list_st *next;
-	} list_t, *list_p;
+	} ilist_t, *ilist_p;
 
 	DIR *dir;
 #ifdef HAS_BSD_DIRECT
@@ -98,17 +98,17 @@ void import_all(char *arcer, char *sysname, int ist_net38)
 #else
 	struct dirent *ent;
 #endif
-	list_p l;		/* Liste der zu entpackenden Dateien */
+	ilist_p l;		/* Liste der zu entpackenden Dateien */
 
 	if ((dir = opendir(".")) == NULL) {
 		perror(".");
 	}
 	l = NULL;
 	while ((ent = readdir(dir)) != NULL) {
-		list_p neu;
+		ilist_p neu;
 
 		if (*(ent->d_name) == '.') continue;
-		neu = dalloc(sizeof(list_t));
+		neu = dalloc(sizeof(ilist_t));
 		neu->name = dstrdup(ent->d_name);
 		neu->next = l;
 		l = neu;
@@ -116,7 +116,7 @@ void import_all(char *arcer, char *sysname, int ist_net38)
 	closedir(dir);
 
 	while (l) {
-		list_p p;
+		ilist_p p;
 
 		fprintf(stderr, "Auspacken: %s (%s)\n", l->name, arcer);
 		fflush(stderr);

@@ -84,7 +84,7 @@ static int more_data = 1;		/* Gegenseite hat noch was */
 extern int wait_sec;
 action_p senden_queue;
 
-void datei_master(header_p myself, header_p remote)
+void datei_master(header_p hmyself, header_p remote)
 {
 	header_p req, p, blk2, blk3, blk4;
 

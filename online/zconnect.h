@@ -239,11 +239,11 @@ action_p clear_queue(action_p);
 void prologue(void);
 void system_dialog(void);
 void datei_dialog(void);
-void system_master(header_p myself, header_p remote);
-void datei_master(header_p myself, header_p remote);
+void system_master(header_p hmyself, header_p remote);
+void datei_master(header_p hmyself, header_p remote);
 void logoff(const char *msg);
 char *findport(int port, int hd_code, header_p hd);
-int ist_in(char *menge, char *elem);
+int ist_in(char *menge, const char *elem);
 char *waehle(char *r_menge, char *l_menge);
 
 void banner_login(void);

@@ -48,8 +48,8 @@
 #endif
 
 
-int recvfile(char *proto, char *file);
-int sendfile(char *proto, char *file);
+int recvfile(const char *proto, const char *file);
+int sendfile(const char *proto, const char *file);
 
-int call_auspack(char *arcer, char *arcfile);
-int call_import(char *lsystem, int net38format);
+int call_auspack(const char *arcer, const char *arcfile);
+int call_import(const char *lsystem, int net38format);

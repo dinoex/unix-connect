@@ -2,6 +2,7 @@
 /*
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1993-94  Martin Husemann
+ *  Copyright (C) 1999     Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,14 +25,14 @@
  *
  *  Bugreports, suggestions for improvement, patches, ports to other systems
  *  etc. are welcome. Contact the maintainer by e-mail:
- *  christopher@nescio.foebud.org or snail-mail:
- *  Christopher Creutzig, Im Samtfelde 19, 33098 Paderborn
+ *  dirk.meyer@dinoex.sub.org or snail-mail:
+ *  Dirk Meyer, Im Grund 4, 34317 Habichstwald
  *
  *  There is a mailing-list for user-support:
  *   unix-connect@mailinglisten.im-netz.de,
- *  to join, ask Nora Etukudo at
+ *  write a mail with subject "Help" to
  *   nora.e@mailinglisten.im-netz.de
- *
+ *  for instructions on how to join this list.
  */
 
 
@@ -70,8 +71,9 @@ static size_t buf_alloc;	/* Groesse des bisher allokierten Buffer's */
 
 void convert(FILE *, FILE *, FILE *);
 
-char *hd_crlf = "\r\n";
+const char *hd_crlf = "\r\n";
 
+void usage(void);
 void usage(void)
 {
 	fputs("Aufruf:\tzconsplit (ZCONNECT-Datei)\n"
@@ -118,6 +120,7 @@ int main (int argc, char **argv)
 	return 0;
 }
 
+header_p dofind(int code, header_p h);
 header_p dofind(int code, header_p h)
 {
 	h = find(code, h);

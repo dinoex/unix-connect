@@ -82,7 +82,7 @@ int ist_testaccount = 0;
  *   system_master tauscht die Informationen ueber die beteiligten Systeme
  *   aus.
  */
-void system_master(header_p myself, header_p remote)
+void system_master(header_p hmyself, header_p remote)
 {
 	header_p p, p1, blk2, blk3, blk4;
 
@@ -96,23 +96,23 @@ void system_master(header_p myself, header_p remote)
  	 *	     ist gegenueber den vom fremden System gesendeten Bloecken
  	 *	     genau vertauscht!
 	 */
-	p = find(HD_SYS, myself);
+	p = find(HD_SYS, hmyself);
 	if (p) strupr(p->text);
 	p = find(HD_PASSWD, remote);
-	if (p) myself = add_header(p->text, HD_PASSWD, myself);
+	if (p) hmyself = add_header(p->text, HD_PASSWD, hmyself);
 	p = find(HD_ARCEROUT, remote);
-	if (p) myself = add_header(p->text, HD_ARCEROUT, myself);
+	if (p) hmyself = add_header(p->text, HD_ARCEROUT, hmyself);
 	/*
 	 *  Ein paar Spezial-Header, die wir in der systems-Datei speichern
 	 *  werden entfernt. Die Gegenseite wuerde sie sowiso ignorieren.
 	 */
-	myself = del_header(HD_X_CALL, myself);
-	myself = del_header(HD_POINT_USER, myself);
+	hmyself = del_header(HD_X_CALL, hmyself);
+	hmyself = del_header(HD_POINT_USER, hmyself);
 
-	myself = put_blk(myself, 1);
+	hmyself = put_blk(hmyself, 1);
 
 	fprintf(deblogfile, "Sende BLK1: \n");
-	wr_para(myself, deblogfile);
+	wr_para(hmyself, deblogfile);
 
 	alarm(30);
 	blk2 = get_blk(2);
@@ -140,7 +140,7 @@ void system_master(header_p myself, header_p remote)
 		return;
 	}
 
-	blk3 = sysparam(myself, blk2, remote);
+	blk3 = sysparam(hmyself, blk2, remote);
 	/*
 	 *  Falls blk3 == NULL ist, wurde von sysparam() bereits der
 	 *  Fehler bei "logoff()" eingetragen. Es wird dann hier ein

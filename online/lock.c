@@ -120,8 +120,8 @@
    is a simple file name which should be created in the system lock
    directory (under HDB this is /etc/locks).  */
 
-int
-fsdo_lock (const char *zlock)
+int fsdo_lock (const char *zlock);
+int fsdo_lock (const char *zlock)
 {
   char *zfree;
   const char *zpath, *zslash;
@@ -225,13 +225,13 @@ fsdo_lock (const char *zlock)
 	}
 
       freadonly = FALSE;
-      o = open ((char *) zpath, O_RDWR | O_NOCTTY, 0);
+      o = open (zpath, O_RDWR | O_NOCTTY, 0);
       if (o < 0)
 	{
 	  if (errno == EACCES)
 	    {
 	      freadonly = TRUE;
-	      o = open ((char *) zpath, O_RDONLY, 0);
+	      o = open (zpath, O_RDONLY, 0);
 	    }
 	  if (o < 0)
 	    {
@@ -406,7 +406,7 @@ fsdo_lock (const char *zlock)
 
 	  /* It looks like we have the lock.  Do the final stat
 	     check.  */
-	  if (stat ((char *) zpath, &sfile) < 0)
+	  if (stat (zpath, &sfile) < 0)
 	    {
 	      if (errno != ENOENT)
 		{
@@ -474,8 +474,8 @@ fsdo_lock (const char *zlock)
 
 /* Unlock something.  The fspooldir argument is as in fsdo_lock.  */
 
-int
-fsdo_unlock (const char *zlock)
+int fsdo_unlock (const char *zlock);
+int fsdo_unlock (const char *zlock)
 {
   char *zfree;
   const char *zpath;
