@@ -37,23 +37,9 @@
 
 
 /*
- *  ZCONNECT fuer UNIX, (C) 1993 Martin Husemann
- *
- *  Sie sollten mit diesen Quelltexten eine Kopie der GNU General Public
- *  Licence erhalten haben (Datei COPYING).
- *
- *  Diese Software ist urheberrechtlich geschuetzt. Sie ist nicht und war
- *  auch niemals in der Public Domain. Alle Rechte vorbehalten.
- *
- *  Sie duerfen diese Quelltexte entsprechend den Regelungen der GNU GPL
- *  frei nutzen.
- *
- * --------------------------------------------------------------------------
- *
  *  receiver.c
  *
  *    Die Top-Level Routinen sowie die Integration in das Gesamtsystem
- *
  */
 
 #include "config.h"

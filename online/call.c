@@ -45,9 +45,6 @@
  *  ACHTUNG: damit dies funktioniert, muss der UUCP Locking-Mechanismus
  *	     korrekt installiert sein. Sieh dazu ../include/policy.h
  *
- * -----------------------------------------------------------------------
- *
- *   Letzte Aenderung: martin@bi-link.owl.de, Mon Nov 22 22:55:39 1993
  */
 
 #include "config.h"
@@ -254,7 +251,7 @@ int main(int argc, char **argv)
 #endif /* LEAVE_CTRL_TTY */
 
 	gmodem = open(tty,
-#if !defined(linux) && !defined(__NetBSD__)
+#if !defined(__NetBSD__)
 			O_RDWR | O_NDELAY
 #else
 			O_RDWR
@@ -262,9 +259,18 @@ int main(int argc, char **argv)
 		); DMLOG("open modem");
 	if (modem < 0) {
 		perror(tty);
-		fprintf(deblogfile, "Can not access device %s: %s\n", tty, strerror(errno));
+		fprintf(deblogfile,
+			"Can not access device %s: %s\n", tty, strerror(errno));
 		return 10;
 	}
+#if !defined(__NetBSD__)
+	else {
+		/* Nonblock abschalten */
+		int n;
+		n=fcntl(modem, F_GETFL, 0);
+		(void)fcntl(modem, F_SETFL, n & ~O_NDELAY);
+	}
+#endif
 	save_linesettings(gmodem); DMLOG("saving modem parameters");
 	set_rawmode(modem); DMLOG("set modem to rawmode");
 	set_local(gmodem, 1);

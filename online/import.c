@@ -3,6 +3,8 @@
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1993-94  Martin Husemann
  *  Copyright (C) 1995     Christopher Creutzig
+ *  Copyright (C) 1999     Matthias Andree
+ *  Copyright (C) 1999     Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -37,26 +39,10 @@
 
 
 /*
- *  ZCONNECT fuer UNIX, (C) 1993 Martin Husemann, (C) 1995 Christopher Creutzig
- *
- *  Sie sollten mit diesen Quelltexten eine Kopie der GNU General Public
- *  Licence erhalten haben (Datei COPYING).
- *
- *  Diese Software ist urheberrechtlich geschuetzt. Sie ist nicht und war
- *  auch niemals in der Public Domain. Alle Rechte vorbehalten.
- *
- *  Sie duerfen diese Quelltexte entsprechend den Regelungen der GNU GPL
- *  frei nutzen.
- *
- * ---------------------------------------------------------------------------
- *
  *   import.c:
  *
  *	Liest alle Daten im aktuellen Verzeichnis ein (und packt sie vorher
  *	aus.
- *
- * ---------------------------------------------------------------------------
- *  Letzte Aenderung: martin@isdn.owl.de.owl.de, Tue Aug 17 15:07:22 1993
  */
 
 
@@ -85,8 +71,10 @@
 /*
  *  Alle Dateien im aktuellen Verzeichnis entpacken und einlesen...
  */
-void import_all(char *arcer, char *sysname, int ist_net38)
+int import_all(char *arcer, char *sysname, int ist_net38)
 {
+	int returncode = 0;
+
 	typedef struct list_st {
 		char *name; 
 		struct list_st *next;
@@ -107,7 +95,12 @@ void import_all(char *arcer, char *sysname, int ist_net38)
 	while ((ent = readdir(dir)) != NULL) {
 		ilist_p neu;
 
-		if (*(ent->d_name) == '.') continue;
+		/* nur . und .. ignorieren */
+		if (ent->d_name[0] == '.') {
+			if (!ent -> d_name[1]) continue;
+			if (ent->d_name[1] == '.' 
+			    && !ent->d_name[2]) continue;
+		}
 		neu = dalloc(sizeof(ilist_t));
 		neu->name = dstrdup(ent->d_name);
 		neu->next = l;
@@ -115,28 +108,46 @@ void import_all(char *arcer, char *sysname, int ist_net38)
 	}
 	closedir(dir);
 
-	while (l) {
-		ilist_p p;
+  	while (l) {
+  		list_p p;
+		int rc;
+		int myret = 1;
+		struct stat st;
 
 		fprintf(stderr, "Auspacken: %s (%s)\n", l->name, arcer);
 		fflush(stderr);
-		call_auspack(arcer, l->name);
-		if (backindir) {
-			char backinname[FILENAME_MAX], *shortname;
-
-			shortname = strrchr(l->name, '/');
-			if (!shortname) shortname = l->name;
-			sprintf(backinname, "%s/%s.%s.%ld", backindir, sysname, shortname, time(NULL));
-			fprintf(stderr, "BackIn: %s -> %s\n", l->name, backinname);
-			fflush(stderr);
-			remove(backinname);
-			rename(l->name, backinname);
+		if(lstat(l->name, &st)) {
+			perror(l->name);
 		} else {
-			remove(l->name);
+			if (S_ISREG(st.s_mode) && (nlink_t)1==st.st_nlink) {
+			    rc = call_auspack(arcer, l->name);
+			    if (!rc) {
+				myret = 0;
+				    if(backindir) {
+					char backinname[FILENAME_MAX];
+					char *shortname;
+						
+					shortname = strrchr(l->name, '/');
+					if (!shortname) shortname = l->name;
+					sprintf(backinname, "%s/%s.%s.%ld",
+						backindir, sysname,
+						shortname, time(NULL));
+					fprintf(stderr, "BackIn: %s -> %s\n",
+						l->name, backinname);
+					fflush(stderr);
+					remove(backinname);
+					rename(l->name, backinname);
+				    } else {
+					remove(l->name);
+				}
+			    }
+			}
 		}
+		returncode |= myret;
 		p = l; l = p->next;
 		dfree(p->name); dfree(p);
 	}
 
-	call_import(sysname, ist_net38);
+	returncode |= call_import(sysname, ist_net38);
+	return returncode;
 }

@@ -38,26 +38,10 @@
 
 
 /*
- *  ZCONNECT fuer UNIX, (C) 1993 Martin Husemann, (C) 1995-97 Christopher Creutzig
- *
- *  Sie sollten mit diesen Quelltexten eine Kopie der GNU General Public
- *  Licence erhalten haben (Datei COPYING).
- *
- *  Diese Software ist urheberrechtlich geschuetzt. Sie ist nicht und war
- *  auch niemals in der Public Domain. Alle Rechte vorbehalten.
- *
- *  Sie duerfen diese Quelltexte entsprechend den Regelungen der GNU GPL
- *  frei nutzen.
- *
- * ---------------------------------------------------------------------------
- *
  *  prepare.c:
  *
  *	Verschiebt die zu versendenden Dateien in das Upload-Directory
  *	und erzeugt die entsprechenden Eintraege in der Warteschlange.
- *
- * ---------------------------------------------------------------------------
- *  Letzte Aenderung: christopher@nescio.foebud.org, Fri Jun 27 1997
  */
 
 #include "config.h"

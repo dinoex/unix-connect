@@ -38,26 +38,10 @@
 
 
 /*
- *  ZCONNECT fuer UNIX, (C) 1993 Martin Husemann, (C) 1995 Christopher Creutzig
- *
- *  Sie sollten mit diesen Quelltexten eine Kopie der GNU General Public
- *  Licence erhalten haben (Datei COPYING).
- *
- *  Diese Software ist urheberrechtlich geschuetzt. Sie ist nicht und war
- *  auch niemals in der Public Domain. Alle Rechte vorbehalten.
- *
- *  Sie duerfen diese Quelltexte entsprechend den Regelungen der GNU GPL
- *  frei nutzen.
- *
- * ---------------------------------------------------------------------------
- *
  *  action.c:
  *
  *	Verwaltung der Warteschlange sowie Ausfuehren der gemerkten Aktionen
  *	in der EOT4 ... EOT6 "Auszeit".
- *
- * ---------------------------------------------------------------------------
- *  Letzte Aenderung: christopher@nescio.zerberus.de, 14:55 22. Nov. 1995
  */
 
 #include "config.h"

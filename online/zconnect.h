@@ -38,25 +38,9 @@
 
 
 /*
- *  ZCONNECT fuer UNIX, (C) 1993 Martin Husemann, (C) 1995 Christopher Creutzig
- *
- *  Sie sollten mit diesen Quelltexten eine Kopie der GNU General Public
- *  Licence erhalten haben (Datei COPYING).
- *
- *  Diese Software ist urheberrechtlich geschuetzt. Sie ist nicht und war
- *  auch niemals in der Public Domain. Alle Rechte vorbehalten.
- *
- *  Sie duerfen diese Quelltexte entsprechend den Regelungen der GNU GPL
- *  frei nutzen.
- *
- * ---------------------------------------------------------------------------
- *
  *  zconnect.h:
  *
  *	Globale Typdefinitionen und Prototypen der Library-Funktionen.
- *
- * ---------------------------------------------------------------------------
- *  Letzte Aenderung: martin@isdn.owl.de, Tue Aug 17 15:14:20 1993
  */
 
 /*
