@@ -288,11 +288,11 @@ void convert(FILE *zconnect, FILE *news)
 	lines = 0;
 	tmp = tmpfile();
 	if (!tmp) {
-		uufatal(__FILE__, "-", "-", "-", "Tempor„re Datei nicht schreibbar!");
+		uufatal(__FILE__, "- - - Temporäre Datei nicht schreibbar!");
 	}
 	tmphd=tmpfile();
 	if (!tmphd)
-		uufatal(__FILE__, "-", "-", "-", "Tempor re Datei nicht schreibbar!");
+		uufatal(__FILE__, "- - - Temporäre Datei nicht schreibbar!");
 	setvbuf(tmp, NULL, (_IOFBF), (long)(BIGBUFFER) > (long)(MAXINT) ? (MAXINT) : (BIGBUFFER));
 	/* Steht schon ein Approved-Header im Text? */
 	p = find(HD_UU_U_APPROVED, hd);
