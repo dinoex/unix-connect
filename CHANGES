@@ -4,6 +4,11 @@ $Id$
 Aenderungen an UnixConnect
 seit 0.80
 
+- Nonblocking IO wieder abschalten (Matthias Andree)
+
+- redesign der Funktion import_all() (Matthias Andree)
+  Fehler gehen nicht mehr verloren.
+
 - Zusammenfassung in gtools.h gtools.c
   Exclusive Suche von Dateien gefixt (Matthias Andree)
 
@@ -13,17 +18,18 @@ seit 0.80
   install/uninstall jetzt verfügbar
 
 - Code aufgrund von Warnings gesaeubert.
+  mehrfache lokale Varaiblen, const, u.s.w.
 
-- uursmtp/uurnews schiesst die Datein richtig,
+- uursmtp/uurnews schliesst die Datein richtig,
   und versucht nicht die Pipe zu loeschen.
   Systemname bei Pipe ist obsolete.
   Exitcodes aus <sysexits.h> verwenden.
 
-- uuwsmtp/uuwnews schiesst die Datein richtig,
+- uuwsmtp/uuwnews schliesst die Datein richtig,
   und versucht nicht die Pipe zu loeschen.
   Id für Multipart jetzt immer gesetzt.
   Exitcodes aus <sysexits.h> verwenden.
-  Pointuser wird in allen optione gesetzt.
+  Pointuser wird in allen Optionen gesetzt.
 
 - Makefiles, die helpers/subst aufrufen, tun dies jetzt durch
   $(SHELL) (Matthias Andree)
