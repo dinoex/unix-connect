@@ -4,10 +4,11 @@ $Id$
 Aenderungen an UnixConnect
 seit 0.80
 
-- uuwsmtp schiesst die Datein richtig,
+- uuwsmtp/uuwnews schiesst die Datein richtig,
   und versucht nicht die Pipe zu loeschen.
   Id für Multipart jetzt immer gesetzt.
   Exitcodes aus <sysexits.h> verwenden.
+  Pointuser wird in allen optione gesetzt.
 
 - Makefiles, die helpers/subst aufrufen, tun dies jetzt durch
   $(SHELL) (Matthias Andree)

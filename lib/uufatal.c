@@ -60,6 +60,8 @@
 # include <syslog.h>
 #endif
 # include <time.h>
+#include <sysexits.h>
+
 # include "ministat.h"
 # include "uulog.h"
 
@@ -119,8 +121,9 @@ void uufatal(const char *prog, const char *format, ...)
 	sprintf(buf, "%s/" ERRLOG, logdir);
 	f = fopen(buf, "a");
 	if (!f) {
-		fprintf(stderr, "\nFATAL: Logfile \""ERRLOG"\" nicht schreibbar\n");
-		exit(10);
+		fprintf(stderr,
+			"\nFATAL: Logfile \""ERRLOG"\" nicht schreibbar\n");
+		exit( EX_CANTCREAT );
 	}
 	now = time(NULL);
 	strftime(buf, 200, "%Y/%m/%d %H:%M:%S", localtime(&now));
@@ -137,9 +140,7 @@ void uufatal(const char *prog, const char *format, ...)
 	va_end(ap);
 	fputs("\n", stderr);
 
-	exit(10);
+	exit( EX_DATAERR );
 }
-
-
 
 /* EOF */

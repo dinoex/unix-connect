@@ -43,15 +43,6 @@
  *
  */
 
-/*
- * Dirk Meyer, 08.05.96
- * Orginal von Moritz Both fuer uuwsmtp gepostet.
- * in uuwsmtp.c bereits eingebaut.
- * Wenn erster Teil des 2. oder 3. Sextets 0 ist, werden
- * keine kleinbuchstaben mehr erzeugt.
- *
- */
-
 #include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -61,18 +52,21 @@
 #ifdef HAS_STRINGS_H
 # include <strings.h>
 #endif
-#include "lib.h"
+#include <ctype.h>
 #ifdef NEED_VALUES_H
 #include <values.h>
 #endif
+#include <time.h>
 #ifdef HAS_UNISTD_H
 #include <unistd.h>
 #endif
-#include <time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <sysexits.h>
+#include <errno.h>
 
+#include "lib.h"
 #include "boxstat.h"
 #include "ministat.h"
 #include "utility.h"
@@ -80,7 +74,6 @@
 #include "hd_def.h"
 #include "hd_nam.h"
 #include "version.h"
-#include "config.h"
 #include "uuapprove.h"
 #include "uulog.h"
 #include "mime.h"
@@ -88,13 +81,12 @@
 /* #include "trap.h" */
 
 int main_is_mail = 0;	/* Nein, wir erzeugen keine Mails */
-char eol[] = "\n";
+const char eol[] = "\n";
 
-void usage(void);
 void convert(FILE *, FILE *);
-header_p convheader(header_p, FILE *);
 
-header_p pointuser;	/* Wenn es ein Point ist: die Liste der erlaubten Absender */
+/* Wenn es ein Point ist: die Liste der erlaubten Absender */
+header_p pointuser;
 char *pointsys;		/* Name des Point-Systems (fuer die Message-Id) */
 
 static char *bigbuffer	= NULL;
@@ -104,108 +96,209 @@ static char datei[1024];
 extern char umlautstr[], convertstr[];
 #endif
 
-int main(int argc, char **argv)
+void usage(void);
+void usage(void)
+{
+	fputs(
+"UUwnews  -  RFC1036  Batch aus ZCONNECT erzeugen\n"
+"Aufrufe:\n"
+"        uuwnews (ZCONNECT-Datei) (NEWS-Directory) [Absende-System]\n"
+"          alter Standard, Eingabedatei wird gelöscht,\n"
+"          Ausgabedatei wird im Verzeichns erzeugt.\n"
+"        uuwnews -f (ZCONNECT-Datei) [Absende-System]\n"
+"          Ergebnis geht nach stdout, Eingabedatei wird gelöscht,\n"
+"        uuwnews -d (ZCONNECT-Datei) (NEWS-Datei) [Absende-System]\n"
+"          Modus mit höchster Sicherheit, oder zum Testen.\n"
+"        uuwnews -p [Absendesystem]\n"
+"          Echte Pipe\n"
+, stderr);
+	exit( EX_USAGE );
+}
+
+int main(int argc, const char *const *argv)
 {
 	FILE *fin, *fout;
-	int filter;
+	const char *cptr;
+	const char *name;
+	const char *remove_me;
 	time_t j;
+	int ready;
+	char ch;
 
 /*	init_trap(argv[0]); */
-	filter = 0;
+	pointuser = NULL;
+	pointsys = NULL;
 	ulibinit();
+	minireadstat();
 	srand(time(NULL));
-	if (argc < 2 || argc > 4) usage();
+
+	/* fuer multipart */
+	j = time(NULL);
+	sprintf(datei, "%08lx", j);
+
 	bigbuffer = malloc(BIGBUFFER);
 	smallbuffer = malloc(SMALLBUFFER);
 	if (!bigbuffer || !smallbuffer) {
 		fputs("Nicht genug Arbeitsspeicher!\n", stderr);
-		exit(1);
+		exit( EX_TEMPFAIL );
 	}
-	minireadstat();
-	if (strcmp(argv[1], "-d") == 0) {
-		fin = fopen(argv[2], "rb");
-		strncpy(datei, argv[3], sizeof(datei));
-		fout = fopen(datei, "ab");
-	} else
-	if (strcmp(argv[1], "-p") == 0) {
-		fin = stdin;
-		fout= stdout;
-		if (argc==3) pointsys=argv[2];
-	} else
-	if (strcmp(argv[1], "-f") == 0) {
-		fout = stdout;
-		filter = 1;
-		fin = fopen(argv[2], "rb");
-		if (argc == 4) {
+
+	name = argv[ 0 ];
+	remove_me = NULL;
+	fin = NULL;
+	fout = NULL;
+	ready = 0;
+
+	/* check for commandline */
+	while ( --argc > 0 ) {
+		cptr = *(++argv);
+		if ( *cptr == '-' ) {
+			ch = *(++cptr);
+			switch ( tolower( ch ) ) {
+			case 'd':
+				if ( ready != 0 )
+					usage();
+				/* Beide Argumente sind Dateien */
+				GET_NEXT_DATA( cptr );
+				fin = fopen( cptr, "rb");
+				if ( fin == NULL ) {
+					fprintf( stderr,
+					"%s: error open file %s: %s\n",
+					name, cptr, strerror( errno ) );
+					exit( EX_CANTCREAT );
+				};
+				ready ++;
+				GET_NEXT_DATA( cptr );
+				fout = fopen(cptr, "ab");
+				if ( fout == NULL ) {
+					fprintf( stderr,
+					"%s: error writing file %s: %s\n",
+					name, cptr, strerror( errno ) );
+					exit( EX_CANTCREAT );
+				};
+				ready ++;
+				break;
+			case 'p':
+				if ( ready != 0 )
+					usage();
+				/* echte Pipe */
+				fin = stdin;
+				fout = stdout;
+				ready += 2;
+				break;
+			case 'f':
+				if ( ready != 0 )
+					usage();
+				/* Ein Argument ist Eingabe-Datei */
+				GET_NEXT_DATA( cptr );
+				fin = fopen( cptr, "rb");
+				if ( fin == NULL ) {
+					fprintf( stderr,
+					"%s: error open file %s: %s\n",
+					name, cptr, strerror( errno ) );
+					exit( EX_CANTCREAT );
+				};
+				remove_me = cptr;
+				ready ++;
+				/* Ergebnis nach stdout */
+				fout = stdout;
+				ready ++;
+				break;
+			default:
+				usage();
+				break;
+			};
+			continue;
+		};
+		/* erstes freies Argument */
+		if ( ready < 1 ) {
+			/* Argument ist Eingabe-Datei */
+			fin = fopen( cptr, "rb");
+			if ( fin == NULL ) {
+				fprintf( stderr,
+					"%s: error open file %s: %s\n",
+					name, cptr, strerror( errno ) );
+				exit( EX_CANTCREAT );
+			};
+			remove_me = cptr;
+			ready ++;
+		};
+		/* zweites freies Argument */
+		if ( ready < 2 ) {
+			/* Ergebnis im angegebene Verzeichnis */
+			int fh;
+
+			j = time(NULL);
+			sprintf(datei, "%s/%08lx", cptr, j);
+			fh=open(datei,O_WRONLY|O_CREAT|O_EXCL, 
+					S_IRUSR|S_IWUSR|S_IRGRP);
+			while (fh<0)
+			{
+				((long)j)++;
+				sprintf(datei,"%s/%08lx.brt", cptr, (long)j);
+				fh=open(datei,O_WRONLY|O_CREAT|O_EXCL,
+						S_IRUSR|S_IWUSR|S_IRGRP);
+				/* bei Permission denied und a.
+				   haengt das Programm hier endlos */
+			}
+			close(fh);
+			fout = fopen(datei, "wb");
+			ready ++;
+		};
+		/* dittes freies Argument */
+		if ( pointsys == NULL ) {
 			FILE *f;
 			char buf[FILENAME_MAX];
 
-			pointsys = argv[3];
+			pointsys = dstrdup( cptr );
 			strlwr(pointsys);
 			sprintf(buf, "%s/%s", systemedir, pointsys);
 			f = fopen(buf, "r");
 			if (f) {
-				header_p sys;
+				header_p sys, p;
 
 				sys = rd_para(f);
 				if (sys) {
-					header_p p;
-
 					p = find(HD_POINT_USER, sys);
 					pointuser = p;
 				}
 				fclose(f);
-			}
-		}
-	} else {
-		int fh;
+			};
+			continue;
+		};
+		/* weitere Argumente */
+		usage();
+	};
+	if ( ready == 0 ) {
+		usage();
+	};
+	if ( fin == NULL ) {
+		fprintf( stderr,
+			"%s: no file to read\n",
+			name );
+		exit( EX_CANTCREAT );
+	};
+	if ( fout == NULL ) {
+		fprintf( stderr,
+			"%s: no file to write\n",
+			name );
+		exit( EX_CANTCREAT );
+	};
 
-		fin = fopen(argv[1], "rb");
-		j = time(NULL);
-		sprintf(datei, "%s/%08lx", argv[2], j);
-		fh=open(datei,O_WRONLY|O_CREAT|O_EXCL, S_IRUSR|S_IWUSR|S_IRGRP);
-		while(fh<0)
-		{
-			((long)j)++;
-			sprintf(datei,"%s/%08lx.brt",argv[2],(long)j);
-			fh=open(datei,O_WRONLY|O_CREAT|O_EXCL, S_IRUSR|S_IWUSR|S_IRGRP);
-		}
-		close(fh);
-		fout = fopen(datei, "wb");
-	}
-	if (!fin || !fout) {
-		perror("Dateifehler");
-		exit(1);
-	}
 	init_approved();
 	while (!feof(fin))
 		convert(fin, fout);
-	if (filter) {
+	fputs("QUIT\r\n", fout);
+
+	/* stdin/stdout nicht schiessen, das mach der parent */
+	if ( fin != stdin )
 		fclose(fin);
-		remove(argv[2]);
-	} else {
-		fclose(fin);
+	if ( fout != stdout )
 		fclose(fout);
-		if (strcmp(argv[1], "-d") != 0)
-			remove(argv[1]);
-	}
-
+	if ( remove_me != NULL )
+		remove(remove_me);
+	exit( EX_OK );
 	return 0;
-}
-
-void usage(void)
-{
-	fputs(	"UUwnews  -  RFC1036  Batch aus ZCONNECT erzeugen\n"
-		"Aufruf:\n"
-		"        uuwnews (ZCONNECT-Datei) (NEWS-Directory)\n"
-		"        uuwnews -d (ZCONNECT-Datei) (NEWS-Datei)\n"
-		"           (Eingabedatei wird nicht gelöscht)\n"
-		"oder    uuwnews -f (ZCONNECT-Datei) [Absende-System]\n"
-		"           (Ergebnis geht nach stdout)\n"
-		"oder    uuwnews -p [Absendesystem]\n"
-		"           (Echte Pipe)\n"
-		, stderr);
-	exit(1);
 }
 
 #define ENC(c)	(!((c) & 0x03f) ? '`' : (((c) & 0x03f) + ' '))

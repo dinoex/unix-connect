@@ -52,7 +52,6 @@
 #ifdef HAS_STRINGS_H
 # include <strings.h>
 #endif
-#include "lib.h"
 #include <ctype.h>
 #ifdef NEED_VALUES_H
 #include <values.h>
@@ -67,7 +66,7 @@
 #include <sysexits.h>
 #include <errno.h>
 
-
+#include "lib.h"
 #include "boxstat.h"
 #include "ministat.h"
 #include "utility.h"
@@ -76,13 +75,13 @@
 #include "hd_nam.h"
 #include "version.h"
 #include "uulog.h"
-#include "zconv.h"
 #include "mime.h"
+#include "zconv.h"
 /* #include "trap.h" */
 
 
 int main_is_mail = 1;	/* Ja, wir sind fuer Mail's zustaendig */
-char eol[] = "\r\n";
+const char eol[] = "\r\n";
 
 void convert(FILE *, FILE *);
 
@@ -114,7 +113,7 @@ void usage(void)
 "          Ergebnis geht nach stdout, Eingabedatei wird gelöscht,\n"
 "        uuwsmtp -d (ZCONNECT-Datei) (SMTP-Datei) [Absende-System]\n"
 "          Modus mit höchster Sicherheit, oder zum Testen.\n"
-"        uuwnews -p [Absendesystem]\n"
+"        uuwsmtp -p [Absendesystem]\n"
 "          Echte Pipe\n"
 , stderr);
 	exit( EX_USAGE );
