@@ -52,9 +52,10 @@ all:    uuheader.a $(LIBS)
 install:	all
 
 clean:
-	-rm -f $(CLEANFILES) header.tmp header.gtmp
+	-rm -f $(CLEANFILES) header.tmp header.gtmp test.out
 
 clobber:	clean
+	-rm -f testheader
 
 tidy:	clobber
 
