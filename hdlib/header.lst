@@ -62,6 +62,7 @@ Sommerzeit		SOMMERZEIT
 Gate-Alias-Liste	GATE_ALIAS_LISTE
 Gate-Approved-Liste	GATE_APPROVED_LISTE
 ZNETZ-Conv		ZNETZ_CONV
+ZNETZ-Text		ZNETZ_TEXT
 Gate-Macro-Datenbank	MACRO_DATENBANK
 X-Gateway		X_GATEWAY
 Alias			ALIAS

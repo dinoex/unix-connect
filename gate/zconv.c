@@ -141,7 +141,7 @@ char *eda2date(const char *text )
 }
 
 /* Hier werden die ZConnect Brettnamen auf Gültigkeit geprüft. */
-int valid_newsgroups( char *data )
+int valid_newsgroups( const char *data )
 {
 	if(NULL==data)
 		return 0;
@@ -168,31 +168,6 @@ int adrmatch(const char *abs1, const char *abs2)
 	if (!*abs1 || *abs1 == ' ')
 		return (!*abs2 || *abs2 == ' ');
 	return 0;
-}
-
-void ulputs(char *text, FILE *f)
-{
-#ifndef NO_MIME_ENC_HEADER
-	char *encoded;
-
-	encoded=mime_encode(text);
-	fputs(encoded, f);
-	fputs(eol, f);
-	dfree(encoded);
-#else
-	char *s, *ul, *cv;
-
-	for (s=text; *s; s++)
-		if (isascii(*s))
-			putc(*s, f);
-		else if ((ul = strchr(umlautstr, *s)) != NULL) {
-			cv = convertstr + 2*(ul-umlautstr);
-			putc(*cv++, f);
-			putc(*cv, f);
-		} else
-			putc(' ', f);
-	fputs(eol, f);
-#endif
 }
 
 /* Druckt EINE newsgroup nach EINEM Brett.
@@ -408,6 +383,10 @@ header_p convheader(header_p hd, FILE *f)
 	sender = NULL;
 	p = find(HD_OAB, hd);
 	if (p) {
+		/* Bei Mail wird OAB zum From:
+		 * bei news wird hier der Sender transportiert.
+		 * (bei WAB:/ABS: passt Sender:/From:,
+		 */
 		habs = dstrdup(p->text);
 		p = find(HD_ABS, hd);
 		if (p) {
@@ -426,6 +405,7 @@ header_p convheader(header_p hd, FILE *f)
 			}
 			hd = del_header(HD_ABS, hd);
 			hd = del_header(HD_WAB, hd);
+			hd = del_header(HD_OAB, hd);
 		}
 	}
 	if (pointuser) {
@@ -482,10 +462,10 @@ header_p convheader(header_p hd, FILE *f)
 		dfree(mime_name);
 		hd = del_header(HD_UU_U_FROM, hd);
 	}
-	if (sender) {
+	if (sender && !main_is_mail ) {
 		pc2iso(sender);
 		mime_name=mime_address(sender);
-		fprintf(f, "Sender: %s%s", mime_name, eol);
+		fprintf(f, HN_UU_SENDER ": %s%s", mime_name, eol);
 		dfree(mime_name);
 	}
 
@@ -680,10 +660,13 @@ header_p convheader(header_p hd, FILE *f)
 	    }
 	}
 	hd = del_header(HD_ZNETZ_CONV, hd);
+	hd = del_header(HD_ZNETZ_TEXT, hd);
 	hd = del_header(HD_MAL, hd);
 	hd = del_header(HD_UU_U_TO, hd);
 	hd = del_header(HD_UU_U_CC, hd);
 	hd = del_header(HD_UU_U_BCC, hd);
+	hd = del_header(HD_GATE, hd);
+	hd = del_header(HD_PRIO, hd);
 
 	/* Fido: F-To: nach X-Comment-To: */
 	p = find(HD_F_TO, hd);
@@ -893,11 +876,11 @@ void u_f_and_all(FILE *f, header_p hd)
 				continue;
 			}
 #ifndef NO_PLUS_KEEP_X_HEADER
-			fputs("X-ZC-", f);
-#else
 			/* TetiSoft: X- bleibt X- (Gatebau '97) */
 			if (strncasecmp(p1->header,"X-",2) != 0)
 				fputs("X-ZC-", f);
+#else
+			fputs("X-ZC-", f);
 #endif
 			pc2iso(p1->text);
 			text=mime_encode(p1->text);

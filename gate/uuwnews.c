@@ -451,12 +451,12 @@ void convert(FILE *zconnect, FILE *news)
 	lines = 0;
 	tmp = tmpfile();
 	if (!tmp) {
-		newlog(ERRLOG, "Temporäre Datei nicht schreibbar!");
+		newlog(ERRLOG, "Temporaere Datei nicht schreibbar!");
 		exit( EX_CANTCREAT );
 	}
 	tmphd=tmpfile();
 	if (!tmphd) {
-		newlog(ERRLOG, "Temporäre Datei nicht schreibbar!");
+		newlog(ERRLOG, "Temporaere Datei nicht schreibbar!");
 		exit( EX_CANTCREAT );
 	}
 	setvbuf(tmp, NULL, (_IOFBF), (long)(BIGBUFFER) > (long)(MAXINT) ? (MAXINT) : (BIGBUFFER));
@@ -522,16 +522,7 @@ void convert(FILE *zconnect, FILE *news)
 
         wasmime = parse_mime_header(1, hd, &mime_info);
 
-	p = find(HD_WAB, hd);
-	if (p) {
-		fputs(HN_UU_SENDER": ", tmphd);
-		ulputs(p->text, tmp);
-		hd= del_header(HD_WAB, hd);
-	}
-
 	hd = del_header(HD_STAT, hd);
-	hd = del_header(HD_PRIO, hd);
-	hd = del_header(HD_GATE, hd);
 
 	u_f_and_all(tmphd, hd);
 

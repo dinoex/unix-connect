@@ -349,7 +349,7 @@ AC_SUBST(DOMAIN)
 FQDN=$SYS.$DOMAIN
 AC_SUBST(FQDN)
 
-AC_PATH_PROGS(INEWS,inews,,/usr/lib/news:/usr/local/lib/news:/usr/news:/usr/loal/news:/usr/lib/news/bin:/usr/bin)
+AC_PATH_PROGS(INEWS,inews,inews,/usr/local/bin:/usr/bin:/usr/lib/news:/usr/local/lib/news:/usr/news:/usr/local/news:/usr/lib/news/bin)
 if test ! -x "$INEWS" ; then
    echo "Kann inews nicht finden. uumlist wird nicht funktionieren."
 fi

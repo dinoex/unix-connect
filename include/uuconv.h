@@ -43,7 +43,7 @@
 #endif
 
 char *date2eda( const char *str, FILE *fout );
-int valid_newsgroups( char *data );
+int valid_newsgroups( const char *data );
 void printbretter(const char *newsgroups, const char *zc_header, FILE *f);
 char *fqdn_at(char *s);
 char *next_komma(char *s);

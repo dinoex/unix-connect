@@ -119,7 +119,7 @@ char *date2eda( const char *str, FILE *fout )
 
 /* Hier werden die nach ZConnect gewandelten Brettnamen
    auf Gültigkeit geprüft. */
-int valid_newsgroups( char *data )
+int valid_newsgroups( const char *data )
 {
 	if(NULL==data)
 		return 0;
@@ -267,6 +267,11 @@ void splitaddr(char *rfc_addr, char *name, char *host, char *domain,
 {
 	static char adr[MAXLINE];
 	char *q, *q1, *s;
+
+	/* "Foo <blah@ee.fds>" und
+	 * "fds@fds.fds (Blah)" 
+	 * vereinheitlichen     
+	 */
 
 	*name = '\0';
 	*host = '\0';
@@ -418,6 +423,15 @@ int convaddr(const char *zconnect_header, const char *rfc_addr,
 		if (komma) *komma = '\0';
 		splitaddr(start, sp_name, sp_host, sp_domain, rna);
 		if (sp_name[0] && sp_host[0]) {
+
+			/* Haben wir ein oder mehrere '@' im name-Part?
+			 * Das wuerde ZConnect-Software verwirren (die arme).
+			 * Also nach % wandeln. Das wird in den meisten Teilen
+			 * der Welt verstanden.
+			 */
+			while( (q=strchr(sp_name, '@')) != NULL )
+				*q = '%';
+
 			/*
 			 * smail and inn akzeptieren Adressen, die auf einen
 			 * '.' enden. ZC-Software tut das nicht. smail beachtet
@@ -1059,6 +1073,19 @@ header_p convheader(header_p hd, FILE *f, char *from)
 			hd=del_header(p->code, hd);
 			continue;
 		}
+#ifndef NO_PLUS_KEEP_X_HEADER
+		if (strncasecmp(p->header, "X-", 2) == 0) {
+			for (t = p; t; t = t->other) {
+			  char *x=decode_mime_string(t->text);
+			  iso2pc(x);
+			  fprintf(f, "%s: %s\r\n", t->header, t->text);
+			  dfree(x);
+			}
+			t = p->next;
+			hd = del_header(p->code, hd);
+			continue;
+		}
+#endif
 		t = p->next;
 	}
 

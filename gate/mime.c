@@ -629,9 +629,9 @@ int decode_x_uuencode(char *msg, size_t *msglenp,
 		if(src) src=strchr(src,' ');
 		if(src) src=strchr(src+1,' ');
 		if(src) src++;
-		if(s && info->filename == NULL)
+		if(src && info->filename == NULL)
 			info->filename = dstrdup(src);
-		if(s) src=s+1;
+		if(s) src=s+1; /* hinter das Ende der ersten Zeile */
 		if (NULL==src) {
 			newlog( ERRLOG, "no begin line in uuencoded part");
 			exit( EX_DATAERR );

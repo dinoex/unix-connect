@@ -3,6 +3,25 @@ $Id$
 Aenderungen an UnixConnect
 seit 0.82
 
+- gate/zconv.c: gate/uuconv.c
+  X-Header nach Gatebau 97 auch umgekehrt erkennen.
+
+- gate/uuconv.c: (Moritz Both)
+  Adressen im From: mit mehr als einem
+  '@' erzeugen keine defekten ZConnect-Nachrichten
+  mehr, stattdessen werden alle @ vor dem letzten
+  in % gewandelt
+
+- gate/mime.c: (Moritz Both)
+  Kleiner Bugfix bei der Suche nach dem Dateinamen
+
+- gate/zconv.c, gate/uwnews.c, gate/uuwsmtp.c: (Moritz Both)
+  WAB: wird in News und Mail nach 'Sender' umgesetzt
+  OAB: in den News transportiert Sender.
+  ZNETZ-TEXT wird geloescht
+  GATE und PRIO werden spaeter entfernt
+  ulputs entfernt, da nicht verwendet.
+
 - shell/import.in: (Matthias Andree)
   typos beim watch_gate-Aufruf beseitigt (schlieﬂende
   Klammer entfernt, .prv durch .brt ersetzt)

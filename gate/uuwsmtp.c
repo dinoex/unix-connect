@@ -549,9 +549,6 @@ void convert(FILE *zconnect, FILE *smtp)
 	wasmime = parse_mime_header(1, hd, &mime_info);
 
 	hd = del_header(HD_STAT, hd);
-	hd = del_header(HD_WAB, hd);
-	hd = del_header(HD_PRIO, hd);
-	hd = del_header(HD_GATE, hd);
 
 /*	p = find(HD_UU_U_LINES, hd);
 	if (p) {
