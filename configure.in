@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl (c) 1999 Andreas Barth <aba@muenchen.pro-bahn.de>
 dnl (c) 1999 Matthias Andree <ma@dt.e-technik.uni-dortmund.de>
-dnl (c) 1999 Dirk Meyer <dirk.meyer@dinoex.sub.org>
+dnl (c) 1999-2001 Dirk Meyer <dirk.meyer@dinoex.sub.org>
 
 dnl gehört zum Packet unix-connect
 dnl und unterliegt der GPL (siehe COPYING)
@@ -987,7 +987,7 @@ if test $ac_cv_prog_gcc = yes; then
   for i in $gcc_warn
   do
     echo $ac_n "checking whether ${CC-cc} accepts $i""... $ac_c" 1>&6
-    echo 'void f(){}' > conftest.c
+    echo 'void f(void); void f(void){}' > conftest.c
     if test -z "`${CC-cc} ${CFLAGS} $i -c conftest.c 2>&1`"; then
       gcc_warn_ok="$gcc_warn_ok $i"
       echo "yes"
