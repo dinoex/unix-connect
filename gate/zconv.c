@@ -175,6 +175,7 @@ header_p convheader(header_p hd, FILE *f)
 	char *s, *test, *abs, *oabs, *sender;
 	char *mime_name, *absname;
 	int org_from, pos, nokop;
+	extern int main_is_mail;
 
 	minireadstat();
 	org_from = 0;
@@ -231,9 +232,12 @@ header_p convheader(header_p hd, FILE *f)
 			hd = del_header(HD_OEM, hd);
 		}
 	}
+	/* Nachrichten mit STAT: NOKOP haben eh keine KOP:-Header zu haben. */
 	p = find(HD_KOP, hd);
 	if (p) {
-		extern int main_is_mail;
+	  if(nokop)
+	    hd = del_header(HD_KOP, hd);
+	  else {
 		int mail, news;
 		
 		for (mail=0, news = 0, t=p; t && !mail; t=t->other)
@@ -241,8 +245,8 @@ header_p convheader(header_p hd, FILE *f)
 				mail = 1;
 			else
 				news = 1;
-		if (mail && !(nokop && cc) && !(!nokop && bcc)) {
-			foldputaddrs(f, nokop?HN_UU_BCC:HN_UU_CC, p);
+		if (mail && !cc) {
+			foldputaddrs(f, HN_UU_CC, p);
 			hd = del_header(HD_KOP, hd);
 		}
 		if (main_is_mail && news) {
@@ -253,6 +257,7 @@ header_p convheader(header_p hd, FILE *f)
 			hd = del_header(HD_KOP, hd);
 		}
 /* Wenn wir den Header nicht bearbeitet haben, wird er als X-ZC-KOP: ausgegeben. */
+	  }
 	}
 	if (to) {
 		foldputh(f, HN_UU_TO, to);
@@ -407,42 +412,43 @@ header_p convheader(header_p hd, FILE *f)
 		fprintf(f, "Sender: %s%s", mime_name, eol);
 		dfree(mime_name);
 	}
-	p = find(HD_ROT, hd);
- 	if (p) {
-		if (pointuser) {
-			absname = dstrdup(oabs);
-			s = strchr(absname, '@');
-	 		if (s) {
- 				*s++ = '\0';
- 				fprintf(f,HN_UU_PATH": %s!%s%s", s, absname, eol);
- 			} else {
- 				fprintf(f,HN_UU_PATH": %s%s", absname, eol);
- 			}
-	 		dfree(absname);
-		} else {
-			s = strchr(p->text, '!');
-			if(s)
-	 			fprintf(f, HN_UU_PATH": %s%s", p->text, eol);
-	 		else
-	 			fprintf(f, HN_UU_PATH": %s!not-for-mail%s", p->text, eol);
-		}
- 		hd=del_header(HD_ROT, hd);
- 	}
- 	else
- 	{
- 		absname = dstrdup(oabs);
- 		s = strchr(absname,'@');
- 		if (s)
- 		{
- 			*s++ = '\0';
- 			fprintf(f,HN_UU_PATH": %s!%s%s", s, absname, eol);
- 		}
- 		else
- 		{
- 			fprintf(f,HN_UU_PATH": %s%s", absname, eol);
- 		}
- 		dfree(absname);
-	} 
+
+	if(main_is_mail) {
+	  p = find(HD_ROT, hd);
+	  if (p) {
+	    if (pointuser) {
+	      absname = dstrdup(oabs);
+	      s = strchr(absname, '@');
+	      if (s) {
+		*s++ = '\0';
+		fprintf(f,HN_UU_PATH": %s!%s%s", s, absname, eol);
+	      } else {
+		fprintf(f,HN_UU_PATH": %s%s", absname, eol);
+	      }
+	      dfree(absname);
+	    } else {
+	      s = strchr(p->text, '!');
+	      if(s)
+		fprintf(f, HN_UU_PATH": %s%s", p->text, eol);
+	      else
+		fprintf(f, HN_UU_PATH": %s!not-for-mail%s", p->text, eol);
+	    }
+	    hd=del_header(HD_ROT, hd);
+	  } else {
+	    absname = dstrdup(oabs);
+	    s = strchr(absname,'@');
+	    if (s)
+	      {
+		*s++ = '\0';
+		fprintf(f,HN_UU_PATH": %s!%s%s", s, absname, eol);
+	      }
+	    else
+	      {
+		fprintf(f,HN_UU_PATH": %s%s", absname, eol);
+	      }
+	    dfree(absname);
+	  } 
+	}
 
 	p = find(HD_EB, hd);
 	if (p) {
@@ -472,12 +478,9 @@ header_p convheader(header_p hd, FILE *f)
 	p = find(HD_BET, hd);
 	if (p) {
 		/* Umlaute werden nicht mit ae... ausgegeben, um
-		 * ein transparentes Gating zu ermöglichen.
-		 * Die Rückkonvertierung kommt noch. */
+		 * ein transparentes Gating zu ermöglichen. */
 		char *encoded;
-		if(is_8_bit(p->text)) {
-		  pc2iso(p->text,strlen(p->text));
-		}
+		pc2iso(p->text,strlen(p->text));
 		encoded = mime_encode(p->text);
 		foldputs(f, HN_UU_SUBJECT, encoded);
 		dfree(encoded);
@@ -554,9 +557,12 @@ header_p convheader(header_p hd, FILE *f)
 	}
 	p = find(HD_MAL, hd);
 	if (p) {
-	        pc2iso(p->text, strlen(p->text));
-		foldputs(f, HN_UU_X_MAILER, p->text);
-		hd = del_header(HD_MAL, hd);
+	  char *encoded;
+	  pc2iso(p->text, strlen(p->text));
+	  encoded=mime_encode(p->text);
+	  foldputs(f, HN_UU_X_MAILER, encoded);
+	  dfree(encoded);
+	  hd = del_header(HD_MAL, hd);
 	}
 	p = find(HD_BEZ, hd);
 	if (p) {
