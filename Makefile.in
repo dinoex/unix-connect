@@ -60,6 +60,7 @@ all:
 	(cd online; make all)
 	(cd gate; make all)
 	(cd tools; make all)
+	(cd rsmtp; make all)
 
 clean:
 	(cd lib; make clean)
@@ -68,12 +69,14 @@ clean:
 	(cd online; make clean)
 	(cd gate; make clean)
 	(cd tools; make clean)
+	(cd rsmtp; make clean)
 
 install: install-dirs install-usr-lib-zcon
 	(cd online; make install)
 	(cd gate; make install)
 	(cd tools; make install)
 	(cd shell; make install)
+	(cd rsmtp; make install)
 	
 clobber:
 	-rm -f include/hd_nam.h

@@ -54,11 +54,11 @@ dnl      checks for system services
 
 AC_ARG_WITH(user,
 [ --with-user=user          Userkennung für Unix-Connect.],[
-if test $enableval = no ; then
+if test $withval = no ; then
 	echo "Es muß eine Benutzerkennung gewählt werden"
 	exit 1;
 else
-	USER=$enableval;
+	USER=$withval;
 fi],
 [	echo "Es muß eine Benutzerkennung gewählt werden"
 	exit 1]
@@ -67,11 +67,11 @@ AC_SUBST(USER)
 
 AC_ARG_WITH(group,
 [ --with-group=group        Gruppenkennung für Unix-Connect.],[
-if test $enableval = no ; then
+if test $withval = no ; then
 	echo "Es muß eine Gruppe gewählt werden"
 	exit 1;
 else
-	GROUP=$enableval;
+	GROUP=$withval;
 fi],
 [	echo "Es muß eine Gruppe gewählt werden"
 	exit 1]
@@ -212,7 +212,7 @@ AC_PROG_CC
 AC_MSG_CHECKING(Various system-dependent things)
         SYSUNAME="`uname -s | tr 'A-Z' 'a-z'`"
 
-        if test "$SYSUNAME" = $HOST ; then
+        if test "$SYSUNAME" = "$HOST" ; then
                 cat <<EOF
 Ah, der beruechtigte AT&T 'uname' Bug...
 Ist dieses System
@@ -235,6 +235,12 @@ EOF
         fi
 
         case "$SYSUNAME" in
+                freebsd)
+                        echo "Konfiguriere fuer FreeBSD..."
+                        SYSTYPE=freebsd
+                        CFLAGS="-O2 -g -pipe -Wall"
+                        LDFLAGS=""
+                ;;
                 netbsd)
                         echo "Konfiguriere fuer NetBSD..."
                         SYSTYPE=netbsd
