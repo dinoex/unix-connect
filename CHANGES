@@ -4,12 +4,18 @@ $Id$
 Aenderungen an UnixConnect
 seit 0.81
 
+- zconv.c: foldputs_no_eol, neue Umbruchsfunktions
+  von Moritz Both (odo-connect), noch nicht aktiviert.
+
+- Adressen 'xxx@uucp.do.main' werden nicht verstuemmelt.
+
 - in boxtstat sommerzeit und timezone entfernt,
   da jetzt ohne Funktion.
 
 - parsdate hat ebenfalls Probleme mit mktime, str2eda ebenso
   beide Funktionen überarbeitet. parsedate() ist in
   datelib.a zu finden.
+  X-Date-Error liefert jetzt noch weitere Daten.
   check in um mktime zu verifizieren.
   Resultat in zconv.c/uconv.c/testeda.c
 
