@@ -2,8 +2,6 @@ Was muß noch getan werden?
 
 - autoconfig/xprog.c komplettieren bzgl. gkermit/zmodem etc
 
-- auflegen.
-
 - sprintf gehört abgeschafft. Alternativcode ist da!
 
 - Zcall: Bei Abbruch bleibt das Empfangsdirectory mit dem caller.zip da.
@@ -34,6 +32,8 @@ Was muß noch getan werden?
 - AIX: rtty.c: cfmakeraw?
 
 ### Problems:
+
+- einfaches Return in Headerzeilen.
 
 - News verwerfen, wenn ordnungsgemäße Wandlung nicht möglich.
 
