@@ -55,6 +55,7 @@
 #include <stdarg.h>
 #include <utime.h>
 #include <sys/stat.h>
+#include <errno.h>
 
 #include "utility.h"
 #include "boxstat.h"
@@ -94,7 +95,8 @@ static int runcommand(const char *file, ...)
 	switch((c_pid = fork())) {
 	case -1: /* parent, child cannot fork */
 		freearglist(arg);
-		newlog(ERRLOG, "runcommand: cannot fork for %s", file);
+		newlog(ERRLOG, "runcommand: cannot fork for %s:%s",
+			file, strerror(errno));
 		return -1;
 	case 0: /* child */
 		fprintf(stderr, "running %s ", file);
@@ -106,7 +108,8 @@ static int runcommand(const char *file, ...)
 		}
 		(void)execv(file, (char * const *)arg);
 		/* hier ist was schiefgelaufen, execv kehrt nicht zurueck */
-		newlog(ERRLOG, "runcommand: execv failed for %s", file);
+		newlog(ERRLOG, "runcommand: execv failed for %s:%s",
+			file, strerror(errno));
 		exit(-1);
 	default: /* parent */
 		{
