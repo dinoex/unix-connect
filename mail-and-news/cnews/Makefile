@@ -3,6 +3,8 @@ all:
 
 install:
 
+uninstall:
+
 clean:
 
 distclean:

@@ -20,16 +20,6 @@ seit 0.80
 - Makefiles, die helpers/subst aufrufen, tun dies jetzt durch
   $(SHELL) (Matthias Andree)
 
-- configure.in hat erweitertes errorchecking und bestimmt die domain
-  jetzt intelligenter (Matthias Andree)
-
-- configure.in hat einige Anmerkungen, die von autoscan vorgeschlagen
-  wurden, die sollten die include/os-*/sysdeps.h irgendwann mal
-  ueberfluessig werden lassen (Matthias Andree)
-
-- Inhaltliche Fehler in congfigure.in, INSTALL beseitigt
-  (Matthias Andree)
-      
 - Aufraeumarbeiten an Typen, signed/unsigned/printf konsistent
   (Matthias Andree)    
 

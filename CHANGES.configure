@@ -1,3 +1,19 @@
+
+Änderungen seit 0.80:
+
+- Bei GCC viele Warnungen aktivieren.
+- Alte Verzeichnisse für sysdep.h und policy.h entfernt.
+
+- configure.in hat erweitertes errorchecking und bestimmt die domain
+  jetzt intelligenter (Matthias Andree)
+
+- configure.in hat einige Anmerkungen, die von autoscan vorgeschlagen
+  wurden, die sollten die include/os-*/sysdeps.h irgendwann mal
+  ueberfluessig werden lassen (Matthias Andree)
+
+- Inhaltliche Fehler in congfigure.in, INSTALL beseitigt
+  (Matthias Andree)
+
 Änderungen seit configure-19990813:
 
 - Das Verzeichnis rsmpt wird beachtet. (Dirk)

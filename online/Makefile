@@ -53,6 +53,9 @@ install:	all
 	cp $(PROGS) $(DESTDIR)
 	( cd $(DESTDIR); chown $(USER) $(PROGS) )
 
+uninstall:
+	-(cd $(DESTDIR); rm -f $(PROGS))
+
 clean:
 	-rm -f $(CLEANFILES) $(PROGS)
 

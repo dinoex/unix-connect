@@ -51,6 +51,8 @@ all:    uuheader.a
 
 install:	all
 
+uninstall:
+
 clean:
 	-rm -f $(CLEANFILES) header.tmp header.gtmp test.out
 	-rm -f uurd.c smtprd.c pkread.c pkwrite.c

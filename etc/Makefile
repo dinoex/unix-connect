@@ -18,6 +18,8 @@ install:
 		install -c -o $(USER) -g $(GROUP) -m 660 $$i $(ETCDIR); \
 	fi; done
 
+uninstall:
+
 distclean:
 	-rm -f config
 

@@ -62,10 +62,22 @@ install:
 install-strip:
 	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' install
 
+uninstall:
+	for dir in $(SUBDIRS); do \
+		(cd $$dir; $(MAKE) -$(MAKEFLAGS) uninstall); done
+	@echo ""
+	@echo "If you don't want to install this package again"
+	@echo "then remove the following directorys:"
+	@echo "$(DESTDIR)"
+	@echo "$(ETCDIR)"
+	@echo "$(SPOOLDIR)"
+
 clean:
 	-rm -f $(CLEANFILES)
 	for dir in $(SUBDIRS); do \
 		(cd $$dir; $(MAKE) -$(MAKEFLAGS) clean); done
+
+mostlyclean: clean
 
 distclean:
 	for dir in $(SUBDIRS); do \

@@ -46,6 +46,8 @@ all:	gatelib.a strlib.a
 
 install:	all
 
+uninstall:
+
 clean:
 	-rm -f $(CLEANFILES) gatelib.a strlib.a
 

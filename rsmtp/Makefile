@@ -99,6 +99,9 @@ install:	${DESTDIR} \
 		$(TARMIN) \
 		$(BINMIN)
 
+uninstall:
+	-(cd $(DESTDIR); rm -f $(TARMIN))
+
 clean:
 	-rm -f $(CLEANFILES) $(TARMIN)
 

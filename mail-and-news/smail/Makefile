@@ -9,4 +9,4 @@ distclean:
 	-rm -f zbatchsmtp
 
 zbatchsmtp: zbatchsmtp.in
-	../../helpers/subst < zbatchsmtp.in > zbatchsmtp
+	$(SHELL) ../../helpers/subst < zbatchsmtp.in > zbatchsmtp

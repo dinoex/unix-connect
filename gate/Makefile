@@ -54,6 +54,9 @@ install:	all
 	chmod +s $(DESTDIR)/uursmtp $(DESTDIR)/uurnews
 	chmod +s $(DESTDIR)/uuwsmtp $(DESTDIR)/uuwnews
 
+uninstall:
+	-(cd $(DESTDIR); rm -f $(PROGS))
+
 clean:
 	-rm -f $(CLEANFILES) $(PROGS)
 

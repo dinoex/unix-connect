@@ -2,6 +2,8 @@
 #
 #   UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
 #   Copyright (C) 1993-94  Martin Husemann
+#   Copyright (C) 1995-98  Christopher Creutzig
+#   Copyright (C) 1999     Dirk Meyer
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -22,38 +24,38 @@
 #  GNU General Public License finden Sie in der Datei README.1st.
 #  ------------------------------------------------------------------------
 #
-#  Bugreports, suggestions for improvement, patches, ports to other systems
-#  etc. are welcome. Contact the maintainer by e-mail:
-#  christopher@nescio.foebud.org or snail-mail:
-#  Christopher Creutzig, Im Samtfelde 19, 33098 Paderborn
+#   Bugreports, suggestions for improvement, patches, ports to other systems
+#   etc. are welcome. Contact the maintainer by e-mail:
+#   dirk.meyer@dinoex.sub.org or snail-mail:
+#   Dirk Meyer, Im Grund 4, 34317 Habichstwald
 #
-#  There is a mailing-list for user-support:
-#   unix-connect@mailinglisten.im-netz.de,
-#  write a mail with subject "Help" to
-#   nora.e@mailinglisten.im-netz.de
-#  for instructions on how to join this list.
+#   There is a mailing-list for user-support:
+#    unix-connect@mailinglisten.im-netz.de,
+#   write a mail with subject "Help" to
+#    nora.e@mailinglisten.im-netz.de
+#   for instructions on how to join this list.
 #
 
-include ../Makefile.global
+SUBDIRS = no cnews inn qmail sendmail smail
 
-OBJS	= getindate.o datetok.o
+all:
+	for dir in $(SUBDIRS); do \
+		(cd $$dir; $(MAKE) -$(MAKEFLAGS) all); done
 
-all:	$(OBJS)
-
-install:	all
+install:
+	for dir in $(SUBDIRS); do \
+		(cd $$dir; $(MAKE) -$(MAKEFLAGS) install); done
 
 uninstall:
+	for dir in $(SUBDIRS); do \
+		(cd $$dir; $(MAKE) -$(MAKEFLAGS) uninstall); done
 
 clean:
-	-rm -f $(CLEANFILES)
+	for dir in $(SUBDIRS); do \
+		(cd $$dir; $(MAKE) -$(MAKEFLAGS) clean); done
 
-distclean:		clean
+distclean:
+	for dir in $(SUBDIRS); do \
+		(cd $$dir; $(MAKE) -$(MAKEFLAGS) distclean); done
 
-.c.o:	../Makefile.global
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
-
-# automatic depend
-datetok.o: datetok.c ../include/config.h ../include/sysdep.h datetok.h
-getindate.o: getindate.c ../include/config.h ../include/sysdep.h \
- datetok.h ../include/datelib.h
 # eof

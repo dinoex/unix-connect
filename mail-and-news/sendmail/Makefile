@@ -3,10 +3,13 @@
 include ../../Makefile.global
 include ../../Makefile.includes
 
-all: zbatchsmtp
+all: zbatchsmtp RSMTP
 
 distclean:
-	-rm -f zbatchsmtp
+	-rm -f zbatchsmtp RSMTP
 
 zbatchsmtp: zbatchsmtp.in
-	../../helpers/subst < zbatchsmtp.in > zbatchsmtp
+	$(SHELL) ../../helpers/subst < zbatchsmtp.in > $@
+
+RSMTP: RSMTP.in
+	$(SHELL) ../../helpers/subst < RSMTP.in > $@
