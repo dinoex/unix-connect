@@ -78,7 +78,7 @@
 #include "locknames.h"
 
 static jmp_buf timeout, nocarrier;
-static char *tty = "/dev/tty";
+static const char *tty = "/dev/tty";
 
 FILE *deblogfile;
 

@@ -193,7 +193,7 @@ header_p sysparam(header_p local, header_p remote, header_p sysfile)
 
 	fprintf(stderr, "Verbindung mit %s (Port %d)\n", r_sys, r_port);
 	fprintf(deblogfile, "Verbindung mit %s (Port %d)\n", r_sys, r_port);
-	newlog(INCOMING, NULL, "ZCONNECT", "Empfang", r_sys, "Passwort OK");
+	newlog(INCOMING, "ZCONNECT Empfang %s Passwort OK", r_sys );
 
 	r_arc = findport(r_port, HD_ARC, remote);
 	r_arcerout = findport(r_port, HD_ARCEROUT, remote);
