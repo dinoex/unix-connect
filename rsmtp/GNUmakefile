@@ -105,7 +105,7 @@ endif
 	CXX=gcc
 	CXXFLAGS= -g -Wall -Werror
 
-CPPFLAGS+= -DMAILDIR=${RSMTPSPOOL)
+CPPFLAGS+= -DMAILDIR="\"$(RSMTPSPOOL)"\"
 
 TARMIN	= \
 	rsmtp \
