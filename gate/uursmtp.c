@@ -2,6 +2,8 @@
 /*
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1993-94  Martin Husemann
+ *  Copyright (C) 1995-98  Christopher Creutzig
+ *  Copyright (C) 1996-99  Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,21 +26,20 @@
  *
  *  Bugreports, suggestions for improvement, patches, ports to other systems
  *  etc. are welcome. Contact the maintainer by e-mail:
- *  christopher@nescio.foebud.org or snail-mail:
- *  Christopher Creutzig, Im Samtfelde 19, 33098 Paderborn
+ *  dirk.meyer@dinoex.sub.org or snail-mail:
+ *  Dirk Meyer, Im Grund 4, 34317 Habichstwald
  *
  *  There is a mailing-list for user-support:
  *   unix-connect@mailinglisten.im-netz.de,
- *  to join, ask Nora Etukudo at
+ *  write a mail with subject "Help" to
  *   nora.e@mailinglisten.im-netz.de
- *
+ *  for instructions on how to join this list.
  */
 
 
 /*
  * uursmtp - liest einen SMTP-Batch und erzeugt eine ZCONNECT Datei
  *
- * (C) Copyright 1992 M. Husemann
  */
 
 #include "config.h"
@@ -456,13 +457,24 @@ void convdata(char *smtpdomain, char *reverspath, forward_p fwdpaths,
 	}
 
 #ifdef UUCP_SERVER
-	   for (p=hd; p; p=p->next) {
-		fprintf (zconnect, "U-%s: %s\r\n", p->header, p->text);
-		while (p->other) {
-			p = p->other;
-			fprintf (zconnect, "U-%s: %s\r\n", p->header, p->text);
-		}
-	   }
+	for (p=hd; p; p=p->next) {
+	    header_p t;
+	    for(;p;t=p, p=p->other) {
+		char *x=decode_mime_string(p->text);
+		to_pc(x);
+#ifndef NO_PLUS_KEEP_X_HEADER
+		fprintf (zconnect, "U-%s: %s\r\n", p->header, x);
+#else
+		/* TetiSoft: X- bleibt X- (Gatebau '97) */
+		if (strncasecmp(p->header, "X-", 2) == 0)
+			fprintf (zconnect, "%s: %s\r\n", p->header, x);
+		else
+			fprintf (zconnect, "U-%s: %s\r\n", p->header, x);
+#endif
+		dfree(x);
+	    }
+	    p=t;
+	}
 #endif
 	free_para(hd);
 
