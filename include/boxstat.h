@@ -46,7 +46,6 @@
 typedef struct {
 	char *boxname;
 	char *boxdomain;
-	int timezone;
 } bs_st;
 
 extern bs_st boxstat;

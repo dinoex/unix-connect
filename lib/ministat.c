@@ -369,16 +369,4 @@ void minireadstat(void)
     uufatal("Konfiguration",
 	    "kein "HN_GATE_DOMAIN" Eintrag in der CONFIG-Datei\n");
   boxstat.boxdomain = dstrdup(p->text);
-
-  /* Zeitzone: */
-  p = find(HD_ZEITZONE, config);
-  if (!p || strlen(p->text)==0)
-    uufatal("Konfiguration",
-	    "kein "HN_ZEITZONE" Eintrag in der CONFIG-Datei\n");
-  if(sscanf(p->text, "%d", &(boxstat.timezone))<1)
-    uufatal("Konfiguration",
-	    HN_ZEITZONE" Eintrag in der CONFIG-Datei nicht numerisch: %s\n", p->text);
-
-  /* Sommerzeit: ignorieren */
-  p = find(HD_SOMMERZEIT, config);
 }

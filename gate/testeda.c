@@ -80,7 +80,6 @@ const testeda_t Samples[] = {
 	{ NULL, NULL }
 };
 
-int boxstat_timezone = 1;
 char answer[ 1024 ];
 char sdate[ 1024 ];
 
@@ -202,7 +201,6 @@ void main( void )
 	int err;
 
 	err = 0;
-	boxstat_timezone = 1;
 	err += loop_samples();
 	if ( err == 0 )
 		exit( 0 );

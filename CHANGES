@@ -4,6 +4,9 @@ $Id$
 Aenderungen an UnixConnect
 seit 0.81
 
+- in boxtstat sommerzeit und timezone entfernt,
+  da jetzt ohne Funktion.
+
 - parsdate hat ebenfalls Probleme mit mktime, str2eda ebenso
   beide Funktionen überarbeitet. parsedate() ist in
   datelib.a zu finden.
