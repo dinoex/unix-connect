@@ -531,6 +531,13 @@ convheader(header_p hd, FILE *f)
                  fprintf(f, HN_UU_PATH": %s!not-for-mail%s", pointsys, eol);
               } else {
                  s = strchr(p->text, '!');
+		 while(s) {
+		   /* Try to see if this is a common username */
+		   if ( strcmp( s, "!not-for-mail" ) == 0 )
+                     break;
+		   s = NULL;
+                   break;
+		 }
                  if(s)
                    fprintf(f, HN_UU_PATH": %s%s", p->text, eol);
                  else
