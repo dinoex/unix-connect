@@ -238,7 +238,7 @@ void convert(FILE *zconnect, FILE *smtp)
 	err=0;
 	abs = find(HD_WAB, hd);
 	if (!abs) abs = find(HD_ABS, hd);
-	if (!abs) uufatal(__FILE__, "-", "-", mid, "Kein Absender!");
+	if (!abs) uufatal(__FILE__, "- - %s Kein Absender!", mid);
 /* Nachrichten mit STAT: CTL bekommen einen leeren Envelope-Absender. */
 	p = find(HD_STAT, hd);
 	while(p) {
