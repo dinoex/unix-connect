@@ -106,7 +106,7 @@ void prologue(void)
 #endif
 
 	alarm(0);
-	logfile(INCOMING, "Login", ttyname(0), "ZCONNECT", "erfolgreich\n");
+	newlog(INCOMING, "Login %s ZCONNECT erfolgreich", ttyname(0) );
 
 	auflegen = 0;	/* Noch kein Grund zum Verbindungsabbau gefunden  */
 

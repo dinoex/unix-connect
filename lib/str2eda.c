@@ -38,10 +38,11 @@
 
 
 #include "config.h"
+#include "utility.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "lib.h"
 #ifdef HAS_STRING_H
 # include <string.h>
 #endif
@@ -49,7 +50,6 @@
 # include <strings.h>
 #endif
 
-char *str2eda(const char *text, int *tz_hour, int *tz_min);
 char *str2eda(const char *text, int *tz_hour, int *tz_min)
 {
 	struct tm t;

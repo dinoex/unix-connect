@@ -39,6 +39,7 @@
 #define __ZCONV_H
 
 int adrmatch(const char *abs1, const char *abs2);
+void ulputs(char *text, FILE *f);
 int printnewsgroup(const char *brett, FILE *f);
 void printnewsgroups(header_p p, const char *uuheader, FILE *f);
 header_p convheader(header_p hd, FILE *f);

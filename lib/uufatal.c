@@ -43,27 +43,21 @@
  *
  *  Logfile-Routinen fuer den ZCONNECT/RFC GateWay
  *
- * Datum        NZ  Aenderungen
- * ===========  ==  ===========
- * 15-Feb-1993  KK  Dokumentation erstellt.
- *
- *
- *  Sat Jul  1 20:45:39 MET DST 1995 (P.Much)
- *  - Erweitert zur Nutzung der syslog-facility mit -DHAVE_SYSLOG.
- *  - Fehlende Datumsausgabe ergaenzt.
  */
 
-# include "config.h"
-# include <stdio.h>
-# include <stdarg.h>
+#include "config.h"
+#include <stdio.h>
+#include <stdarg.h>
 #ifdef HAVE_SYSLOG
 # include <syslog.h>
 #endif
-# include <time.h>
+#include <time.h>
 #include <sysexits.h>
 
-# include "ministat.h"
-# include "uulog.h"
+#include "ministat.h"
+#include "uulog.h"
+
+#define	MAX_LOG_LINE	200
 
 const char *nomem = "Nicht genug Hauptspeicher!";
 
@@ -96,50 +90,13 @@ const char *nomem = "Nicht genug Hauptspeicher!";
 
 void uufatal(const char *prog, const char *format, ...)
 {
-#ifndef HAVE_SYSLOG
-	FILE *f;
-	time_t now;
-	char buf[200];
-#endif
+	char buf[ MAX_LOG_LINE ];
 	va_list ap;
 
-	minireadstat();
-#ifdef HAVE_SYSLOG
-	openlog(SYSLOG_LOGNAME, LOG_PID|LOG_CONS, SYSLOG_KANAL);
-	if(format == NULL || strlen(format) == 0)
-		syslog(FATALLOG_PRIO, "%s: (unknown)", prog);
-	else {
-		char tmpformat[3 + strlen(prog) + strlen(format)];
-
-		sprintf(tmpformat, "%s: %s", prog, format);
-		va_start(ap, format);
-		vsyslog(FATALLOG_PRIO, tmpformat, ap);
-		va_end(ap);
-	}
-	closelog();
-#else
-	sprintf(buf, "%s/" ERRLOG, logdir);
-	f = fopen(buf, "a");
-	if (!f) {
-		fprintf(stderr,
-			"\nFATAL: Logfile \""ERRLOG"\" nicht schreibbar\n");
-		exit( EX_CANTCREAT );
-	}
-	now = time(NULL);
-	strftime(buf, 200, "%Y/%m/%d %H:%M:%S", localtime(&now));
-	fprintf(f, "%s\t%s:\t", buf, prog);
 	va_start(ap, format);
-	vfprintf(f, format, ap);
+	vsnprintf( buf, MAX_LOG_LINE, format, ap );
 	va_end(ap);
-	fputs("\n", f);
-	fclose(f);
-#endif
-	fprintf(stderr, "\n\n%s:\t", prog);
-	va_start(ap, format);
-	vfprintf(stderr, format, ap);
-	va_end(ap);
-	fputs("\n", stderr);
-
+	newlog( ERRLOG, "%s: %s", prog, buf );
 	exit( EX_DATAERR );
 }
 

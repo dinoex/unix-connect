@@ -45,7 +45,9 @@
  */
 
 #include "config.h"
+#include "utility.h"
 #include "zconnect.h"
+
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -165,7 +167,7 @@ void aufraeumen(void)
 	sprintf(buffer, "brt.%s", arc);
 	if (access(buffer, R_OK) == 0) {
 		fprintf(deblogfile, "Fehler: Datei %s blieb liegen\n", buffer);
-		logfile(ERRLOG, buffer, "-", "-", "Datei blieb liegen!\n");
+		newlog(ERRLOG, "Fehler: Datei %s blieb liegen", buffer);
 		sprintf(buffer2, "%s/brt.%s.%s", netcalldir, connection.remote_sys, arc);
 		sprintf(lockname, "%s/%s/" PREARC_LOCK, netcalldir, connection.remote_sys);
 		if (waitnolock(lockname, 180)) {
@@ -191,7 +193,7 @@ void aufraeumen(void)
 	sprintf(buffer, "prv.%s", arc);
 	if (access(buffer, R_OK) == 0) {
 		fprintf(deblogfile, "Fehler: Datei %s blieb liegen\n", buffer);
-		logfile(ERRLOG, buffer, "-", "-", "Datei blieb liegen!\n");
+		newlog(ERRLOG, "Fehler: Datei %s blieb liegen", buffer);
 		sprintf(buffer2, "%s/prv.%s.%s", netcalldir, connection.remote_sys, arc);
 		sprintf(lockname, "%s/%s/" PREARC_LOCK, netcalldir, connection.remote_sys);
 		if (waitnolock(lockname, 180)) {
@@ -228,11 +230,7 @@ void aufraeumen(void)
 
 		/* Ich bin child */
 		sleep(5);	/* Gib dem 'parent' Zeit sich zu beenden */
-#ifdef HAVE_SYSLOG
-		sprintf(logfname, "%s/" XTRACTLOG_NAME, logdir);
-#else
-		sprintf(logfname, "%s/" XTRACTLOG, logdir);
-#endif
+		sprintf(logfname, "%s/" XTRACTLOG_FILE, logdir);
 		deblogfile = fopen(logfname, "a");
 		close(fileno(stderr)); dup(fileno(deblogfile));	/* stderr = deblogfile */
 		DMLOG("child forked");

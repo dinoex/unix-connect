@@ -51,6 +51,8 @@
  */
 
 #include "config.h"
+#include "utility.h"
+
 #include <ctype.h>
 
 /*@@
@@ -81,7 +83,6 @@
  *   moegen das benutzen. a und/oder b duerfen nicht NULL sein.
  */
 
-int stricmp(const char *a, const char *b);
 int stricmp(const char *a, const char *b)
 {
 	/* Gleiche Zeichen ueberspringen */

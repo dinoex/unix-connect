@@ -36,9 +36,6 @@
  *  for instructions on how to join this list.
  */
 
-char *strupr(char *a);
-char *strlwr(char *a);
-int stricmp(const char *a, const char *b);
 int lock_device (int flok, const char *device);
 
 char *dstrdup(const char *);
@@ -57,8 +54,6 @@ static inline void to_iso(unsigned char *buf) { pc2iso(buf, strlen(buf)); }
 
 void splitaddr(char *rfc_addr, char *name, char *host, char *domain,
 	char *realname);
-
-void ulputs(char *text, FILE *f);
 
 /*
  *  Prüfe ein lock-File und warte gegebenenfalls, bis es verschwindet.

@@ -62,12 +62,7 @@
  * wir das UNIX-interne Zeilenende.
  */
 const char *hd_crlf = "\n";
-#ifdef HAVE_SYSLOG
 int logname = INCOMING;
-#else
-char *logname = INCOMING;
-#endif
-
 
 char tty[FILENAME_MAX] = "/dev/tty";
 
@@ -97,6 +92,8 @@ int tcp = 0;
 int main(int argc, char **argv)
 {
 	volatile int file_phase;
+
+	initlog("receiver");
 
 	freopen("/tmp/receiver-stderr.log", "w", stderr);
 

@@ -48,9 +48,9 @@
  *
  */
 
-# include "config.h"
-# include <stdio.h>
-# include <stdlib.h>
+#include "config.h"
+#include <stdio.h>
+#include <stdlib.h>
 #ifdef HAS_STRING_H
 # include <string.h>
 #endif
@@ -58,10 +58,8 @@
 # include <strings.h>
 #endif
 
-# include "pattern.h"
-# include "lib.h"
-
-extern char *strdup(const char *);
+#include "pattern.h"
+#include "lib.h"
 
 static short next[MAXPATTERN];
 static char *pat = NULL;  /* Suchstring */

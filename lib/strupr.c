@@ -52,6 +52,7 @@
 
 
 #include "config.h"
+#include "utility.h"
 
 #include <ctype.h>
 
@@ -82,7 +83,6 @@
  *
  */
 
-char *strupr(char *a);
 char *strupr(char *a)
 {
 	char *p, c;

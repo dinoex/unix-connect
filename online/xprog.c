@@ -3,6 +3,7 @@
  *  UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
  *  Copyright (C) 1993-94  Martin Husemann
  *  Copyright (C) 1995     Christopher Creutzig
+ *  Copyright (C) 1999     Matthias Andree
  *  Copyright (C) 1999     Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -57,142 +58,143 @@
 # include <strings.h>
 #endif
 #include "lib.h"
+#include "utility.h"
 #include "xprog.h"
+
+#include <stdarg.h>
+
+/* eine Art system, aber auf execv-Basis
+   Warnung: Pfad muﬂ mit angegeben werden! */
+static int runcommand(const char *file, ...)
+{
+	const char *arg[20];
+	va_list ap;
+	pid_t c_pid;
+	size_t i;
+
+	i = 0;
+	arg[i++] = file;
+	va_start(ap, file);
+	while((i < sizeof(arg))
+	      && (arg[i] = va_arg(ap, char *))) {
+		i++;
+	}
+	va_end(ap);
+
+	switch((c_pid = fork())) {
+	case -1: /* cannot fork */
+		perror(file);
+		return -1;
+	case 0: /* child */
+		(void)execv(file, (char * const *)arg);
+		/* hier ist was schiefgelaufen, execv kehrt nicht zur¸ck */
+		perror(file);
+		return -1;
+	default: /* parent */
+		{
+#if defined (NEXTSTEP)
+			union wait stat;
+#else
+			int stat;
+#endif
+			wait(&stat);
+
+			if (WIFEXITED(stat)) {
+#ifdef DIRTY_ZMODEM_HACK
+				if (WEXITSTATUS(stat)==128)
+					return 0;
+#endif
+				return WEXITSTATUS(stat);
+			} else {
+				return 0;
+			}
+		}
+		break;
+	}
+
+}
+
+static struct {
+	const char *proto;
+	int direction; /* 0 = download, != 0 = upload */
+	const char *cmd;
+	int needfile;
+} transports[] = {
+	{ "ZMODEM", 0, "/usr/bin/rz", 0 },
+	{ "ZMODEM", 1, "/usr/bin/sz", 1 },
+	{ "YMODEM", 0, "/usr/bin/rb", 0 },
+	{ "YMODEM", 1, "/usr/bin/sb", 1 },
+	{ "XMODEM", 0, "/usr/bin/rx", 1 },
+ 	{ "XMODEM", 1, "/usr/bin/sz -X", 1 },
+	{ 0,0,0,0 }
+};
+
+static const char *findcmd(const char *proto, int upload, int *needfile)
+     /* find protocol invokation according to proto and upload */
+     /* output: *needfile -> if true, protocol needs filename
+	appended
+	return: char * argname */
+{
+	int i = 0;
+	while (transports[i].proto) {
+		if(upload == transports[i].direction
+		   && !stricmp(transports[i].proto, proto)) {
+			*needfile = transports[i].needfile;
+			return transports[i].cmd;
+		}
+		i++;
+	}
+	return NULL;
+}
+
+
+static int dofile(const char *proto, const char *file, int upload)
+{
+	const char *cmd;
+	char buf[1024];
+	int needsfile;
+
+	if ((cmd = findcmd (proto, upload, &needsfile))) {
+#ifdef HAVE_SNPRINTF
+		snprintf(buf, sizeof(buf), cmd, file);
+#else
+#warning "sprintf is insecure"
+		sprintf(buf, cmd, file);
+#endif
+		if(needsfile)
+			return runcommand(cmd, "-v", file, NULL);
+		else
+			return runcommand(cmd, "-v", NULL);
+	} else {
+		return -1;
+	}
+}
 
 int recvfile(const char *proto, const char *file)
 {
-	char cmd[20], arg[20];
-	pid_t c_pid;
-
-	if (stricmp(proto, "ZMODEM") == 0) {
-		strcpy(cmd, "rz");
-		arg[0] = '\0';
-	} else	if (stricmp(proto, "YMODEM") == 0) {
-		strcpy(cmd, "rb");
-		arg[0] = '\0';
-	} else	if (stricmp(proto, "XMODEM") == 0) {
-		strcpy(cmd, "rx");
-		strcpy(arg, file);
-	}
-
-	if ((c_pid = fork()) == 0) {
-		/* Ich bin child */
-		if (arg[0])
-			execlp(cmd, cmd, "-v", arg, NULL);
-		else
-			execlp(cmd, cmd, "-v", NULL);
-		perror(cmd);
-		return 1;
-	} else {
-#if defined (NEXTSTEP)
-		union wait stat;
-#else
-		int stat;
-#endif
-		wait(&stat);
-
-		if (WIFEXITED(stat))
-		{
-#ifdef DIRTY_ZMODEM_HACK
-			if (WEXITSTATUS(stat)==128)
-				return 0;
-#endif
-			return WEXITSTATUS(stat);
-		}
-		else
-			return 0;
-	}
+	return dofile(proto, file, 0);
 }
 
 int sendfile(const char *proto, const char *file)
 {
-	char cmd[20], arg[20];
-	pid_t c_pid;
-
-	if (stricmp(proto, "ZMODEM") == 0) {
-		strcpy(cmd, "sz");
-		strcpy(arg, file);
-	} else	if (stricmp(proto, "YMODEM") == 0) {
-		strcpy(cmd, "sb");
-		strcpy(arg, file);
-	} else	if (stricmp(proto, "XMODEM") == 0) {
-		strcpy(cmd, "sx");
-		strcpy(arg, file);
-	}
-
-	if ((c_pid = fork()) == 0) {
-		/* Ich bin child */
-		execlp(cmd, cmd, "-vv", arg, NULL);
-		perror(cmd);
-		return 1;
-	} else {
-#if defined (NEXTSTEP)
-		union wait stat;
-#else
-		int stat;
-#endif
-		wait(&stat);
-
-		if (WIFEXITED(stat))
-			return WEXITSTATUS(stat);
-		else
-			return 0;
-	}
+	return dofile(proto, file, 1);
 }
-
 
 int call_auspack(const char *arcer, const char *arcfile)
 {
-	char arg[20];
-	pid_t c_pid;
+	char arg[1024];
 
-	strcpy(arg, arcer);
+	stccpy(arg, arcer, sizeof(arg));
+	arg[sizeof(arg-1)] = '\0';
 	strupr(arg);
-	if ((c_pid = fork()) == 0) {
-		/* Ich bin child */
-		execlp(auspack, auspack, arg, arcfile, NULL);
-		perror(auspack);
 
-		return 1;
-	} else {
-#if defined (NEXTSTEP)
-		union wait stat;
-#else
-		int stat;
-#endif
-		wait(&stat);
-
-		if (WIFEXITED(stat))
-			return WEXITSTATUS(stat);
-		else
-			return 0;
-	}
+	return runcommand(auspack, arg, arcfile, NULL);
 }
 
 
 int call_import(const char *sysname, int net38format)
 {
-	pid_t c_pid;
-
-	if ((c_pid = fork()) == 0) {
-		/* Ich bin child */
-		execlp(import_prog, import_prog, sysname, "ZCONNECT", NULL);
-		perror(import_prog);
-		return 1;
-	} else {
-#if defined (NEXTSTEP)
-		union wait stat;
-#else
-		int stat;
-#endif
-		wait(&stat);
-
-		if (WIFEXITED(stat))
-			return WEXITSTATUS(stat);
-		else
-			return 0;
-	}
-	return 0;
+	return runcommand(import_prog, sysname, "ZCONNECT", NULL);
 }
 
 

@@ -174,8 +174,10 @@ void do_transfers(void)
 		erg = recvfile(connection.proto, fname);
 
 		fprintf(stderr, "\n  ---> %d\n", erg);
-		fprintf(deblogfile, "RECEIVE %s --> %d\n", connection.proto, erg);
-		logfile(logname, connection.proto, "EMPFANG", "-", erg ? "FEHLER\n" : "OK\n");
+		fprintf(deblogfile,
+			"RECEIVE %s --> %d\n", connection.proto, erg);
+		newlog(logname, "RECEIVE %s --> %d %s",
+			connection.proto, erg, erg ? "FEHLER" : "OK");
 		if (erg) logoff("Fehler beim Protokolltransfer");
 		break;
 	  }
@@ -187,8 +189,10 @@ void do_transfers(void)
 		erg = sendfile(connection.proto, doit->file ? doit->file : "");
 
 		fprintf(stderr, "\n  ---> %d\n", erg);
-		fprintf(deblogfile, "SEND %s --> %d\n", connection.proto, erg);
-		logfile(logname, connection.proto, "VERSAND", "-", erg ? "FEHLER\n" : "OK\n");
+		fprintf(deblogfile,
+			"SEND %s --> %d\n", connection.proto, erg);
+		newlog(logname, "SEND %s --> %d %s",
+			connection.proto, erg, erg ? "FEHLER" : "OK");
 		if (erg) logoff("Fehler beim Protokolltransfer");
 		break;
 	  }

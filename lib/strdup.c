@@ -49,25 +49,19 @@
  */
 
 #include "config.h"
+#include "utility.h"
+
 #ifdef HAS_STRING_H
 #include <string.h>
 #endif
 #ifdef HAS_STRINGS_H
 #include <strings.h>
 #endif
+
+#include "lib.h"
 #include "uulog.h"
 
 #if defined(NEXTSTEP)
-
-#include <stdlib.h>
-
-#ifdef HAS_STRING_H
-# include <string.h>
-#endif
-#ifdef HAS_STRINGS_H
-# include <strings.h>
-#endif
-#include <utility.h>
 
 /*@@
  *
@@ -95,7 +89,6 @@
  *
  */
 
-char *strdup(const char *a);
 char *strdup(const char *a)
 {
     int len = strlen(a);
@@ -109,7 +102,6 @@ char *strdup(const char *a)
 
 #endif
 
-char *dstrdup(const char *p);
 char *dstrdup(const char *p)
 {
 	char *erg;

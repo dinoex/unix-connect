@@ -47,7 +47,9 @@
  */
 
 #include "config.h"
+#include "utility.h"
 #include "zconnect.h"
+
 #ifndef NO_UNISTD_H
 #include <unistd.h>
 #endif
@@ -57,7 +59,6 @@
 #ifdef HAS_STRINGS_H
 # include <strings.h>
 #endif
-#include "lib.h"
 
 static unsigned senden = NONE;
 static unsigned empfangen = ALL;

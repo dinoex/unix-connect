@@ -44,7 +44,9 @@
  */
 
 #include "config.h"
+#include "utility.h"
 #include "zconnect.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -58,6 +60,7 @@
 #ifndef NO_UNISTD_H
 #include <unistd.h>
 #endif
+
 #include "lib.h"
 
 connect_t connection;
@@ -155,12 +158,17 @@ header_p sysparam(header_p local, header_p remote, header_p sysfile)
 		fprintf(stderr, "Gegenseite identifiziert sich nicht!\n");
 		fprintf(deblogfile, "Gegenseite identifiziert sich nicht!\n");
 		logoff("Protokoll-Fehler: SYS: Header fehlt");
+		newlog(ERRLOG, "Gegenseite identifiziert sich nicht");
 		return NULL;
 	}
 	d = find(HD_DOMAIN, remote);
 	if (!d) {
-		logoff("Protokoll-Fehler: kein "HN_DOMAIN": Header (System-Domains)");
+		logoff("Protokoll-Fehler: kein " HN_DOMAIN
+			": Header (System-Domains)");
 		put_blk(NULL, 2);
+		newlog(ERRLOG,
+			"Protokoll-Fehler: kein " HN_DOMAIN
+			": Header (System-Domains)");
 		return NULL;
 	}
 	for (domain = strtok(d->text, " ;:"); domain; domain = strtok(NULL, " ;,")) {
@@ -185,7 +193,7 @@ header_p sysparam(header_p local, header_p remote, header_p sysfile)
 
 	fprintf(stderr, "Verbindung mit %s (Port %d)\n", r_sys, r_port);
 	fprintf(deblogfile, "Verbindung mit %s (Port %d)\n", r_sys, r_port);
-	logfile(INCOMING, "ZCONNECT", "Empfang", r_sys, "Passwort OK\n");
+	newlog(INCOMING, NULL, "ZCONNECT", "Empfang", r_sys, "Passwort OK");
 
 	r_arc = findport(r_port, HD_ARC, remote);
 	r_arcerout = findport(r_port, HD_ARCEROUT, remote);
@@ -208,9 +216,13 @@ header_p sysparam(header_p local, header_p remote, header_p sysfile)
 		 */
 		 common_arc = waehle(r_arc, my_arc);
 		 if (!common_arc) {
-		 	fprintf(stderr, "FATAL: kein gemeinsamer Packer gefunden!\n");
-		 	fprintf(deblogfile, "FATAL: kein gemeinsamer Packer gefunden!\n");
+		 	fprintf(stderr,
+				"FATAL: kein gemeinsamer Packer gefunden!\n");
+		 	fprintf(deblogfile,
+				"FATAL: kein gemeinsamer Packer gefunden!\n");
 		 	logoff("Kein gemeinsamer Packer verfuegbar");
+			newlog(ERRLOG,
+				"FATAL: kein gemeinsamer Packer gefunden");
 		 	return NULL;
 		 }
 	} else {
@@ -228,9 +240,13 @@ header_p sysparam(header_p local, header_p remote, header_p sysfile)
 		proto = my_proto;
 	}
 	if (!proto) {
-		fprintf(stderr, "FATAL: kein gemeinsames Uebertragungsprotokoll!\n");
-		fprintf(deblogfile, "FATAL: kein gemeinsames Uebertragungsprotokoll!\n");
+		fprintf(stderr,
+			"FATAL: kein gemeinsames Uebertragungsprotokoll!\n");
+		fprintf(deblogfile,
+			"FATAL: kein gemeinsames Uebertragungsprotokoll!\n");
 		logoff("Kein gemeinsames Uebertragungsprotokoll");
+		newlog(ERRLOG,
+			"FATAL: kein gemeinsames Uebertragungsprotokoll");
 		return NULL;
 	}
 	erg = add_header(proto, HD_PROTO, erg);

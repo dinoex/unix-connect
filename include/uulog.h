@@ -41,7 +41,7 @@
 /*
  *  uulog.h
  *
- *  Logfile-Routinen fÅr den ZCONNECT/RFC GateWay
+ *  Logfile-Routinen fuer den ZCONNECT/RFC GateWay
  *
  *  Sat Jul  1 20:45:39 MET DST 1995 (P.Much)
  *  - Erweitert zur Nutzung der syslog-facility mit -DHAVE_SYSLOG.
@@ -51,56 +51,60 @@
 #include "sysdep.h"
 #endif
 
+#define Z2ULOG		1
+#define U2ZLOG		2
+#define INCOMING	4
+#define ERRLOG		3
+#define OUTGOING	5
+#define XTRACTLOG	6
+#define DEBUGLOG	7
 
 #ifdef HAVE_SYSLOG
 #define SYSLOG_KANAL	LOG_LOCAL0
 #define SYSLOG_LOGNAME	"uconnect"
 #define FATALLOG_PRIO	LOG_CRIT
 
-# define Z2ULOG		1
-# define Z2ULOG_NAME	"zc2mail"
-# define Z2ULOG_PRIO	LOG_INFO
-# define U2ZLOG		2
-# define U2ZLOG_NAME	"mail2zc"
-# define U2ZLOG_PRIO	LOG_INFO
-# define ERRLOG		3
-# define ERRLOG_NAME	"error"
-# define ERRLOG_PRIO	LOG_ERR
-# define INCOMING	4
-# define INCOMING_NAME	"caller"
-# define INCOMING_PRIO	LOG_NOTICE
-# define OUTGOING	5
-# define OUTGOING_NAME	"calling"
-# define OUTGOING_PRIO	LOG_INFO
-# define XTRACTLOG	6
-# define XTRACTLOG_NAME	"extract"
-# define XTRACTLOG_PRIO	LOG_INFO
-# define DEBUGLOG	7
-# define DEBUGLOG_NAME	"debug"
-# define DEBUGLOG_PRIO	LOG_DEBUG
-#else
-# define Z2ULOG		"import.log"
-# define U2ZLOG		"export.log"
-# define ERRLOG		"errors.log"
-# define INCOMING	"anrufe.log"
-# define OUTGOING	"telefon.log"
-# define XTRACTLOG	"extract.log"
-# define DEBUGLOG	"debug.log"
+#define Z2ULOG_NAME	"zc2mail"
+#define Z2ULOG_PRIO	LOG_INFO
+
+#define U2ZLOG_NAME	"mail2zc"
+#define U2ZLOG_PRIO	LOG_INFO
+
+#define ERRLOG_NAME	"error"
+#define ERRLOG_PRIO	LOG_ERR
+
+#define INCOMING_NAME	"caller"
+#define INCOMING_PRIO	LOG_NOTICE
+
+#define OUTGOING_NAME	"calling"
+#define OUTGOING_PRIO	LOG_INFO
+
+#define XTRACTLOG_NAME	"extract"
+#define XTRACTLOG_PRIO	LOG_INFO
+
+#define DEBUGLOG_NAME	"debug"
+#define DEBUGLOG_PRIO	LOG_DEBUG
+
 #endif
+
+#define Z2ULOG_FILE		"import.log"
+#define U2ZLOG_FILE		"export.log"
+#define ERRLOG_FILE		"errors.log"
+#define ERRLOG_FILE		"errors.log"
+#define INCOMING_FILE		"anrufe.log"
+#define OUTGOING_FILE		"telefon.log"
+#define XTRACTLOG_FILE		"extract.log"
+#define DEBUGLOG_FILE		"debug.log"
 
 extern const char *nomem;
 
-#ifdef HAVE_SYSLOG
-void logfile(int lchan,
-#else
-void logfile(char *lfilename,
-#endif
-	const char *from, const char *to, const char *mid, 
-	const char *format, ...)
+void initlog(const char *name);
+
+void newlog(int lchan, const char *format, ...)
 #ifdef __GNUC__
-__attribute__ ((format(printf,5,6)))
+__attribute__ ((format(printf,2,3)))
 #endif
-;
+; 
 
 void uufatal(const char *prog, const char *format, ...)
 #ifdef __GNUC__

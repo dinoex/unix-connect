@@ -47,6 +47,8 @@
  */
 
 #include "config.h"
+#include "utility.h"
+
 #include <stdlib.h>
 #ifdef HAS_STRING_H
 # include <string.h>
@@ -55,7 +57,6 @@
 # include <strings.h>
 #endif
 
-#include "utility.h"
 #include "boxstat.h"
 #include "uulog.h"
 

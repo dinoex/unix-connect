@@ -51,6 +51,8 @@
  */
 
 #include "config.h"
+#include "utility.h"
+
 #include <ctype.h>
 
 /*@@
@@ -80,7 +82,6 @@
  *
  */
 
-char *strlwr(char *a);
 char *strlwr(char *a)
 {
 	char *p, c;

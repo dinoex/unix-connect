@@ -109,7 +109,7 @@ int import_all(char *arcer, char *sysname, int ist_net38)
 	closedir(dir);
 
   	while (l) {
-  		list_p p;
+  		ilist_p p;
 		int rc;
 		int myret = 1;
 		struct stat st;
@@ -119,6 +119,7 @@ int import_all(char *arcer, char *sysname, int ist_net38)
 		if(lstat(l->name, &st)) {
 			perror(l->name);
 		} else {
+#ifdef linux
 			if (S_ISREG(st.s_mode) && (nlink_t)1==st.st_nlink) {
 			    rc = call_auspack(arcer, l->name);
 			    if (!rc) {
@@ -131,7 +132,8 @@ int import_all(char *arcer, char *sysname, int ist_net38)
 					if (!shortname) shortname = l->name;
 					sprintf(backinname, "%s/%s.%s.%ld",
 						backindir, sysname,
-						shortname, time(NULL));
+						shortname,
+						(long)time(NULL));
 					fprintf(stderr, "BackIn: %s -> %s\n",
 						l->name, backinname);
 					fflush(stderr);
@@ -142,6 +144,7 @@ int import_all(char *arcer, char *sysname, int ist_net38)
 				}
 			    }
 			}
+#endif
 		}
 		returncode |= myret;
 		p = l; l = p->next;

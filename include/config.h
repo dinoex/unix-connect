@@ -131,16 +131,6 @@
  */
 #define	ANY_CROSSPOST
 
-/*
- * Umlaute (in Headern) nach RFC 1522 konvertieren? Ansonsten wird
- * "ae" etc. benutzt.
- *
- * Auch ZConnect-Header duerfen keine Umlaute enthalten, das wird aber
- * in der Praxis wohl von keinem Programm angemeckert und kommt daher
- * oft vor.
- */
-/* #define MIME_ENC_HEADER */
-
 /* Leider hat das normalerweise verwendete rz von Omen Technologies
  * die Eigenart, einen unmotivierten Fehlerwert von 128 zurueckzugeben,
  * dem ich noch keinen Fehler zuordnen konnte. UNIX/Connect kann diesen

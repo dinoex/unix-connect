@@ -187,11 +187,7 @@ extern int auflegen_empfangen;
 
 extern jmp_buf timeout, nocarrier;
 extern FILE *deblogfile;
-#ifdef HAVE_SYSLOG
 extern int logname;
-#else
-extern char *logname;
-#endif
 
 /*
  * Wartezeit - wenn die Gegenstelle etwas Zeit braucht, bis die Daten da sind.
@@ -242,7 +238,7 @@ header_p sysparam(header_p local, header_p remote, header_p sysfile);
 void bereitstellen(void);
 void aufraeumen(void);
 header_p get_myself(void);
-void import_all(char *arcer, char *sysname, int ist_net38);
+int import_all(char *arcer, char *sysname, int ist_net38);
 
 /*
  *  Paket-Routinen: phase ist 1 .. 4 (siehe ZCONNECT - Doku)

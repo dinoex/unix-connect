@@ -44,9 +44,11 @@
  *
  */
 
-# include "config.h"
-# include <stdio.h>
-# include <stdlib.h>
+#include "config.h"
+#include "utility.h"
+
+#include <stdio.h>
+#include <stdlib.h>
 #ifdef HAS_STRING_H
 # include <string.h>
 #endif
@@ -54,7 +56,6 @@
 # include <strings.h>
 #endif
 
-#include "utility.h"
 #include "track.h"
 #include "lib.h"
 

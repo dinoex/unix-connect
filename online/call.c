@@ -48,7 +48,9 @@
  */
 
 #include "config.h"
+#include "utility.h"
 #include "zconnect.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -91,11 +93,7 @@
  * wir das UNIX-interne Zeilenende.
  */
 const char *hd_crlf = "\n";
-#ifdef HAVE_SYSLOG
 int logname = OUTGOING;
-#else
-char *logname = OUTGOING;
-#endif
 
 #define NAK	0x15
 #define ACK	0x06
@@ -148,15 +146,32 @@ void cleanup(void)
     restore_linesettings(gmodem);
 }
 
+static void anrufdauer( void )
+{
+	time_t now;
+
+	time(&now);
+	fprintf(stderr,
+		"Anrufdauer: ca. %ld Sekunden online\n",
+		(long)(now-online_start));
+	fprintf(deblogfile,
+		"Anrufdauer: ca. %ld Sekunden online\n",
+		(long)(now-online_start));
+	newlog(logname,
+		"Anrufdauer: ca. %ld Sekunden online",
+		(long)(now-online_start));
+}
+
 int main(int argc, char **argv)
 {
 	char *sysname, *speed;
 	char sysfile[FILENAME_MAX], deblogname[FILENAME_MAX];
 	FILE *f;
 	header_p sys, ich, p;
-	time_t now;
 	int i;
 	static volatile int maxtry;
+
+	initlog("call");
 
 	gmodem=-1;
 	atexit(cleanup);
@@ -174,11 +189,7 @@ int main(int argc, char **argv)
 	else
 		maxtry = 1;
 	minireadstat();
-#ifdef HAVE_SYSLOG
-	sprintf(deblogname, "%s/" DEBUGLOG_NAME, logdir);
-#else
-	sprintf(deblogname, "%s/" DEBUGLOG, logdir);
-#endif
+	sprintf(deblogname, "%s/" DEBUGLOG_FILE, logdir);
 	if(debuglevel>0) {
 		deblogfile = fopen(deblogname, "w");
 		if (!deblogfile) {
@@ -200,7 +211,8 @@ int main(int argc, char **argv)
 	f = fopen(sysfile, "r");
 	if (!f) {
 		perror(sysfile);
-		logfile(ERRLOG, __FILE__, sysfile, "-", "%s\n", strerror(errno));
+		newlog(ERRLOG, "File <%s> not readable: %s",
+			sysfile, strerror(errno));
 		return 1;
 	}
 	sys = rd_para(f);
@@ -291,12 +303,8 @@ int main(int argc, char **argv)
 		fputs("\nABBRUCH: Timeout\n", stderr);
 		fputs("\nABBRUCH: Timeout\n", deblogfile);
 		lock_device(0, tty);
-		if (online_start) {
-			time(&now);
-			fprintf(stderr, "Anrufdauer: ca. %ld Sekunden online\n", (long)(now-online_start));
-			fprintf(deblogfile, "Anrufdauer: ca. %ld Sekunden online\n", (long)(now-online_start));
-			logfile(logname, "-", "-", "-", "%ld Sekunden online", (long)(now-online_start));
-		}
+		if (online_start)
+			anrufdauer();
 		if (files) aufraeumen();
 
 		return 11;
@@ -307,12 +315,8 @@ int main(int argc, char **argv)
 			fputs("\nABBRUCH: Gegenstelle hat aufgelegt!\n", deblogfile);
 		}
 		lock_device(0, tty);
-		if (online_start) {
-			time(&now);
-			fprintf(stderr, "Anrufdauer: ca. %ld Sekunden online\n", (long)(now-online_start));
-			fprintf(deblogfile, "Anrufdauer: ca. %ld Sekunden online\n", (long)(now-online_start));
-			logfile(logname, "-", "-", "-", "%ld Sekunden online", (long)(now-online_start));
-		}
+		if (online_start)
+			anrufdauer();
 		if (files) aufraeumen();
 
 		return auflegen ? 0 : 12;
@@ -325,7 +329,8 @@ int main(int argc, char **argv)
 		p = find(HD_TEL, sys);
 		if (!p) {
 			fprintf(stderr, "Keine Telefonnummer fuer %s gefunden!\n", sysname);
-			logfile(ERRLOG, __FILE__, sysfile, "-", "Keine Telefonnummer fuer %s gefunden!\n", sysname);
+			newlog(ERRLOG, "Keine Telefonnummer fuer %s gefunden", sysname);
+
 			return 2;
 		}
 
@@ -340,11 +345,11 @@ int main(int argc, char **argv)
 	}
 
 	if (online_start) {
-		time(&now);
-		fprintf(stderr, "Anrufdauer: ca. %ld Sekunden online\n", (long)(now-online_start));
+		anrufdauer();
 	} else
 		fprintf(stderr, "Keine Verbindung hergestellt.\n");
 
+	lock_device(0, tty);
 	return 0;
 }
 
@@ -397,7 +402,9 @@ int login(int lmodem, int verfahren, const char *myname, const char *passwd)
 		if (found == t_esc) {
                         write(lmodem, EMSI_CLI, sizeof(EMSI_CLI));
                 } else if (found == t_ogin || found == t_ame) {
+#ifndef PLUS_NO_SLEEP_FOR_FLUSH
                 	sleep(2);	/* fflush auf der Gegenseite? */
+#endif
                		set_local(lmodem, 0);
 			write(lmodem, logstr[verfahren],
 				strlen(logstr[verfahren]));
@@ -478,7 +485,6 @@ static const char *verf[] = { "JANUS", "ZCONNECT", NULL };
 
 int anruf (char *intntl, header_p sys, header_p ich, int lmodem)
 {
-	time_t now;
 	char dialstr[60], phone[60], telno[60], vorw[60], country[60];
 	char lockname[FILENAME_MAX];
 	header_p p;
@@ -574,14 +580,22 @@ int anruf (char *intntl, header_p sys, header_p ich, int lmodem)
 
 		t = find(HD_SYS, sys);
 		if (!t) {
-			fprintf(stderr, "Illegale Systemdatei: Kein " HN_SYS ": Header oder falscher Name: %s\n", filename);
-			logfile(ERRLOG, __FILE__, filename, "-", "Kein " HN_SYS ": Header oder falscher Name\n");
+			fprintf(stderr,
+				"Illegale Systemdatei: Kein " HN_SYS
+				": Header oder falscher Name: %s\n", filename);
+			newlog(ERRLOG,
+				"Illegale Systemdatei: Kein " HN_SYS
+				": Header oder falscher Name: %s", filename);
 			return 1;
 		}
 		d = find(HD_DOMAIN, sys);
 		if (!d) {
-			fprintf(stderr, "Illegale Systemdatei: Kein " HN_DOMAIN ": Header: %s\n", filename);
-			logfile(ERRLOG, __FILE__, filename, "-", "Kein "HN_DOMAIN": Header oder falscher Name\n");
+			fprintf(stderr,
+				"Illegale Systemdatei: Kein " HN_DOMAIN
+				": Header: %s\n", filename);
+			newlog(ERRLOG,
+				"Illegale Systemdatei: Kein " HN_DOMAIN
+				": Header: %s", filename);
 			return 1;
 		}
 
@@ -596,7 +610,8 @@ int anruf (char *intntl, header_p sys, header_p ich, int lmodem)
 		t = find(HD_ARCEROUT, sys);
 		if (!t) {
 			fputs("Kein ARCer (ausgehend) definiert!\n", stderr);
-			logfile(ERRLOG, __FILE__, filename, "-", "Kein ausgehender Packer definiert\n");
+			newlog(ERRLOG,
+				"Kein ausgehender Packer definiert");
 			return 1;
 		}
 		arcer = t->text;
@@ -605,7 +620,8 @@ int anruf (char *intntl, header_p sys, header_p ich, int lmodem)
 		t = find(HD_ARCERIN, sys);
 		if (!t) {
 			fputs("Kein ARCer (eingehend) definiert!\n", stderr);
-			logfile(ERRLOG, __FILE__, filename, "-", "Kein eingehender Packer definiert\n");
+			newlog(ERRLOG,
+				"Kein eingehender Packer definiert");
 			return 1;
 		}
 		arcerin = t->text;
@@ -613,8 +629,10 @@ int anruf (char *intntl, header_p sys, header_p ich, int lmodem)
 
 		t = find(HD_PROTO, sys);
 		if (!t) {
-			fputs("Kein Uebertragungsprotokoll definiert!\n", stderr);
-			logfile(ERRLOG, __FILE__, filename, "-", "Kein Uebertragungsprotokoll definiert\n");
+			fputs("Kein Uebertragungsprotokoll definiert!\n",
+				stderr);
+			newlog(ERRLOG,
+				"Kein Uebertragungsprotokoll definiert");
 			return 1;
 		}
 		transfer = t->text;
@@ -633,8 +651,12 @@ int anruf (char *intntl, header_p sys, header_p ich, int lmodem)
 
 			f = fopen(outname, "wb");
 			if (!f) {
-				fprintf(stderr, "Kann Netcall %s nicht erzeugen\n", outname);
-				logfile(ERRLOG, __FILE__, outname, "-", "Kann Netcall nicht erzeugen: %s\n", strerror(errno));
+				fprintf(stderr,
+					"Kann Netcall %s nicht erzeugen: %s\n",
+					outname, strerror(errno));
+				newlog(ERRLOG,
+					"Kann Netcall %s nicht erzeugen: %s",
+					outname, strerror(errno));
 				fclose(deblogfile);
 				return 1;
 			}
@@ -642,15 +664,21 @@ int anruf (char *intntl, header_p sys, header_p ich, int lmodem)
 			fclose(f);
 		} else {
 			if (waitnolock(lockname, 180)) {
-				logfile(OUTGOING, "-", sysname, "-", "Prearc LOCK: %s\n", lockname);
-				fprintf(deblogfile, "Prearc LOCK: %s\n", lockname);
+				fprintf(deblogfile,
+					"Prearc LOCK: %s\n", lockname);
 				fclose(deblogfile);
+				newlog(OUTGOING, "System %s Prearc LOCK: %s",
+					sysname, lockname );
 				return 1;
 			}
 			if(rename(filename, outname)) {
-				fprintf(stderr, "Umbenennen: %s -> %s fehlgeschlagen\n", filename, outname);
-				logfile(ERRLOG, __FILE__, filename, outname, "Umbenennen fehlgeschlagen: %s\n", strerror(errno));
+				fprintf(stderr,
+				"Umbenennen: %s -> %s fehlgeschlagen: %s\n",
+					filename, outname, strerror(errno));
 				fclose(deblogfile);
+				newlog(ERRLOG,
+				"Umbenennen: %s -> %s fehlgeschlagen: %s\n",
+					filename, outname, strerror(errno));
 				return 1;
 			}
 		}
@@ -659,41 +687,40 @@ int anruf (char *intntl, header_p sys, header_p ich, int lmodem)
 
 		st.st_size = 0;
 		stat(outname, &st);
-		fprintf(deblogfile, "Sende %s (%ld Bytes) per %s\n", outname, (long)st.st_size, transfer);
-		fprintf(stderr, "Sende %s (%ld Bytes) per %s\n", outname, (long)st.st_size, transfer);
-		logfile(logname, transfer, "VERSAND", "-", "%ld Bytes\n", (long)st.st_size);
-		/* old_stderr = dup(fileno(stderr)); close(fileno(stderr)); dup(lmodem); DMLOG("dup modem to stderr"); */
+		fprintf(deblogfile, "Sende %s (%ld Bytes) per %s\n",
+			outname, (long)st.st_size, transfer);
+		fprintf(stderr, "Sende %s (%ld Bytes) per %s\n",
+			outname, (long)st.st_size, transfer);
+		newlog(logname, "Sende %s (%ld Bytes) per %s",
+			outname, (long)st.st_size, transfer);
 		if (sendfile(transfer, outname)) {
-			/* close(fileno(stderr)); dup(old_stderr); close(old_stderr); DMLOG("undup stderr"); */
 			fprintf(stderr, "Versand der Daten fehlgeschlagen\n");
-			logfile(logname, transfer, "VERSAND", "-", "fehlgeschlagen\n");
-			fprintf(deblogfile, "Versand der Daten fehlgeschlagen\n");
+			fprintf(deblogfile,
+				"Versand der Daten fehlgeschlagen\n");
+			newlog(logname,
+				"Versand der Daten fehlgeschlagen");
 			return 1;
 		}
-		/* close(fileno(stderr)); dup(old_stderr); close(old_stderr); DMLOG("undup stderr"); */
 
 		fprintf(deblogfile, "Empfange per %s\n", transfer);
 		fprintf(stderr, "Empfange %s\n", transfer);
-		logfile(logname, transfer, "EMPFANG", "-", "\n");
-		/* old_stderr = dup(fileno(stderr)); close(fileno(stderr)); dup(lmodem); DMLOG("dup modem to stderr"); */
+		newlog(logname, "Empfange %s", transfer);
 		if (recvfile(transfer, filename)) {
-			/* close(fileno(stderr)); dup(old_stderr); close(old_stderr); DMLOG("undup stderr"); */
-			logfile(logname, transfer, "EMPFANG", "-", "fehlgeschlagen\n");
-			fprintf(stderr, "Empfang der Daten fehlgeschlagen!\n");
-			fprintf(deblogfile, "Empfang der Daten fehlgeschlagen!\n");
+			fprintf(stderr, "Empfang der Daten fehlgeschlagen\n");
+			fprintf(deblogfile,
+				"Empfang der Daten fehlgeschlagen\n");
+			newlog(logname,
+				"Empfang der Daten fehlgeschlagen");
 			return 1;
 		}
-		/* close(fileno(stderr)); dup(old_stderr); close(old_stderr); DMLOG("undup stderr"); */
 		st.st_size = 0;
 		stat(filename, &st);
-		logfile(logname, "-", "-", "-", "%ld Bytes empfangen\n", (long)st.st_size);
 		fprintf(stderr, "%ld Bytes empfangen\n", (long)st.st_size);
 		fprintf(deblogfile, "%ld Bytes empfangen\n", (long)st.st_size);
+		newlog(logname,
+			"%ld Bytes empfangen\n", (long)st.st_size);
 
-		time(&now);
-		logfile(logname, "Auflegen", "-", "-", "Anrufdauer ca. %ld Sekunden online\n", (long)(now-online_start));
-		fprintf(stderr, "Anrufdauer: ca. %ld Sekunden online\n", (long)(now-online_start));
-		fprintf(deblogfile, "Anrufdauer: ca. %ld Sekunden online\n", (long)(now-online_start));
+		anrufdauer();
 
 		/* Fertig, Modem auflegen */
 		signal(SIGHUP, SIG_IGN);
@@ -737,10 +764,7 @@ int anruf (char *intntl, header_p sys, header_p ich, int lmodem)
 		while (!auflegen) {
 			datei_master(ich, sys);
 		}
-		time(&now);
-		fprintf(stderr, "Anrufdauer: ca. %ld Sekunden online\n", (long)(now-online_start));
-		fprintf(deblogfile, "Anrufdauer: ca. %ld Sekunden online\n", (long)(now-online_start));
-
+		anrufdauer();
 		close(lmodem); DMLOG("close modem");
 		aufraeumen();
 		exit (0);

@@ -44,15 +44,18 @@
  */
 
 #include "config.h"
+#include "utility.h"
 #include "zconnect.h"
+
 #ifdef HAS_STRING_H
 # include <string.h>
 #endif
 #ifdef HAS_STRINGS_H
 # include <strings.h>
 #endif
-#include "lib.h"
 #include <unistd.h>
+
+#include "lib.h"
 
 int auflegen = 0;
 int auflegen_gesendet = 0;

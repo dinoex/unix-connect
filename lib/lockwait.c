@@ -37,14 +37,15 @@
  */
 
 
-# include "config.h"
-# include <stdio.h>
-# include <stdlib.h>
-# include <time.h>
-# ifndef NO_UNISTD_H
-#	include <unistd.h>
-# endif
+#include "config.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#ifndef NO_UNISTD_H
+#include <unistd.h>
+#endif
 
+#include "lib.h"
 
 #define	WAIT_SLEEP	5
 
@@ -59,7 +60,6 @@
  *
  *   Returns:	0 bei Erfolg
  */
-int waitnolock(const char *fname, long timeout);
 int waitnolock(const char *fname, long timeout)
 {
 	long tout; time_t start, now;

@@ -52,8 +52,18 @@ void * dalloc(size_t);
 char * str2dup(const char *);
 void ulibinit(void);
 
+int stricmp(const char *a, const char *b);
 char * strlwr(char *);
 char * strupr(char *);
+#ifndef HAVE_STRDUP
 char * strdup(const char *);
+#endif
+#ifndef HAVE_STRDUP
+char * strdup(const char *);
+#endif
+#ifndef HAVE_STCCPY
+int stccpy(char *, const char *, int);
+#endif   
+void qstccpy(char *, const char *, int);
 
 char * str2eda(const char *text, int *tz_hour, int *tz_min);

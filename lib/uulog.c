@@ -4,6 +4,7 @@
  *  Copyright (C) 1993-94  Martin Husemann
  *  Copyright (C) 1995-98  Christopher Creutzig
  *  Copyright (C) 1994     Peter Much
+ *  Copyright (C) 1999     Andreas Barth
  *  Copyright (C) 1999     Dirk Meyer
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -43,102 +44,136 @@
  *
  *  Logfile-Routinen für den ZCONNECT/RFC GateWay
  *
- *  Sat Jul  1 20:45:39 MET DST 1995 (P.Much)
- *  - Erweitert zur Nutzung der syslog-facility mit -DHAVE_SYSLOG.
  */
 
 
-# include "config.h"
-# include <stdio.h>
-# include <stdarg.h>
+#include "config.h"
+
+#include <stdio.h>
+#include <stdarg.h>
 #ifdef HAVE_SYSLOG
 # include <syslog.h>
 #endif
-# include <time.h>
-# include "uulog.h"
-# include "ministat.h"
+#include <time.h>
+
+#include "uulog.h"
+#include "ministat.h"
+
+#define	MAX_LOG_LINE	200
 
 extern char *logdir;
 
+#ifndef HAVE_SYSLOG
+static char name[30];
+FILE *uudeblogfile;
+#endif
+
+const char *def_debuglog;
+
+void initlog(const char *xname) {
+#ifdef HAVE_SYSLOG
+	openlog(xname, LOG_PID, SYSLOG_KANAL);
+#else
+	strncpy(name,xname,30);
+	name[29] = 0;
+	uudeblogfile = NULL;
+#endif
+	minireadstat();
+	return 0;
+}
 
 void
-#ifdef HAVE_SYSLOG
-logfile(int lchan,
-#else
-logfile(char *lfilename,
-#endif
-const char *from, const char *to, const char *mid, const char *format, ...)
+newlog(int lchan, const char *format, ...)
 {
-	va_list ap;
-#ifdef HAVE_SYSLOG
 	int prio;
 	char text[20];
-#else
-	FILE *f;
+	char filename[20];
+	char buf[ MAX_LOG_LINE ];
+#ifndef HAVE_SYSLOG
+	FILE *logf;
 	time_t now;
-	char buf[200];
+	char buf1[ MAX_LOG_LINE ];
 #endif
+	const char *defformat = "%s\n";
+	va_list arg;
 
-	minireadstat();
-#ifdef HAVE_SYSLOG
 	switch(lchan) {
 	    case Z2ULOG	:
 		prio = Z2ULOG_PRIO;
 		strcpy(text, Z2ULOG_NAME);
-		break;;
+		strcpy(filename, Z2ULOG_FILE);
+		break;
 	    case U2ZLOG	:
 		prio = U2ZLOG_PRIO;
 		strcpy(text, U2ZLOG_NAME);
-		break;;
+		strcpy(filename, U2ZLOG_FILE);
+		break;
 	    case ERRLOG	:
 		prio = ERRLOG_PRIO;
 		strcpy(text, ERRLOG_NAME);
-		break;;
+		strcpy(filename, ERRLOG_FILE);
+		break;
 	    case INCOMING :
 		prio = INCOMING_PRIO;
 		strcpy(text, INCOMING_NAME);
-		break;;
+		strcpy(filename, INCOMING_FILE);
+		break;
 	    case OUTGOING :
 		prio = OUTGOING_PRIO;
 		strcpy(text, OUTGOING_NAME);
-		break;;
+		strcpy(filename, OUTGOING_FILE);
+		break;
 	    case XTRACTLOG :
 		prio = XTRACTLOG_PRIO;
 		strcpy(text, XTRACTLOG_NAME);
-		break;;
+		strcpy(filename, XTRACTLOG_FILE);
+		break;
 	    case DEBUGLOG :
 		prio = DEBUGLOG_PRIO;
 		strcpy(text, DEBUGLOG_NAME);
-		break;;
+		strcpy(filename, DEBUGLOG_FILE);
+		break;
 	    default:
 		prio = LOG_ERR;
-		strcpy(text, "unknown");
+		strcpy(filename, DEBUGLOG_NAME);
+		strcpy(filename, DEBUGLOG_FILE);
+		lchan = DEBUGLOG;
 	}
-	openlog(SYSLOG_LOGNAME, LOG_PID, SYSLOG_KANAL);
-	if(format == NULL || strlen(format) == 0)
-		syslog(prio, "%s \"%s\"\t\"%s\"\t%s", text, from, to, mid);
-	else {
-		char tmpformat[9 + strlen(text) + strlen(from) + strlen (to) + strlen(mid) + strlen(format)];
 
-		sprintf(tmpformat, "%s \"%s\"\t\"%s\"\t%s\t%s", text, from, to, mid, format);
-		va_start(ap, format);
-		vsyslog(prio, tmpformat, ap);
-		va_end(ap);
-	}
-	closelog();
+	if(format == NULL || strlen(format) == 0)
+		format=defformat;
+
+	va_start (arg, format);
+	vsnprintf (buf, MAX_LOG_LINE, format, arg);
+	va_end (arg);
+
+#ifdef HAVE_SYSLOG
+	syslog(prio, buf);
 #else
-	sprintf(buf, "%s/%s", logdir, lfilename);
-	f = fopen(buf, "a");
-	if (!f) {
-		fprintf(stderr, "\nFATAL: Logfile \"%s\" nicht schreibbar\n", buf);
-		return;
+	if( lchan == DEBUGLOG ) {
+		if ( uudeblogfile == NULL ) {
+			uuuudeblogfile = fopen("/tmp/zlog", "a");
+		}
+		if ( uudeblogfile == NULL ) {
+			fprintf(stderr,
+			"\nFehler: Debug-Logfile nicht schreibbar\n" );
+			uudeblogfile = stderr;
+		}
+		logf = uudeblogfile;
+	} else {
+		sprintf(buf, "%s/%s", logdir, lfilename);
+		logf = fopen(buf, "a");
+		if (!logf) {
+			fprintf(stderr,
+			"\nFehler: Logfile \"%s\" nicht schreibbar\n", buf);
+			logf = stderr;
+		}
 	}
 	now = time(NULL);
-	strftime(buf, 200, "%Y/%m/%d %H:%M:%S", localtime(&now));
-	fprintf(f, "%s\t\"%s\"\t\"%s\"\t%s\t", buf, from, to, mid);
-	va_start(ap, format);
-	vfprintf(f, format, ap);
-	va_end(ap);
-	fclose(f);
+	strftime(buf1,  MAX_LOG_LINE , "%Y/%m/%d %H:%M:%S", localtime(&now));
+	fprintf (logf, "%s: %s%s\n", name, buf1, buf);
+	if( lchan != DEBUGLOG )
+		fclose(logf);
 #endif
 }
+

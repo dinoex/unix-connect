@@ -46,6 +46,9 @@
  */
 
 #include "config.h"
+#include "utility.h"
+#include "zconnect.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -55,16 +58,15 @@
 #ifndef NO_UNISTD_H
 #include <unistd.h>
 #endif
-#include "zconnect.h"
 #include <ctype.h>
 #include <sys/stat.h>
 #include <setjmp.h>
 #include <signal.h>
 #include <dirent.h>
+
 #include "header.h"
 #include "hd_def.h"
 #include "hd_nam.h"
-#include "config.h"
 #include "version.h"
 #include "track.h"
 #include "line.h"
@@ -157,8 +159,12 @@ void reject(char *prog, char *sysname, char *passwd);
 void reject(char *prog, char *sysname, char *passwd)
 {
 	fputs("Netzzugriff verweigert.\r\n", stdout);
-	logfile(INCOMING, WHO, sysname, "-", "Falsches Passwort: %s\n", passwd);
-	fprintf(deblogfile, "%s: Fehlversuch (System %s Passwort %s)\n", prog, sysname, passwd);
+	fprintf(deblogfile,
+		"%s: Fehlversuch (System %s Passwort %s)\n",
+		prog, sysname, passwd);
+	newlog(INCOMING,
+		"%s: Fehlversuch (System %s Passwort %s)",
+		prog, sysname, passwd);
 	lock_device(0, tty);
 	fclose(deblogfile);
 	exit(0);
@@ -179,6 +185,8 @@ int main(int argc, char **argv)
 	int i, j, z, serchk;
 	FILE *f;
 	header_p hd, p;
+
+	initlog("januslogin");
 
 	/*
 	 *  Da dieses Programm Login-Shell ist, muss die Fehlerausgabe
@@ -206,13 +214,13 @@ int main(int argc, char **argv)
 	if (setjmp(timeout)) {
 		fputs("\nABBRUCH: Timeout\n", deblogfile);
 		fclose(deblogfile);
-		logfile(INCOMING, WHO, "-", "-", "TIMEOUT\n");
+		newlog(INCOMING, "Abbruch: Timeout");
 		return 1;
 	}
 	if (setjmp(nocarrier)) {
 		fputs("\nABBRUCH: Gegenstelle hat aufgelegt!\n", deblogfile);
 		fclose(deblogfile);
-		logfile(INCOMING, WHO, "-", "-", "NO CARRIER\n");
+		newlog(INCOMING, "Abbruch: No Carrier");
 		return 2;
 	}
 	signal(SIGHUP, handle_nocarrier);
@@ -302,21 +310,25 @@ ask_passwort:
 	     "Running ARC....\r\n"
 	     "Running ARC....\r\n"
 	     "Running ARC....\r\n", stdout);
-	fprintf(deblogfile, "%s: System %s erfolgreich eingelogt [%s]\n", argv[0], sysname, tty);
-	logfile(INCOMING, WHO, sysname, tty, "Login erfolgreich\n");
+	fprintf(deblogfile,
+		"%s: System %s erfolgreich eingelogt [%s]\n",
+		argv[0], sysname, tty);
+	newlog(INCOMING,
+		"%s: System %s erfolgreich eingelogt [%s]",
+		argv[0], sysname, tty);
 
 	sprintf(tmpname, "%s/%s.%d.dir", netcalldir, sysname, getpid());
 	mkdir(tmpname, 0777);
 
 	if (setjmp(timeout)) {
 		fputs("\nABBRUCH: Timeout\n", deblogfile);
-		logfile(INCOMING, WHO, "-", "-", "TIMEOUT\n");
+		newlog(INCOMING, "Abbruch: Timeout");
 		fclose(deblogfile);
 		return 1;
 	}
 	if (setjmp(nocarrier)) {
 		fputs("\nABBRUCH: Gegenstelle hat aufgelegt!\n", deblogfile);
-		logfile(INCOMING, WHO, "-", "-", "NO CARRIER\n");
+		newlog(INCOMING, "Abbruch: No Carrier");
 		fclose(deblogfile);
 		return 2;
 	}
@@ -336,9 +348,9 @@ ask_passwort:
 		fclose(f);
 	} else {
 		if (waitnolock(lockname, 180)) {
-			logfile(INCOMING, WHO, sysname, "-", "Prearc LOCK: %s\n", lockname);
 			fprintf(deblogfile, "Prearc LOCK: %s\n", lockname);
 			fclose(deblogfile);
+			newlog(INCOMING, "Prearc LOCK: %s", lockname);
 			return 1;
 		}
 		if(rename(filename, outname)) {
@@ -352,12 +364,12 @@ ask_passwort:
 
 	if (setjmp(timeout)) {
 		fputs("\nABBRUCH: Timeout\n", deblogfile);
-		logfile(INCOMING, WHO, "-", "-", "TIMEOUT\n");
+		newlog(INCOMING, "Abbruch: Timeout");
 		goto cleanup;
 	}
 	if (setjmp(nocarrier)) {
 		fputs("\nABBRUCH: Gegenstelle hat aufgelegt!\n", deblogfile);
-		logfile(INCOMING, WHO, "-", "-", "NO CARRIER\n");
+		newlog(INCOMING, "Abbruch: No Carrier");
 		goto cleanup;
 	}
 
@@ -379,15 +391,23 @@ ask_passwort:
 			alarm(0);
 			putchar(ACK); fflush(stdout);
 			sernr[4] = '\0';
-			logfile(INCOMING, WHO, "-", "-", "Seriennummer: %s\n", sernr);
+			newlog(INCOMING, WHO " Seriennummer: %s\n", sernr);
 			if (recvfile(transfer, filename)) {
-				logfile(INCOMING, WHO, filename, transfer, "Empfang fehlgeschlagen\n");
-				fprintf(deblogfile, "Empfang der Daten fehlgeschlagen!\n");
+				fprintf(deblogfile,
+					"Empfang der Daten fehlgeschlagen!\n");
+				newlog(INCOMING,
+					WHO "Empfang der Datei %s "
+					"fehlgeschlageni mit %s",
+					filename, transfer );
 				break;
 			}
 			if (sendfile(transfer, outname)) {
-				logfile(INCOMING, WHO, outname, transfer, "Versand fehlgeschlagen\n");
-				fprintf(deblogfile, "Versand der Daten fehlgeschlagen\n");
+				fprintf(deblogfile,
+					"Versand der Daten fehlgeschlagen\n");
+				newlog(INCOMING,
+					WHO "Versand der Datei %s "
+					"fehlgeschlagen mit %s",
+					outname, transfer );
 				break;
 			}
 
@@ -401,7 +421,7 @@ ask_passwort:
 			lock_device(0, tty);
 
 			/* Netcall war erfolgreich, also Daten loeschen */
-			logfile(INCOMING, WHO, "-", "-", "Netcall erfolgreich\n");
+			newlog(INCOMING, WHO " Netcall erfolgreich");
 			remove(outname);
 
 			/*
@@ -422,7 +442,7 @@ ask_passwort:
 cleanup:
 	alarm(0);
 	fprintf(deblogfile, "Netcall fehlgeschlagen\n");
-	logfile(INCOMING, WHO, "-", "-", "Netcall abgebrochen\n");
+	newlog(INCOMING, "Netcall fehlgeschlagen");
 	lock_device(0, tty);
 
 	/* Jetzt muessen die Daten zurueck aus dem temporaeren Verzeichnis
@@ -431,8 +451,8 @@ cleanup:
 	sprintf(filename, "%s/%s.%s", netcalldir, sysname, arcer);
 	sprintf(outname, "%s/called.%s", tmpname, arcer);
 	if (waitnolock(lockname, 180)) {
-		logfile(INCOMING, WHO, sysname, "-", "Prearc LOCK: %s\n", lockname);
 		fprintf(deblogfile, "Prearc LOCK: %s\n", lockname);
+		newlog(INCOMING, "Prearc LOCK: %s", lockname);
 		fclose(deblogfile);
 		return 1;
 	}

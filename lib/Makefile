@@ -40,7 +40,7 @@ OBJS	= hayes.o pattern.o stricmp.o track.o uufatal.o utility.o strlwr.o \
 	  strupr.o strdup.o rawtty.o str2eda.o ministat.o lockwait.o uulog.o \
 	  trap.o
 
-STROBJS	= stricmp.o uufatal.o utility.o strlwr.o strupr.o strdup.o
+STROBJS	= stricmp.o uufatal.o utility.o strlwr.o strupr.o strdup.o stccpy.o
 
 all:	gatelib.a strlib.a
 
@@ -66,22 +66,28 @@ hayes.o: hayes.c ../include/config.h ../include/sysdep.h \
  ../include/header.h ../include/crc.h ../hdlib/hd_def.h \
  ../hdlib/hd_nam.h ../include/ministat.h ../include/boxstat.h \
  ../include/hayes.h ../include/track.h
-lockwait.o: lockwait.c ../include/config.h ../include/sysdep.h
+lockwait.o: lockwait.c ../include/config.h ../include/sysdep.h \
+ ../include/lib.h
 ministat.o: ministat.c ../include/config.h ../include/sysdep.h \
- ../include/ministat.h ../include/boxstat.h ../include/header.h \
- ../include/crc.h ../hdlib/hd_nam.h ../hdlib/hd_def.h \
- ../include/uulog.h ../include/lib.h
+ ../include/utility.h ../include/ministat.h ../include/boxstat.h \
+ ../include/header.h ../include/crc.h ../hdlib/hd_nam.h \
+ ../hdlib/hd_def.h ../include/uulog.h ../include/lib.h
 pattern.o: pattern.c ../include/config.h ../include/sysdep.h \
  ../include/pattern.h ../include/lib.h
 rawtty.o: rawtty.c ../include/config.h ../include/sysdep.h \
  ../include/line.h
+stccpy.o: stccpy.c ../include/config.h ../include/sysdep.h \
+ ../include/utility.h
 str2eda.o: str2eda.c ../include/config.h ../include/sysdep.h \
- ../include/lib.h
+ ../include/utility.h
 strdup.o: strdup.c ../include/config.h ../include/sysdep.h \
- ../include/uulog.h
-stricmp.o: stricmp.c ../include/config.h ../include/sysdep.h
-strlwr.o: strlwr.c ../include/config.h ../include/sysdep.h
-strupr.o: strupr.c ../include/config.h ../include/sysdep.h
+ ../include/utility.h ../include/lib.h ../include/uulog.h
+stricmp.o: stricmp.c ../include/config.h ../include/sysdep.h \
+ ../include/utility.h
+strlwr.o: strlwr.c ../include/config.h ../include/sysdep.h \
+ ../include/utility.h
+strupr.o: strupr.c ../include/config.h ../include/sysdep.h \
+ ../include/utility.h
 track.o: track.c ../include/config.h ../include/sysdep.h \
  ../include/utility.h ../include/track.h ../include/lib.h
 trap.o: trap.c ../include/config.h ../include/sysdep.h \

@@ -45,8 +45,10 @@
  */
 
 #include "config.h"
+#include "utility.h"
 #include "zconnect.h"
-#include "sys/stat.h"
+
+#include <sys/stat.h>
 #ifndef NO_UNISTD_H
 #include <unistd.h>
 #endif
@@ -56,6 +58,7 @@
 #ifdef HAS_STRINGS_H
 # include <strings.h>
 #endif
+
 #include "lib.h"
 
 int ist_testaccount;
@@ -72,6 +75,7 @@ void system_dialog(void)
 	int ist_autoeintrag, ist_gast;
 	FILE *f;
 
+	soll = 0;
 	ist_testaccount = 0;
 	ist_autoeintrag = 0; /* Dies ist kein Autoeintrag ... */
 	alarm(60);

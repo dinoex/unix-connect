@@ -52,7 +52,11 @@
 #define	VERSION		"0.81"
 
 #define	MAILER		"UNIX/Connect"
-#define	COPYRIGHT	"(C) 1999 D.Meyer, (C) 1995-98 C.Creutzig, (C) 1993/94 M.Husemann"
+#define	COPYRIGHT	\
+"(C) 1993,94 Martin Husemann,\n" \
+"(C) 1995-98 Christopher Creutzig, (C) 1995-99 Moritz Both,\n" \
+"(C) 1997-98 Detlef Wuerkner, (C) 1997-99 Matthias Andree,\n" \
+"(C) 1997-99 Andreas Barth, (C) 1995-99 Dirk Meyer."
 
 /*
  *   Fuer die Online-Phase:
