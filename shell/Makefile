@@ -1,8 +1,8 @@
 # $Id$
 #
 #   UNIX-Connect, a ZCONNECT(r) Transport and Gateway/Relay.
-#   Copyright (C) 1993-94  Martin Husemann
-#   Copyright (C) 1999     Dirk Meyer
+#   Copyright (C) 1993-1994  Martin Husemann
+#   Copyright (C) 1999-2000  Dirk Meyer
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -63,7 +63,7 @@ prearc: prearc.in  ../Makefile.global
 uumlist: uumlist.in  ../Makefile.global
 	$(SHELL) ../helpers/subst < uumlist.in > $@
 
-cron.d.hourly.in: cron.d.hourly.in  ../Makefile.global
+cron.d.hourly: cron.d.hourly.in  ../Makefile.global
 	$(SHELL) ../helpers/subst < cron.d.hourly.in > $@
 
 logrotate.d.entry: logrotate.d.entry.in  ../Makefile.global
