@@ -66,7 +66,7 @@ subst.in: makesubst ../configure.in
 	$(SHELL) ./makesubst > subst.in
 	chmod a+x subst.in
 
-../configure:	../configure.in subst.in
+../configure:	../configure.in
 	cd .. && autoconf
 
 # do or redo configuration

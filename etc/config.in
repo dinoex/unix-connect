@@ -24,17 +24,6 @@ Gate-Domain:                      @DOMAIN@
 
 Who-Am-I:                         @ETCDIR@/myself.zconnect
 
-# Hier sollte die System-Zeitzone benutzt werden, wer kann das
-# hinreichend portabel mal einbauen? Zur Zeit wird die Zeitzone
-# in ZCONNECT Notation angegeben:
-
-Zeitzone:                          1
-
-# Wenn wir Sommerzeit haben: 1
-# Sonst: 0 (oder gar nicht eingetragen)
-
-Sommerzeit:                        0
-
 # Im Verlauf der Installation kann es hilfreich sein, wenn die Online-
 # Routinen einen Mittschnitt der uebertragenen Steuerinformationen
 # erzeugen, im Nutzbetrieb waechst dadurch das Logfile aber recht schnell.

@@ -260,7 +260,12 @@ void usage( void )
  *	parse comand line and execute
  *---------------------------------------------------------------------------*/
 
-void main( int argc, const char *const *argv );
+void main( int argc, const char *const *argv )
+#ifdef __GNUC__
+__attribute__ ((noreturn))
+#endif
+;
+
 void main( int argc, const char *const *argv )
 {
 	FILE		*fdata;

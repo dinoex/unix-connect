@@ -37,6 +37,7 @@ Fehler beim Entpacken von System $sys
 Folgender Fehler ist aufgetreten:
 $error
 
+Verwendetes Verzeichnis war: $TMP
 
 Logfile:
 --------"
@@ -44,70 +45,77 @@ Logfile:
 }
 
 ende() {
-	out_mail | mail postmaster
-	rm -rf $TMP
+	out_mail | @SENDMAIL@ postmaster
+	## Verzeichnis erhalten fuer Diagnose.
+	## rm -rf $TMP
 	rm -f $temp
+	trap 0
 	exit 1;
 }
 
 #
-#	watchgate "input"
+#	watch_gate "input"
 #
 watch_gate() {
 	errfile="$errfile $1"
-	echo "Gaten fehlgeschlagen $1" >>$temp
+	echo "Gaten fehlgeschlagen $1"
 	backup="${sys}-`date +%Y%m%d-%H%M%S`-$$-$1"
-	echo "Die Daten finden sie unter $backup" >>$temp
-	mv $1 @SPOOLDIR@/error/$backup
+	echo "Die Daten finden sie unter $backup"
+	mv $1 @SPOOLDIR@/error/$backup 2>&1
 }
 
 #
 #  So tun, als wären wir über uucp unterwegs ... zum Loggen
 #
-if test -n $1; then
-	export UU_MACHINE=$1
-	sys=$1
+if test -n "$1"; then
+	export UU_MACHINE="$1"
+	sys="$1"
 fi
 
 
-# temporäre Datei
+# temporäre Datei zum Loggen
 temp=`mktemp /tmp/import.XXXXXX` || exit 1
 
+# Ausgaben ins Tempfile abfangen
+exec 2>>$temp 2>&1
 
-echo '################################################################' >>$temp
+trap ende 0 1 2 3 4 5 6 7 8 11 13 14 15
+
+echo "$0"
 date >>$temp
-echo "Import der empfangenen Daten von $1" >>$temp
+echo ""
+echo "Import der empfangenen Daten von $1"
 
 TMP=import.$$
 
 if [ ! -d @SPOOLDIR@/error ]
 then
 	mkdir @SPOOLDIR@/error 2>>$temp ||
-	{ echo "Ich kann @SPOOLDIR@/error nicht anlegen!" >>$temp; ende; }
+	{ echo "Ich kann @SPOOLDIR@/error nicht anlegen!" ; ende; }
 fi
 
 mkdir $TMP ||
-{ echo "kann temporaer-Verzeichnis nicht anlegen!" >>$temp; ende; }
+{ echo "kann temporaer-Verzeichnis nicht anlegen!" ; ende; }
 
 for file in *
 do
 	if [ -f $file ]
 	then
-		echo "Teile $file" >>$temp
+		echo "Teile $file"
 
 		mv $file $TMP
 		cd $TMP
-		zconsplit $file 2>>$temp ||
+		zconsplit $file ||
 		{ error="zconsplit $file failed: $?"; ende; }
 		if [ -f $file.prv -a -s $file.prv ]
 		then
-			((uuwsmtp -f $file.prv $1 | $RSMTP) 2>>$temp) ||
-			watch_gate "$file.prv" )
+			(uuwsmtp -f $file.prv $1 | $RSMTP) ) ||
+			watch_gate "$file.prv"
 		fi
 		if [ -f $file.brt -a -s $file.brt ]
 		then
-			((uuwnews -f $file.brt $1 | rnews) 2>>$temp) ||
-			watch_gate "$file.prv" )
+			(uuwnews -f $file.brt $1 | rnews) ) ||
+			watch_gate "$file.brt"
 		fi
 		if [ -f $file ]
 		then
@@ -125,5 +133,6 @@ fi
 
 rm -rf $TMP
 rm -f $temp
+trap 0 1 2 3 4 5 6 7 8 11 13 14 15
 
 # eof

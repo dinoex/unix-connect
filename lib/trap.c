@@ -23,11 +23,11 @@
  */
 
 #include "config.h"
-#include <signal.h>
 #include <stdio.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+#include <signal.h>
 
 #include "trap.h"
 #include "ministat.h"
@@ -64,7 +64,8 @@ void init_trap(char *progname) {
 #endif
 }
 
-sighandler_t s_handler(int sig, sighandler_t addr) {
+sighandler_t s_handler(int sig, sighandler_t addr)
+{
 	signal_struct *sp;
 
 	for (sp=signallist; sp->no && sp->no != sig; sp++);

@@ -47,9 +47,10 @@
 #include <stdlib.h>
 #ifdef HAVE_STRING_H
 # include <string.h>
-#endif
+#else
 #ifdef HAVE_STRINGS_H
 # include <strings.h>
+#endif
 #endif
 #include <sys/types.h>
 #include <sys/stat.h>

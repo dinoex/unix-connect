@@ -51,9 +51,10 @@
 #include <stdlib.h>
 #ifdef HAVE_STRING_H
 # include <string.h>
-#endif
+#else
 #ifdef HAVE_STRINGS_H
 # include <strings.h>
+#endif
 #endif
 
 #include <ctype.h>
@@ -247,7 +248,7 @@ header_p rd_para(FILE *f)
                       if (str2) *str2 = '\0';
 
                       /* Wenn weder \n noch \r gefunden werden, dann ist der
-                       * Header l„nger als MAX_HEADER_NAME_LEN Bytes. */
+                       * Header laenger als MAX_HEADER_NAME_LEN Bytes. */
 		      if (!str1 && !str2) {
 				while (1) {
 					str1 = dalloc(strlen(inhalt) + MAX_HEADER_NAME_LEN + 1);

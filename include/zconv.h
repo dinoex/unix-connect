@@ -39,6 +39,7 @@
 #define __ZCONV_H
 
 char *eda2date(const char *text );
+int valid_newsgroups( char *data );
 int adrmatch(const char *abs1, const char *abs2);
 void ulputs(char *text, FILE *f);
 int printnewsgroup(const char *brett, FILE *f);

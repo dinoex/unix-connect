@@ -37,7 +37,6 @@
  *  for instructions on how to join this list.
  */
 
-
 #include "config.h"
 #include "utility.h"
 
@@ -53,9 +52,10 @@
 #endif
 #ifdef HAVE_STRING_H
 # include <string.h>
-#endif
+#else
 #ifdef HAVE_STRINGS_H
 # include <strings.h>
+#endif
 #endif
 #include <stdarg.h>
 
@@ -64,17 +64,17 @@
 #include "xprog.h"
 
 
-/* eine Art system, aber auf execv-Basis
+/* eine Art system, aber auf execv-Basis und ohne shell
    Warnung: Pfad muﬂ mit angegeben werden! */
 static int runcommand(const char *file, ...)
 {
-	const char *arg[20];
+	char *arg[20];
 	va_list ap;
 	pid_t c_pid;
 	size_t i;
 
 	i = 0;
-	arg[i++] = file;
+	arg[i++] = dstrdup( file );
 	va_start(ap, file);
 	while((i < sizeof(arg))
 	      && (arg[i] = va_arg(ap, char *))) {
@@ -83,10 +83,17 @@ static int runcommand(const char *file, ...)
 	va_end(ap);
 
 	switch((c_pid = fork())) {
-	case -1: /* cannot fork */
+	case -1: /* parent, child cannot fork */
 		perror(file);
 		return -1;
 	case 0: /* child */
+		fprintf(stderr, "running %s ", file);
+		{
+			char **x;
+			for (x = arg; *x; x++)
+				fprintf(stderr, "%s ", *x);
+			fprintf(stderr, "\n");
+		}
 		(void)execv(file, (char * const *)arg);
 		/* hier ist was schiefgelaufen, execv kehrt nicht zur¸ck */
 		perror(file);
@@ -99,15 +106,21 @@ static int runcommand(const char *file, ...)
 			int stat;
 #endif
 			wait(&stat);
+			dfree(arg[0]);
 
 			if (WIFEXITED(stat)) {
 #ifdef DIRTY_ZMODEM_HACK
 				if (WEXITSTATUS(stat)==128)
 					return 0;
 #endif
+				fprintf(stderr, "returned %d\n",
+					WEXITSTATUS(stat));
 				return WEXITSTATUS(stat);
 			} else {
-				return 0;
+				/* hier ist auch was schiefgelaufen, z. B.
+				   das Kind hat SIGSEGV bekommen */
+				fprintf(stderr, "did not finish properly\n");
+				return 1;
 			}
 		}
 		break;

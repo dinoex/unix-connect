@@ -19,6 +19,7 @@ PATHADD  = @PATHADD@
 MAIL     = @MAIL@
 NEWS     = @NEWS@
 LIBOBJS  = @LIBOBJS@
+SENDMAIL = @SENDMAIL@
 
 INSTALL = @INSTALL@
 # autoconf does a littel bit to much for us ....

@@ -349,7 +349,16 @@ AC_SUBST(DOMAIN)
 FQDN=$SYS.$DOMAIN
 AC_SUBST(FQDN)
 
-AC_CHECK_PROGS(INEWS,inews,/usr/lib/news/inews,/usr/lib/news /usr/local/lib/news /usr/news /usr/local/news /usr/lib/news/bin)
+AC_PATH_PROGS(INEWS,inews,,/usr/lib/news:/usr/local/lib/news:/usr/news:/usr/loal/news:/usr/lib/news/bin:/usr/bin)
+if test ! -x "$INEWS" ; then
+   echo "Kann inews nicht finden. uumlist wird nicht funktionieren."
+fi
+AC_PATH_PROGS(SENDMAIL,sendmail,/usr/sbin/sendmail,/usr/sbin:/usr/lib)
+if test ! -x "$SENDMAIL" ; then
+  echo "Kann sendmail nicht finden. Bitte \$SENDMAIL auf den Pfad setzen,"
+  echo "das Executable muﬂ die Option -t akzeptieren."
+  exit 1
+fi
 
 AC_MSG_CHECKING(various system-dependent things)
 SYSUNAME="`uname -s | tr 'A-Z' 'a-z'`"
@@ -385,18 +394,18 @@ freebsd)
 netbsd)
   echo "Konfiguriere fuer NetBSD..."
   SYSTYPE=netbsd
-  CFLAGS="$CFLAGS -O2 -pipe -Wall"
+  CFLAGS="$CFLAGS -pipe -Wall"
   ;;
 linux)
   echo "Konfiguriere fuer Linux..."
   SYSTYPE=linux
-  CFLAGS="$CFLAGS -O2 -pipe -Wall"
+  CFLAGS="$CFLAGS -pipe -Wall"
   PATHADD=$PATHADD:/usr/lib/news/bin:/usr/local/lib/news/bin
   ;;
 bsd/386)
   echo "Konfiguriere fuer BSDI BSD/386..."
   SYSTYPE=bsdi
-  CFLAGS="$CFLAGS -O2 -pipe -Wall"
+  CFLAGS="$CFLAGS -pipe -Wall"
   ;;
 svr4)
   SYSTYPE=svr4
@@ -433,9 +442,48 @@ esac
 CPPFLAGS="$CPPFLAGS -I../include -I../hdlib"
 
 dnl	paranoid ....
-gcc_warn="-W -Wall -Wimplicit -Wreturn-type -Wunused -Wswitch -Wcomment -Wtrigraphs -Wformat -Wchar-subscripts -Wuninitialized -Wparentheses -Wshadow -Wid-clash-30 -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -Wnested-externs -Woverloaded-virtual -Winline -pedantic -Wconversion -Wtraditional -Wenum-clash -Wmissing-declarations -Wimplicit-int -Wimplicit-function-delcaration -Wredundant-decls -Wbad-function-cast -Wno-import -Wno-parentheses"
+gcc_warn="
+-W
+-Wall
+-Waggregate-return
+-Wbad-function-cast
+-Wcast-align
+-Wcast-qual
+-Wchar-subscripts
+-Wcomment
+-Wconversion
+-Wenum-clash
+-Werror-implicit-function-declaration
+-Wformat
+-Wid-clash-30
+-Wimplicit
+-Wimplicit-function-delcaration
+-Wimplicit-int
+-Winline
+-Wlong-long
+-Wmissing-declarations
+-Wmissing-prototypes
+-Wnested-externs
+-Wno-import
+-Wno-parentheses
+-Woverloaded-virtual
+-Wparentheses
+-Wpointer-arith
+-Wredundant-decls
+-Wreturn-type
+-Wshadow
+-Wsign-compare
+-Wstrict-prototypes
+-Wswitch
+-Wtraditional
+-Wtrigraphs
+-Wuninitialized
+-Wunused
+-Wwrite-strings
+-pedantic
+"
 
-ggc_warn_ok=""
+gcc_warn_ok=""
 if test $ac_cv_prog_gcc = yes; then
   for i in $gcc_warn
   do

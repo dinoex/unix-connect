@@ -78,8 +78,8 @@ case "$KENNUNG" in
 			ARC="$name".nar
 		fi
 		cp $ARC .		    ;;
- *)		mail postmaster << EOF
-ZCONNECT Warnung
+ *)		@SENDMAIL@ postmaster << EOF
+Subject: ZCONNECT Warnung: auspack falsch aufgerufen
 
 Achtung:
 
@@ -89,4 +89,3 @@ EOF
 esac
 
 exit 0
-

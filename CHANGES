@@ -1,10 +1,63 @@
-
 $Id$
 
 Aenderungen an UnixConnect
+seit 0.82
+
+- shell/import.in: (Matthias Andree)
+  typos beim watch_gate-Aufruf beseitigt (schließende
+  Klammer entfernt, .prv durch .brt ersetzt)
+  vereinfacht, Logging sicherer gemacht
+
+- shell/auspack.in,shell/einpack.in: (Matthias Andree)
+  mail durch sendmail-Aufruf ersetzt. Hat jetzt auch Subject.
+
+- shell/Makefile: (Matthias Andree)
+  $(BINDIR)/anruf nur installieren, wenn nicht vorhanden.
+
+- rsmtp/rsmtp.c:
+- rsmtp/bsmtp.c:
+  attribute fuer GCC eingebaut.
+
+- online/call.c: (Matthias Andree)
+  Netcallpuffer wird gelinkt statt umbenannt. Soll bei Fehlschlagen
+  des Netcalls sicherstellen, daß der Puffer an der alten Stelle
+  liegenbleibt und wächst. WARNUNG: LOCKING IST NICHT ÜBERPRÜFT!
+  WENN PREARC AM PUFFER FRICKELT, WÄHREND ZCALL LÄUFT, IST ÄRGER
+  PROGRAMMIERT!
+
+- online/call.c: (Matthias Andree)
+  Einige Fehlerabfragen, Fehlermeldungen nur auf stderr.
+  Die müssen noch mit Syslog versehen werden.
+  Neue Fehlermeldugen erweitert. (Dirk Meyer)
+
+- online/xprog.c: (Matthias Andree)
+  wichtiger Bugfix: hat den Absturz eines child nicht erkannt
+  Debug: loggt Aufruf des Programms und Rückgabewert auf stderr
+
+- online/call.c: (Matthias Andree)
+  einige Bugfixes. Es war an zahlreichen Stellen
+  `modem' nicht durch `gmodem' ersetzt worden. Folge:
+  Hänger beim Netcall.
+
+- gate/zconv.c: (Dirk Meyer)
+  erkennt News jetzt am führenden / und am fehlenden @
+  Funktion valid_newsgroups von uuconv.c nach zconv.c importiert.
+  Lokale Adressen wie m_andree sind in zconnect _keine_ gültige PM,
+  wir akzeptieren sie aber trotzdem.
+
+- gate/zconv.c: (Matthias Andree)
+  bricht beim ersten STAT:NOKOP die Suche nach NOKOP ab.
+
+- in zahlreichen Files wird strings.h nur dann eingebunden, wenn
+  string.h nicht vorhanden ist (HAVE_STRING_H) (Matthias Andree)
+
+- X-Parse-Errror: statt U-X-...
+
+- config.in jetzt Ohne Zeitzone und Sommerzeit.
+
 seit 0.81
 
-- zconv.c: foldputs_no_eol, neue Umbruchsfunktions
+- gate/zconv.c: foldputs_no_eol, neue Umbruchsfunktion
   von Moritz Both (odo-connect), noch nicht aktiviert.
 
 - Adressen 'xxx@uucp.do.main' werden nicht verstuemmelt.
@@ -15,6 +68,7 @@ seit 0.81
 - parsdate hat ebenfalls Probleme mit mktime, str2eda ebenso
   beide Funktionen überarbeitet. parsedate() ist in
   datelib.a zu finden.
+  Funktionen aus cnews-cr-g neu übernommen.
   X-Date-Error liefert jetzt noch weitere Daten.
   check in um mktime zu verifizieren.
   Resultat in zconv.c/uconv.c/testeda.c

@@ -44,7 +44,7 @@
  *   wird im X-Gateway: Header vermerkt.
  */
 #ifndef VERSION
-#define	VERSION		"0.81"
+#define	VERSION		"0.00"
 #endif
 
 #define	MAILER		"UNIX/Connect"

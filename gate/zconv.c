@@ -51,9 +51,10 @@
 #include <stdlib.h>
 #ifdef HAVE_STRING_H
 # include <string.h>
-#endif
+#else
 #ifdef HAVE_STRINGS_H
 # include <strings.h>
+#endif
 #endif
 #include "lib.h"
 #ifdef NEED_VALUES_H
@@ -139,6 +140,20 @@ char *eda2date(const char *text )
 	return answer;
 }
 
+/* Hier werden die ZConnect Brettnamen auf Gültigkeit geprüft. */
+int valid_newsgroups( char *data )
+{
+	if(NULL==data)
+		return 0;
+	/* Bretter fangen immer mit "/" an */
+	if ( data[0] != '/' )
+		return 0;
+	/* wenn dies eine Brett@Box-Adresse sein koennte */
+	if ( strchr( data, '@' ) != NULL )
+		return 0;
+	return 1;
+}
+
 /*
  *  Liefert 1, wenn die beiden Adressteile (ohne Realname) identisch
  *  sind
@@ -188,7 +203,7 @@ int printnewsgroup(const char *brett, FILE *f)
 	char *s;
 	static char buffer[MAXLINE];
 
-	if (strchr(brett, '@'))
+	if ( valid_newsgroups( brett ) == 0 )
 		return 1;
 	s = z_alias(brett);
 	if (s) {
@@ -255,8 +270,10 @@ header_p convheader(header_p hd, FILE *f)
 	p = find(HD_STAT, hd);
 	if(p) {
 		for(t=p; t; t=t->other) {
-			if(strcasecmp(t->text,"NOKOP")==0)
+			if(strcasecmp(t->text,"NOKOP")==0) {
 				nokop = 1;
+				break;
+			}
 		}
 	}
 	p = find(HD_EMP, hd);
@@ -264,7 +281,7 @@ header_p convheader(header_p hd, FILE *f)
 		int mail, news;
 
 		for (mail=0, news=0, t=p; t && (!news || !mail); t=t->other) {
-			if (strchr(p->text, '@'))
+			if ( valid_newsgroups( p->text ) == 0 )
 				mail = 1;
 			else
 				news = 1;
@@ -285,7 +302,7 @@ header_p convheader(header_p hd, FILE *f)
 		int mail;
 
 		for (mail=0, t=p; t && !mail; t=t->other)
-			if (strchr(p->text, '@'))
+			if ( valid_newsgroups( p->text ) == 0 )
 				mail = 1;
 		if (mail) {
 			foldputaddrs(f, HN_UU_ORIG_TO, p);
@@ -302,7 +319,7 @@ header_p convheader(header_p hd, FILE *f)
 		int mail, news;
 
 		for (mail=0, news = 0, t=p; t && !mail; t=t->other)
-			if (strchr(p->text, '@'))
+			if ( valid_newsgroups( p->text ) == 0 )
 				mail = 1;
 			else
 				news = 1;
@@ -832,7 +849,7 @@ void foldputaddrs(FILE *f, const char *hd, header_p t)
 	}
 	for (p=t; p; p=p->other)
 	{
-		if(strchr(p->text, '@')) {
+		if ( valid_newsgroups( p->text ) == 0 ) {
 			if (col > 40) {
 				fputs(eol, f); fputs("\t", f);
 				col = 10;

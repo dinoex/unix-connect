@@ -38,7 +38,9 @@
 include ../Makefile.global
 include ../Makefile.includes
 
-FILES = anruf auspack einpack import prearc uumlist
+FILESKEEP = anruf
+FILESFORCE = auspack einpack import prearc uumlist
+FILES = $(FILESKEEP) $(FILESFORCE)
 
 all:	$(FILES)
 
@@ -61,7 +63,12 @@ uumlist: uumlist.in  ../Makefile.global
 	$(SHELL) ../helpers/subst < uumlist.in > $@
 
 install: $(FILES)
-	$(INSTALL_PROGRAM) $(FILES) $(BINDIR)
+	for i in $(FILESKEEP) ; do \
+		if [ ! -e $(BINDIR)/$$i ] ; then \
+			$(INSTALL_PROGRAM) $$i $(BINDIR) ; \
+		fi ; \
+	done
+	$(INSTALL_PROGRAM) $(FILESFORCE) $(BINDIR)
 
 uninstall:
 	-cd $(BINDIR) && rm -f $(FILES)

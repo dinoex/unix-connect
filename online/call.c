@@ -267,7 +267,7 @@ int main(int argc, char **argv)
 			O_RDWR
 #endif
 		); DMLOG("open modem");
-	if (modem < 0) {
+	if (gmodem < 0) {
 		perror(tty);
 		fprintf(deblogfile,
 			"Can not access device %s: %s\n", tty, strerror(errno));
@@ -277,12 +277,12 @@ int main(int argc, char **argv)
 	else {
 		/* Nonblock abschalten */
 		int n;
-		n=fcntl(modem, F_GETFL, 0);
-		(void)fcntl(modem, F_SETFL, n & ~O_NDELAY);
+		n=fcntl(gmodem, F_GETFL, 0);
+		(void)fcntl(gmodem, F_SETFL, n & ~O_NDELAY);
 	}
 #endif
 	save_linesettings(gmodem); DMLOG("saving modem parameters");
-	set_rawmode(modem); DMLOG("set modem to rawmode");
+	set_rawmode(gmodem); DMLOG("set modem to rawmode");
 	set_local(gmodem, 1);
 	set_speed(gmodem, speed); DMLOG("set modem speed");
 #ifdef TIOCSCTTY
@@ -555,6 +555,7 @@ int anruf (char *intntl, header_p sys, header_p ich, int lmodem)
 		char filename[FILENAME_MAX];
 		char tmpname[FILENAME_MAX];
 		char outname[FILENAME_MAX];
+		char inname[FILENAME_MAX];
 		char sysname[FILENAME_MAX];
 		char *arcer, *arcerin, *transfer, *domain;
 		header_p t, d;
@@ -669,22 +670,29 @@ int anruf (char *intntl, header_p sys, header_p ich, int lmodem)
 					sysname, lockname );
 				return 1;
 			}
-			if(rename(filename, outname)) {
+			if(symlink(filename, outname)) {
 				fprintf(stderr,
-				"Umbenennen: %s -> %s fehlgeschlagen: %s\n",
+				"Linken: %s -> %s fehlgeschlagen: %s\n",
 					filename, outname, strerror(errno));
 				fclose(deblogfile);
 				newlog(ERRLOG,
-				"Umbenennen: %s -> %s fehlgeschlagen: %s\n",
+				"Linken: %s -> %s fehlgeschlagen: %s\n",
 					filename, outname, strerror(errno));
 				return 1;
 			}
 		}
 		sprintf(filename, "called.%s", arcer);
+		sprintf(inname, "called.%s", arcer);
 		sprintf(outname, "caller.%s", arcer);
 
 		st.st_size = 0;
 		stat(outname, &st);
+		if(stat(outname, &st)) {
+			fprintf(stderr,
+				"Zugriff auf %s fehlgeschlagen: %s\n",
+				outname, strerror(errno));
+			return 1;
+		}
 		fprintf(deblogfile, "Sende %s (%ld Bytes) per %s\n",
 			outname, (long)st.st_size, transfer);
 		fprintf(stderr, "Sende %s (%ld Bytes) per %s\n",
@@ -703,7 +711,7 @@ int anruf (char *intntl, header_p sys, header_p ich, int lmodem)
 		fprintf(deblogfile, "Empfange per %s\n", transfer);
 		fprintf(stderr, "Empfange %s\n", transfer);
 		newlog(logname, "Empfange %s", transfer);
-		if (recvfile(transfer, filename)) {
+		if (recvfile(transfer, inname)) {
 			fprintf(stderr, "Empfang der Daten fehlgeschlagen\n");
 			fprintf(deblogfile,
 				"Empfang der Daten fehlgeschlagen\n");
@@ -712,7 +720,11 @@ int anruf (char *intntl, header_p sys, header_p ich, int lmodem)
 			return 1;
 		}
 		st.st_size = 0;
-		stat(filename, &st);
+		if(stat(inname, &st)) {
+			fprintf(stderr,
+				"Zugriff auf %s fehlgeschlagen: %s\n",
+				inname, strerror(errno));
+		}
 		fprintf(stderr, "%ld Bytes empfangen\n", (long)st.st_size);
 		fprintf(deblogfile, "%ld Bytes empfangen\n", (long)st.st_size);
 		newlog(logname,
@@ -731,7 +743,16 @@ int anruf (char *intntl, header_p sys, header_p ich, int lmodem)
 		dup2(fileno(stderr),fileno(stdout)); /* stderr wird in stdout kopiert */
 
 		/* Netcall war erfolgreich, also Daten loeschen */
-		remove(outname);
+		if ( remove(outname) ) {
+			fprintf(stderr,
+				"Loeschen von %s fehlgeschlagen: %s\n",
+				outname, strerror(errno));
+		}
+		if ( remove(filename) ) {
+			fprintf(stderr,
+				"Loeschen von %s fehlgeschlagen: %s\n",
+				filename, strerror(errno));
+		}
 		fclose(deblogfile);
 
 		/*

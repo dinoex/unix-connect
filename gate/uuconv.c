@@ -51,9 +51,10 @@
 #include <stdlib.h>
 #ifdef HAVE_STRING_H
 # include <string.h>
-#endif
+#else
 #ifdef HAVE_STRINGS_H
 # include <strings.h>
+#endif
 #endif
 #ifdef NEED_VALUES_H
 #include <values.h>
@@ -104,7 +105,7 @@ char *date2eda( const char *str, FILE *fout )
 		dt = time(NULL);
 		if ( fout != NULL )
 			fprintf( fout,
-				"U-X-Date-Error: parse error in Date: %s\r\n",
+				"X-Date-Error: parse error in Date: %s\r\n",
 				str );
 	}
 	lt = localtime(&dt);
@@ -122,7 +123,7 @@ int valid_newsgroups( char *data )
 {
 	if(NULL==data)
 		return 0;
-	/* Bretter fangen immer mit "@" an */
+	/* Bretter fangen immer mit "/" an */
 	if ( data[0] != '/' )
 		return 0;
 	/* wenn dies eine Brett@Box-Adresse sein koennte */

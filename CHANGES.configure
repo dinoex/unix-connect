@@ -1,4 +1,22 @@
 
+Änderungen seit 0.82:
+
+- Warnings erweitert
+
+- CFLAGS -O2 grundsätzlich entfernt. (Matthias Andree)
+
+- helpers/makesubst: erkennt jetzt auch AC_PATH_PROGS, Bugfix: AC_CH
+  durch AC_ ersetzt. (Matthias Andree)
+
+- INEWS sucht jetzt den Pfad, und der Pfad wird korrekt mit :
+  getrennt (Matthias Andree)
+
+- sucht SENDMAIL (Matthias Andree)
+
+- Warnungen überarbeitet auf Grundlage von gcc 2.95
+  überflüssige Warnoptionen entfernt. Einige abgeschaltet (XX direkt
+  nach -W eingefügt)
+
 Änderungen seit 0.80:
 
 - erkenne: HAVE_STRING_H HAVE_STRINGS_H HAVE_UNISTD_H HAVE_SYS_FCNTL_H
